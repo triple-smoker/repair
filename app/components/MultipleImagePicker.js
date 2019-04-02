@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
-import { TouchableHighlight,Text,View,TouchableOpacity, Image,Modal} from 'react-native';
-import { Flex } from '@ant-design/react-native';
-import ImagePicker from 'react-native-image-crop-picker'
+import {Text, View, TouchableOpacity, Image, StyleSheet,TouchableNativeFeedback} from 'react-native';
+import ImagePicker from 'react-native-image-crop-picker';
+import Modal from "react-native-modal";
+import {ListItem} from "native-base";
 
 
 export default class MultipleImagePicker extends Component {
-
     constructor() {
         super();
         this.state = {
             images: [],
-            modalVisible: false,
+            visibleModal: false,
         };
     }
 
@@ -19,19 +19,18 @@ export default class MultipleImagePicker extends Component {
      * @param cropping
      * @param mediaType
      */
-    pickSingleWithCamera(cropping){
+    pickSingleWithCamera(){
+
         ImagePicker.openCamera({
-            cropping: cropping,
-            width: 500,
-            height: 500,
-            includeExif: true,
-            mediaType : 'photo',
 
         }).then(image => {
             console.log('received image', image);
-            this.setState({
-                image: {uri: image.path, width: image.width, height: image.height, mime: image.mime},
-            });
+
+            let images = [];
+            images.push(image);
+            this.appendImage(images);
+            this.setState({ visibleModal: null })
+
         }).catch(e => alert(e));
     }
 
@@ -93,12 +92,32 @@ export default class MultipleImagePicker extends Component {
         }).then(images => {
             //将选择的图片加入到列表
             this.appendImage(images);
+            this.setState({ visibleModal: null })
         }).catch(e => alert(e));
     }
 
-    setModalVisible(visible) {
-        this.setState({ modalVisible: visible });
-    }
+    renderModalContent = () => (
+        <View style={styles.modalContent}>
+            <TouchableNativeFeedback onPress={() =>this.pickMultiple()}>
+            <ListItem >
+                <Text>相册</Text>
+            </ListItem>
+            </TouchableNativeFeedback >
+            <TouchableNativeFeedback onPress={() =>this.pickSingleWithCamera()}>
+            <ListItem >
+                <Text>拍照</Text>
+            </ListItem>
+            </TouchableNativeFeedback >
+            <TouchableNativeFeedback onPress={() => this.setState({ visibleModal: null })}>
+            <ListItem >
+                <Text>取消</Text>
+            </ListItem>
+            </TouchableNativeFeedback >
+        </View>
+    );
+
+    _toggleModal = () =>
+        this.setState({ visibleModal: !this.state.visibleModal });
 
     render() {
         const style = {
@@ -110,31 +129,18 @@ export default class MultipleImagePicker extends Component {
 
         return (
             <View >
-                <Flex wrap="wrap" justify="start">
+                <View style={{flexWrap: 'wrap',flexDirection: 'row',}}>
+
                     {this.state.images ? this.state.images.map((image) => <PreImage key={image.index} deleteImage={()=> {this.deleteImage(image.index)}} uri={image.uri} />): null}
-                    <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
+                    {/*<TouchableOpacity onPress={() => { this.pickMultiple();}}>*/}
+                    <TouchableOpacity onPress={() => { this._toggleModal(true);}}>
                         {/*<TouchableOpacity onPress={this.onButtonClick2} onPress={this.pickMultiple.bind(this)}>*/}
                         <Image style={style} source={{uri: uri}} />
                     </TouchableOpacity>
-                </Flex>
 
-                <Modal
-                    animationType={'slide'}
-                    transparent={true}
-                    visible={this.state.modalVisible}
-                >
-                    <View style={{  width: '85%', height: '30%', marginTop: 22 }}>
-                        <View>
-                            <Text>Hello World!</Text>
-                            <TouchableHighlight
-                                onPress={() => {
-                                    this.setModalVisible(!this.state.modalVisible);
-                                }}
-                            >
-                                <Text>Hide Modal</Text>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
+                </View>
+                <Modal isVisible={this.state.visibleModal}>
+                    {this.renderModalContent()}
                 </Modal>
 
 
@@ -175,3 +181,29 @@ const PreImage = (props: any) => {
         </View>
         );
 }
+
+const styles = StyleSheet.create({
+
+    button: {
+        backgroundColor: "lightblue",
+        padding: 12,
+        margin: 16,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 4,
+        borderColor: "rgba(0, 0, 0, 0.1)",
+    },
+    modalContent: {
+        backgroundColor: "white",
+        padding: 22,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 4,
+        borderColor: "rgba(0, 0, 0, 0.1)",
+    },
+    bottomModal: {
+        justifyContent: "flex-end",
+        margin: 0,
+    },
+
+});

@@ -1,10 +1,36 @@
-import React from 'react';
+import React, {AsyncStorage} from 'react';
 import { View, Text, Button} from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Modal} from "@ant-design/react-native";
+import { NavigationActions } from 'react-navigation';
+
+/**
+ *
+ * @type {NavigationNavigateAction}
+ */
+
+const  navigateAction = NavigationActions.navigate({
+    routeName: 'Profile',
+
+    params: {},
+
+    action: NavigationActions.navigate({ routeName: 'SubProfileRoute' }),
+});
+
+
+
 
 
 export default class HomeScreen extends React.Component {
+
+
+    constructor(props){
+        super(props);
+
+
+
+    }
+
 
     static navigationOptions = {
         title: '首页',
@@ -12,6 +38,8 @@ export default class HomeScreen extends React.Component {
             <Icon name="md-home" size={25} color={tintColor} />
         )
     };
+
+
 
     onButtonClick2 = () => {
         Modal.alert('Title', 'alert content', [

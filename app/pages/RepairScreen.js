@@ -22,6 +22,9 @@ export default class RepairScreen extends React.Component {
 
     };
 
+    changeReporter(){
+
+    };
 
     render() {
         return (
@@ -30,7 +33,7 @@ export default class RepairScreen extends React.Component {
                     <Notice />
                     <TextareaItem rows={6} placeholder="我的报修内容..." />
                     <MultipleImagePicker />
-                    {/*<Reporter name='周良' phone='12388888888' adds='A机房C机架B群组-F203' changAdds={()=>this._changeAdds('周良','12388888888','A机房C机架B群组-F203')}/>*/}
+                    <Reporter name='周良' phone='12388888888' adds='A机房C机架B群组-F203' changAdds={()=>this.changeReporter()}/>
                 </Content>
                 <MyFooter value='提交'/>
 

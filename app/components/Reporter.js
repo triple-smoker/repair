@@ -16,7 +16,7 @@ export default class Reporter extends React.Component {
                         </View>
                 </View>
                 <View style={stylesBody.Butt}>
-                    <Button rounded bordered style={stylesBody.button} >
+                    <Button onPress={this.props.changAdds} rounded bordered style={stylesBody.button} >
                         <Text style={stylesBody.buttonFont}>修改</Text>
                     </Button>
                 </View>

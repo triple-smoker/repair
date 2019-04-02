@@ -6,7 +6,9 @@ import {StyleSheet, Text} from "react-native";
  * 页脚按钮
  */
 class MyFooter extends React.Component  {
+
     render() {
+
         return (
             <Footer style={stylesFooter.Footer}>
                 <Text style={stylesFooter.Text}>{this.props.value}</Text>
