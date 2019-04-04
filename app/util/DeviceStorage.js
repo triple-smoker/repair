@@ -41,7 +41,7 @@ class DeviceStorage {
 
 
     /**
-     * 更新
+     * 删除
      * @param key
      * @returns {*}
      */

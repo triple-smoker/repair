@@ -6,10 +6,10 @@ import {ListItem} from "native-base";
 
 
 export default class MultipleImagePicker extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            images: [],
+            images: this.props.images,
             visibleModal: false,
         };
     }
@@ -25,7 +25,6 @@ export default class MultipleImagePicker extends Component {
 
         }).then(image => {
             console.log('received image', image);
-
             let images = [];
             images.push(image);
             this.appendImage(images);
@@ -48,6 +47,7 @@ export default class MultipleImagePicker extends Component {
         this.setState({
             images: imagesList
         });
+        console.log('++++++++++++++');
         console.log(this.state.images);
     }
 
@@ -56,24 +56,28 @@ export default class MultipleImagePicker extends Component {
       */
     deleteImage(index){
 
-        const images = this.state.images;
-
+        let images = this.state.images;
         let imagesList = [];
         let num = 0;
         for (let i = 0; i <images.length ; i++) {
             let image = images[i];
             if(image.index === index){
                 continue;
+
             }
             image.index = num;
             imagesList.push(image);
             num++;
         }
-
+        console.log('0000000000000000');
         console.log(imagesList);
         this.setState({
             images : imagesList
         })
+
+        console.log('-------------');
+        console.log(this.state.images);
+
 
     }
 
@@ -92,7 +96,7 @@ export default class MultipleImagePicker extends Component {
         }).then(images => {
             //将选择的图片加入到列表
             this.appendImage(images);
-            this.setState({ visibleModal: null })
+            this.setState({ visibleModal: false })
         }).catch(e => alert(e));
     }
 
@@ -120,24 +124,21 @@ export default class MultipleImagePicker extends Component {
         this.setState({ visibleModal: !this.state.visibleModal });
 
     render() {
+
+
+
         const style = {
             width: 120,
             height: 120,
         };
-
         let uri = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553852941108&di=2e17890f24b6b435263d21e1f791c405&imgtype=0&src=http%3A%2F%2Fpic.51yuansu.com%2Fpic3%2Fcover%2F01%2F01%2F65%2F58de76399714b_610.jpg'
-
         return (
             <View >
                 <View style={{flexWrap: 'wrap',flexDirection: 'row',}}>
-
                     {this.state.images ? this.state.images.map((image) => <PreImage key={image.index} deleteImage={()=> {this.deleteImage(image.index)}} uri={image.uri} />): null}
-                    {/*<TouchableOpacity onPress={() => { this.pickMultiple();}}>*/}
                     <TouchableOpacity onPress={() => { this._toggleModal(true);}}>
-                        {/*<TouchableOpacity onPress={this.onButtonClick2} onPress={this.pickMultiple.bind(this)}>*/}
                         <Image style={style} source={{uri: uri}} />
                     </TouchableOpacity>
-
                 </View>
                 <Modal isVisible={this.state.visibleModal}>
                     {this.renderModalContent()}
