@@ -9,10 +9,13 @@
 import React from 'react';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 
-import RepairScreen from './pages/RepairScreen'
-import DetailsScreen from './pages/DetailsScreen'
-import HomeScreen from './pages/HomeScreen';
+import AllOrder from './pages/AllOrder'
 import MyAddress from './pages/Address';
+import DetailsScreen from './pages/DetailsScreen'
+import OrderEvaluate from './pages/Evaluate';
+
+import RepairScreen from './pages/RepairScreen'
+import HomeScreen from './pages/HomeScreen';
 import ConfirmReport from './pages/ConfirmReport'
 
 const AppNavigator = createStackNavigator(
@@ -22,6 +25,8 @@ const AppNavigator = createStackNavigator(
         Repair: RepairScreen,
         Address: MyAddress,
         Confirm: ConfirmReport,
+        AllOrder: AllOrder,
+        Evaluate: OrderEvaluate,
     },
     {
         initialRouteName: "Home"

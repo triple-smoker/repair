@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, View} from "react-native";
 import React from "react";
 import {Button} from "native-base";
 
@@ -17,6 +17,7 @@ export default class Reporter extends React.Component {
                 </View>
                 <View style={stylesBody.Butt}>
                     <Button onPress={this.props.changAdds} rounded bordered style={stylesBody.button} >
+                        <Image style={{width: 14, height: 14}} source={require('../image/btn_ico_xg.png')}/>
                         <Text style={stylesBody.buttonFont}>修改</Text>
                     </Button>
                 </View>
@@ -53,12 +54,12 @@ const stylesBody=StyleSheet.create({
     button:{
         alignItems: 'center',
         justifyContent: 'center',
-        borderColor:'#83ced1',
+        borderColor:'#acacac',
         width:60,
         height:25,
     },
     buttonFont:{
-        color:'#83ced1',
+        color:'#acacac',
         fontSize:16
     }
 });

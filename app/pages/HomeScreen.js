@@ -10,7 +10,12 @@ export default class HomeScreen extends React.Component {
     }
 
     static navigationOptions = {
-        borderBottomWidth: 0,
+        // borderBottomWidth: 0,
+        headerStyle: {
+            elevation: 0,
+            borderBottomWidth: 0,
+        },
+        elevation: 0,
         title: '首页',
         tabBarIcon: ({ tintColor }) => (
             <Icon name="md-home" size={25} color={tintColor} />
@@ -21,10 +26,17 @@ export default class HomeScreen extends React.Component {
     render() {
         return (
             <View >
-
                 <Button
                     title="新增报修"
                     onPress={() => this.props.navigation.navigate('Repair')}
+                />
+                <Button
+                    title="全部订单"
+                    onPress={() => this.props.navigation.navigate('AllOrder')}
+                />
+                <Button
+                    title="报修单评价"
+                    onPress={() => this.props.navigation.navigate('Evaluate')}
                 />
             </View>
         );
