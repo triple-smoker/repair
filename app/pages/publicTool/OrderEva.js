@@ -135,9 +135,9 @@ class OrderEva extends Component {
                 </Col>
             </Row>
             <Row style={{justifyContent: "space-between",padding:15}}>
-              <Button bordered block rounded Button style={{width:'28%',height:35,backgroundColor:(this.state.btColor==1) ? '#efac13':'#fff',borderColor:(this.state.btColor==1) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(1)}><Text style={{color:(this.state.btColor==1) ? '#fff':'#999'}}>不满意</Text></Button>
-              <Button bordered block rounded Button style={{width:'28%',height:35,backgroundColor:(this.state.btColor==2) ? '#efac13':'#fff',borderColor:(this.state.btColor==2) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(2)}><Text style={{color:(this.state.btColor==2) ? '#fff':'#999'}}>一般</Text></Button>
-              <Button bordered block rounded Button style={{width:'28%',height:35,backgroundColor:(this.state.btColor==3) ? '#efac13':'#fff',borderColor:(this.state.btColor==3) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(3)}><Text style={{color:(this.state.btColor==3) ? '#fff':'#999'}}>满意</Text></Button>
+              <Button bordered block rounded Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.btColor==1) ? '#efac13':'#fff',borderColor:(this.state.btColor==1) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(1)}><Text style={{color:(this.state.btColor==1) ? '#fff':'#999'}}>不满意</Text></Button>
+              <Button bordered block rounded Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.btColor==2) ? '#efac13':'#fff',borderColor:(this.state.btColor==2) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(2)}><Text style={{color:(this.state.btColor==2) ? '#fff':'#999'}}>一般</Text></Button>
+              <Button bordered block rounded Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.btColor==3) ? '#efac13':'#fff',borderColor:(this.state.btColor==3) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(3)}><Text style={{color:(this.state.btColor==3) ? '#fff':'#999'}}>满意</Text></Button>
             </Row>
             <Row style={{justifyContent: "center",padding:5}}>
                 <Text style={{color:'#a7a7a7',fontSize:12}}>{this.state.btTitle}</Text>
@@ -145,19 +145,20 @@ class OrderEva extends Component {
             {this.state.btColor!=0 &&
             <Col style={{justifyContent: "space-between",padding:15}}>
                 <Row style={{justifyContent: "space-between"}}>
-                  <Button bordered block Button style={{width:'28%',height:35,backgroundColor:(this.state.bttColorA==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorA==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtA()}><Text style={{fontSize:12,color:(this.state.bttColorA==true) ? '#343434':'#369ced'}}>{this.state.bttTextA}</Text></Button>
-                  <Button bordered block Button style={{width:'28%',height:35,backgroundColor:(this.state.bttColorB==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorB==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtB()}><Text style={{fontSize:12,color:(this.state.bttColorB==true) ? '#343434':'#369ced'}}>{this.state.bttTextB}</Text></Button>
-                  <Button bordered block Button style={{width:'28%',height:35,backgroundColor:(this.state.bttColorC==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorC==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtC()}><Text style={{fontSize:12,color:(this.state.bttColorC==true) ? '#343434':'#369ced'}}>{this.state.bttTextC}</Text></Button>
+                <Row style={{justifyContent: "space-between"}}>
+                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorA==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorA==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtA()}><Text style={{fontSize:12,color:(this.state.bttColorA==true) ? '#343434':'#369ced'}}>{this.state.bttTextA}</Text></Button>
+                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorB==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorB==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtB()}><Text style={{fontSize:12,color:(this.state.bttColorB==true) ? '#343434':'#369ced'}}>{this.state.bttTextB}</Text></Button>
+                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorC==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorC==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtC()}><Text style={{fontSize:12,color:(this.state.bttColorC==true) ? '#343434':'#369ced'}}>{this.state.bttTextC}</Text></Button>
                 </Row>
                 <Row style={{justifyContent: "space-between",paddingTop:17}}>
-                  <Button bordered block Button style={{width:'28%',height:35,backgroundColor:(this.state.bttColorD==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorD==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtD()}><Text style={{fontSize:12,color:(this.state.bttColorD==true) ? '#343434':'#369ced'}}>{this.state.bttTextD}</Text></Button>
-                  <Button bordered block Button style={{width:'28%',height:35,backgroundColor:(this.state.bttColorE==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorE==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtE()}><Text style={{fontSize:12,color:(this.state.bttColorE==true) ? '#343434':'#369ced'}}>{this.state.bttTextE}</Text></Button>
-                  <Button bordered block Button style={{width:'28%',height:35,backgroundColor:(this.state.bttColorF==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorF==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtF()}><Text style={{fontSize:12,color:(this.state.bttColorF==true) ? '#343434':'#369ced'}}>{this.state.bttTextF}</Text></Button>
+                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorD==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorD==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtD()}><Text style={{fontSize:12,color:(this.state.bttColorD==true) ? '#343434':'#369ced'}}>{this.state.bttTextD}</Text></Button>
+                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorE==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorE==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtE()}><Text style={{fontSize:12,color:(this.state.bttColorE==true) ? '#343434':'#369ced'}}>{this.state.bttTextE}</Text></Button>
+                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorF==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorF==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtF()}><Text style={{fontSize:12,color:(this.state.bttColorF==true) ? '#343434':'#369ced'}}>{this.state.bttTextF}</Text></Button>
                 </Row>
             </Col>
             }
             <Row style={{justifyContent: "center"}}>
-                    <Textarea bordered rowSpan={5} maxLength={150}  placeholder="亲，请输入您的评价和建议..."  style={{width:ScreenWidth-30,height:90}} />
+                    <Textarea bordered rowSpan={5} maxLength={150}  placeholder="亲，请输入您的评价和建议..."  style={{width:ScreenWidth-30,height:90,borderRadius:10}} />
             </Row>
         </Content>
     );
