@@ -44,10 +44,10 @@ class AllOrder extends Component {
         <MyHeader/>
         <Content>
             <Tabs style={{backgroundColor:'#000'}}>
-              <Tab heading={ <TabHeading style={{backgroundColor:'#fff'}}><Text style={{color:'#61c0c5'}}>维修中</Text></TabHeading>}>
-                <Tab1  type='1' ShowModal = {() => this._setModalVisible()} />
+              <Tab heading='维修中' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
+                <Tab1  type='1' ShowModal = {() => this._setModalVisible()}/>
               </Tab>
-              <Tab heading={ <TabHeading style={{backgroundColor:'#fff'}}><Text style={{color:'#61c0c5'}}>待评价</Text></TabHeading>}>
+              <Tab heading='待评价' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
                 <Tab2  type='2'/>
               </Tab>
             </Tabs>
