@@ -11,11 +11,11 @@ import {
     View,
     TextInput,
 } from 'react-native';
-import {  TabHeading,Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
+import {  Footer,FooterTab,TabHeading,Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 
 import Tab1 from './OrderOne';
 import Tab2 from './OrderTwo';
-
+import OrderItem from './publicTool/OrderItem';
 
 
 let ScreenWidth = Dimensions.get('window').width;
@@ -25,16 +25,49 @@ class AllOrder extends Component {
     static navigationOptions = {
         header: null,
     };
-
     constructor(props) {
        super(props);
-       this.state = { modalVisible: false};
+       this.state = { modalVisible: false,
+       searchVisible: true
+       };
     }
     onClose() {
        this.setState({modalVisible: false});
     }
     _setModalVisible(visible) {
       this.setState({modalVisible: !this.state.modalVisible});
+    }
+    _setSearchVisible(visible) {
+      this.setState({searchVisible: visible});
+    }
+    _getTabs(type){
+        Alert.alert(type);
+        return (
+        <View  style={{backgroundColor:'#f8f8f8'}}>
+            <Row style={{height:40}}>
+                {type==1 && this.state.searchVisible==true &&
+                    <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>-------共N条维修中工单-------</Text>
+                }
+                {type==2 && this.state.searchVisible==true &&
+                    <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>-------共N条待评价工单-------</Text>
+                }
+                {this.state.searchVisible==false &&
+                    <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>-------共N条维修工单-------</Text>
+                }
+            </Row>
+            <Content>
+                {type==1 && this.state.searchVisible==true &&
+                    <OrderItem   type={type} ShowModal = {() => this._setModalVisible()}/>
+                }
+                {type==2 && this.state.searchVisible==true &&
+                    <OrderItem   type={type}/>
+                }
+                {this.state.searchVisible==false &&
+                    <OrderItem   type={type}/>
+                }
+            </Content>
+        </View>
+        )
     }
 
 
@@ -43,14 +76,23 @@ class AllOrder extends Component {
       <Container>
         <MyHeader/>
         <Content>
-            <Tabs style={{backgroundColor:'#000'}}>
-              <Tab heading='维修中' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
-                <Tab1  type='1' ShowModal = {() => this._setModalVisible()}/>
-              </Tab>
-              <Tab heading='待评价' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
-                <Tab2  type='2'/>
-              </Tab>
-            </Tabs>
+            {this.state.searchVisible==true&&
+                <Tabs style={{backgroundColor:'#000'}}>
+                  <Tab heading='维修中' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
+                        {this._getTabs('1')}
+                  </Tab>
+                  <Tab heading='待评价' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
+                        {this._getTabs('2')}
+                  </Tab>
+                </Tabs>
+            }
+            {this.state.searchVisible==false&&
+                <Tabs style={{backgroundColor:'#000'}}>
+                  <Tab heading='历史维修' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
+                        {this._getTabs('3')}
+                  </Tab>
+                </Tabs>
+            }
             <Modal
                 animationType={"slide"}
                 transparent={true}
@@ -62,6 +104,27 @@ class AllOrder extends Component {
             <MD Closer = {() => this._setModalVisible()} />
             </Modal>
         </Content>
+        <Footer>
+          <FooterTab style={{borderTopWidth:1,borderColor:'#e5e5e5'}}>
+            <Button full style={{backgroundColor:'#fafafa'}} onPress={()=>this._setSearchVisible(true)} >
+                <Col style={{justifyContent:'center'}}>
+                    <Image
+                        style={{width: 30,height:30}}
+                        source={(this.state.searchVisible==true) ? require('../image/tab_ico_wdwx_pre.png'):require('../image/tab_ico_wdwx_nor.png')}
+                    />
+                </Col>
+            </Button>
+            <Button full style={{backgroundColor:'#fafafa'}} onPress={()=>this._setSearchVisible(false)} >
+                <Col style={{flex: 1,alignItems:'center'}}>
+                   <Image
+                        style={{width: 25,height:25}}
+                        source={(this.state.searchVisible==true) ? require('../image/tab_ico_lswx_nor.png'):require('../image/tab_ico_lswx_pre.png')}
+                    />
+                    <Text style={{color:(this.state.searchVisible==true) ?'#a6a6a6':'#56c3c8',fontSize:12}}>历史报修</Text>
+                </Col>
+            </Button>
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }
@@ -73,10 +136,15 @@ class MD extends Component {
                 <TouchableOpacity style={{flex:1}} onPress={this.props.Closer}>
                 <View style={modalStyles.container}>
                     <View style={modalStyles.innerContainer}>
-                         <ImageBackground
-                          style={{width: dialogWidth,height:300}}
-                          source={require('../resource/assets/12dc7f63ef891861a679be8027c70f3.png')}
-                        />
+                        <View style={{paddingRight:40,paddingTop:20}}>
+                             <Image
+                              style={{marginLeft:20,width: dialogWidth,height:300}}
+                              source={require('../image/cuidan.png')}
+                            />
+                        </View>
+                        <View style={{width: dialogWidth,paddingTop:20,paddingLeft:20,paddingBottom:20}}>
+                            <Text style={{color:'#999',fontSize:20}}>催单已成功，维修人员整火速前往，请您稍等片刻</Text>
+                        </View>
                         <View style={modalStyles.btnContainer}>
                             <TouchableHighlight
                             onPress={this.props.Closer}>
@@ -89,8 +157,6 @@ class MD extends Component {
             );
         }
 }
-
-
 
 class MyHeader extends Component {//head模块
   render() {
@@ -108,10 +174,6 @@ class MyHeader extends Component {//head模块
   }
 }
 
-
-
-
-
 const stylesHeader=StyleSheet.create({
        headerColor:{
            backgroundColor:'#fff',
@@ -125,7 +187,6 @@ const stylesHeader=StyleSheet.create({
            color:'#000'
        },
 });
-
 
 const modalStyles = StyleSheet.create({
     container: {
