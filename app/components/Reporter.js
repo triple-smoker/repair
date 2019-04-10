@@ -4,6 +4,7 @@ import {Button} from "native-base";
 
 export default class Reporter extends React.Component {
     render() {
+        const readOnly = this.props.readOnly;
         return (
             <View style={stylesBody.Item}>
                 <View style={stylesBody.Info}>
@@ -15,12 +16,18 @@ export default class Reporter extends React.Component {
                             <Text >报修位置:{this.props.adds}</Text>
                         </View>
                 </View>
-                <View style={stylesBody.Butt}>
-                    <Button onPress={this.props.changAdds} rounded bordered style={stylesBody.button} >
-                        <Image style={{width: 14, height: 14}} source={require('../image/btn_ico_xg.png')}/>
-                        <Text style={stylesBody.buttonFont}>修改</Text>
-                    </Button>
-                </View>
+
+                {readOnly ? null : (
+                    <View  style={stylesBody.Butt}>
+                        <Button onPress={this.props.changAdds} rounded bordered style={stylesBody.button} >
+                            <Image style={{width: 14, height: 14}} source={require('../image/btn_ico_xg.png')}/>
+                            <Text style={stylesBody.buttonFont}>修改</Text>
+                        </Button>
+                    </View>
+                    )
+                }
+
+
             </View>
         );
     }
@@ -33,6 +40,8 @@ const stylesBody=StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: '#fff',
         justifyContent: 'space-between',
+        margin: '1.5%',
+
     },
     Info:{
         width: '75%',
