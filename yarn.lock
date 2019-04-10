@@ -5645,6 +5645,11 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   resolved "http://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
 
+react-native-badge-view@^2.0.1:
+  version "2.0.1"
+  resolved "http://registry.npm.taobao.org/react-native-badge-view/download/react-native-badge-view-2.0.1.tgz#f650e95a1a48e6ac03d7732f9295e7c462bd1e36"
+  integrity sha1-9lDpWhpI5qwD13MvkpXnxGK9HjY=
+
 react-native-code-push@^5.3.2:
   version "5.6.0"
   resolved "http://registry.npm.taobao.org/react-native-code-push/download/react-native-code-push-5.6.0.tgz#e905d32d188c5f7bcff446d813271d03a69543fd"
@@ -5698,6 +5703,11 @@ react-native-gesture-handler@^1.1.0:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.2"
     prop-types "^15.5.10"
+
+react-native-image-crop-picker@^0.23.1:
+  version "0.23.1"
+  resolved "http://registry.npm.taobao.org/react-native-image-crop-picker/download/react-native-image-crop-picker-0.23.1.tgz#26c1b899dbe4358b9f2c98369109a42a8141682a"
+  integrity sha1-JsG4mdvkNYufLJg2kQmkKoFBaCo=
 
 react-native-image-picker@^0.28.0:
   version "0.28.0"
