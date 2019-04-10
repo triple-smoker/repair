@@ -144,7 +144,7 @@ class OrderEva extends Component {
             </Row>
             {this.state.btColor!=0 &&
             <Col style={{justifyContent: "space-between",padding:15}}>
-                <Row style={{justifyContent: "space-between"}}>
+                {/*<Row style={{justifyContent: "space-between"}}></Row>*/}
                 <Row style={{justifyContent: "space-between"}}>
                   <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorA==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorA==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtA()}><Text style={{fontSize:12,color:(this.state.bttColorA==true) ? '#343434':'#369ced'}}>{this.state.bttTextA}</Text></Button>
                   <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorB==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorB==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtB()}><Text style={{fontSize:12,color:(this.state.bttColorB==true) ? '#343434':'#369ced'}}>{this.state.bttTextB}</Text></Button>
