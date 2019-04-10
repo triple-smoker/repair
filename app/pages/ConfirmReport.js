@@ -68,7 +68,7 @@ class ConfirmReport extends Component {
                             style={{backgroundColor: "#fff"  ,marginLeft: '1.5%', marginRight: '1.5%',}}
                         />
                 </Content>
-                <MyFooter submit={() => this.submit()} value='提交'/>
+                <MyFooter submit={() => this.submit()} value='确定'/>
 
             </Container>
         );

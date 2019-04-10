@@ -13,8 +13,6 @@ import {
 } from 'react-native';
 import {  Footer,FooterTab,TabHeading,Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 
-import Tab1 from './OrderOne';
-import Tab2 from './OrderTwo';
 import OrderItem from './publicTool/OrderItem';
 
 
