@@ -41,7 +41,6 @@ class AllOrder extends Component {
       this.setState({searchVisible: visible});
     }
     _getTabs(type){
-        Alert.alert(type);
         return (
         <View  style={{backgroundColor:'#f8f8f8'}}>
             <Row style={{height:40}}>
