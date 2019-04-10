@@ -24,7 +24,6 @@ export default class MyHeader extends Component {
 const styles = StyleSheet.create({
     baseColor: {
         backgroundColor: "#fff",
-
     },
     IconColor:{
         color: "#C4C4C4",
