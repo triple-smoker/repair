@@ -54,13 +54,20 @@ class AllOrder extends Component {
             </Row>
             <Content>
                 {type==1 && this.state.searchVisible==true &&
-                    <OrderItem   type={type} ShowModal = {() => this._setModalVisible()}/>
+                    <Col>
+                        <OrderItem   type={type} ShowModal = {() => this._setModalVisible()}/>
+                    </Col>
                 }
                 {type==2 && this.state.searchVisible==true &&
-                    <OrderItem   type={type}/>
+                    <Col>
+                        <OrderItem   type={type}/>
+                    </Col>
                 }
                 {this.state.searchVisible==false &&
-                    <OrderItem   type={type}/>
+                    <Col>
+                        <OrderItem   type={1}/>
+                        <OrderItem   type={2}/>
+                    </Col>
                 }
             </Content>
         </View>

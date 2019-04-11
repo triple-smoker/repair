@@ -87,14 +87,12 @@ class Adds extends Component {//报修单共用组件
                                   <Text style={{color:'#fcb155',fontSize:12}}>评价</Text>
                                 </Button>
                             }
-                            {this.props.type==3 &&
-                                <Button
-                                bordered
-                                style={{borderColor:'#fcb155',height:30,width:90,marginRight:10}}
-                                >
-                                  <Text style={{color:'#fcb155',fontSize:12}}>查看详情</Text>
-                                </Button>
-                            }
+                            <Button
+                            bordered
+                            style={{borderColor:'#fcb155',height:30,width:90,marginRight:10}}
+                            >
+                              <Text style={{color:'#fcb155',fontSize:12}}>查看详情</Text>
+                            </Button>
                         </Row>
                         <Modal
                             animationType={"slide"}
