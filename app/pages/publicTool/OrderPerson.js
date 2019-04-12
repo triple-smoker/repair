@@ -22,7 +22,7 @@ class Person extends Component {
                 <Col style={{width:'20%',paddingTop:18,paddingLeft:18}}>
                     <Image
                         style={{width: 38,height:38}}
-                        source={require('../../resource/assets/user_wx.png')}
+                        source={require('../../image/user_wx.png')}
                     />
                     <IconAutoItem/>
                     <IconAutoItem/>
@@ -64,14 +64,15 @@ class PersonItem extends Component {//head模块
         </Content>
     );
   }
-}class IconAutoItem extends Component {//head模块
+}
+class IconAutoItem extends Component {
   render() {
     return (
         <View style={{paddingLeft:9}}>
             <View style={{marginLeft:9,height:47,width:2,backgroundColor:'#a2acd8'}}></View>
             <Image
                 style={{width: 20,height:20}}
-                source={require('../../resource/assets/steps_xzr.png')}
+                source={require('../../image/steps_xzr.png')}
             />
         </View>
     );

@@ -44,8 +44,8 @@ class OrderEvaluate extends Component {//主页面
         alignItems: "center" ,
         backgroundColor: "#f8f8f8" }}>
       {expanded
-                ? <Image style={{ width: 18,height:18 }} source={require('../resource/assets/collapse_02.png')} />
-                : <Image style={{ width: 18,height:18 }} source={require('../resource/assets/collapse_01.png')} />}
+                ? <Image style={{ width: 18,height:18 }} source={require('../image/collapse_02.png')} />
+                : <Image style={{ width: 18,height:18 }} source={require('../image/collapse_01.png')} />}
       <Text style={{color:'#6b6b6b'}}>
           {" "}{item.title}
         </Text>

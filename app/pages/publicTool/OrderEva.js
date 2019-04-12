@@ -116,7 +116,7 @@ class OrderEva extends Component {
                     <Row>
                         <Image
                             style={{width: 60,height:60}}
-                            source={require('../../resource/assets/user_wx.png')}
+                            source={require('../../image/user_wx.png')}
                         />
                         <Col style={{paddingLeft:12,paddingTop:5}}>
                             <Text style={{color:'#252525'}}>
@@ -135,9 +135,9 @@ class OrderEva extends Component {
                 </Col>
             </Row>
             <Row style={{justifyContent: "space-between",padding:15}}>
-              <Button bordered block rounded Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.btColor==1) ? '#efac13':'#fff',borderColor:(this.state.btColor==1) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(1)}><Text style={{color:(this.state.btColor==1) ? '#fff':'#999'}}>不满意</Text></Button>
-              <Button bordered block rounded Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.btColor==2) ? '#efac13':'#fff',borderColor:(this.state.btColor==2) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(2)}><Text style={{color:(this.state.btColor==2) ? '#fff':'#999'}}>一般</Text></Button>
-              <Button bordered block rounded Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.btColor==3) ? '#efac13':'#fff',borderColor:(this.state.btColor==3) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(3)}><Text style={{color:(this.state.btColor==3) ? '#fff':'#999'}}>满意</Text></Button>
+              <Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==1) ? '#efac13':'#fff',borderColor:(this.state.btColor==1) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(1)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==1) ? require('../../image/ico_bmy_pre.png'):require('../../image/ico_bmy_nor.png')}/><Text style={{color:(this.state.btColor==1) ? '#fff':'#999'}}>不满意</Text></Button>
+              <Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==2) ? '#efac13':'#fff',borderColor:(this.state.btColor==2) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(2)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==2) ? require('../../image/ico_yb_pre.png'):require('../../image/ico_yb_nor.png')}/><Text style={{color:(this.state.btColor==2) ? '#fff':'#999'}}>一般</Text></Button>
+              <Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==3) ? '#efac13':'#fff',borderColor:(this.state.btColor==3) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(3)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==3) ? require('../../image/ico_my_pre.png'):require('../../image/ico_my_nor.png')}/><Text style={{color:(this.state.btColor==3) ? '#fff':'#999'}}>满意</Text></Button>
             </Row>
             <Row style={{justifyContent: "center",padding:5}}>
                 <Text style={{color:'#a7a7a7',fontSize:12}}>{this.state.btTitle}</Text>
