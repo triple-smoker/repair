@@ -9,7 +9,6 @@ import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
 import {StyleSheet, TextInput ,Alert, Text, TouchableNativeFeedback,Image, View} from "react-native";
 
-
 export default class RepairScreen extends React.Component {
 
     /**
@@ -50,7 +49,7 @@ export default class RepairScreen extends React.Component {
             return;
         }
 
-        alert(this.state.desc);
+        // alert(this.state.desc);
 
         const repairInfo = {
             images: this.state.images,
@@ -153,8 +152,18 @@ export default class RepairScreen extends React.Component {
      * 修改联系人
      */
     changeReporter(){
+
+       // let reporter = {
+       //          reporter: this.state.reporter,
+       //          phone: this.state.phone,
+       //          address: this.state.address
+       //  }
+
         const { navigate } = this.props.navigation;
         navigate('Address', {
+            reporter: this.state.reporter,
+            phone: this.state.phone,
+            address: this.state.address,
             callback: (
                 (info) => {
                     this.setState(

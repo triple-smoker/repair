@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, Button, AsyncStorage, Linking} from "react-native";
+import {View, Text, Button, Linking} from "react-native";
+import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons';
 import { Container, Header, Content, Tab, Tabs } from 'native-base';
 import axios from 'axios';
