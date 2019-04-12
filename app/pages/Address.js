@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {StyleSheet, Alert, TextInput, AsyncStorage, Image} from 'react-native';
-import {  Row, Container, Content, Left, Right, Button, Text, List, ListItem} from 'native-base';
+import {StyleSheet,Alert} from 'react-native';
+import {  Input, Row, Container, Content, Left, Right, Button, Text, List, ListItem} from 'native-base';
 import MyFooter from '../components/MyFooter';
 
 
@@ -134,15 +134,14 @@ class MyAddress extends Component {
 
     history(){
         const reporterList = this.state.reporterList;
-        const listItems =  reporterList === null ? null : reporterList.map((report) =>
-            <Adds name={report.name} phone={report.phone} address={report.address}
+        const listItems =  reporterList === null ? null : reporterList.map((report, index) =>
+            <Adds key={index} name={report.name} phone={report.phone} address={report.address}
                   changAdds={()=>this._changeAdds(report.name,report.phone,report.address)}/>
         );
         return listItems;
     }
 
   render() {
-
     return (
       <Container>
         <Content style={{borderTopWidth: 2,borderColor:'#e1e1e1'}}>

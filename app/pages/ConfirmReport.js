@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, Image, TextInput} from 'react-native';
+import {Image, TextInput} from 'react-native';
 import { Container, Content,Text } from 'native-base';
 import Reporter from '../components/Reporter';
 import MyFooter from '../components/MyFooter';
 import MultipleImagePicker from "../components/MultipleImagePicker";
+import axios from 'axios';
 
 class ConfirmReport extends Component {
 
@@ -36,7 +37,40 @@ class ConfirmReport extends Component {
 
     submit(){
 
+        let repRepairInfo = {
+            repairTypeId: '',
+            buildingId: '',
+            floorId: '',
+            roomId: '',
+            rcAreaId: '',
+            repairMatterId: '',
+            matterName: this.state.desc,
+            isUrgent: 0,
+            hopeRepairTime: '',
+            detailAdress: this.state.report.address,
+            deptId: '',
+            telNo: this.state.report.phone,
+            ownerId: '',
+            ownerName: '',
+        }
+
+        axios({
+            method: 'POST',
+            url: 'http://10.145.196.107:8082/api/repair/repRepairInfo',
+            data: repRepairInfo,
+        }).then(
+            (response) => {
+                console.log('----------------');
+                console.log(response);
+            }
+        ).catch((error)=> {
+            console.log('================');
+            console.log(error)
+        });
+
         alert("提交成功");
+        const { navigate } = this.props.navigation;
+        navigate('Home');
 
     }
 
@@ -48,8 +82,7 @@ class ConfirmReport extends Component {
             <Container  style={{backgroundColor: "#EEEEEE"}}>
                 <Content>
 
-                        <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15}}>请确认您的报修单</Text>
-                        {/*<Text style={{color:'#3e3e3e',paddingLeft:10,paddingTop:13,fontSize:15}}>报修内容：<Text style={{color:'#737373',fontSize:15}}>{this.state.desc}</Text></Text>*/}
+                    <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15}}>请确认您的报修单</Text>
                     <TextInput style={{color: '#000', textAlignVertical: 'top', backgroundColor: "#ffffff" , marginTop : '1.5%', marginLeft: '1.5%', marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}
