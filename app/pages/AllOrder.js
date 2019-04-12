@@ -67,6 +67,7 @@ class AllOrder extends Component {
                     <Col>
                         <OrderItem   type={1}/>
                         <OrderItem   type={2}/>
+                        <OrderItem   type={3}/>
                     </Col>
                 }
             </Content>
