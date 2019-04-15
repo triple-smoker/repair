@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import {StyleSheet,Alert} from 'react-native';
+import {StyleSheet,Alert,Image,TextInput} from 'react-native';
 import {  Input, Row, Container, Content, Left, Right, Button, Text, List, ListItem} from 'native-base';
 import MyFooter from '../components/MyFooter';
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 class MyAddress extends Component {
 

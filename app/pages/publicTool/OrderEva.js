@@ -7,7 +7,8 @@ import {
     View
 } from 'react-native';
 import Swiper from 'react-native-swiper';
-import { Content,Row,Col,Text,List,ListItem,Button,Item,Textarea } from 'native-base';
+import LinearGradient from 'react-native-linear-gradient';
+import { Content,Row,Col,Text,Button,Textarea } from 'native-base';
 
 
 
@@ -33,6 +34,12 @@ class OrderEva extends Component {
        };
     }
     _change(btnum){
+        let bttTextA='';
+        let bttTextB='';
+        let bttTextC='';
+        let bttTextD='';
+        let bttTextE='';
+        let bttTextF='';
         this.setState({ btColor:btnum});
         if(btnum==1){
             this.setState({btTitle:'（请选择不满意的地方）'});
@@ -135,9 +142,23 @@ class OrderEva extends Component {
                 </Col>
             </Row>
             <Row style={{justifyContent: "space-between",padding:15}}>
-              <Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==1) ? '#efac13':'#fff',borderColor:(this.state.btColor==1) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(1)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==1) ? require('../../image/ico_bmy_pre.png'):require('../../image/ico_bmy_nor.png')}/><Text style={{color:(this.state.btColor==1) ? '#fff':'#999'}}>不满意</Text></Button>
-              <Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==2) ? '#efac13':'#fff',borderColor:(this.state.btColor==2) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(2)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==2) ? require('../../image/ico_yb_pre.png'):require('../../image/ico_yb_nor.png')}/><Text style={{color:(this.state.btColor==2) ? '#fff':'#999'}}>一般</Text></Button>
-              <Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==3) ? '#efac13':'#fff',borderColor:(this.state.btColor==3) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(3)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==3) ? require('../../image/ico_my_pre.png'):require('../../image/ico_my_nor.png')}/><Text style={{color:(this.state.btColor==3) ? '#fff':'#999'}}>满意</Text></Button>
+
+                <LinearGradient
+                    colors={['#FFD801', '#FF8040', '#F75D59']}
+                    style={{width:'30%',height:35,flexDirection: 'row',alignItems: 'center',
+                        justifyContent: 'center',borderRadius : 50}}
+                >
+
+                    <Image style={{width:20,height:20, marginRight: 10}}
+                           source={(this.state.btColor==1) ? require('../../image/ico_bmy_pre.png'):require('../../image/ico_bmy_nor.png')}/>
+                    <Text style={{color:(this.state.btColor==1) ? '#fff':'#999'}}>不满意</Text>
+
+                </LinearGradient>
+
+
+                {/*<Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==1) ? '#efac13':'#fff',borderColor:(this.state.btColor==1) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(1)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==1) ? require('../../image/ico_bmy_pre.png'):require('../../image/ico_bmy_nor.png')}/><Text style={{color:(this.state.btColor==1) ? '#fff':'#999'}}>不满意</Text></Button>*/}
+              {/*<Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==2) ? '#efac13':'#fff',borderColor:(this.state.btColor==2) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(2)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==2) ? require('../../image/ico_yb_pre.png'):require('../../image/ico_yb_nor.png')}/><Text style={{color:(this.state.btColor==2) ? '#fff':'#999'}}>一般</Text></Button>*/}
+              {/*<Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==3) ? '#efac13':'#fff',borderColor:(this.state.btColor==3) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(3)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==3) ? require('../../image/ico_my_pre.png'):require('../../image/ico_my_nor.png')}/><Text style={{color:(this.state.btColor==3) ? '#fff':'#999'}}>满意</Text></Button>*/}
             </Row>
             <Row style={{justifyContent: "center",padding:5}}>
                 <Text style={{color:'#a7a7a7',fontSize:12}}>{this.state.btTitle}</Text>
