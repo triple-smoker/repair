@@ -1,8 +1,8 @@
 import React from 'react';
-import {View, Text, Button, Linking} from "react-native";
+import {View, Button, Linking} from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons';
-import { Container, Header, Content, Tab, Tabs } from 'native-base';
+import { Container, } from 'native-base';
 import axios from 'axios';
 
 export default class HomeScreen extends React.Component {

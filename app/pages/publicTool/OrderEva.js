@@ -11,7 +11,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Content,Row,Col,Text,Button,Textarea } from 'native-base';
 
 
-
 let ScreenWidth = Dimensions.get('window').width;
 class OrderEva extends Component {
     constructor(props) {
