@@ -9,6 +9,9 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <!--获取地址相关权限-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!--获取语音相关权限-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
 
     <application

@@ -141,6 +141,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-sound')
+    implementation project(':react-native-audio')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-linear-gradient')
     implementation project(':@react-native-community_async-storage')
