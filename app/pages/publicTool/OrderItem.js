@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     View,
     TextInput,
+    Linking
 } from 'react-native';
 import {  Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 import Swiper from 'react-native-swiper';
@@ -60,6 +61,11 @@ class Adds extends Component {//报修单共用组件
                             </Row>
                             <Row>
                             <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={stylesBody.orderContextAut}>周良</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:40}}>12388888888</Text>
+                            <TouchableHighlight
+                                style={{width:20,height:20,backgroundColor:'#fff',marginLeft:20}}
+                                onPress={() => Linking.openURL(`tel:${`10086`}`)}>
+                                <Image source={require("../../image/list_call.png")}/>
+                            </TouchableHighlight>
                             </Row>
                         </Col>
                     </Row>
