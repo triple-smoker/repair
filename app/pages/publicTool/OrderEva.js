@@ -4,7 +4,8 @@ import {
     Dimensions,
     Image,
     Alert,
-    View
+    View,
+    TouchableHighlight
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import LinearGradient from 'react-native-linear-gradient';
@@ -142,23 +143,57 @@ class OrderEva extends Component {
                 </Col>
             </Row>
             <Row style={{justifyContent: "space-between",padding:15}}>
-
+            <TouchableHighlight
+                style={{width:'30%'}}
+                underlayColor="#fff"
+                      onPress={()=>this._change(1)}>
                 <LinearGradient
-                    colors={['#FFD801', '#FF8040', '#F75D59']}
-                    style={{width:'30%',height:35,flexDirection: 'row',alignItems: 'center',
-                        justifyContent: 'center',borderRadius : 50}}
+                    colors= {[(this.state.btColor==1) ? '#e9c11a':'#fff',(this.state.btColor==1) ?  '#f1a611':'#fff',(this.state.btColor==1) ?  '#fb8306':'#fff']}
+                    start={ {x: 0.3, y:0} }
+                    end={ {x: 0.7, y:1} }
+                    style={{height:35,flexDirection: 'row',alignItems: 'center',
+                        justifyContent: 'center',borderRadius : 50,borderWidth:1,borderColor:(this.state.btColor==1) ? '#fff':'#c2c2c2'}}
                 >
-
                     <Image style={{width:20,height:20, marginRight: 10}}
-                           source={(this.state.btColor==1) ? require('../../image/ico_bmy_pre.png'):require('../../image/ico_bmy_nor.png')}/>
+                           source={(this.state.btColor==1) ? require('../../image/ico_bmy_pre.png'): require('../../image/ico_bmy_nor.png')}/>
                     <Text style={{color:(this.state.btColor==1) ? '#fff':'#999'}}>不满意</Text>
 
                 </LinearGradient>
+             </TouchableHighlight>
+             <TouchableHighlight
+                style={{width:'30%'}}
+                underlayColor="#fff"
+                      onPress={()=>this._change(2)}>
+                <LinearGradient
+                    colors= {[(this.state.btColor==2) ? '#e9c11a':'#fff',(this.state.btColor==2) ?  '#f1a611':'#fff',(this.state.btColor==2) ?  '#fb8306':'#fff']}
+                    start={ {x: 0.3, y:0} }
+                    end={ {x: 0.7, y:1} }
+                    style={{height:35,flexDirection: 'row',alignItems: 'center',
+                        justifyContent: 'center',borderRadius : 50,borderWidth:1,borderColor:(this.state.btColor==2) ? '#fff':'#c2c2c2'}}
+                >
+                    <Image style={{width:20,height:20, marginRight: 10}}
+                           source={(this.state.btColor==2) ? require('../../image/ico_yb_pre.png'):require('../../image/ico_yb_nor.png')}/>
+                    <Text style={{color:(this.state.btColor==2) ? '#fff':'#999'}}>不满意</Text>
 
+                </LinearGradient>
+             </TouchableHighlight>
+             <TouchableHighlight
+                style={{width:'30%'}}
+                underlayColor="#fff"
+                      onPress={()=>this._change(3)}>
+                <LinearGradient
+                    colors= {[(this.state.btColor==3) ? '#e9c11a':'#fff',(this.state.btColor==3) ?  '#f1a611':'#fff',(this.state.btColor==3) ?  '#fb8306':'#fff']}
+                    start={ {x: 0.3, y:0} }
+                    end={ {x: 0.7, y:1} }
+                    style={{height:35,flexDirection: 'row',alignItems: 'center',
+                        justifyContent: 'center',borderRadius : 50,borderWidth:1,borderColor:(this.state.btColor==3) ? '#fff':'#c2c2c2'}}
+                >
+                    <Image style={{width:20,height:20, marginRight: 10}}
+                           source={(this.state.btColor==3) ? require('../../image/ico_my_pre.png'):require('../../image/ico_my_nor.png')}/>
+                    <Text style={{color:(this.state.btColor==3) ? '#fff':'#999'}}>不满意</Text>
 
-                {/*<Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==1) ? '#efac13':'#fff',borderColor:(this.state.btColor==1) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(1)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==1) ? require('../../image/ico_bmy_pre.png'):require('../../image/ico_bmy_nor.png')}/><Text style={{color:(this.state.btColor==1) ? '#fff':'#999'}}>不满意</Text></Button>*/}
-              {/*<Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==2) ? '#efac13':'#fff',borderColor:(this.state.btColor==2) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(2)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==2) ? require('../../image/ico_yb_pre.png'):require('../../image/ico_yb_nor.png')}/><Text style={{color:(this.state.btColor==2) ? '#fff':'#999'}}>一般</Text></Button>*/}
-              {/*<Button bordered block rounded Button style={{width:'30%',height:35,backgroundColor:(this.state.btColor==3) ? '#efac13':'#fff',borderColor:(this.state.btColor==3) ? '#efac13':'#c2c2c2'}} onPress={()=>this._change(3)}><Image style={{width:20,height:20,marginTop:2}} source={(this.state.btColor==3) ? require('../../image/ico_my_pre.png'):require('../../image/ico_my_nor.png')}/><Text style={{color:(this.state.btColor==3) ? '#fff':'#999'}}>满意</Text></Button>*/}
+                </LinearGradient>
+             </TouchableHighlight>
             </Row>
             <Row style={{justifyContent: "center",padding:5}}>
                 <Text style={{color:'#a7a7a7',fontSize:12}}>{this.state.btTitle}</Text>
