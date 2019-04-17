@@ -16,6 +16,7 @@ import Swiper from 'react-native-swiper';
 
 
 let ScreenWidth = Dimensions.get('window').width;
+let ScreenHeight = Dimensions.get('window').height;
 let dialogWidth = ScreenWidth-80;
 class Adds extends Component {//报修单共用组件
     constructor(props) {
