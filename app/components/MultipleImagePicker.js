@@ -8,13 +8,15 @@ class MultipleImagePicker extends Component {
 
     constructor(props){
         super(props);
-
         this.state = {
             images: [],
             visibleModal: false
         }
     }
 
+    /**
+     * 控制弹出框展示
+     */
     toggleModal = () =>
         this.setState({ visibleModal: !this.state.visibleModal });
 

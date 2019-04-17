@@ -7,11 +7,17 @@ import {
 } from 'react-native';
 import {Row, Col, Container, Content, Text ,Button } from 'native-base';
 import OrderItem from './publicTool/OrderItem';
+import Icon from "./HomeScreen";
 
 
 
 let ScreenWidth = Dimensions.get('window').width;
-class OrderOne extends Component {
+class OrderSearch extends Component {
+
+    static navigationOptions = {
+       header : null
+    };
+
     constructor(props) {
         super(props);
         this.state = {
@@ -78,4 +84,4 @@ class SearchItem extends Component{
 
 
 
-module.exports=OrderOne;
+module.exports=OrderSearch;

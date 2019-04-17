@@ -84,6 +84,10 @@ export default class HomeScreen extends React.Component {
                             title="清空缓存"
                             onPress={() => this._deleteData()}
                         />
+                        <Button
+                            title="搜索"
+                            onPress={() => this.props.navigation.navigate('OrderSearch')}
+                        />
                     </View>
 
                 </Container>

@@ -17,6 +17,8 @@ import OrderEvaluate from './pages/Evaluate';
 import RepairScreen from './pages/RepairScreen'
 import HomeScreen from './pages/HomeScreen';
 import ConfirmReport from './pages/ConfirmReport'
+import OrderSearch from './pages/OrderSearch'
+
 
 const AppNavigator = createStackNavigator(
     {
@@ -27,6 +29,7 @@ const AppNavigator = createStackNavigator(
         Confirm: ConfirmReport,
         AllOrder: AllOrder,
         Evaluate: OrderEvaluate,
+        OrderSearch : OrderSearch,
     },
     {
         initialRouteName: "Home"

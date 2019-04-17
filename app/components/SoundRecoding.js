@@ -45,6 +45,10 @@ class SoundRecoding extends Component {
 		});
 	}
 
+	/**
+	 * 停止录音
+	 * @returns {Promise<void>}
+	 */
 	async stop() {
 		this.timer && clearTimeout(this.timer);
 		if (!this.state.recording) {
@@ -66,13 +70,17 @@ class SoundRecoding extends Component {
 		}
 	}
 
+	/**
+	 * 播放录音
+	 * @returns {Promise<void>}
+	 */
 	async play() {
 		if (this.state.recording) {
 			await this._stop();
 		}
 
 		setTimeout(() => {
-			var sound = new Sound(this.state.audioPath, '', (error) => {
+			let sound = new Sound(this.state.audioPath, '', (error) => {
 				if (error) {
 					console.log('failed to load the sound', error);
 				}
@@ -90,11 +98,15 @@ class SoundRecoding extends Component {
 		}, 100);
 	}
 
+	/**
+	 * 开始录音
+	 * @returns {Promise<void>}
+	 */
 	async record() {
 
 		console.log('开始录制！');
 		this.timer = setTimeout(() => {
-			this._stop();
+			this.stop();
 			console.warn('录制时长最大60s!')
 		}, 5000);
 		if (this.state.recording) {
@@ -135,34 +147,30 @@ class SoundRecoding extends Component {
 			<View style={{
 				marginTop: '1.5%',
 				marginLeft: '1.5%',
-				width: '75%',
+				width: '100%',
 				height: 50,
 				flexDirection: 'row',
 			}}>
 				<TouchableHighlight
-									onPressIn={
-										() => {this.record()}
-									}
-									onPressOut={
-										() => {this.stop()}
-									}>
-				<Image
-					style={{
-						width: 50,
-						height: 50
-					}}
-					source={require('../image/btn_yy.png')}/>
+					onPressIn={() => {this.record()}}
+					onPressOut={() => {this.stop()}}>
+					<Image
+						style={{
+							width: 35,
+							height: 35
+						}}
+						source={require('../image/btn_yy.png')}/>
 				</TouchableHighlight>
-				<TouchableHighlight
-									onPress={
-										() => {this.play()}
-									}>
-				<Image
-					style={{
-						width: '75%',
-						height: 50
-					}}
-					source={require('../image/song.jpg')}/>
+				<TouchableHighlight style={{
+					width: '75%',
+					height: 50
+				}} onPress={() => {this.play()}}>
+					<Image
+						style={{
+							width: '75%',
+							height: 50
+						}}
+						source={require('../image/song.jpg')}/>
 				</TouchableHighlight>
 			</View>
 		);
