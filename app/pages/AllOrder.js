@@ -11,7 +11,7 @@ import {
     View,
     TextInput,
 } from 'react-native';
-import {  Footer,FooterTab,TabHeading,Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
+import {  Footer,FooterTab,TabHeading,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 
 import OrderItem from './publicTool/OrderItem';
 
