@@ -31,9 +31,9 @@ class Adds extends Component {//报修单共用组件
   render() {
     return (
             <Content style={{backgroundColor:'#fff',marginBottom:8,paddingBottom:10,paddingLeft:16,paddingRight:16}}>
-                <Row  style={{height:60,borderBottomWidth:1,borderColor:'#dfdfdf'}}>
+                <View  style={{borderBottomWidth:1,borderColor:'#dfdfdf',paddingBottom:10}}>
                     <Text style={{marginTop:13,fontSize:14}}>报修内容：<Text style={stylesBody.orderContext}>F201机器内网网络不通。</Text></Text>
-                </Row>
+                </View>
                 <Content style={{paddingTop:12}}>
                     <Row style={{height:120}}>
                         {this.props.type!=0 &&
