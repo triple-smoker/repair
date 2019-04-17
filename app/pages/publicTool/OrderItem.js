@@ -125,8 +125,10 @@ class PictureMd extends Component {
         render(){
             return (
                 <View style={modalStyles.container}>
+                    <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={this.props.Closer}>
+                    </TouchableOpacity>
                     <View style={modalStyles.innerContainer}>
-                        <View style={{width:ScreenWidth,height:210,backgroundColor:'#fff'}}>
+                        <View style={{width:ScreenWidth,height:220,backgroundColor:'#fff'}}>
                          <Swiper
                            onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
                            dot={<View style={{backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
@@ -138,11 +140,9 @@ class PictureMd extends Component {
                                 <ImageItem num='2' sum='2'  imageurl='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554368276452&di=dfa6ac0f1342c8ec5e443861ad6f60c7&imgtype=0&src=http%3A%2F%2Fstatic.open-open.com%2Fnews%2FuploadImg%2F20160113%2F20160113102614_405.png'/>
                          </Swiper>
                          </View>
-                        <Button full  style={modalStyles.btnContainer}
-                        onPress={this.props.Closer}>
-                            <Text  style={{color:'#000'}}>OK</Text>
-                        </Button>
                     </View>
+                    <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={this.props.Closer}>
+                    </TouchableOpacity>
                 </View>
             );
         }
