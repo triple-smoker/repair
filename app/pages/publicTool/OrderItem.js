@@ -31,9 +31,9 @@ class Adds extends Component {//报修单共用组件
   render() {
     return (
             <Content style={{backgroundColor:'#fff',marginBottom:8,paddingBottom:10,paddingLeft:16,paddingRight:16}}>
-                <Row  style={{height:60,borderBottomWidth:1,borderColor:'#dfdfdf'}}>
+                <View  style={{borderBottomWidth:1,borderColor:'#dfdfdf',paddingBottom:10}}>
                     <Text style={{marginTop:13,fontSize:14}}>报修内容：<Text style={stylesBody.orderContext}>F201机器内网网络不通。</Text></Text>
-                </Row>
+                </View>
                 <Content style={{paddingTop:12}}>
                     <Row style={{height:120}}>
                         {this.props.type!=0 &&
@@ -126,7 +126,7 @@ class PictureMd extends Component {
             return (
                 <View style={modalStyles.container}>
                     <View style={modalStyles.innerContainer}>
-                        <View style={{width:ScreenWidth-80,height:210,backgroundColor:'#fff'}}>
+                        <View style={{width:ScreenWidth,height:210,backgroundColor:'#fff'}}>
                          <Swiper
                            onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
                            dot={<View style={{backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
@@ -152,7 +152,7 @@ class ImageItem extends Component{
         return (
             <View style={stylesImage.slide}>
                 <Image resizeMode='stretch' style={stylesImage.image} source={{uri:this.props.imageurl}} />
-                <View style={{position: 'absolute',left:ScreenWidth-120,top:180,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
+                <View style={{position: 'absolute',left:ScreenWidth-50,top:180,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
             </View>
         )
     }
@@ -168,7 +168,7 @@ const stylesImage =StyleSheet.create({
     backgroundColor: 'transparent'
   },
   image: {
-    width:ScreenWidth-80,
+    width:ScreenWidth,
     flex: 1,
     height:210
   }
@@ -201,7 +201,7 @@ const modalStyles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     btnContainer:{
-        width:dialogWidth,
+        width:ScreenWidth,
         height:46,
         borderRadius: 5,
         backgroundColor:'#eff0f2',
