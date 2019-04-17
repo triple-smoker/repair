@@ -79,8 +79,24 @@ class AllOrder extends Component {
   render() {
     return (
       <Container>
-        <MyHeader/>
         <Content>
+            <Row>
+                    <TouchableHighlight style={{width:'10%',height:50}}>
+                        <Image style={{width:12,height:25,margin:13}} source={require("../image/navbar_ico_back.png")}/>
+                    </TouchableHighlight>
+                    <Button  transparent style={{width:'75%',backgroundColor:'#f4f4f4',borderRadius:25}}>
+                        <Row>
+                            <Image style={{width:20,height:20,marginTop:5,marginLeft:10,marginRight:5}} source={require("../image/ico_seh.png")}/>
+                            <Text style={{marginTop:5,fontSize:16,color:'#d0d0d0'}}>请输入单号或内容</Text>
+                        </Row>
+                    </Button>
+                    <TouchableHighlight transparent style={{width:'15%',height:50,borderWidth:0,paddingTop:13,paddingLeft:5}}>
+                        <Row>
+                            <Image style={{width:20,height:20}} source={require("../image/navbar_ico_bx.png")}/>
+                            <Text style={{color:"#252525"}}>报修</Text>
+                        </Row>
+                    </TouchableHighlight>
+            </Row>
             {this.state.searchVisible==true&&
                 <Tabs style={{backgroundColor:'#000'}}>
                   <Tab heading='维修中' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
