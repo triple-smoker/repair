@@ -76,7 +76,9 @@ class OrderSearch extends Component {
             reporterList.splice(temp[j],1);
         }
 
+        if(context != null && context != ''){
         reporterList.splice(0,0,context);
+        }
 
         if(reporterList.length >=6){
             reporterList.pop()
