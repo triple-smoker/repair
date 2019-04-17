@@ -24,9 +24,12 @@ class AllOrder extends Component {
         header: null,
     };
     constructor(props) {
-       super(props);
-       this.state = { modalVisible: false,
-       searchVisible: true
+            super(props);
+            this.state = { modalVisible: false,
+            searchVisible: true,
+            tab1:1,
+            tab2:1,
+            tab3:3,
        };
     }
 
@@ -116,17 +119,17 @@ class AllOrder extends Component {
             </Row>
             {this.state.searchVisible==true&&
                 <Tabs style={{backgroundColor:'#000'}}>
-                  <Tab heading='维修中' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
+                  <Tab heading={'待维修('+this.state.tab1+')'} tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontSize:16}} activeTextStyle={{color:'#62c0c5',fontWeight:"normal",fontSize:16}}>
                         {this._getTabs('1')}
                   </Tab>
-                  <Tab heading='待评价' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
+                  <Tab heading={'待评价('+this.state.tab2+')'} tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontSize:16}} activeTextStyle={{color:'#62c0c5',fontWeight:"normal",fontSize:16}}>
                         {this._getTabs('2')}
                   </Tab>
                 </Tabs>
             }
             {this.state.searchVisible==false&&
                 <Tabs style={{backgroundColor:'#000'}}>
-                  <Tab heading='历史维修' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999'}} activeTextStyle={{color:'#62c0c5'}}>
+                  <Tab heading={'历史维修('+this.state.tab3+')'} tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontSize:16}} activeTextStyle={{color:'#62c0c5',fontWeight:"normal",fontSize:16}}>
                         {this._getTabs('3')}
                   </Tab>
                 </Tabs>
