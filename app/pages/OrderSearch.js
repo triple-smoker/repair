@@ -27,7 +27,7 @@ class OrderSearch extends Component {
         searchType: false,
         reporterList : [],
         };
-        AsyncStorage.getItem('reporterInfoHistory',function (error, result) {
+        AsyncStorage.getItem('searchItemHistory',function (error, result) {
 
                 if (error) {
                     // alert('读取失败')
@@ -57,7 +57,7 @@ class OrderSearch extends Component {
     }
     saveReport(context,index){
 
-        let key = 'reporterInfoHistory';
+        let key = 'searchItemHistory';
 
         let reporterList = this.state.reporterList;
 
