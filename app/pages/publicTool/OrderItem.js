@@ -60,10 +60,10 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>A机房C机架B群组-F203</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={stylesBody.orderContextAut}>周良</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:40}}>12388888888</Text>
+                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={stylesBody.orderContextAut}>周良</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:40}}>18088888888</Text>
                             <TouchableHighlight
                                 style={{width:20,height:20,backgroundColor:'#fff',marginLeft:20}}
-                                onPress={() => Linking.openURL(`tel:${`10086`}`)}>
+                                onPress={() => Linking.openURL(`tel:${`18088888888`}`)}>
                                 <Image source={require("../../image/list_call.png")}/>
                             </TouchableHighlight>
                             </Row>
