@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet,Alert,Image,TextInput} from 'react-native';
+import {StyleSheet, Alert, Image, TextInput, View} from 'react-native';
 import {  Input, Row, Container, Content, Left, Right, Button, Text, List, ListItem} from 'native-base';
 import MyFooter from '../components/MyFooter';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -12,6 +12,11 @@ class MyAddress extends Component {
         headerStyle: {
             elevation: 0,
         },
+        headerRight: (<View />),
+        headerTitleStyle: {
+            flex:1,
+            textAlign: 'center'
+        }
 
     };
 

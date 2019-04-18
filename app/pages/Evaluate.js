@@ -32,6 +32,11 @@ class OrderEvaluate extends Component {//主页面
         headerStyle: {
             elevation: 0,
         },
+        headerRight: (<View />),
+        headerTitleStyle: {
+            flex:1,
+            textAlign: 'center'
+        }
     };
 
     _renderHeader(item, expanded) {

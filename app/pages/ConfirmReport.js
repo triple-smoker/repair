@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Image, TextInput} from 'react-native';
+import {Image, TextInput, View} from 'react-native';
 import { Container, Content,Text } from 'native-base';
 import Reporter from '../components/Reporter';
 import MyFooter from '../components/MyFooter';
@@ -19,6 +19,11 @@ class ConfirmReport extends Component {
         headerStyle: {
             elevation: 0,
         },
+        headerRight: (<View />),
+        headerTitleStyle: {
+            flex:1,
+            textAlign: 'center'
+        }
     };
 
     constructor(props){

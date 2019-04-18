@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Image, Platform, TouchableHighlight} from 'react-native';
+import {View,Text, Image, Platform, TouchableHighlight} from 'react-native';
 import {AudioRecorder, AudioUtils} from "react-native-audio";
 import Sound from "react-native-sound";
 
@@ -142,35 +142,44 @@ class SoundRecoding extends Component {
 		console.log(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath} and size of ${fileSize || 0} bytes`);
 	}
 
+	recordButtom(){
+	    return(
+            <TouchableHighlight style={{
+                width: 35,
+                height: 35,}}
+                                onPressIn={() => {this.record()}}
+                                onPressOut={() => {this.stop()}}>
+                <Image
+                    style={{
+                        width: 35,
+                        height: 35
+                    }}
+                    source={require('../image/btn_yy.png')}/>
+            </TouchableHighlight>
+        )
+    }
+
 	render(){
 		return(
 			<View style={{
-				marginTop: '1.5%',
 				marginLeft: '1.5%',
-				width: '100%',
-				height: 50,
+				height: 40,
 				flexDirection: 'row',
+                backgroundColor: "#ffffff",
 			}}>
-				<TouchableHighlight
-					onPressIn={() => {this.record()}}
-					onPressOut={() => {this.stop()}}>
-					<Image
-						style={{
-							width: 35,
-							height: 35
-						}}
-						source={require('../image/btn_yy.png')}/>
-				</TouchableHighlight>
-				<TouchableHighlight style={{
-					width: '75%',
-					height: 50
-				}} onPress={() => {this.play()}}>
-					<Image
-						style={{
-							width: '75%',
-							height: 50
-						}}
-						source={require('../image/song.jpg')}/>
+                {this.props.readOnly ? null : this.recordButtom()}
+				<TouchableHighlight style={{left: 9}} onPress={() => {this.play()}}>
+                    <View >
+                        <Image
+                            style={{left: 15,top: 7,position: 'absolute',width: 20, height: 20, zIndex: 1}}
+                            source={require('../image/os.png')}/>
+                        <Text
+                            style={{left: 160,top: 7,position: 'absolute',zIndex: 1}}
+                        >16"</Text>
+                        <Image
+                            style={{width: 190, height: 35}}
+                            source={require('../image/df1.png')}/>
+                    </View>
 				</TouchableHighlight>
 			</View>
 		);

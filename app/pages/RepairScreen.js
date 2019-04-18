@@ -22,6 +22,11 @@ export default class RepairScreen extends React.Component {
         headerStyle: {
             elevation: 0,
         },
+        headerRight: (<View />),
+        headerTitleStyle: {
+            flex:1,
+            textAlign: 'center'
+        }
     };
 
     constructor(props){
@@ -33,7 +38,7 @@ export default class RepairScreen extends React.Component {
             showNotice: false,
             desc : '',
             record : {
-                filePath : 'dfer',
+                filePath : '',
             }
         }
     }
@@ -124,7 +129,6 @@ export default class RepairScreen extends React.Component {
                                placeholder={"我的报修内容..."}
                     />
                     <SoundRecoding recordCallBack = {(record)=>this.recordCallBack(record)}/>
-                    <Text>{this.state.record.filePath}</Text>
                     <MultipleImagePicker
                         imageCallback = {(images)=> this.imageCallback(images)}
                         images={this.state.images}
