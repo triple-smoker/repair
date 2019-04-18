@@ -29,6 +29,9 @@ class Adds extends Component {//报修单共用组件
     _setModalVisible() {
       this.setState({modalVisible: !this.state.modalVisible});
     }
+    _details(){
+        Alert.alert("查看详情")
+    }
   render() {
     return (
             <Content style={{backgroundColor:'#fff',marginBottom:8,paddingBottom:10,paddingLeft:16,paddingRight:16}}>
@@ -36,6 +39,7 @@ class Adds extends Component {//报修单共用组件
                     <Text style={{marginTop:13,fontSize:14}}>报修内容：<Text style={stylesBody.orderContext}>F201机器内网网络不通。</Text></Text>
                 </View>
                 <Content style={{paddingTop:12}}>
+                <TouchableOpacity onPress={()=>this._details()}>
                     <Row style={{height:120}}>
                         {this.props.type!=0 &&
                         <Col style={{width:70,marginRight:17}}>
@@ -70,6 +74,7 @@ class Adds extends Component {//报修单共用组件
                             </Row>
                         </Col>
                     </Row>
+                </TouchableOpacity>
                     <Content>
                         <Row style={{justifyContent:'flex-end'}}>
                             {this.props.type==1 &&
