@@ -76,7 +76,7 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.repairUserName}</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:40}}>{this.props.record.repairUserMobile}</Text>
                             <TouchableHighlight
                                 style={{width:20,height:20,backgroundColor:'#fff',marginLeft:20}}
-                                onPress={() => Linking.openURL(`tel:${this.props.repairUserMobile}`)}>
+                                onPress={() => Linking.openURL(`tel:${this.props.record.repairUserMobile}`)}>
                                 <Image style={{width:20,height:20}} source={require("../../image/list_call.png")}/>
                             </TouchableHighlight>
                             </Row>
