@@ -12,6 +12,7 @@ import {
     TextInput,
 } from 'react-native';
 import {  Footer,FooterTab,TabHeading,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
+import axios from 'axios';
 
 import OrderItem from './publicTool/OrderItem';
 
@@ -26,10 +27,16 @@ class AllOrder extends Component {
     constructor(props) {
             super(props);
             this.state = { modalVisible: false,
-            searchVisible: true,
-            tab1:1,
-            tab2:1,
-            tab3:3,
+                searchVisible: true,
+                tab1:1,
+                tab2:1,
+                tab3:3,
+                tab1:0,
+                tab2:0,
+                tab3:0,
+                recordList1:[],
+                recordList2:[],
+                recordList3:[],
        };
     }
 
@@ -52,47 +59,138 @@ class AllOrder extends Component {
     onClose() {
        this.setState({modalVisible: false});
     }
-    _setModalVisible(visible) {
-      this.setState({modalVisible: !this.state.modalVisible});
+    _setModalVisible(repairId,sendDeptId,sendUserId) {
+    //催单
+    if(!this.state.modalVisible){
+        let data = {
+                  repairId: repairId,
+                  sendDeptId: sendDeptId,
+                  sendUserId: sendUserId
+               }
+        axios({
+            method: 'POST',
+            url: 'http://10.145.196.107:8082/api/repair/remind',
+            data: data,
+            header:{
+                'Content-type': 'application/json'
+            }
+        }).then(
+            (response) => {
+                this.setState({modalVisible: true});
+            }
+        ).catch((error)=> {
+            console.log(error)
+        });
+    }else{
+        this.setState({modalVisible: false})
+        }
     }
     _setSearchVisible(visible) {
       this.setState({searchVisible: visible});
     }
+//    切换tab页
     _getTabs(type){
         return (
         <View  style={{backgroundColor:'#f8f8f8'}}>
             <Row style={{height:40}}>
                 {type==1 && this.state.searchVisible==true &&
-                    <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>-------共N条维修中工单-------</Text>
+                    <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>{'-------共'+this.state.tab1+'条维修中工单-------'}</Text>
                 }
                 {type==2 && this.state.searchVisible==true &&
-                    <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>-------共N条待评价工单-------</Text>
+                    <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>{'-------共'+this.state.tab2+'条待评价工单-------'}</Text>
                 }
                 {this.state.searchVisible==false &&
-                    <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>-------共N条维修工单-------</Text>
+                    <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>{'-------共'+this.state.tab3+'条维修工单-------'}</Text>
                 }
             </Row>
             <Content>
                 {type==1 && this.state.searchVisible==true &&
                     <Col>
-                        <OrderItem   type={type} ShowModal = {() => this._setModalVisible()}/>
+                        {this._getAllOrders(1)}
+                        {this._setOrderItem(1)}
                     </Col>
                 }
                 {type==2 && this.state.searchVisible==true &&
                     <Col>
-                        <OrderItem   type={type}/>
+                        {this._getAllOrders(2)}
+                        {this._setOrderItem(2)}
                     </Col>
                 }
                 {this.state.searchVisible==false &&
                     <Col>
-                        <OrderItem   type={1}/>
-                        <OrderItem   type={2}/>
-                        <OrderItem   type={3}/>
+                        {this._getAllOrders(3)}
+                        {this._setOrderItem(3)}
                     </Col>
                 }
             </Content>
         </View>
         )
+    }
+//获取列表数据
+    _getAllOrders(type){
+
+        let that = this;
+
+        let repRepairInfo = {
+                    page: 1,
+                    limit: 100,
+                    deptId: '',
+                    ownerId: '',
+                    status: ''
+                 }
+        var url="";
+        var data;
+        var records1;
+        var records2;
+        var records3;
+        if(type === 1){
+            url="http://10.145.196.107:8082/api/repair/list/unfinished";
+            data=repRepairInfo;
+        }
+        if(type === 2){
+            url="http://10.145.196.107:8082/api/repair/repRepairInfo/list"
+            data=repRepairInfo;
+            data.status='8';
+        }
+        if(type === 3){
+            url="http://10.145.196.107:8082/api/repair/repRepairInfo/list"
+            data=repRepairInfo;
+        }
+        axios({
+            method: 'GET',
+            url: url,
+            data: data,
+        }).then(
+            (response) => {
+                if(type === 1&&this.state.recordList1.length===0){
+                    records1 = response.data.data.records;
+                    this.setState({recordList1:records1,tab1:records1.length});
+                }else if(type === 2&&this.state.recordList2.length===0){
+                    records2 =response.data.data.records;
+                    this.setState({recordList2:records2,tab2:records2.length});
+                }else if(type === 3&&this.state.recordList3.length===0){
+                    records3 =response.data.data.records;
+                    this.setState({recordList3:records3,tab3:records3.length});
+                }
+            }
+        ).catch((error)=> {
+            console.log(error)
+        });
+
+    }
+    _setOrderItem(ty){
+        let recordList = [];
+        if(ty===1){
+            recordList = this.state.recordList1;
+        }else if(ty===2){
+            recordList = this.state.recordList2;
+        }else if(ty===3){
+            recordList = this.state.recordList3;
+        }
+        let listItems =(  recordList === null ? null : recordList.map((record, index) =>
+            <OrderItem key={index}  type={ty} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
+        ))
+        return listItems;
     }
 
 
@@ -177,12 +275,11 @@ class MD extends Component {
                 <TouchableOpacity style={{flex:1}} onPress={this.props.Closer}>
                 <View style={modalStyles.container}>
                     <View style={modalStyles.innerContainer}>
-                        <View style={{paddingRight:40,paddingTop:20}}>
                              <Image
-                              style={{marginLeft:20,width: dialogWidth,height:300}}
+                              style={{width:dialogWidth-20,height:dialogWidth-60}}
+                              resizeMode={'contain'}
                               source={require('../image/cuidan.png')}
                             />
-                        </View>
                         <View style={{width: dialogWidth,paddingTop:20,paddingLeft:20,paddingBottom:20}}>
                             <Text style={{color:'#999',fontSize:20}}>催单已成功，维修人员整火速前往，请您稍等片刻</Text>
                         </View>

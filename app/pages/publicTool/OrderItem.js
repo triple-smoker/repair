@@ -32,11 +32,14 @@ class Adds extends Component {//报修单共用组件
     _details(){
         Alert.alert("查看详情")
     }
+    _cancelOrder(){
+        Alert.alert("取消订单")
+    }
   render() {
     return (
             <Content style={{backgroundColor:'#fff',marginBottom:8,paddingBottom:10,paddingLeft:16,paddingRight:16}}>
                 <View  style={{borderBottomWidth:1,borderColor:'#dfdfdf',paddingBottom:10}}>
-                    <Text style={{marginTop:13,fontSize:14}}>报修内容：<Text style={stylesBody.orderContext}>F201机器内网网络不通。</Text></Text>
+                    <Text style={{marginTop:13,fontSize:14}}>报修内容：<Text style={stylesBody.orderContext}>{this.props.record.matterName}</Text></Text>
                 </View>
                 <Content style={{paddingTop:12}}>
                 <TouchableOpacity onPress={()=>this._details()}>
@@ -50,25 +53,30 @@ class Adds extends Component {//报修单共用组件
                             />
                             <Button transparent style={{position: 'absolute',width:70,height:70}} onPress= {()=>this._setModalVisible()}/>
                             <View style={{position: 'absolute',left:40,top:5,backgroundColor:'#545658',height:20,paddingLeft:8,width:25,borderRadius:10}}><Text style={{color:'#fff'}}>3</Text></View>
+                            <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>{this.props.record.status===6 ? '暂停中':''}</Text>
+                            <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>{this.props.record.status===11 ? '已取消':''}</Text>
+                            <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>{this.props.record.status===10 ? '误报':''}</Text>
+                            <Text style={{color:'#6de37e',alignItems:'center',marginLeft:10}}>{this.props.record.status===9 ? '已评价':''}</Text>
+                            <Text style={{color:'#f0e292',alignItems:'center',marginLeft:10}}>{this.props.record.status===13 ? '委外':''}</Text>
                         </Col>}
                         <Col>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>报修单号:</Text><Text style={stylesBody.orderContextAut}>15002930001</Text>
+                            <Text style={stylesBody.orderContextTip}>报修单号:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.repairNo}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>报修时间:</Text><Text style={stylesBody.orderContextAut}>2019-03-29 09:56:31</Text>
+                            <Text style={stylesBody.orderContextTip}>报修时间:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.createTime}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>已耗时长:</Text><Text style={stylesBody.orderContextAut}>1天</Text>
+                            <Text style={stylesBody.orderContextTip}>已耗时长:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.hours}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>A机房C机架B群组-F203</Text>
+                            <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.matterName}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={stylesBody.orderContextAut}>周良</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:40}}>18088888888</Text>
+                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.repairUserName}</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:40}}>{this.props.record.repairUserMobile}</Text>
                             <TouchableHighlight
                                 style={{width:20,height:20,backgroundColor:'#fff',marginLeft:20}}
-                                onPress={() => Linking.openURL(`tel:${`18088888888`}`)}>
+                                onPress={() => Linking.openURL(`tel:${this.props.repairUserMobile}`)}>
                                 <Image style={{width:20,height:20}} source={require("../../image/list_call.png")}/>
                             </TouchableHighlight>
                             </Row>
@@ -77,34 +85,28 @@ class Adds extends Component {//报修单共用组件
                 </TouchableOpacity>
                     <Content>
                         <Row style={{justifyContent:'flex-end'}}>
-                            {this.props.type==1 &&
+                            {(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
                                 <Button
                                 bordered
                                 style={{borderColor:'#fcb155',height:30,width:60,marginRight:10}}
-                                onPress= {this.props.ShowModal}
+                                onPress= {()=>this.props.ShowModal(this.props.record.repairId,this.props.record.sendDeptId,this.props.record.sendUserId)}
                                 >
                                   <Text style={{color:'#fcb155',fontSize:12}}>催单</Text>
                                 </Button>
                             }
-                            {this.props.type==1 &&
-                                <Button bordered style={{borderColor:'#ededed',height:30,width:60}}>
+                            {(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
+                                <Button bordered
+                                    onPress= {()=>this._cancelOrder()}
+                                    style={{borderColor:'#ededed',height:30,width:60,marginRight:10}}>
                                   <Text style={{color:'#6b6b6b',fontSize:12}}>取消</Text>
                                 </Button>
                             }
-                            {this.props.type==2 &&
+                            {(this.props.type===2 || this.props.record.status==='8' )&&
                                 <Button
                                 bordered
                                 style={{borderColor:'#fcb155',height:30,width:60,marginRight:10}}
                                 >
                                   <Text style={{color:'#fcb155',fontSize:12}}>评价</Text>
-                                </Button>
-                            }
-                            {this.props.type==3 &&
-                                <Button
-                                bordered
-                                style={{borderColor:'#fcb155',height:30,width:90,marginRight:10}}
-                                >
-                                  <Text style={{color:'#fcb155',fontSize:12}}>查看详情</Text>
                                 </Button>
                             }
                         </Row>
