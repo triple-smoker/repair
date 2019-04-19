@@ -22,6 +22,7 @@ export default class HomeScreen extends React.Component {
         }).then(
             (response) => {
                 console.log('----------------');
+
                 console.log(response);
             }
         ).catch((error)=> {
@@ -95,6 +96,10 @@ export default class HomeScreen extends React.Component {
                         <Button
                             title="搜索"
                             onPress={() => this.props.navigation.navigate('OrderSearch')}
+                        />
+                        <Button
+                            title="搜索"
+                            onPress={() => alert(this.state.woDe)}
                         />
                     </View>
 

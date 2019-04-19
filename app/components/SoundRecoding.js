@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View,Text, Image, Platform, TouchableHighlight} from 'react-native';
+import {View,Text, Image, Platform, TouchableNativeFeedback} from 'react-native';
 import {AudioRecorder, AudioUtils} from "react-native-audio";
 import Sound from "react-native-sound";
 
@@ -144,7 +144,7 @@ class SoundRecoding extends Component {
 
 	recordButtom(){
 	    return(
-            <TouchableHighlight style={{
+            <TouchableNativeFeedback style={{
                 width: 35,
                 height: 35,}}
                                 onPressIn={() => {this.record()}}
@@ -155,7 +155,7 @@ class SoundRecoding extends Component {
                         height: 35
                     }}
                     source={require('../image/btn_yy.png')}/>
-            </TouchableHighlight>
+            </TouchableNativeFeedback>
         )
     }
 
@@ -168,7 +168,7 @@ class SoundRecoding extends Component {
                 backgroundColor: "#ffffff",
 			}}>
                 {this.props.readOnly ? null : this.recordButtom()}
-				<TouchableHighlight style={{left: 9}} onPress={() => {this.play()}}>
+				<TouchableNativeFeedback style={{left: 9}} onPress={() => {this.play()}}>
                     <View >
                         <Image
                             style={{left: 15,top: 7,position: 'absolute',width: 20, height: 20, zIndex: 1}}
@@ -180,7 +180,7 @@ class SoundRecoding extends Component {
                             style={{width: 190, height: 35}}
                             source={require('../image/df1.png')}/>
                     </View>
-				</TouchableHighlight>
+				</TouchableNativeFeedback>
 			</View>
 		);
 	}
