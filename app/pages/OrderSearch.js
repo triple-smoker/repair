@@ -10,6 +10,7 @@ import {
 import {Row, Col, Container, Content, Text ,Button } from 'native-base';
 import OrderItem from './publicTool/OrderItem';
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
 
 
 
@@ -26,6 +27,7 @@ class OrderSearch extends Component {
         searchContext: '',
         searchType: false,
         reporterList : [],
+        recordListSearch : []
         };
         AsyncStorage.getItem('searchItemHistory',function (error, result) {
 
@@ -51,8 +53,7 @@ class OrderSearch extends Component {
         this.setState({searchContext:context});
     }
     _setSerachShow(context,index){
-        this.setState({searchType:true});
-        this.setState({searchContext:context});
+        this.setState({searchType:true,recordListSearch:[],searchContext:context});
         this.saveReport(context,index);
     }
     saveReport(context,index){
@@ -110,6 +111,40 @@ class OrderSearch extends Component {
         return listItems;
     }
 
+//搜索数据
+    _getOrders(){
+        if(this.state.recordListSearch.length===0){
+            let repRepairInfo = {
+                        page: 1,
+                        limit: 100,
+                        deptId: '',
+                        ownerId: '',
+                        status: ''
+                     }
+            var   url="http://10.145.196.107:8082/api/repair/repRepairInfo/list"
+                  data=repRepairInfo;
+            axios({
+                method: 'GET',
+                url: url,
+                data: data,
+            }).then(
+                (response) => {
+                        var records = response.data.data.records;
+                        this.setState({recordListSearch:records});
+                }
+            ).catch((error)=> {
+                console.log(error)
+            });
+        }
+    }
+//渲染页面
+    _setOrderItem(){
+        let recordList = this.state.recordListSearch;
+        let listItems =(  recordList === null ? null : recordList.map((record, index) =>
+            <OrderItem key={index}  type={3} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
+        ))
+        return listItems;
+    }
 
 
   render() {
@@ -122,7 +157,7 @@ class OrderSearch extends Component {
                     </TouchableHighlight>
                     <Row style={{width:'80%',backgroundColor:'#f4f4f4',borderRadius:25}}>
                         <Image style={{width:20,height:20,marginTop:15,marginLeft:10,marginRight:5}} source={require("../image/ico_seh.png")}/>
-                        <TextInput underlineColorAndroid="transparent" placeholder="请输入单号或内容" style={{width:'90%',borderRadius:25,height:50,fontSize:16,backgroundColor:'#f4f4f4'}} onChangeText={(searchContext) => this.setState({searchContext})}>{this.state.searchContext}</TextInput>
+                        <TextInput underlineColorAndroid="transparent" placeholder="请输入单号或内容" style={{width:'90%',borderRadius:25,height:50,fontSize:16,backgroundColor:'#f4f4f4'}} onChangeText={(searchContext:searchContext) => this.setState({searchContext:searchContext})}>{this.state.searchContext}</TextInput>
                     </Row>
                     <Button transparent style={{height:50,backgroundColor:'#f8f8f8',borderWidth:0}} onPress={()=>this._setSerachShow(this.state.searchContext)}><Text style={{color:"#252525"}}>搜索</Text></Button>
                 </Row>
@@ -134,8 +169,8 @@ class OrderSearch extends Component {
                 {this.state.searchType==true &&
                     <View style={{width:'100%',flexDirection:'row',flexWrap:'wrap'}}>
                         <Col>
-                            <OrderItem   type={1}/>
-                            <OrderItem   type={2}/>
+                        {this._getOrders()}
+                        {this._setOrderItem()}
                         </Col>
                     </View>
                 }
