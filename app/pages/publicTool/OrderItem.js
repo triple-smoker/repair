@@ -85,7 +85,7 @@ class Adds extends Component {//报修单共用组件
                 </TouchableOpacity>
                     <Content>
                         <Row style={{justifyContent:'flex-end'}}>
-                            {(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
+                            {this.props.type!='4' &&(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
                                 <Button
                                 bordered
                                 style={{borderColor:'#fcb155',height:30,width:60,marginRight:10}}
@@ -94,14 +94,14 @@ class Adds extends Component {//报修单共用组件
                                   <Text style={{color:'#fcb155',fontSize:12}}>催单</Text>
                                 </Button>
                             }
-                            {(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
+                            {this.props.type!='4' &&(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
                                 <Button bordered
                                     onPress= {()=>this._cancelOrder()}
                                     style={{borderColor:'#ededed',height:30,width:60,marginRight:10}}>
                                   <Text style={{color:'#6b6b6b',fontSize:12}}>取消</Text>
                                 </Button>
                             }
-                            {(this.props.type===2 || this.props.record.status==='8' )&&
+                            {this.props.type!='4' &&(this.props.type===2 || this.props.record.status==='8' )&&
                                 <Button
                                 bordered
                                 style={{borderColor:'#fcb155',height:30,width:60,marginRight:10}}

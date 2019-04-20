@@ -23,7 +23,40 @@ let dataArrayC = [  { title: "物料", content: <OrderWuZi/> }];
 let dataArrayD = [  { title: "评价", content: <OrderEva/> }];
 
 class OrderEvaluate extends Component {//主页面
-
+    constructor(props) {
+       super(props);
+       let thisRecord={
+        createTime:1552362778000,
+        deptId:"1083852071089426434",
+        deptName:"行政总务",
+        hours:314.8,
+        isUrgent:"0",
+        matterId:888881048,
+        matterName:"A设备损坏（换设备、修设备）",
+        ownerId:"1601500545875394402",
+        ownerName:"周某",
+        ownerVisited:null,
+        repairDeptId:"1078641550383865857",
+        repairDeptName:"维修总仓",
+        repairId:"1105315716528799747",
+        repairNo:"BX-190711100002",
+        repairTelNo:null,
+        repairUserId:"1078641974478331906",
+        repairUserMobile:"1111123",
+        repairUserName:"张三",
+        repairVisited:null,
+        status:"8",
+        statusDesc:"待评价",
+        telNo:"78888",
+        updateTime:1552362814000
+       }
+       this.state = {
+        dataArrayA : [  { title: "概况", content: <OrderItem type='4' record={thisRecord}/>}],
+        dataArrayB : [  { title: "维修事项", content: <OrderPerson/> }],
+        dataArrayC : [  { title: "物料", content: <OrderWuZi/> }],
+        dataArrayD : [  { title: "评价", content: <OrderEva/> }],
+       };
+    }
 
     static navigationOptions = {
         // header: null,
@@ -70,7 +103,7 @@ class OrderEvaluate extends Component {//主页面
             {/*<MyHeader/>*/}
             <Content style={{ backgroundColor: "white" }}>
                 <Accordion
-                  dataArray={dataArrayA}
+                  dataArray={this.state.dataArrayA}
                   animation={true}
                   expanded={true}
                   renderHeader={this._renderHeader}
@@ -78,7 +111,7 @@ class OrderEvaluate extends Component {//主页面
                   expanded={0}
                 />
                 <Accordion
-                  dataArray={dataArrayB}
+                  dataArray={this.state.dataArrayB}
                   animation={true}
                   expanded={true}
                   renderHeader={this._renderHeader}
@@ -86,7 +119,7 @@ class OrderEvaluate extends Component {//主页面
                   expanded={0}
                 />
                 <Accordion
-                  dataArray={dataArrayC}
+                  dataArray={this.state.dataArrayC}
                   animation={true}
                   expanded={true}
                   renderHeader={this._renderHeader}
@@ -94,7 +127,7 @@ class OrderEvaluate extends Component {//主页面
                   expanded={0}
                 />
                 <Accordion
-                  dataArray={dataArrayD}
+                  dataArray={this.state.dataArrayD}
                   animation={true}
                   expanded={true}
                   renderHeader={this._renderHeader}
