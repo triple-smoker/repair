@@ -9,9 +9,10 @@ import {
     TouchableOpacity,
     View,
     TextInput,
-    Linking
+    Linking,
+    Text,
 } from 'react-native';
-import {  Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
+import {  Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right,  List, ListItem, Thumbnail} from 'native-base';
 import Swiper from 'react-native-swiper';
 
 
@@ -21,7 +22,9 @@ let dialogWidth = ScreenWidth-80;
 class Adds extends Component {//报修单共用组件
     constructor(props) {
        super(props);
-       this.state = { modalVisible: false};
+       this.state = { modalVisible: false,
+              showText: false,
+              };
     }
     onClose() {
        this.setState({modalVisible: false});
@@ -35,15 +38,25 @@ class Adds extends Component {//报修单共用组件
     _cancelOrder(){
         Alert.alert("取消订单")
     }
+    _showText(){
+        this.setState({showText: !this.state.showText});
+    }
   render() {
     return (
-            <Content style={{backgroundColor:'#fff',marginBottom:8,paddingBottom:10,paddingLeft:16,paddingRight:16}}>
+            <Content style={{backgroundColor:'#fff',marginBottom:10,paddingBottom:10,paddingLeft:16,paddingRight:16,borderRadius:10}}>
                 <View  style={{borderBottomWidth:1,borderColor:'#dfdfdf',paddingBottom:10}}>
-                    <Text style={{marginTop:13,fontSize:14}}>报修内容：<Text style={stylesBody.orderContext}>{this.props.record.matterName}</Text></Text>
+                <TouchableOpacity onPress={()=>this._showText()}>
+                    {this.state.showText==false &&
+                    <Text numberOfLines={2}  style={{marginTop:13,fontSize:14,fontWeight:('bold'),color:'#313131'}}>报修内容：<Text style={stylesBody.orderContext}>{this.props.record.matterName}</Text></Text>
+                    }
+                    {this.state.showText==true &&
+                    <Text  style={{marginTop:13,fontSize:14,fontWeight:('bold'),color:'#313131'}}>报修内容：<Text style={stylesBody.orderContext}>{this.props.record.matterName}</Text></Text>
+                    }
+                </TouchableOpacity>
                 </View>
                 <Content style={{paddingTop:12}}>
                 <TouchableOpacity onPress={()=>this._details()}>
-                    <Row style={{height:120}}>
+                    <Row>
                         {this.props.type!=0 &&
                         <Col style={{width:70,marginRight:17}}>
                              <Image
@@ -88,7 +101,7 @@ class Adds extends Component {//报修单共用组件
                             {this.props.type!='4' &&(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
                                 <Button
                                 bordered
-                                style={{borderColor:'#fcb155',height:30,width:60,marginRight:10}}
+                                style={{borderColor:'#fcb155',height:30,width:60,marginRight:10,justifyContent:'center',alignItems:'center'}}
                                 onPress= {()=>this.props.ShowModal(this.props.record.repairId,this.props.record.sendDeptId,this.props.record.sendUserId)}
                                 >
                                   <Text style={{color:'#fcb155',fontSize:12}}>催单</Text>
@@ -97,14 +110,14 @@ class Adds extends Component {//报修单共用组件
                             {this.props.type!='4' &&(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
                                 <Button bordered
                                     onPress= {()=>this._cancelOrder()}
-                                    style={{borderColor:'#ededed',height:30,width:60,marginRight:10}}>
+                                    style={{borderColor:'#ededed',height:30,width:60,marginRight:10,justifyContent:'center',alignItems:'center'}}>
                                   <Text style={{color:'#6b6b6b',fontSize:12}}>取消</Text>
                                 </Button>
                             }
                             {this.props.type!='4' &&(this.props.type===2 || this.props.record.status==='8' )&&
                                 <Button
                                 bordered
-                                style={{borderColor:'#fcb155',height:30,width:60,marginRight:10}}
+                                style={{borderColor:'#fcb155',height:30,width:60,marginRight:10,justifyContent:'center',alignItems:'center'}}
                                 >
                                   <Text style={{color:'#fcb155',fontSize:12}}>评价</Text>
                                 </Button>
@@ -184,7 +197,8 @@ const stylesImage =StyleSheet.create({
 const stylesBody=StyleSheet.create({
     orderContext:{
         fontSize:14,
-        color:'#737373'
+        color:'#737373',
+        fontWeight:('normal')
     },
     orderContextTip:{
         fontSize:14,
