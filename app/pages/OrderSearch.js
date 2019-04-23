@@ -122,7 +122,7 @@ class OrderSearch extends Component {
                         status: ''
                      }
             var   url="http://10.145.196.107:8082/api/repair/repRepairInfo/list"
-                  data=repRepairInfo;
+            var   data=repRepairInfo;
             axios({
                 method: 'GET',
                 url: url,
