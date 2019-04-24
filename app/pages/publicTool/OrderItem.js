@@ -45,14 +45,19 @@ class Adds extends Component {//报修单共用组件
     return (
             <Content style={{backgroundColor:'#fff',marginBottom:10,paddingBottom:10,paddingLeft:16,paddingRight:16,borderRadius:10}}>
                 <View  style={{borderBottomWidth:1,borderColor:'#dfdfdf',paddingBottom:10}}>
-                <TouchableOpacity onPress={()=>this._showText()}>
-                    {this.state.showText==false &&
-                    <Text numberOfLines={2}  style={{marginTop:13,fontSize:14,fontWeight:('bold'),color:'#313131'}}>报修内容：<Text style={stylesBody.orderContext}>{this.props.record.matterName}</Text></Text>
-                    }
-                    {this.state.showText==true &&
-                    <Text  style={{marginTop:13,fontSize:14,fontWeight:('bold'),color:'#313131'}}>报修内容：<Text style={stylesBody.orderContext}>{this.props.record.matterName}</Text></Text>
-                    }
-                </TouchableOpacity>
+                    <Row>
+                        <TouchableOpacity style={{width:25}}>
+                            <Image style={{marginTop:13,width:20,height:20,paddingRight:5}} source={require("../../image/btn_yy.png")}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{width:ScreenWidth-55}} onPress={()=>this._showText()}>
+                            {this.state.showText==false &&
+                            <Text numberOfLines={1}  style={{marginTop:13,fontSize:14,fontWeight:('bold'),color:'#313131'}}>报修内容：<Text style={stylesBody.orderContext}>{this.props.record.matterName}</Text></Text>
+                            }
+                            {this.state.showText==true &&
+                            <Text  style={{marginTop:13,fontSize:14,fontWeight:('bold'),color:'#313131'}}>报修内容：<Text style={stylesBody.orderContext}>{this.props.record.matterName}</Text></Text>
+                            }
+                        </TouchableOpacity>
+                    </Row>
                 </View>
                 <Content style={{paddingTop:12}}>
                 <TouchableOpacity onPress={()=>this._details()}>
