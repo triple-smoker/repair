@@ -63,14 +63,23 @@ class OrderEva extends Component {
     }
     _change(btnum){
         this.setState({ btColor:btnum});
+        var bttArrayBmy = this.state.bttArrayBmy;
+        var bttArrayYb = this.state.bttArrayYb;
+        var bttArrayMy = this.state.bttArrayMy;
         if(btnum==1){
-                    this.setState({btTitle:'（请选择不满意的地方）'});
+                bttArrayYb = this.clearShow(bttArrayYb);
+                bttArrayMy = this.clearShow(bttArrayMy);
+                this.setState({btTitle:'（请选择不满意的地方）',bttArrayYb:bttArrayYb,bttArrayMy:bttArrayMy});
         }
         if(btnum==2){
-                    this.setState({btTitle:'（请选择您觉得一般的地方）'});
+                bttArrayBmy = this.clearShow(bttArrayBmy);
+                bttArrayMy = this.clearShow(bttArrayMy);
+                this.setState({btTitle:'（请选择您觉得一般的地方）',bttArrayBmy:bttArrayBmy,bttArrayMy:bttArrayMy});
         }
         if(btnum==3){
-                    this.setState({btTitle:'（请选择满意的地方）'});
+                bttArrayYb = this.clearShow(bttArrayYb);
+                bttArrayBmy = this.clearShow(bttArrayBmy);
+                this.setState({btTitle:'（请选择满意的地方）',bttArrayYb:bttArrayYb,bttArrayBmy:bttArrayBmy});
         }
     }
 
@@ -98,17 +107,11 @@ class OrderEva extends Component {
                };
         });
         if(bmy==1){
-        bttArrayYb = this.clearShow(bttArrayYb);
-        bttArrayMy = this.clearShow(bttArrayMy);
-        this.setState({bttArrayBmy:bttArrayBmy,bttArrayYb:bttArrayYb,bttArrayMy:bttArrayMy})}
+        this.setState({bttArrayBmy:bttArrayBmy})}
         if(yb==1){
-        bttArrayBmy = this.clearShow(bttArrayBmy);
-        bttArrayMy = this.clearShow(bttArrayMy);
-        this.setState({bttArrayYb:bttArrayYb,bttArrayBmy:bttArrayBmy,bttArrayMy:bttArrayMy})}
+        this.setState({bttArrayYb:bttArrayYb})}
         if(my==1){
-        bttArrayBmy = this.clearShow(bttArrayBmy);
-        bttArrayYb = this.clearShow(bttArrayYb);
-        this.setState({bttArrayMy:bttArrayMy,bttArrayYb:bttArrayYb,bttArrayBmy:bttArrayBmy})}
+        this.setState({bttArrayMy:bttArrayMy})}
     }
     clearShow(arrayCause){
         arrayCause.forEach(function(causeItem){
