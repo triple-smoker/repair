@@ -7,7 +7,7 @@ import Notice from '../components/Notice';
 import SoundRecoding from '../components/SoundRecoding';
 import MyFooter from '../components/MyFooter';
 
-import {TextInput ,Text,Image, View} from "react-native";
+import {TextInput ,Image, View} from "react-native";
 
 export default class RepairScreen extends React.Component {
 
@@ -111,6 +111,9 @@ export default class RepairScreen extends React.Component {
         })
     }
     imageCallback(images){
+        console.log('sakpufhweuthgeuhbackugv')
+        console.log(images);
+
         this.setState({
             images : images
         })

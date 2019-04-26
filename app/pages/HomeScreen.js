@@ -1,33 +1,47 @@
 import React from 'react';
-import {View, Button, Linking} from "react-native";
+import {View, Button, Linking, StyleSheet, Image, Text, TouchableOpacity} from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons';
 import { Container, } from 'native-base';
 import axios from 'axios';
+import { NativeModules } from 'react-native';
+import Video from 'react-native-video';
+import ImagePickers from "react-native-image-picker";
+import ImagePicker from 'react-native-image-picker';
+
+// var ImagePicker = NativeModules.ImageCropPicker;
 
 export default class HomeScreen extends React.Component {
 
 
 
+
+
     constructor(props){
         super(props);
+        this.state = {
+            image: null,
+            video: null
+        };
+        // console.log("123456");
         //http://10.145.196.107:8082/api/repair/repRepairInfo/dept/list?page=1&limit=5
-        axios({
-            method: 'GET',
-            url: 'http://10.145.196.107:8082/api/repair/repRepairInfo/dept/list',
-            data: {
-                page: 1,
-                limit: 5
-            },
-        }).then(
-            (response) => {
-                console.log('----------------');
-                console.log(response);
-            }
-        ).catch((error)=> {
-            console.log('================');
-            console.log(error)
-        });
+        // axios({
+        //     method: 'GET',
+        //     url: 'http://10.145.196.107:8082/api/repair/repRepairInfo/dept/list',
+        //     data: {
+        //         page: 1,
+        //         limit: 5
+        //     },
+        // }).then(
+        //     (response) => {
+        //         console.log('----------------');
+        //
+        //         console.log(response);
+        //     }
+        // ).catch((error)=> {
+        //     console.log('================');
+        //     console.log(error)
+        // });
     }
 
 
@@ -44,6 +58,52 @@ export default class HomeScreen extends React.Component {
         )
     };
 
+    pickSingleWithCamera(cropping, mediaType='photo') {
+        // ImagePicker.openCamera({
+        //     cropping: cropping,
+        //     width: 500,
+        //     height: 500,
+        //     includeExif: true,
+        //     mediaType,
+        // }).then(image => {
+        //     console.log('received image', image);
+        //     this.setState({
+        //         video: {uri: image.path, width: image.width, height: image.height, mime: image.mime},
+        //         images: null
+        //     });
+        // }).catch(e => alert(e));
+
+
+        const options = {
+            mediaType: 'video',
+            videoQuality: 'medium',
+            durationLimit: 30
+        };
+        ImagePicker.launchCamera(options, (response) => {
+            console.log('Response = ', response);
+
+            this.setState({
+                        video: {uri: response.path},
+                        images: null
+                    });
+
+            // let images = [];
+            // images.push(response);
+            // this.appendImage(images);
+            if (response.didCancel) {
+                console.log('User cancelled video picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+                this.setState({
+                    videoSource: response.uri,
+                });
+            }
+        });
+
+    }
 
     //删除
     _deleteData(){
@@ -86,7 +146,9 @@ export default class HomeScreen extends React.Component {
                         />
                         <Button
                             title="拨打电话"
-                            onPress={() => Linking.openURL(`tel:${`10086`}`)}
+                            onPress={() => thumbnail.get.get('../image/broadchurch.mp4').then((result) => {
+                                console.log(result.path); // thumbnail path
+                            })}
                         />
                         <Button
                             title="清空缓存"
@@ -96,7 +158,38 @@ export default class HomeScreen extends React.Component {
                             title="搜索"
                             onPress={() => this.props.navigation.navigate('OrderSearch')}
                         />
+                        <Button
+                            title="搜索"
+                            onPress={() => alert(this.state.woDe)}
+                        />
                     </View>
+
+                    <TouchableOpacity onPress={() => this.pickSingleWithCamera(false, mediaType='video')} style={styles.button}>
+                        <Text style={styles.text}>Select Single Video With Camera</Text>
+                    </TouchableOpacity>
+
+
+                    {this.state.video ?
+
+                    <View style={{height: 300, width: 300}}>
+                        <Video source={{uri: this.state.video.uri}}
+                               style={{position: 'absolute',
+                                   top: 0,
+                                   left: 0,
+                                   bottom: 0,
+                                   right: 0
+                               }}
+                               rate={1}
+                               paused={true}
+                               volume={1}
+                               muted={false}
+                               resizeMode={'cover'}
+                               onError={e =>  console.log(e + 'dfref')}
+                               onLoad={load => console.log(load)}
+                               repeat={true} />
+                    </View>
+                        : null}
+
 
                 </Container>
 
@@ -106,3 +199,12 @@ export default class HomeScreen extends React.Component {
         );
     }
 }
+const styles = StyleSheet.create({
+    backgroundVideo: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+    },
+});

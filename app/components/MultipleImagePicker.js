@@ -3,6 +3,8 @@ import {View, TouchableOpacity, Image, TouchableNativeFeedback, Text, Alert, Sty
 import {ListItem} from "native-base";
 import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
+import ImagePickers from 'react-native-image-picker';
+import Video from 'react-native-video';
 
 class MultipleImagePicker extends Component {
 
@@ -12,6 +14,40 @@ class MultipleImagePicker extends Component {
             images: [],
             visibleModal: false
         }
+    }
+
+    /**
+     * 拍摄视频，限时30秒
+     */
+    selectVideoTapped() {
+        const options = {
+            mediaType: 'video',
+            videoQuality: 'medium',
+            durationLimit: 30
+        };
+
+        ImagePickers.launchCamera(options, (response) => {
+            response.type = 'video';
+
+            let image = {
+                path : response.path,
+                type : 'video',
+            }
+            let images = [];
+            images.push(image);
+            this.appendImage(images);
+            if (response.didCancel) {
+                console.log('User cancelled video picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+                this.setState({
+                    videoSource: response.uri,
+                });
+            }
+        });
     }
 
     /**
@@ -29,8 +65,14 @@ class MultipleImagePicker extends Component {
         ImagePicker.openCamera({
         }).then(image => {
             console.log('received image', image);
+
+            let im = {
+                path : image.path,
+                type : 'image',
+            }
+
             let images = [];
-            images.push(image);
+            images.push(im);
             this.appendImage(images);
             this.setState({ visibleModal: false })
         }).catch(e => alert(e));
@@ -45,12 +87,11 @@ class MultipleImagePicker extends Component {
 
         let imagesList = this.state.images;
         let num = imagesList.length ;
-
         for(let i in images){
             console.log( parseInt(num) + parseInt(i));
             if( parseInt(num) +parseInt(i) <6){
                 let image = images[i];
-                imagesList.push({index: num+i, uri: image.path, width: image.width, height: image.height, mime: image.mime}) ;
+                imagesList.push({index: num+i, uri: image.path,type: image.type}) ;
             }
         }
         this.setState({
@@ -82,16 +123,15 @@ class MultipleImagePicker extends Component {
         this.setState({
             images : imagesList
         });
-        this.uploadImages();
+        // this.uploadImages();
+        this.props.imageCallback(imagesList);
     }
 
     /**
      * 文件系统选择图片
      */
     pickMultiple() {
-        // let that = this;
         ImagePicker.openPicker({
-            maxFiles: 6,
             multiple: true,
             waitAnimationEnd: false,
             includeExif: true,
@@ -110,6 +150,9 @@ class MultipleImagePicker extends Component {
      * @returns {*}
      */
     uploadImages(){
+
+        console.log(this.state.images);
+
         this.props.imageCallback(this.state.images);
     }
 
@@ -119,21 +162,17 @@ class MultipleImagePicker extends Component {
             <View style={this.props.style}>
                 <View style={{flexWrap: 'wrap',flexDirection: 'row',}}>
                     {this.props.images ? this.props.images.map((image) =>
-                                <PreImage key={image.index}
-                                          readOnly = {readOnly}
-                                  deleteImage={()=> {this.deleteImage(image.index)}}
-                                  uri={image.uri} />) : null
+                                <PreView
+                                    key={image.index}
+                                    readOnly = {readOnly}
+                                    deleteImage={()=> {this.deleteImage(image.index)}}
+                                    uri={image.uri}
+                                    type={image.type}/>) : null
                     }
                     {readOnly ? null : <HavaAdd images={this.props.images} onPress = {()=> this.toggleModal()} />}
                 </View>
 
-                <Modal isVisible={this.state.visibleModal}>
-                    <View style={styles.modalContent}>
-                        <RenderModal item='相册' onPress={() => this.pickMultiple()} />
-                        <RenderModal item='拍照' onPress={() => this.pickSingleWithCamera()} />
-                        <RenderModal item="取消" onPress={() => this.toggleModal()} />
-                    </View>
-                </Modal>
+
 
             </View>
         );
@@ -141,38 +180,17 @@ class MultipleImagePicker extends Component {
 
 }
 
-const HavaAdd = (props) => {
-    let num = props.images.length;
-    if(num<6){
-        const s = {
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: 130,
-            height: 130,
-        };
-        const style = {
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: 120,
-            height: 120,
-            backgroundColor: '#EEEEEE',
-        };
-        const sle = {
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: 50,
-            height: 50,
-        };
-        return (
-            <View style={s}   >
-                <View style={style}>
-                    <TouchableOpacity onPress={() => props.onPress()}>
-                        <Image style={sle} source={require('../image/btn_xzbx.png')} />
-                    </TouchableOpacity>
-                </View>
+
+const Rm = () => {
+    return(
+        <Modal onBackdropPress={() => this.toggleModal()} isVisible={this.state.visibleModal}>
+            <View style={styles.modalContent}>
+                <RenderModal item='相册' onPress={() => this.pickMultiple()} />
+                <RenderModal item='拍照' onPress={() => this.pickSingleWithCamera()} />
+                <RenderModal item="摄像" onPress={() => this.selectVideoTapped()} />
             </View>
-        )
-    }
+        </Modal>
+    );
 }
 
 const RenderModal = (props) => {
@@ -186,44 +204,73 @@ const RenderModal = (props) => {
 };
 
 
-const PreImage = (props) => {
+const PreVideo  = (video) => {
+
+    console.log('========================');
+    console.log(video);
+
+    return (
+        <Video source={{uri: video.uri}}
+               style={{position: 'absolute',
+                   top: 0,
+                   left: 0,
+                   bottom: 0,
+                   right: 0
+               }}
+               rate={1}
+               paused={true}
+               volume={1}
+               muted={false}
+               resizeMode={'cover'}
+               onError={e => console.log(e)}
+               onLoad={load => console.log(load)}
+               repeat={true} />
+    );
+}
+
+const PreView = (props) => {
     let uri = 'https://timgsa.baidu.com/timg?image&quality=80&size=b10000_10000&sec=1553929315&di=9a1db93ed5aecc160de77b1eb8e240d8&src=http://bpic.588ku.com/element_origin_min_pic/00/98/05/4456f33204e5f1f.jpg'
-    const style = {
+    const readOnly = props.readOnly;
+    //
+    // console.log(props.type);
+    // console.log(props.uri);
+
+    return (
+        <View key={props.index} style={styles.pre}>
+            {readOnly ? null : (
+                <TouchableOpacity  style={styles.iconStyle} onPress={props.deleteImage}>
+                    <Image style={styles.iconStyle} source={{uri: uri}} />
+                </TouchableOpacity>
+            )}
+
+            {props.type === 'video' ?
+                <PreVideo uri={props.uri}/> :
+                <Image style={styles.imageStyle} source={{uri: props.uri}} />
+            }
+        </View>
+    );
+};
+
+
+const styles = StyleSheet.create({
+    imageStyle : {
         width: 120,
         height: 120,
-    };
-    const s = {
+    },
+    pre : {
         justifyContent: 'center',
         alignItems: 'center',
         width: 130,
         height: 130,
-    };
-
-    const icon = {
+    },
+    iconStyle : {
         position: 'absolute',
         width: 25,
         height: 25,
         right: 5,
         top: 5,
         zIndex: 1,
-    };
-
-    const readOnly = props.readOnly;
-
-    return (
-        <View key={props.index} style={s}>
-
-            {readOnly ? null : (
-                <TouchableOpacity  style={icon} onPress={props.deleteImage}>
-                    <Image style={icon} source={{uri: uri}} />
-                </TouchableOpacity>
-            )}
-                <Image style={style} source={{uri: props.uri}} />
-        </View>
-        );
-};
-const styles = StyleSheet.create({
-
+    },
     modalContent: {
         backgroundColor: "white",
         padding: 22,
@@ -239,6 +286,37 @@ const styles = StyleSheet.create({
 
 });
 
+const HavaAdd = (props) => {
+    let num = props.images.length;
+    if(num<6){
+        const style = {
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: 120,
+            height: 120,
+            backgroundColor: '#EEEEEE',
+        };
+        const sle = {
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: 50,
+            height: 50,
+        };
+        return (
+            <View style={styles.pre} >
+                <View style={style}>
+                    <TouchableOpacity onPress={() => props.onPress()}>
+                        <Image style={sle} source={require('../image/btn_xzbx.png')} />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+    }else {
+        return null;
+    }
 
+
+
+};
 export default MultipleImagePicker;
 
