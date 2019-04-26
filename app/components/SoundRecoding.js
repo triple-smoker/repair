@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {View,Text, Image, Platform, TouchableNativeFeedback} from 'react-native';
+import Modal from "react-native-modal";
 import {AudioRecorder, AudioUtils} from "react-native-audio";
 import Sound from "react-native-sound";
 
@@ -13,6 +14,7 @@ class SoundRecoding extends Component {
 		finished: false,
 		audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',
 		hasPermission: undefined,
+		visibleModal: false
 	};
 	prepareRecordingPath(audioPath){
 		AudioRecorder.prepareRecordingAtPath(audioPath, {
@@ -76,7 +78,7 @@ class SoundRecoding extends Component {
 	 */
 	async play() {
 		if (this.state.recording) {
-			await this._stop();
+			await this.stop();
 		}
 
 		setTimeout(() => {
@@ -142,13 +144,16 @@ class SoundRecoding extends Component {
 		console.log(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath} and size of ${fileSize || 0} bytes`);
 	}
 
+	setModalVisible() {
+		this.setState({ visibleModal: !this.state.visibleModal });
+	}
+
 	recordButtom(){
 	    return(
             <TouchableNativeFeedback style={{
                 width: 35,
                 height: 35,}}
-                                onPressIn={() => {this.record()}}
-                                onPressOut={() => {this.stop()}}>
+				onPress={()=> this.setModalVisible()}>
                 <Image
                     style={{
                         width: 35,
@@ -158,6 +163,7 @@ class SoundRecoding extends Component {
             </TouchableNativeFeedback>
         )
     }
+
 
 	render(){
 		return(
@@ -175,12 +181,32 @@ class SoundRecoding extends Component {
                             source={require('../image/os.png')}/>
                         <Text
                             style={{left: 160,top: 7,position: 'absolute',zIndex: 1}}
-                        >16"</Text>
+                        >{this.state.currentTime}"</Text>
                         <Image
                             style={{width: 190, height: 35}}
                             source={require('../image/df1.png')}/>
                     </View>
 				</TouchableNativeFeedback>
+
+				<Modal
+					style={{
+						top: 170,
+						alignItems: 'center',}}
+					isVisible={this.state.visibleModal}
+					swipeDirection="down"
+					onBackdropPress={() => this.setModalVisible()}>
+					<TouchableNativeFeedback
+						onPressIn={() => {this.record()}}
+						onPressOut={() => {this.stop()}}>
+						<Image
+							style={{
+								width:'75%',
+								resizeMode:'contain'
+							}}
+							source={require('../image/azsh.png')}/>
+					</TouchableNativeFeedback>
+				</Modal>
+
 			</View>
 		);
 	}

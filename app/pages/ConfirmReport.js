@@ -5,6 +5,7 @@ import Reporter from '../components/Reporter';
 import MyFooter from '../components/MyFooter';
 import MultipleImagePicker from "../components/MultipleImagePicker";
 import axios from 'axios';
+import SoundRecoding from '../components/SoundRecoding';
 
 class ConfirmReport extends Component {
 
@@ -94,6 +95,7 @@ class ConfirmReport extends Component {
                                value={this.state.desc}
                                editable = {false}
                     />
+                    <SoundRecoding readOnly={true}/>
                         <Reporter
                             name={this.state.report.reporter}
                             phone={this.state.report.phone}
