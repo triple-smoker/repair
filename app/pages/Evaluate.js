@@ -51,6 +51,7 @@ class OrderEvaluate extends Component {//主页面
         updateTime:1552362814000
        }
        this.state = {
+        thisRecord:thisRecord,
         dataArrayA : [  { title: "概况", content: <OrderItem type='4' record={thisRecord}/>}],
         dataArrayB : [  { title: "维修事项", content: <OrderPerson/> }],
         dataArrayC : [  { title: "物料", content: <OrderWuZi/> }],
@@ -116,7 +117,7 @@ class OrderEvaluate extends Component {//主页面
                   expanded={true}
                   renderHeader={this._renderHeader}
                   renderContent={this._renderContent}
-                  expanded={0}
+                  expanded={(this.state.thisRecord.status==='8')?true:0}
                 />
                 <Accordion
                   dataArray={this.state.dataArrayC}
@@ -126,16 +127,20 @@ class OrderEvaluate extends Component {//主页面
                   renderContent={this._renderContent}
                   expanded={0}
                 />
-                <Accordion
-                  dataArray={this.state.dataArrayD}
-                  animation={true}
-                  expanded={true}
-                  renderHeader={this._renderHeader}
-                  renderContent={this._renderContent}
-                  expanded={0}
-                />
+                {this.state.thisRecord.status==='8'|| this.state.thisRecord.status==='9' &&
+                    <Accordion
+                      dataArray={this.state.dataArrayD}
+                      animation={true}
+                      expanded={true}
+                      renderHeader={this._renderHeader}
+                      renderContent={this._renderContent}
+                      expanded={0}
+                    />
+                }
             </Content>
-            <MySub/>
+            {this.state.thisRecord.status==='8' &&
+                <MySub/>
+            }
         </Container>
     );
     }
