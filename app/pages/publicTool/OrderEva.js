@@ -9,7 +9,9 @@ import {
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import LinearGradient from 'react-native-linear-gradient';
-import { Content,Row,Col,Text,Button,Textarea } from 'native-base';
+import { Content,Row,Col,Text,List,ListItem,Button,Item,Textarea } from 'native-base';
+import axios from 'axios';
+import CauseBtn from './CauseBtn';
 
 
 let ScreenWidth = Dimensions.get('window').width;
@@ -19,93 +21,128 @@ class OrderEva extends Component {
        this.state = {
         btTitle:'',
         btColor: 0,
-        bttTextA:'',
-        bttTextB:'',
-        bttTextC:'',
-        bttTextD:'',
-        bttTextE:'',
-        bttTextF:'',
-        bttColorA:true,
-        bttColorB:true,
-        bttColorC:true,
-        bttColorD:true,
-        bttColorE:true,
-        bttColorF:true,
+        bttArray:[],
+        bttArrayBmy:[],
+        bttArrayYb:[],
+        bttArrayMy:[],
        };
+//       获取评价选项
+       var   url="http://10.145.196.107:8082/api/admin/sysCause/list/REP_EVALUATE";
+           axios({
+               method: 'GET',
+               url: url,
+               data: null,
+           }).then(
+               (response) => {
+                       var cause = response.data.data;
+                       var bttArrayBmy = [];
+                       var bttArrayYb = [];
+                       var bttArrayMy = [];
+
+                       cause.forEach(function(cause){
+                            if(cause.causeType==1){
+                                let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
+                            bttArrayBmy.push(newCause)};
+                            if(cause.causeType==2){
+                                let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
+                            bttArrayYb.push(newCause)};
+                            if(cause.causeType==3){
+                                let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
+                            bttArrayMy.push(newCause)};
+                       });
+
+                       this.setState({
+                              bttArrayBmy : bttArrayBmy,
+                              bttArrayYb : bttArrayYb,
+                              bttArrayMy : bttArrayMy,
+                       })
+               }
+           ).catch((error)=> {
+               console.log(error)
+           });
     }
     _change(btnum){
-        let bttTextA='';
-        let bttTextB='';
-        let bttTextC='';
-        let bttTextD='';
-        let bttTextE='';
-        let bttTextF='';
         this.setState({ btColor:btnum});
+        var bttArrayBmy = this.state.bttArrayBmy;
+        var bttArrayYb = this.state.bttArrayYb;
+        var bttArrayMy = this.state.bttArrayMy;
         if(btnum==1){
-            this.setState({btTitle:'（请选择不满意的地方）'});
-            bttTextA='到场太慢';
-            bttTextB='未完全维修';
-            bttTextC='态度差';
-            bttTextD='维修后现场很乱';
-            bttTextE='修好后不通知';
-            bttTextF='沟通困难';
-        };
+                bttArrayYb = this.clearShow(bttArrayYb);
+                bttArrayMy = this.clearShow(bttArrayMy);
+                this.setState({btTitle:'（请选择不满意的地方）',bttArrayYb:bttArrayYb,bttArrayMy:bttArrayMy});
+        }
         if(btnum==2){
-            this.setState({btTitle:'（请选择您觉得一般的地方）'});
-            bttTextA='速度一般';
-            bttTextB='礼貌一般';
-            bttTextC='维修一般';
-            bttTextD='穿戴一般';
-            bttTextE='水平一般';
-            bttTextF='仪表一般';
-        };
+                bttArrayBmy = this.clearShow(bttArrayBmy);
+                bttArrayMy = this.clearShow(bttArrayMy);
+                this.setState({btTitle:'（请选择您觉得一般的地方）',bttArrayBmy:bttArrayBmy,bttArrayMy:bttArrayMy});
+        }
         if(btnum==3){
-            this.setState({btTitle:'（请选择满意的地方）'});
-            bttTextA='快速准时';
-            bttTextB='礼貌热情';
-            bttTextC='维修完好';
-            bttTextD='穿戴工装';
-            bttTextE='风雨无阻';
-            bttTextF='仪表整洁';
-        };
-        this.setState({
-            bttTextA:bttTextA,
-            bttTextB:bttTextB,
-            bttTextC:bttTextC,
-            bttTextD:bttTextD,
-            bttTextE:bttTextE,
-            bttTextF:bttTextF,
-            bttColorA:true,
-            bttColorB:true,
-            bttColorC:true,
-            bttColorD:true,
-            bttColorE:true,
-            bttColorF:true,
-        })
+                bttArrayYb = this.clearShow(bttArrayYb);
+                bttArrayBmy = this.clearShow(bttArrayBmy);
+                this.setState({btTitle:'（请选择满意的地方）',bttArrayYb:bttArrayYb,bttArrayBmy:bttArrayBmy});
+        }
     }
-    _changebtA(){
-        this.setState({ bttColorA: !this.state.bttColorA});
+
+    changeCause(cause){
+        var bttArrayBmy = this.state.bttArrayBmy;
+        var bttArrayYb = this.state.bttArrayYb;
+        var bttArrayMy = this.state.bttArrayMy;
+        var bmy = 0; var yb = 0 ;var my = 0;
+        bttArrayBmy.forEach(function(causeItem){
+            if(causeItem.causeId===cause.causeId){
+               causeItem.showType = !causeItem.showType;
+               bmy=1;
+               };
+        });
+        bttArrayYb.forEach(function(causeItem){
+            if(causeItem.causeId===cause.causeId){
+               causeItem.showType = !causeItem.showType;
+               yb=1;
+               };
+        });
+        bttArrayMy.forEach(function(causeItem){
+            if(causeItem.causeId===cause.causeId){
+               causeItem.showType = !causeItem.showType;
+               my=1;
+               };
+        });
+        if(bmy==1){
+        this.setState({bttArrayBmy:bttArrayBmy})}
+        if(yb==1){
+        this.setState({bttArrayYb:bttArrayYb})}
+        if(my==1){
+        this.setState({bttArrayMy:bttArrayMy})}
     }
-    _changebtB(){
-        this.setState({ bttColorB: !this.state.bttColorB});
+    clearShow(arrayCause){
+        arrayCause.forEach(function(causeItem){
+             causeItem.showType = false;
+         });
+         return arrayCause;
     }
-    _changebtC(){
-        this.setState({ bttColorC: !this.state.bttColorC});
+    getCause(){
+        var causeList = [];
+        if(this.state.btColor===1){
+             causeList= this.state.bttArrayBmy;
+        }
+        if(this.state.btColor===2){
+             causeList = this.state.bttArrayYb;
+        }
+        if(this.state.btColor===3){
+             causeList = this.state.bttArrayMy;
+        }
+        let listItems =(  causeList === null ? null : causeList.map((cause, index) =>
+            <CauseBtn key={index} cause={cause} changeCause={(cause)=>this.changeCause(cause)}/>
+        ))
+        return listItems;
     }
-    _changebtD(){
-        this.setState({ bttColorD: !this.state.bttColorD});
+    changeCauseId(causeId){
+        this.setState({[causeId]:!this.state.causeId})
     }
-    _changebtE(){
-        this.setState({ bttColorE: !this.state.bttColorE});
-    }
-    _changebtF(){
-        this.setState({ bttColorF: !this.state.bttColorF});
-    }
+
   render() {
     return (
         <Content>
             <Row>
-
                 <Swiper height={240}
                   onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
                   dot={<View style={{backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
@@ -123,7 +160,7 @@ class OrderEva extends Component {
                     <Row>
                         <Image
                             style={{width: 60,height:60}}
-                            source={require('../../image/user_wx.png')}
+                            source={require('../../resource/assets/user_wx.png')}
                         />
                         <Col style={{paddingLeft:12,paddingTop:5}}>
                             <Text style={{color:'#252525'}}>
@@ -159,7 +196,7 @@ class OrderEva extends Component {
 
                 </LinearGradient>
              </TouchableHighlight>
-             <TouchableHighlight
+            <TouchableHighlight
                 style={{width:'30%'}}
                 underlayColor="#fff"
                       onPress={()=>this._change(2)}>
@@ -172,11 +209,11 @@ class OrderEva extends Component {
                 >
                     <Image style={{width:20,height:20, marginRight: 10}}
                            source={(this.state.btColor==2) ? require('../../image/ico_yb_pre.png'):require('../../image/ico_yb_nor.png')}/>
-                    <Text style={{color:(this.state.btColor==2) ? '#fff':'#999'}}>不满意</Text>
+                    <Text style={{color:(this.state.btColor==2) ? '#fff':'#999'}}>一般</Text>
 
                 </LinearGradient>
              </TouchableHighlight>
-             <TouchableHighlight
+            <TouchableHighlight
                 style={{width:'30%'}}
                 underlayColor="#fff"
                       onPress={()=>this._change(3)}>
@@ -189,7 +226,7 @@ class OrderEva extends Component {
                 >
                     <Image style={{width:20,height:20, marginRight: 10}}
                            source={(this.state.btColor==3) ? require('../../image/ico_my_pre.png'):require('../../image/ico_my_nor.png')}/>
-                    <Text style={{color:(this.state.btColor==3) ? '#fff':'#999'}}>不满意</Text>
+                    <Text style={{color:(this.state.btColor==3) ? '#fff':'#999'}}>满意</Text>
 
                 </LinearGradient>
              </TouchableHighlight>
@@ -198,19 +235,9 @@ class OrderEva extends Component {
                 <Text style={{color:'#a7a7a7',fontSize:12}}>{this.state.btTitle}</Text>
             </Row>
             {this.state.btColor!=0 &&
-            <Col style={{justifyContent: "space-between",padding:15}}>
-                {/*<Row style={{justifyContent: "space-between"}}></Row>*/}
-                <Row style={{justifyContent: "space-between"}}>
-                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorA==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorA==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtA()}><Text style={{fontSize:12,color:(this.state.bttColorA==true) ? '#343434':'#369ced'}}>{this.state.bttTextA}</Text></Button>
-                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorB==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorB==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtB()}><Text style={{fontSize:12,color:(this.state.bttColorB==true) ? '#343434':'#369ced'}}>{this.state.bttTextB}</Text></Button>
-                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorC==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorC==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtC()}><Text style={{fontSize:12,color:(this.state.bttColorC==true) ? '#343434':'#369ced'}}>{this.state.bttTextC}</Text></Button>
-                </Row>
-                <Row style={{justifyContent: "space-between",paddingTop:17}}>
-                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorD==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorD==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtD()}><Text style={{fontSize:12,color:(this.state.bttColorD==true) ? '#343434':'#369ced'}}>{this.state.bttTextD}</Text></Button>
-                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorE==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorE==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtE()}><Text style={{fontSize:12,color:(this.state.bttColorE==true) ? '#343434':'#369ced'}}>{this.state.bttTextE}</Text></Button>
-                  <Button bordered block Button style={{width:'30%',height:35,borderRadius:10,backgroundColor:(this.state.bttColorF==true) ? '#fff':'#e1f0fd',borderColor:(this.state.bttColorF==true) ? '#c2c2c2':'#50a9ef'}} onPress={()=>this._changebtF()}><Text style={{fontSize:12,color:(this.state.bttColorF==true) ? '#343434':'#369ced'}}>{this.state.bttTextF}</Text></Button>
-                </Row>
-            </Col>
+            <View style={{flexDirection:'row',flexWrap:'wrap',paddingLeft:17,paddingBottom:13}}>
+                   {this.getCause()}
+            </View>
             }
             <Row style={{justifyContent: "center"}}>
                     <Textarea bordered rowSpan={5} maxLength={150}  placeholder="亲，请输入您的评价和建议..."  style={{width:ScreenWidth-30,height:90,borderRadius:10}} />
@@ -218,6 +245,18 @@ class OrderEva extends Component {
         </Content>
     );
   }
+}
+//图片轮播
+class ImageItem extends Component{
+    render(){
+        return (
+            <View style={stylesImage.slide}>
+                <Image resizeMode='stretch' style={stylesImage.image} source={{uri:this.props.imageurl}} />
+                <View style={{position: 'absolute',left:5,top:10,backgroundColor:'#545658',height:26,width:66}}><Text style={{color:'#fff',paddingLeft:5}}>维修后</Text></View>
+                <View style={{position: 'absolute',left:ScreenWidth-60,top:210,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
+            </View>
+        )
+    }
 }
 
 const stylesImage =StyleSheet.create({
@@ -235,17 +274,7 @@ const stylesImage =StyleSheet.create({
   }
 })
 
-class ImageItem extends Component{
-    render(){
-        return (
-            <View style={stylesImage.slide}>
-                <Image resizeMode='stretch' style={stylesImage.image} source={{uri:this.props.imageurl}} />
-                <View style={{position: 'absolute',left:5,top:10,backgroundColor:'#545658',height:26,width:66}}><Text style={{color:'#fff',paddingLeft:5}}>维修后</Text></View>
-                <View style={{position: 'absolute',left:ScreenWidth-60,top:210,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
-            </View>
-        )
-    }
-}
+
 
 
 
