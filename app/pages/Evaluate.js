@@ -3,6 +3,7 @@ import {
     StyleSheet,
     Dimensions,
     Image,
+    Alert
 } from 'react-native';
 import { Container, Content,
     Header,Left,Button,Body,Title,Right,Icon,
@@ -11,6 +12,7 @@ import OrderItem from './publicTool/OrderItem';
 import OrderWuZi from './publicTool/OrderWuZi';
 import OrderEva from './publicTool/OrderEva';
 import OrderPerson from './publicTool/OrderPerson';
+import axios from 'axios';
 
 
 
@@ -52,10 +54,12 @@ class OrderEvaluate extends Component {//主页面
        }
        this.state = {
         thisRecord:thisRecord,
+        causeIdList:[],
+        causeRemark:[],
         dataArrayA : [  { title: "概况", content: <OrderItem type='4' record={thisRecord}/>}],
         dataArrayB : [  { title: "维修事项", content: <OrderPerson/> }],
         dataArrayC : [  { title: "物料", content: <OrderWuZi/> }],
-        dataArrayD : [  { title: "评价", content: <OrderEva/> }],
+        dataArrayD : [  { title: "评价", content: <OrderEva setRemark={(remark)=>this.setRemark(remark)} chCause={(cause)=>this.chCause(cause)} clearCause={()=>this.clearCause()}/> }],
        };
     }
 
@@ -72,6 +76,21 @@ class OrderEvaluate extends Component {//主页面
             textAlign: 'center'
         }
     };
+
+    //清空满意不满意原因
+    clearCause(){
+        this.setState({causeIdList:[]})
+    }
+    //满意不满意原因
+    chCause(cause){
+        var causeList = this.state.causeIdList;
+        causeList.push(cause.causeId);
+        this.setState({causeIdList:causeList})
+    }
+    //评价原因
+    setRemark(remark){
+        this.setState({causeRemark:remark});
+    }
 
     _renderHeader(item, expanded) {
     return (
@@ -127,7 +146,7 @@ class OrderEvaluate extends Component {//主页面
                   renderContent={this._renderContent}
                   expanded={0}
                 />
-                {this.state.thisRecord.status==='8'|| this.state.thisRecord.status==='9' &&
+                {(this.state.thisRecord.status==='8'|| this.state.thisRecord.status==='9') &&
                     <Accordion
                       dataArray={this.state.dataArrayD}
                       animation={true}
@@ -139,7 +158,7 @@ class OrderEvaluate extends Component {//主页面
                 }
             </Content>
             {this.state.thisRecord.status==='8' &&
-                <MySub/>
+                <MySub repairId={this.state.thisRecord.repairId} remark={this.state.causeRemark} causeIds={this.state.causeIdList}/>
             }
         </Container>
     );
@@ -167,11 +186,33 @@ class MyHeader extends Component {//head模块
 
 
 class MySub extends Component {//提交按钮模块
+
+    submitEvaluate(repairId,remark,causeIds){
+       var   url="http://10.145.196.107:8082/api/repair/repair/evaluate";
+       var data = {
+            repairId:repairId,
+            remark:remark,
+            causeIds:causeIds
+       };
+           axios({
+               method: 'POST',
+               url: url,
+               data: data,
+           }).then(
+               (response) => {
+                      Alert.alert("提交成功");
+               }
+           ).catch((error)=> {
+               console.log(error)
+           });
+    }
+
+
   render() {
     return (
         <Footer style={{height:50,backgroundColor:'#6dc5c9',marginTop:10}}>
              <Button  style={{width:ScreenWidth,backgroundColor:'#6dc5c9',height:50}}
-
+             onPress={()=>this.submitEvaluate(this.props.repairId,this.props.remark,this.props.causeIds)}
              >
                 <Text style={{width:ScreenWidth,color:'#ffffff',fontSize:20,textAlign:'center'}}>提交</Text>
              </Button>

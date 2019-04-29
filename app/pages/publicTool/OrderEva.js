@@ -21,6 +21,7 @@ class OrderEva extends Component {
        this.state = {
         btTitle:'',
         btColor: 0,
+        reMark:'',
         bttArray:[],
         bttArrayBmy:[],
         bttArrayYb:[],
@@ -119,7 +120,7 @@ class OrderEva extends Component {
          });
          return arrayCause;
     }
-    getCause(){
+    getCause(chCause){
         var causeList = [];
         if(this.state.btColor===1){
              causeList= this.state.bttArrayBmy;
@@ -131,13 +132,11 @@ class OrderEva extends Component {
              causeList = this.state.bttArrayMy;
         }
         let listItems =(  causeList === null ? null : causeList.map((cause, index) =>
-            <CauseBtn key={index} cause={cause} changeCause={(cause)=>this.changeCause(cause)}/>
+            <CauseBtn key={index} cause={cause} chCause={chCause} changeCause={(cause)=>this.changeCause(cause)}/>
         ))
         return listItems;
     }
-    changeCauseId(causeId){
-        this.setState({[causeId]:!this.state.causeId})
-    }
+
 
   render() {
     return (
@@ -182,7 +181,7 @@ class OrderEva extends Component {
             <TouchableHighlight
                 style={{width:'30%'}}
                 underlayColor="#fff"
-                      onPress={()=>this._change(1)}>
+                      onPress={()=>{this._change(1),this.props.clearCause()}}>
                 <LinearGradient
                     colors= {[(this.state.btColor==1) ? '#e9c11a':'#fff',(this.state.btColor==1) ?  '#f1a611':'#fff',(this.state.btColor==1) ?  '#fb8306':'#fff']}
                     start={ {x: 0.3, y:0} }
@@ -199,7 +198,7 @@ class OrderEva extends Component {
             <TouchableHighlight
                 style={{width:'30%'}}
                 underlayColor="#fff"
-                      onPress={()=>this._change(2)}>
+                      onPress={()=>{this._change(2),this.props.clearCause()}}>
                 <LinearGradient
                     colors= {[(this.state.btColor==2) ? '#e9c11a':'#fff',(this.state.btColor==2) ?  '#f1a611':'#fff',(this.state.btColor==2) ?  '#fb8306':'#fff']}
                     start={ {x: 0.3, y:0} }
@@ -216,7 +215,7 @@ class OrderEva extends Component {
             <TouchableHighlight
                 style={{width:'30%'}}
                 underlayColor="#fff"
-                      onPress={()=>this._change(3)}>
+                      onPress={()=>{this._change(3),this.props.clearCause()}}>
                 <LinearGradient
                     colors= {[(this.state.btColor==3) ? '#e9c11a':'#fff',(this.state.btColor==3) ?  '#f1a611':'#fff',(this.state.btColor==3) ?  '#fb8306':'#fff']}
                     start={ {x: 0.3, y:0} }
@@ -236,11 +235,13 @@ class OrderEva extends Component {
             </Row>
             {this.state.btColor!=0 &&
             <View style={{flexDirection:'row',flexWrap:'wrap',paddingLeft:17,paddingBottom:13}}>
-                   {this.getCause()}
+                   {this.getCause(this.props.chCause)}
             </View>
             }
             <Row style={{justifyContent: "center"}}>
-                    <Textarea bordered rowSpan={5} maxLength={150}  placeholder="亲，请输入您的评价和建议..."  style={{width:ScreenWidth-30,height:90,borderRadius:10}} />
+                    <Textarea bordered rowSpan={5} maxLength={150} onChangeText={(remark)=>{this.setState({reMark:remark}),this.props.setRemark(remark)}}  placeholder="亲，请输入您的评价和建议..."  style={{width:ScreenWidth-30,height:90,borderRadius:10}}>
+                        {this.state.reMark}
+                    </Textarea>
             </Row>
         </Content>
     );

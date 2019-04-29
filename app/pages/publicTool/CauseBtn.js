@@ -21,7 +21,7 @@ class CauseBtn extends Component{
     }
     render(){
         return(
-                <Button bordered block Button  style={ (this.props.cause.showType===false)? causeStyle.causeBtn:causeStyle.causeBtnPro} onPress={()=>this.props.changeCause(this.props.cause)}>
+                <Button bordered block Button  style={ (this.props.cause.showType===false)? causeStyle.causeBtn:causeStyle.causeBtnPro} onPress={()=>{this.props.changeCause(this.props.cause),this.props.chCause(this.props.cause)}}>
                     <Text style={{fontSize:12,color:(this.props.cause.showType===false)?'#343434':'#369ced'}}>
                         {this.props.cause.causeCtn}
                     </Text>
