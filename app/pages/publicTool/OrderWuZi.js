@@ -21,7 +21,7 @@ class WuZi extends Component {
         itemList = wuZiList;
 
         let listItems =(  itemList === null ? null : itemList.map((wuZi, index) =>
-            <WuziItem key={index} name={wuZi.materialName} num={wuZi.qty} price={wuZi.total} remark={'螺口：e27；品牌：飞利浦'}/>
+            <WuziItem key={index} name={wuZi.materialName} num={wuZi.qty} price={wuZi.total} remark={'规格：'+wuZi.spec+'；品牌：'+wuZi.brand}/>
         ))
         return listItems;
     }
