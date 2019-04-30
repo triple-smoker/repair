@@ -145,7 +145,24 @@ class OrderSearch extends Component {
         ))
         return listItems;
     }
+//   清理历史纪录
+    clearHistory(){
+            let key = 'searchItemHistory';
+            var reporterList = [];
+            this.setState({reporterList:[]});
+            //json转成字符串
+            let jsonStr = JSON.stringify(reporterList);
 
+            //存储
+            AsyncStorage.setItem(key, jsonStr, function (error) {
+
+                if (error) {
+                    console.log('清除失败')
+                }else {
+                    console.log('清除成功')
+                }
+            })
+    }
 
   render() {
     return (
@@ -161,20 +178,32 @@ class OrderSearch extends Component {
                     </Row>
                     <Button transparent style={{height:50,backgroundColor:'#f8f8f8',borderWidth:0}} onPress={()=>this._setSerachShow(this.state.searchContext)}><Text style={{color:"#252525"}}>搜索</Text></Button>
                 </Row>
-                {this.state.searchType==false &&
-                    <View style={{width:'100%',flexDirection:'row',flexWrap:'wrap'}}>
-                        {this.history()}
+                <Row style={{height:50,paddingTop:20,paddingLeft:20}}>
+                    <Text style={{color:'#919191',fontSize:14}}>
+                        最近搜索
+                    </Text>
+                    <TouchableHighlight  style={{marginLeft:'77%'}} onPress={()=>this.clearHistory()}>
+                        <Image style={{width:15,height:18}}
+                            source={require("../image/ico_del.png")}
+                        />
+                    </TouchableHighlight>
+                </Row>
+                <Content>
                     </View>
-                }
-                {this.state.searchType==true &&
-                    <View style={{width:'100%',flexDirection:'row',flexWrap:'wrap'}}>
-                        <Col>
-                        {this._getOrders()}
-                        {this._setOrderItem()}
-                        </Col>
-                    </View>
-                }
-
+                    {this.state.searchType==false &&
+                        <View style={{width:'100%',flexDirection:'row',flexWrap:'wrap'}}>
+                            {this.history()}
+                        </View>
+                    }
+                    {this.state.searchType==true &&
+                        <View style={{width:'100%',flexDirection:'row',flexWrap:'wrap'}}>
+                            <Col>
+                            {this._getOrders()}
+                            {this._setOrderItem()}
+                            </Col>
+                        </View>
+                    }
+                </Content>
             </Content>
         </Container>
     );
