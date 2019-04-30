@@ -189,7 +189,6 @@ class OrderSearch extends Component {
                     </TouchableHighlight>
                 </Row>
                 <Content>
-                    </View>
                     {this.state.searchType==false &&
                         <View style={{width:'100%',flexDirection:'row',flexWrap:'wrap'}}>
                             {this.history()}
