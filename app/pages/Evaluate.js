@@ -52,15 +52,48 @@ class OrderEvaluate extends Component {//主页面
         telNo:"78888",
         updateTime:1552362814000
        }
+
        this.state = {
         thisRecord:thisRecord,
         causeIdList:[],
         causeRemark:[],
+        personList:[],
+        wuZiList:[],
+        repair:[],
         dataArrayA : [  { title: "概况", content: <OrderItem type='4' record={thisRecord}/>}],
-        dataArrayB : [  { title: "维修事项", content: <OrderPerson/> }],
-        dataArrayC : [  { title: "物料", content: <OrderWuZi/> }],
+//        dataArrayB : [  { title: "维修事项", content: <OrderPerson/> }],
+//        dataArrayC : [  { title: "物料", content: <OrderWuZi wuzi={wuZiList}/> }],
         dataArrayD : [  { title: "评价", content: <OrderEva setRemark={(remark)=>this.setRemark(remark)} chCause={(cause)=>this.chCause(cause)} clearCause={()=>this.clearCause()}/> }],
        };
+
+       var   url="http://47.102.197.221:8188/api/repair/request/detail/1121506709878874114";
+       var data = thisRecord.repairId;
+           axios({
+               method: 'GET',
+               url: url,
+               data: null,
+               headers:{
+                    'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                    'rcId':'1055390940066893827',
+                    'Authorization':'e0b9843a-30e8-4043-ba31-41bed590ca8e',
+               }
+           }).then(
+               (response) => {
+                    var repair =  response.data.data;
+                    this.setState({
+                        repair : repair,
+                        wuZiList : repair.materialList,
+                        personList : repair.itemPersonList
+                    })
+               }
+           ).catch((error)=> {
+               console.log(error)
+           });
+
+
+    }
+    getWuZiList(){
+        return this.state.wuZiList;
     }
 
     static navigationOptions = {
@@ -131,7 +164,7 @@ class OrderEvaluate extends Component {//主页面
                   expanded={0}
                 />
                 <Accordion
-                  dataArray={this.state.dataArrayB}
+                  dataArray={[{ title: "维修事项", content: <OrderPerson person={this.state.personList}/> }]}
                   animation={true}
                   expanded={true}
                   renderHeader={this._renderHeader}
@@ -139,7 +172,7 @@ class OrderEvaluate extends Component {//主页面
                   expanded={(this.state.thisRecord.status==='8')?true:0}
                 />
                 <Accordion
-                  dataArray={this.state.dataArrayC}
+                  dataArray={[{ title: "物料", content: <OrderWuZi wuzi={this.state.wuZiList}/> }]}
                   animation={true}
                   expanded={true}
                   renderHeader={this._renderHeader}
