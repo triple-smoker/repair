@@ -37,9 +37,6 @@ class Adds extends Component {//报修单共用组件
     _setCancelVisible() {
       this.setState({cancelVisible: !this.state.cancelVisible});
     }
-    _details(){
-        Alert.alert("查看详情")
-    }
     _cancelOrder(){
         Alert.alert("取消订单")
     }
@@ -66,7 +63,7 @@ class Adds extends Component {//报修单共用组件
                     </Row>
                 </View>
                 <Content style={{paddingTop:12}}>
-                <TouchableOpacity onPress={()=>this._details()}>
+                <TouchableOpacity onPress={() => this.props.getEvaluate()}>
                     <Row>
                         {this.props.type!=0 &&
                         <Col style={{width:70,marginRight:17}}>
@@ -97,7 +94,7 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.matterName}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.repairUserName}</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:40}}>{this.props.record.repairUserMobile}</Text>
+                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.repairUserName}</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:30}}>{this.props.record.repairUserMobile}</Text>
                             <TouchableHighlight
                                 style={{width:20,height:20,backgroundColor:'#fff',marginLeft:20}}
                                 onPress={() => Linking.openURL(`tel:${this.props.record.repairUserMobile}`)}>
@@ -128,6 +125,7 @@ class Adds extends Component {//报修单共用组件
                             {this.props.type!='4' &&(this.props.type===2 || this.props.record.status==='8' )&&
                                 <Button
                                 bordered
+                                onPress={() => this.props.getEvaluate()}
                                 style={{borderColor:'#fcb155',height:30,width:60,marginRight:10,justifyContent:'center',alignItems:'center'}}
                                 >
                                   <Text style={{color:'#fcb155',fontSize:12}}>评价</Text>

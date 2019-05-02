@@ -191,9 +191,15 @@ class AllOrder extends Component {
             recordList = this.state.recordList3;
         }
         let listItems =(  recordList === null ? null : recordList.map((record, index) =>
-            <OrderItem key={index}  type={ty} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
+            <OrderItem key={index}  type={ty} getEvaluate={()=>this.getEvaluate(record)} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
         ))
         return listItems;
+    }
+    getEvaluate(record){
+        const { navigate } = this.props.navigation;
+        navigate('Evaluate', {
+            record: record,
+        })
     }
 
 

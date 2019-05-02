@@ -25,33 +25,25 @@ let dataArrayC = [  { title: "物料", content: <OrderWuZi/> }];
 let dataArrayD = [  { title: "评价", content: <OrderEva/> }];
 
 class OrderEvaluate extends Component {//主页面
+
+    static navigationOptions = {
+        // header: null,
+        headerTitle: '报修单详情',
+        headerBackImage: (<Image resizeMode={'contain'} style={{width: 12, height: 25}} source={require('../image/navbar_ico_back.png')} />),
+        headerStyle: {
+            elevation: 0,
+        },
+        headerRight: (<View />),
+        headerTitleStyle: {
+            flex:1,
+            textAlign: 'center'
+        }
+    };
+
     constructor(props) {
        super(props);
-       let thisRecord={
-        createTime:1552362778000,
-        deptId:"1083852071089426434",
-        deptName:"行政总务",
-        hours:314.8,
-        isUrgent:"0",
-        matterId:888881048,
-        matterName:"A设备损坏（换设备、修设备）",
-        ownerId:"1601500545875394402",
-        ownerName:"周某",
-        ownerVisited:null,
-        repairDeptId:"1078641550383865857",
-        repairDeptName:"维修总仓",
-        repairId:"1105315716528799747",
-        repairNo:"BX-190711100002",
-        repairTelNo:null,
-        repairUserId:"1078641974478331906",
-        repairUserMobile:"1111123",
-        repairUserName:"张三",
-        repairVisited:null,
-        status:"8",
-        statusDesc:"待评价",
-        telNo:"78888",
-        updateTime:1552362814000
-       }
+       const { navigation } = this.props;
+       const thisRecord = navigation.getParam('record', '');
 
        this.state = {
         thisRecord:thisRecord,
@@ -75,7 +67,7 @@ class OrderEvaluate extends Component {//主页面
                headers:{
                     'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                     'rcId':'1055390940066893827',
-                    'Authorization':'e0b9843a-30e8-4043-ba31-41bed590ca8e',
+                    'Authorization':'18b0384b-0f0b-42cc-a715-5fcb23ea5948',
                }
            }).then(
                (response) => {
@@ -96,19 +88,6 @@ class OrderEvaluate extends Component {//主页面
         return this.state.wuZiList;
     }
 
-    static navigationOptions = {
-        // header: null,
-        headerTitle: '报修单评价',
-        headerBackImage: (<Image resizeMode={'contain'} style={{width: 12, height: 25}} source={require('../image/navbar_ico_back.png')} />),
-        headerStyle: {
-            elevation: 0,
-        },
-        headerRight: (<View />),
-        headerTitleStyle: {
-            flex:1,
-            textAlign: 'center'
-        }
-    };
 
     //清空满意不满意原因
     clearCause(){
@@ -155,6 +134,16 @@ class OrderEvaluate extends Component {//主页面
         <Container>
             {/*<MyHeader/>*/}
             <Content style={{ backgroundColor: "white" }}>
+                {this.state.thisRecord.status==='8' &&
+                    <Accordion
+                      dataArray={this.state.dataArrayD}
+                      animation={true}
+                      expanded={true}
+                      renderHeader={this._renderHeader}
+                      renderContent={this._renderContent}
+                      expanded={0}
+                    />
+                }
                 <Accordion
                   dataArray={this.state.dataArrayA}
                   animation={true}
@@ -179,16 +168,6 @@ class OrderEvaluate extends Component {//主页面
                   renderContent={this._renderContent}
                   expanded={0}
                 />
-                {(this.state.thisRecord.status==='8'|| this.state.thisRecord.status==='9') &&
-                    <Accordion
-                      dataArray={this.state.dataArrayD}
-                      animation={true}
-                      expanded={true}
-                      renderHeader={this._renderHeader}
-                      renderContent={this._renderContent}
-                      expanded={0}
-                    />
-                }
             </Content>
             {this.state.thisRecord.status==='8' &&
                 <MySub repairId={this.state.thisRecord.repairId} remark={this.state.causeRemark} causeIds={this.state.causeIdList}/>
