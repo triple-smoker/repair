@@ -28,9 +28,6 @@ class AllOrder extends Component {
             super(props);
             this.state = { modalVisible: false,
                 searchVisible: true,
-                tab1:1,
-                tab2:1,
-                tab3:3,
                 tab1:0,
                 tab2:0,
                 tab3:0,
@@ -134,7 +131,7 @@ class AllOrder extends Component {
         let repRepairInfo = {
                     page: 1,
                     limit: 100,
-                    deptId: '',
+                    deptId: '1078386763486683138',
                     ownerId: '',
                     status: ''
                  }
@@ -144,22 +141,28 @@ class AllOrder extends Component {
         var records2;
         var records3;
         if(type === 1){
-            url="http://10.145.196.107:8082/api/repair/list/unfinished";
+            url="http://47.102.197.221:8188/api/repair/request/list/underway";
+
             data=repRepairInfo;
-        }
+        };
         if(type === 2){
-            url="http://10.145.196.107:8082/api/repair/repRepairInfo/list"
+            url="http://47.102.197.221:8188/api/repair/request/list/evaluate"
             data=repRepairInfo;
             data.status='8';
-        }
+        };
         if(type === 3){
-            url="http://10.145.196.107:8082/api/repair/repRepairInfo/list"
+            url="http://47.102.197.221:8188/api/repair/request/list"
             data=repRepairInfo;
-        }
+        };
         axios({
             method: 'GET',
             url: url,
             data: data,
+            headers:{
+                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                'rcId':'1055390940066893827',
+                'Authorization':'18b0384b-0f0b-42cc-a715-5fcb23ea5948',
+            }
         }).then(
             (response) => {
                 if(type === 1&&this.state.recordList1.length===0){

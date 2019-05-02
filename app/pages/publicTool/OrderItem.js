@@ -12,8 +12,9 @@ import {
     Linking,
     Text,
 } from 'react-native';
-import {  Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right,  List, ListItem, Thumbnail} from 'native-base';
+import {  Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right,  List, ListItem, Thumbnail,Textarea} from 'native-base';
 import Swiper from 'react-native-swiper';
+import axios from 'axios';
 
 
 let ScreenWidth = Dimensions.get('window').width;
@@ -24,6 +25,7 @@ class Adds extends Component {//报修单共用组件
        super(props);
        this.state = { modalVisible: false,
               showText: false,
+              cancelVisible: false,
               };
     }
     onClose() {
@@ -31,6 +33,9 @@ class Adds extends Component {//报修单共用组件
     }
     _setModalVisible() {
       this.setState({modalVisible: !this.state.modalVisible});
+    }
+    _setCancelVisible() {
+      this.setState({cancelVisible: !this.state.cancelVisible});
     }
     _details(){
         Alert.alert("查看详情")
@@ -41,6 +46,7 @@ class Adds extends Component {//报修单共用组件
     _showText(){
         this.setState({showText: !this.state.showText});
     }
+
   render() {
     return (
             <Content style={{backgroundColor:'#fff',marginBottom:10,paddingBottom:10,paddingLeft:16,paddingRight:16,borderRadius:10}}>
@@ -102,7 +108,7 @@ class Adds extends Component {//报修单共用组件
                     </Row>
                 </TouchableOpacity>
                     <Content>
-                        <Row style={{justifyContent:'flex-end'}}>
+                        <Row style={{justifyContent:'flex-end',paddingBottom:1}}>
                             {this.props.type!='4' &&(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
                                 <Button
                                 bordered
@@ -114,7 +120,7 @@ class Adds extends Component {//报修单共用组件
                             }
                             {this.props.type!='4' &&(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
                                 <Button bordered
-                                    onPress= {()=>this._cancelOrder()}
+                                    onPress= {()=>this._setCancelVisible()}
                                     style={{borderColor:'#ededed',height:30,width:60,marginRight:10,justifyContent:'center',alignItems:'center'}}>
                                   <Text style={{color:'#6b6b6b',fontSize:12}}>取消</Text>
                                 </Button>
@@ -137,6 +143,16 @@ class Adds extends Component {//报修单共用组件
                                      }}
                         >
                         <PictureMd Closer = {() => this._setModalVisible()} />
+                        </Modal>
+                        <Modal
+                            animationType={"slide"}
+                            transparent={true}
+                            visible={this.state.cancelVisible}
+                            onRequestClose={() => {
+                                       alert("Modal has been closed.");
+                                     }}
+                        >
+                        <CancelMd Closer = {() => this._setCancelVisible()} record={this.props.record}/>
                         </Modal>
 
                     </Content>
@@ -183,6 +199,128 @@ class ImageItem extends Component{
         )
     }
 }
+
+class CancelMd extends Component {
+
+    constructor(props) {
+       super(props);
+       this.state = {
+              causeList:[],
+              reMark:'',
+              };
+       var   url="http://47.102.197.221:8188/api/admin/sysCause/list/REP_CANCEL";
+           axios({
+               method: 'GET',
+               url: url,
+               data: null,
+               headers:{
+                    'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                    'rcId':'1055390940066893827',
+                    'Authorization':'93661ac2-8138-4e2e-9de9-2e63e1daace2',
+               }
+           }).then(
+               (response) => {
+                    var causeList = response.data.data;
+                    var causeListTemp = [];
+                    causeList.forEach(function(cause){
+                    let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
+                    causeListTemp.push(newCause);
+                   });
+                    this.setState({causeList:causeListTemp})
+               }
+           ).catch((error)=> {
+               console.log(error)
+           });
+    }
+    changeCause(visible){
+        var causeList = [];
+        causeList = this.state.causeList;
+        causeList.forEach(function(cause){
+            if(cause.causeId == visible.causeId){
+                cause.showType=!cause.showType;
+            }
+        });
+        this.setState({causeList:causeList});
+    }
+
+    _getCauseItem(){
+        var causeList = [];
+        causeList = this.state.causeList;
+        let listItems =(  causeList === null ? null : causeList.map((cause, index) =>
+            <Button key={index} onPress={()=>this.changeCause(cause)}  style={{borderColor:(cause.showType===false)?'#efefef':'#7db4dd',backgroundColor:(cause.showType===false)?'#fff':'#ddeaf3',borderWidth:1,marginRight:15,paddingLeft:15,paddingRight:15,height:30,marginTop:12}}>
+                <Text style={{color:(cause.showType===false)?'#a1a1a3':'#70a1ca'}}>{cause.causeCtn}</Text>
+            </Button>
+        ))
+        return listItems;
+    }
+    _setRemark(remark){
+        this.setState({reMark:remark});
+    }
+    pushCancel(record){
+    console.log("=============");
+    console.log(record);
+       var   url="http://47.102.197.221:8188/api/repair/request/misinform";
+       var causeList = this.state.causeList;
+       var causeIds = [];
+        causeList.forEach(function(cause){
+            if(cause.showType===true){
+            causeIds.push(cause.causeId);
+            }
+        })
+
+
+       var data ={
+                 repairId: record.repairId,
+                 userId : record.repairUserId,
+                 remark:this.state.reMark,
+                 causeIds:causeIds,
+                 }
+           axios({
+               method: 'POST',
+               url: url,
+               data: data,
+               headers:{
+                    'Content-type':'application/json',
+                    'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                    'rcId':'1055390940066893827',
+                    'Authorization':'93661ac2-8138-4e2e-9de9-2e63e1daace2',
+               }
+           }).then(
+               (response) => {
+                    console.log("取消成功");
+               }
+           ).catch((error)=> {
+               console.log(error)
+           });
+    }
+
+        render(){
+            return (
+                <View style={modalStyles.container}>
+                    <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={this.props.Closer}>
+                    </TouchableOpacity>
+                    <View style={modalStyles.innerContainer}>
+                        <Col style={{width:ScreenWidth-60,borderRadius:10,backgroundColor:'#f8f8f8',padding:10}}>
+                            <Text style={{color:'#a1a1a3'}}>请选择取消原因</Text>
+                            <View style={{flexDirection:'row',flexWrap:'wrap'}}>
+                                {this._getCauseItem()}
+                            </View>
+                            <Textarea bordered rowSpan={5} maxLength={150} onChangeText={(remark)=>{this.setState({reMark:remark})}}  placeholder="亲，请输入您取消的原因..."  style={{width:ScreenWidth-80,height:110,borderRadius:5,backgroundColor:'#fff',marginTop:20}}>
+                                {this.state.reMark}
+                            </Textarea>
+                            <Button style={{width:60,marginLeft:ScreenWidth-140,alignItems:'center',justifyContent:"center",backgroundColor:'#fff',marginTop:12}}
+                                onPress={()=>{this.props.Closer(),this.pushCancel(this.props.record)}}>
+                                <Text>确认</Text>
+                            </Button>
+                         </Col>
+                    </View>
+                    <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={this.props.Closer}>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+}
+
 
 const stylesImage =StyleSheet.create({
   container: {
@@ -237,6 +375,27 @@ const modalStyles = StyleSheet.create({
     },
 
 });
+
+const causeStyle =StyleSheet.create({
+  causeBtn: {
+    width:'30%',
+    height:35,
+    borderRadius:10,
+    backgroundColor:'#fff',
+    borderColor: '#c2c2c2',
+    marginRight:"3.33%",
+    marginTop:13
+  },
+  causeBtnPro: {
+    width:'30%',
+    height:35,
+    borderRadius:10,
+    backgroundColor:'#e1f0fd',
+    borderColor:'#50a9ef',
+    marginRight:"3.33%",
+    marginTop:13
+  },
+})
 
 
 
