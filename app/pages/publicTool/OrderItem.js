@@ -74,11 +74,11 @@ class Adds extends Component {//报修单共用组件
                             />
                             <Button transparent style={{position: 'absolute',width:70,height:70}} onPress= {()=>this._setModalVisible()}/>
                             <View style={{position: 'absolute',left:40,top:5,backgroundColor:'#545658',height:20,paddingLeft:8,width:25,borderRadius:10}}><Text style={{color:'#fff'}}>3</Text></View>
-                            <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>{this.props.record.status===6 ? '暂停中':''}</Text>
-                            <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>{this.props.record.status===11 ? '已取消':''}</Text>
-                            <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>{this.props.record.status===10 ? '误报':''}</Text>
-                            <Text style={{color:'#6de37e',alignItems:'center',marginLeft:10}}>{this.props.record.status===9 ? '已评价':''}</Text>
-                            <Text style={{color:'#f0e292',alignItems:'center',marginLeft:10}}>{this.props.record.status===13 ? '委外':''}</Text>
+                            <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>{this.props.record.status==='6' ? '暂停中':''}</Text>
+                            <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>{this.props.record.status==='11' ? '已取消':''}</Text>
+                            <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>{this.props.record.status==='10' ? '误报':''}</Text>
+                            <Text style={{color:'#6de37e',alignItems:'center',marginLeft:10}}>{this.props.record.status==='9' ? '已评价':''}</Text>
+                            <Text style={{color:'#f0e292',alignItems:'center',marginLeft:10}}>{this.props.record.status==='13' ? '委外':''}</Text>
                         </Col>}
                         <Col>
                             <Row>

@@ -5,7 +5,10 @@ import {
     Alert,
     TextInput,
     TouchableHighlight,
-    Image
+    TouchableOpacity,
+    Image,
+    Modal,
+    StyleSheet
 } from 'react-native';
 import {Row, Col, Container, Content, Text ,Button } from 'native-base';
 import OrderItem from './publicTool/OrderItem';
@@ -15,6 +18,7 @@ import axios from 'axios';
 
 
 let ScreenWidth = Dimensions.get('window').width;
+let dialogWidth = ScreenWidth-80;
 class OrderSearch extends Component {
 
     static navigationOptions = {
@@ -24,6 +28,7 @@ class OrderSearch extends Component {
     constructor(props) {
         super(props);
         this.state = {
+        modalVisible: false,
         searchContext: '',
         searchType: false,
         reporterList : [],
@@ -115,18 +120,20 @@ class OrderSearch extends Component {
     _getOrders(){
         if(this.state.recordListSearch.length===0){
             let repRepairInfo = {
-                        page: 1,
-                        limit: 100,
-                        deptId: '',
-                        ownerId: '',
-                        status: ''
+                        deptId: '1078386763486683138',
+                        matterName:this.state.searchContext,
                      }
-            var   url="http://10.145.196.107:8082/api/repair/repRepairInfo/list"
+            var   url="http://47.102.197.221:8188/api/repair/request/list"
             var   data=repRepairInfo;
             axios({
                 method: 'GET',
                 url: url,
                 data: data,
+                headers:{
+                    'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                    'rcId':'1055390940066893827',
+                    'Authorization':'5ee52285-3af9-4a61-a400-a3743b501da9',
+                }
             }).then(
                 (response) => {
                         var records = response.data.data.records;
@@ -141,10 +148,47 @@ class OrderSearch extends Component {
     _setOrderItem(){
         let recordList = this.state.recordListSearch;
         let listItems =(  recordList === null ? null : recordList.map((record, index) =>
-            <OrderItem key={index}  type={3} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
+            <OrderItem key={index}  type={3} record={record} getEvaluate={()=>this.getEvaluate(record)} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
         ))
         return listItems;
     }
+    getEvaluate(record){
+        const { navigate } = this.props.navigation;
+        navigate('Evaluate', {
+            record: record,
+        })
+    }
+    _setModalVisible(repairId,sendDeptId,sendUserId) {
+    //催单
+    if(!this.state.modalVisible){
+        let data = {
+                  repairId: repairId,
+                  sendDeptId: sendDeptId,
+                  sendUserId: sendUserId
+               }
+        axios({
+            method: 'POST',
+            url: 'http://47.102.197.221:8188/api/repair/request/remind',
+            data: data,
+            headers:{
+                'Content-type': 'application/json',
+                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                'rcId':'1055390940066893827',
+                'Authorization':'5ee52285-3af9-4a61-a400-a3743b501da9',
+            }
+        }).then(
+            (response) => {
+                this.setState({modalVisible: true});
+            }
+        ).catch((error)=> {
+            console.log(error)
+        });
+    }else{
+        this.setState({modalVisible: false})
+        }
+    }
+
+
 //   清理历史纪录
     clearHistory(){
             let key = 'searchItemHistory';
@@ -202,6 +246,16 @@ class OrderSearch extends Component {
                             </Col>
                         </View>
                     }
+                    <Modal
+                        animationType={"slide"}
+                        transparent={true}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => {
+                                   alert("Modal has been closed.");
+                                 }}
+                    >
+                        <MD Closer = {() => this._setModalVisible()} />
+                    </Modal>
                 </Content>
             </Content>
         </Container>
@@ -220,6 +274,58 @@ class SearchItem extends Component{
         )
     }
 }
+
+class MD extends Component {
+        render(){
+            return (
+                <TouchableOpacity style={{flex:1}} onPress={this.props.Closer}>
+                <View style={modalStyles.container}>
+                    <View style={modalStyles.innerContainer}>
+                             <Image
+                              style={{width:dialogWidth-20,height:dialogWidth-60}}
+                              resizeMode={'contain'}
+                              source={require('../image/cuidan.png')}
+                            />
+                        <View style={{width: dialogWidth,paddingTop:20,paddingLeft:20,paddingBottom:20}}>
+                            <Text style={{color:'#999',fontSize:20}}>催单已成功，维修人员整火速前往，请您稍等片刻</Text>
+                        </View>
+                        <View style={modalStyles.btnContainer}>
+                            <TouchableHighlight
+                            onPress={this.props.Closer}>
+                                <Text  style={modalStyles.hideModalTxt}>OK</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </View>
+                </TouchableOpacity>
+            );
+        }
+}
+const modalStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 40,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+
+    },
+    innerContainer: {
+        borderRadius: 10,
+        alignItems:'center',
+        backgroundColor: '#fff',
+    },
+    btnContainer:{
+        width:dialogWidth,
+        height:46,
+        borderRadius: 5,
+        backgroundColor:'#eff0f2',
+        alignItems:'center',
+        paddingTop:10
+    },
+    hieModalTxt: {
+        marginTop:10,
+    },
+});
 
 
 
