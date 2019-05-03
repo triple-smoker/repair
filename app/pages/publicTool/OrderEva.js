@@ -163,10 +163,10 @@ class OrderEva extends Component {
                         />
                         <Col style={{paddingLeft:12,paddingTop:5}}>
                             <Text style={{color:'#252525'}}>
-                                马云
+                                {this.props.record.repairUserName}
                             </Text>
                             <Text style={{color:'#a1a1a1',paddingTop:5}}>
-                                城南维修班组
+                                {this.props.record.deptName}
                             </Text>
                         </Col>
                     </Row>

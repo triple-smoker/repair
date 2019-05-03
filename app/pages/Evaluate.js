@@ -11,6 +11,7 @@ import { Container, Content,
 import OrderItem from './publicTool/OrderItem';
 import OrderWuZi from './publicTool/OrderWuZi';
 import OrderEva from './publicTool/OrderEva';
+import OrderEvaOver from './publicTool/OrderEvaOver';
 import OrderPerson from './publicTool/OrderPerson';
 import axios from 'axios';
 
@@ -19,10 +20,6 @@ import axios from 'axios';
 
 let ScreenWidth = Dimensions.get('window').width;
 
-let dataArrayA = [  { title: "概况", content: <OrderItem   type='0'/>}];
-let dataArrayB = [  { title: "维修事项", content: <OrderPerson/> }];
-let dataArrayC = [  { title: "物料", content: <OrderWuZi/> }];
-let dataArrayD = [  { title: "评价", content: <OrderEva/> }];
 
 class OrderEvaluate extends Component {//主页面
 
@@ -43,7 +40,43 @@ class OrderEvaluate extends Component {//主页面
     constructor(props) {
        super(props);
        const { navigation } = this.props;
-       const thisRecord = navigation.getParam('record', '');
+//       const thisRecord = navigation.getParam('record', '');
+       const thisRecord = {
+       buildingId: "1078386477644865537",
+       buildingName: "后勤大楼",
+       createTime: 1556534148000,
+       deptId: "1078386763486683138",
+       deptName: "测试",
+       detailAddress: "后勤大楼/2F/后勤总务房间2-001",
+       fileMap: [],
+       floorId: "1078650044340199426",
+       floorName: "2F",
+       hours: 95.6,
+       inpatientWardId: null,
+       inpatientWardName: null,
+       isUrgent: null,
+       matterId: 888881022,
+       matterName: "测试房灯不亮",
+       ownerId: "1601500545875394402",
+       ownerName: "admin",
+       ownerVisited: null,
+       repairDeptId: "1078553297945321474",
+       repairDeptName: "木工班",
+       repairId: "1121506709878874114",
+       repairNo: "BX-191191800004",
+       repairTelNo: null,
+       repairUserId: "1078635426402230274",
+       repairUserMobile: "123445645646456",
+       repairUserName: "王龙",
+       repairVisited: null,
+       roomId: "1078650104872394754",
+       roomName: "后勤总务房间2-001",
+       sequence: null,
+       status: "9",
+       statusDesc: "待评价",
+       telNo: "86786767",
+       updateTime: 1556605515000,
+       }
 
        this.state = {
         thisRecord:thisRecord,
@@ -52,12 +85,14 @@ class OrderEvaluate extends Component {//主页面
         personList:[],
         wuZiList:[],
         repair:[],
+        evaluate:'',
         dataArrayA : [  { title: "概况", content: <OrderItem type='4' record={thisRecord}/>}],
+//        dataArrayE : [  { title: "评价", content: <OrderEvaOver record={thisRecord}/>}],
 //        dataArrayB : [  { title: "维修事项", content: <OrderPerson/> }],
 //        dataArrayC : [  { title: "物料", content: <OrderWuZi wuzi={wuZiList}/> }],
         dataArrayD : [  { title: "评价", content: <OrderEva setRemark={(remark)=>this.setRemark(remark)} chCause={(cause)=>this.chCause(cause)} clearCause={()=>this.clearCause()}/> }],
        };
-
+//       获取评价选项
        var   url="http://47.102.197.221:8188/api/repair/request/detail/1121506709878874114";
        var data = thisRecord.repairId;
            axios({
@@ -82,8 +117,32 @@ class OrderEvaluate extends Component {//主页面
                console.log(error)
            });
 
-
+//       获取评价选项
+       var   url="http://47.102.197.221:8188/api/repair/service/evaluate_cause/"+this.state.thisRecord.repairId;
+           axios({
+               method: 'GET',
+               url: url,
+               data: null,
+                headers:{
+                    'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                    'rcId':'1055390940066893827',
+                    'Authorization':'5ee52285-3af9-4a61-a400-a3743b501da9',
+                }
+           }).then(
+               (response) => {
+                    var evaluate = response.data.data;
+                    this.setState({
+                        evaluate:evaluate,
+                    });
+               }
+           ).catch((error)=> {
+               console.log(error)
+           });
     }
+
+
+
+
     getWuZiList(){
         return this.state.wuZiList;
     }
@@ -168,6 +227,16 @@ class OrderEvaluate extends Component {//主页面
                   renderContent={this._renderContent}
                   expanded={0}
                 />
+                {this.state.thisRecord.status==='9' &&
+                    <Accordion
+                      dataArray={[{ title: "评价", content: <OrderEvaOver evaluate={this.state.evaluate} record={this.state.thisRecord}/>}]}
+                      animation={true}
+                      expanded={true}
+                      renderHeader={this._renderHeader}
+                      renderContent={this._renderContent}
+                      expanded={0}
+                    />
+                }
             </Content>
             {this.state.thisRecord.status==='8' &&
                 <MySub repairId={this.state.thisRecord.repairId} remark={this.state.causeRemark} causeIds={this.state.causeIdList}/>
