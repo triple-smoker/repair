@@ -163,10 +163,12 @@ class OrderEva extends Component {
                         />
                         <Col style={{paddingLeft:12,paddingTop:5}}>
                             <Text style={{color:'#252525'}}>
-                                {this.props.record.repairUserName}
+                                {this.props.record!=''&&
+                                this.props.record.repairUserName}
                             </Text>
                             <Text style={{color:'#a1a1a1',paddingTop:5}}>
-                                {this.props.record.deptName}
+                                {this.props.record!=''&&
+                                this.props.record.deptName}
                             </Text>
                         </Col>
                     </Row>

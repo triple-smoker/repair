@@ -98,7 +98,7 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>报修时间:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.createTime}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>已耗时长:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.hours}</Text>
+                            <Text style={stylesBody.orderContextTip}>已耗时长:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.hours+'小时'}</Text>
                             </Row>
                             <Row>
                             <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.matterName}</Text>
@@ -224,7 +224,7 @@ class CancelMd extends Component {
                headers:{
                     'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                     'rcId':'1055390940066893827',
-                    'Authorization':'93661ac2-8138-4e2e-9de9-2e63e1daace2',
+                    'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
                }
            }).then(
                (response) => {
@@ -265,8 +265,6 @@ class CancelMd extends Component {
         this.setState({reMark:remark});
     }
     pushCancel(record){
-    console.log("=============");
-    console.log(record);
        var   url="http://47.102.197.221:8188/api/repair/request/misinform";
        var causeList = this.state.causeList;
        var causeIds = [];
@@ -275,8 +273,8 @@ class CancelMd extends Component {
             causeIds.push(cause.causeId);
             }
         })
-
-
+        console.log("取消ID：");
+        console.log(record.repairId);
        var data ={
                  repairId: record.repairId,
                  userId : record.repairUserId,
@@ -291,11 +289,11 @@ class CancelMd extends Component {
                     'Content-type':'application/json',
                     'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                     'rcId':'1055390940066893827',
-                    'Authorization':'93661ac2-8138-4e2e-9de9-2e63e1daace2',
+                    'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
                }
            }).then(
                (response) => {
-                    console.log("取消成功");
+                    Alert.alert("取消成功");
                }
            ).catch((error)=> {
                console.log(error)

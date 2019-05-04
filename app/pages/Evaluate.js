@@ -42,42 +42,41 @@ class OrderEvaluate extends Component {//主页面
        const { navigation } = this.props;
        const thisRecord = navigation.getParam('record', '');
 //       const thisRecord = {
-//       buildingId: "1078386477644865537",
-//       buildingName: "后勤大楼",
-//       createTime: 1556534148000,
-//       deptId: "1078386763486683138",
-//       deptName: "测试",
-//       detailAddress: "后勤大楼/2F/后勤总务房间2-001",
-//       fileMap: [],
-//       floorId: "1078650044340199426",
-//       floorName: "2F",
-//       hours: 95.6,
-//       inpatientWardId: null,
-//       inpatientWardName: null,
-//       isUrgent: null,
-//       matterId: 888881022,
-//       matterName: "测试房灯不亮",
-//       ownerId: "1601500545875394402",
-//       ownerName: "admin",
-//       ownerVisited: null,
-//       repairDeptId: "1078553297945321474",
-//       repairDeptName: "木工班",
-//       repairId: "1121506709878874114",
-//       repairNo: "BX-191191800004",
-//       repairTelNo: null,
-//       repairUserId: "1078635426402230274",
-//       repairUserMobile: "123445645646456",
-//       repairUserName: "王龙",
-//       repairVisited: null,
-//       roomId: "1078650104872394754",
-//       roomName: "后勤总务房间2-001",
-//       sequence: null,
-//       status: "9",
-//       statusDesc: "待评价",
-//       telNo: "86786767",
-//       updateTime: 1556605515000,
-//       }
-
+//               buildingId: "1078386477644865537",
+//               buildingName: "后勤大楼",
+//               createTime: 1556534148000,
+//               deptId: "1078386763486683138",
+//               deptName: "测试",
+//               detailAddress: "后勤大楼/2F/后勤总务房间2-001",
+//               fileMap: [],
+//               floorId: "1078650044340199426",
+//               floorName: "2F",
+//               hours: 95.6,
+//               inpatientWardId: null,
+//               inpatientWardName: null,
+//               isUrgent: null,
+//               matterId: 888881022,
+//               matterName: "测试房灯不亮",
+//               ownerId: "1601500545875394402",
+//               ownerName: "admin",
+//               ownerVisited: null,
+//               repairDeptId: "1078553297945321474",
+//               repairDeptName: "木工班",
+//               repairId: "1121506709878874114",
+//               repairNo: "BX-191191800004",
+//               repairTelNo: null,
+//               repairUserId: "1078635426402230274",
+//               repairUserMobile: "123445645646456",
+//               repairUserName: "王龙",
+//               repairVisited: null,
+//               roomId: "1078650104872394754",
+//               roomName: "后勤总务房间2-001",
+//               sequence: null,
+//               status: "9",
+//               statusDesc: "待评价",
+//               telNo: "86786767",
+//               updateTime: 1556605515000,
+//               }
        this.state = {
         thisRecord:thisRecord,
         causeIdList:[],
@@ -90,9 +89,9 @@ class OrderEvaluate extends Component {//主页面
 //        dataArrayE : [  { title: "评价", content: <OrderEvaOver record={thisRecord}/>}],
 //        dataArrayB : [  { title: "维修事项", content: <OrderPerson/> }],
 //        dataArrayC : [  { title: "物料", content: <OrderWuZi wuzi={wuZiList}/> }],
-        dataArrayD : [  { title: "评价", content: <OrderEva setRemark={(remark)=>this.setRemark(remark)} chCause={(cause)=>this.chCause(cause)} clearCause={()=>this.clearCause()}/> }],
+        dataArrayD : [  { title: "评价",  content: <OrderEva record={thisRecord} setRemark={(remark)=>this.setRemark(remark)} chCause={(cause)=>this.chCause(cause)} clearCause={()=>this.clearCause()}/> }],
        };
-//       获取评价选项
+//       获取评价页面数据块
        var   url="http://47.102.197.221:8188/api/repair/request/detail/1121506709878874114";
        var data = thisRecord.repairId;
            axios({
@@ -102,7 +101,7 @@ class OrderEvaluate extends Component {//主页面
                headers:{
                     'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                     'rcId':'1055390940066893827',
-                    'Authorization':'18b0384b-0f0b-42cc-a715-5fcb23ea5948',
+                    'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
                }
            }).then(
                (response) => {
@@ -126,7 +125,7 @@ class OrderEvaluate extends Component {//主页面
                 headers:{
                     'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                     'rcId':'1055390940066893827',
-                    'Authorization':'5ee52285-3af9-4a61-a400-a3743b501da9',
+                    'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
                 }
            }).then(
                (response) => {
@@ -188,6 +187,10 @@ class OrderEvaluate extends Component {//主页面
         </Content>
       );
     }
+    goToAllOrders(){
+        const { navigate } = this.props.navigation;
+        navigate('AllOrder');
+    }
     render() {
     return (
         <Container>
@@ -239,7 +242,7 @@ class OrderEvaluate extends Component {//主页面
                 }
             </Content>
             {this.state.thisRecord.status==='8' &&
-                <MySub repairId={this.state.thisRecord.repairId} remark={this.state.causeRemark} causeIds={this.state.causeIdList}/>
+                <MySub goToAllOrders={()=>this.goToAllOrders()} repairId={this.state.thisRecord.repairId} remark={this.state.causeRemark} causeIds={this.state.causeIdList}/>
             }
         </Container>
     );
@@ -267,7 +270,12 @@ class MyHeader extends Component {//head模块
 
 
 class MySub extends Component {//提交按钮模块
-
+    constructor(props){
+        super(props);
+        this.state = {
+            goToAllOrders:false
+        };
+    }
     submitEvaluate(repairId,remark,causeIds){
        var   url="http://10.145.196.107:8082/api/repair/repair/evaluate";
        var data = {
@@ -281,7 +289,7 @@ class MySub extends Component {//提交按钮模块
                data: data,
            }).then(
                (response) => {
-                      Alert.alert("提交成功");
+                    Alert.alert("提交成功");
                }
            ).catch((error)=> {
                console.log(error)
@@ -293,7 +301,7 @@ class MySub extends Component {//提交按钮模块
     return (
         <Footer style={{height:50,backgroundColor:'#6dc5c9',marginTop:10}}>
              <Button  style={{width:ScreenWidth,backgroundColor:'#6dc5c9',height:50}}
-             onPress={()=>this.submitEvaluate(this.props.repairId,this.props.remark,this.props.causeIds)}
+             onPress={()=>{this.submitEvaluate(this.props.repairId,this.props.remark,this.props.causeIds),this.props.goToAllOrders()}}
              >
                 <Text style={{width:ScreenWidth,color:'#ffffff',fontSize:20,textAlign:'center'}}>提交</Text>
              </Button>

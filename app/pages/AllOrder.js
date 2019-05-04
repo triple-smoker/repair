@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {  Footer,FooterTab,TabHeading,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 import axios from 'axios';
-
+import OrderType from './publicTool/OrderType'
 import OrderItem from './publicTool/OrderItem';
 
 
@@ -27,6 +27,7 @@ class AllOrder extends Component {
     constructor(props) {
             super(props);
             this.state = { modalVisible: false,
+                typeVisible:false,
                 searchVisible: true,
                 tab1:0,
                 tab2:0,
@@ -42,11 +43,10 @@ class AllOrder extends Component {
         const { navigate } = this.props.navigation;
         this.props.navigation.goBack();
     }
-
-    newRepair(){
-        const { navigate } = this.props.navigation;
-        navigate('Repair')
+    _setTypeVisible() {
+       this.setState({typeVisible: !this.state.typeVisible});
     }
+
 
     goSearch(){
         const { navigate } = this.props.navigation;
@@ -66,10 +66,13 @@ class AllOrder extends Component {
                }
         axios({
             method: 'POST',
-            url: 'http://10.145.196.107:8082/api/repair/remind',
+            url: 'http://47.102.197.221:8188/api/repair/request/remind',
             data: data,
             header:{
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                'rcId':'1055390940066893827',
+                'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
             }
         }).then(
             (response) => {
@@ -161,17 +164,21 @@ class AllOrder extends Component {
             headers:{
                 'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                 'rcId':'1055390940066893827',
-                'Authorization':'18b0384b-0f0b-42cc-a715-5fcb23ea5948',
+                'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
             }
         }).then(
             (response) => {
                 if(type === 1&&this.state.recordList1.length===0){
+                console.log("未完成订单：");
+                console.log(response.data.data.records);
                     records1 = response.data.data.records;
                     this.setState({recordList1:records1,tab1:records1.length});
                 }else if(type === 2&&this.state.recordList2.length===0){
+                console.log("待评价订单："+response.data.data.records);
                     records2 =response.data.data.records;
                     this.setState({recordList2:records2,tab2:records2.length});
                 }else if(type === 3&&this.state.recordList3.length===0){
+                console.log("历史订单："+response.data.data.records);
                     records3 =response.data.data.records;
                     this.setState({recordList3:records3,tab3:records3.length});
                 }
@@ -202,6 +209,13 @@ class AllOrder extends Component {
         })
     }
 
+//报修导航
+    newRepair(){
+        this.setState({typeVisible: !this.state.typeVisible});
+        const { navigate } = this.props.navigation;
+        navigate('Repair')
+    }
+
 
   render() {
     return (
@@ -217,12 +231,13 @@ class AllOrder extends Component {
                             <Text style={{marginTop:5,fontSize:16,color:'#d0d0d0'}}>请输入单号或内容</Text>
                         </Row>
                     </Button>
-                    <TouchableHighlight onPress={()=>this.newRepair()} transparent style={{width:'15%',height:50,borderWidth:0,paddingTop:13,paddingLeft:5}}>
+                    <TouchableHighlight onPress={()=>this._setTypeVisible()} transparent style={{width:'15%',height:50,borderWidth:0,paddingTop:13,paddingLeft:5}}>
                         <Row>
                             <Image style={{width:20,height:20}} source={require("../image/navbar_ico_bx.png")}/>
                             <Text style={{color:"#252525"}}>报修</Text>
                         </Row>
                     </TouchableHighlight>
+                    <OrderType goToRepair={()=>this.newRepair()} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
             </Row>
             {this.state.searchVisible==true&&
                 <Tabs style={{backgroundColor:'#000'}}>
