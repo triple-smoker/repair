@@ -33,7 +33,9 @@ export default class RepairScreen extends React.Component {
 
     constructor(props){
         super(props);
-
+       const { navigation } = this.props;
+       const repairTypeId = navigation.getParam('repairTypeId', '');
+       const repairMatterId = navigation.getParam('repairMatterId', '');
         this.state = {
             images: [],
             visibleModal: false,

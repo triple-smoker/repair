@@ -9,6 +9,34 @@ import { Content,Row,Col,Text,List,ListItem } from 'native-base';
 
 let ScreenWidth = Dimensions.get('window').width;
 class WuZi extends Component {
+    constructor(props) {
+       super(props);
+       this.state={
+        totalPrice:0
+       }
+    }
+
+    _getWuZi(wuZiList){
+        var itemList = [];
+        itemList = wuZiList;
+
+        let listItems =(  itemList === null ? null : itemList.map((wuZi, index) =>
+            <WuziItem key={index} name={wuZi.materialName} num={wuZi.qty} price={wuZi.total} remark={'规格：'+wuZi.spec+'；品牌：'+wuZi.brand}/>
+        ))
+        return listItems;
+    }
+//获取总价
+    getTotalPrice(wuZiList){
+        var itemList = [];
+        itemList = wuZiList;
+        var totalPrice = 0;
+        itemList.forEach(function(item){
+            totalPrice = totalPrice + item.total;
+        });
+        return totalPrice;
+    }
+
+
   render() {
     return (
         <Content>
@@ -18,13 +46,11 @@ class WuZi extends Component {
                 <Col style={{width:'15%'}}><Text style={{color:'#313131',fontSize:14}}>价格</Text></Col>
             </Row>
             <Col style={{borderBottomWidth:1,borderColor:'#dedede'}}>
-                <WuziItem  name={'3W LED灯泡'} num={1} price={100} remark={'螺口：e27；品牌：飞利浦'}/>
-                <WuziItem  name={'3W LED灯泡'} num={1} price={100} remark={'螺口：e27；品牌：飞利浦'}/>
-                <WuziItem  name={'3W LED灯泡'} num={1} price={100} remark={'螺口：e27；品牌：飞利浦'}/>
+                {this._getWuZi(this.props.wuzi)}
             </Col>
             <Row style={{borderBottomWidth:1,borderColor:'#dedede',paddingLeft:20,paddingTop:10,height:40,paddingRight:20}}>
                 <Col style={{width:'80%'}}><Text style={{color:'#313131',fontSize:16}}>合计</Text></Col>
-                <Col style={{width:'20%'}}><Text style={{color:'#e95b5b',fontSize:16}}>￥300</Text></Col>
+                <Col style={{width:'20%'}}><Text style={{color:'#e95b5b',fontSize:16}}>{'￥'+this.getTotalPrice(this.props.wuzi)}</Text></Col>
             </Row>
         </Content>
     );
