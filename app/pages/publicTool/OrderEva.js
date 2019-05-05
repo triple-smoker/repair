@@ -160,7 +160,7 @@ class OrderEva extends Component {
                     <Row>
                         <Image
                             style={{width: 60,height:60}}
-                            source={require('../../resource/assets/user_wx.png')}
+                            source={require('../../image/user_wx.png')}
                         />
                         <Col style={{paddingLeft:12,paddingTop:5}}>
                             <Text style={{color:'#252525'}}>

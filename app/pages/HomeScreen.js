@@ -3,19 +3,12 @@ import {View, Button, Linking, StyleSheet, Image, Text, TouchableOpacity} from "
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons';
 import { Container, } from 'native-base';
-import axios from 'axios';
-import { NativeModules } from 'react-native';
-import Video from 'react-native-video';
-import ImagePickers from "react-native-image-picker";
+
 import ImagePicker from 'react-native-image-picker';
 
-// var ImagePicker = NativeModules.ImageCropPicker;
+import Axios from '../util/Axios';
 
 export default class HomeScreen extends React.Component {
-
-
-
-
 
     constructor(props){
         super(props);
@@ -27,21 +20,30 @@ export default class HomeScreen extends React.Component {
         //http://10.145.196.107:8082/api/repair/repRepairInfo/dept/list?page=1&limit=5
         // axios({
         //     method: 'GET',
-        //     url: 'http://10.145.196.107:8082/api/repair/repRepairInfo/dept/list',
-        //     data: {
-        //         page: 1,
-        //         limit: 5
-        //     },
+        //     url: 'http://10.144.4.45:8080/api/basic/baseDept/getDeptListByType',
+        //     headers : {
+        //         'rcId':'1055390940066893827',
+        //         'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+        //         'Authorization' :'Bearer b3d21a2e-81ff-422c-b881-25fb241fb6ad',
+        //     }
         // }).then(
         //     (response) => {
         //         console.log('----------------');
-        //
         //         console.log(response);
         //     }
         // ).catch((error)=> {
-        //     console.log('================');
+        //     console.log('=======================');
         //     console.log(error)
         // });
+
+
+        Axios.GetAxios('http://47.102.197.221:8188/api/basic/baseDept/getDeptListByType').then(
+            (response) => {
+                        console.log('----------------');
+                        console.log(response);
+                    }
+        )
+
     }
 
 
@@ -168,27 +170,6 @@ export default class HomeScreen extends React.Component {
                         <Text style={styles.text}>Select Single Video With Camera</Text>
                     </TouchableOpacity>
 
-
-                    {this.state.video ?
-
-                    <View style={{height: 300, width: 300}}>
-                        <Video source={{uri: this.state.video.uri}}
-                               style={{position: 'absolute',
-                                   top: 0,
-                                   left: 0,
-                                   bottom: 0,
-                                   right: 0
-                               }}
-                               rate={1}
-                               paused={true}
-                               volume={1}
-                               muted={false}
-                               resizeMode={'cover'}
-                               onError={e =>  console.log(e + 'dfref')}
-                               onLoad={load => console.log(load)}
-                               repeat={true} />
-                    </View>
-                        : null}
 
 
                 </Container>

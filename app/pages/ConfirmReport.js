@@ -33,32 +33,57 @@ class ConfirmReport extends Component {
         const { navigation } = this.props;
         const report = navigation.getParam('reporter');
         const images = navigation.getParam('images');
+        const voices = navigation.getParam('voices');
         const desc = navigation.getParam('desc');
         this.state = {
             images : images,
             desc : desc,
             report : report,
+            voices : voices,
         }
     }
 
     submit(){
 
+        let imagesRequest = [
+            {
+                "filePath":"https://dev.jxing.com.cn/test.jpg",
+                "fileName":"test.jpg",
+                "fileBucket":"000956",
+                "fileType": "image/jpeg",
+                "fileHost":"https://dev.jxing.com.cn"
+            }
+
+        ];
+        let voicesRequest = [
+            {
+                "filePath":"https://dev.jxing.com.cn/test.mp3",
+                "fileName":"test.mp3",
+                "fileBucket":"000956",
+                "fileType": "audio/mp3",
+                "fileHost":"https://dev.jxing.com.cn"
+            }
+
+        ];
+
         let repRepairInfo = {
-            repairTypeId: '',
-            buildingId: '',
-            floorId: '',
-            roomId: '',
-            rcAreaId: '',
-            repairMatterId: '',
+            repairTypeId: "7777710032",
+            buildingId: "1077448886292463618",
+            floorId: "1077448886544121857",
+            roomId: "1081114930919952386",
+            inpatientWardId: "1078214053129289730",
+            repairMatterId: "888881093",
             matterName: this.state.desc,
-            isUrgent: 0,
-            hopeRepairTime: '',
+            isUrgent:0,
+            hopeRepairTime: "2019-01-10",
             detailAdress: this.state.report.address,
-            deptId: '',
+            deptId: "1078386763486683138",
             telNo: this.state.report.phone,
-            ownerId: '',
-            ownerName: '',
-        }
+            ownerId: "1601500545875394402",
+            ownerName: this.state.report.reporter,
+            imagesRequest : imagesRequest,
+            voicesRequest : voicesRequest,
+        };
 
         axios({
             method: 'POST',
