@@ -5,6 +5,8 @@ import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
 import ImagePickers from 'react-native-image-picker';
 import Video from 'react-native-video';
+import axios from 'axios';
+import Axios from '../util/Axios';
 
 class MultipleImagePicker extends Component {
 
@@ -84,14 +86,16 @@ class MultipleImagePicker extends Component {
      * @param images
      */
     appendImage(images){
-
         let imagesList = this.state.images;
         let num = imagesList.length ;
         for(let i in images){
-            console.log( parseInt(num) + parseInt(i));
-            if( parseInt(num) +parseInt(i) <6){
+            let index = parseInt(num) +parseInt(i)
+            console.log(index);
+            if( index <6){
+
                 let image = images[i];
-                imagesList.push({index: num+i, uri: image.path,type: image.type}) ;
+                Axios.UpLoad(image.path);
+                imagesList.push({index: index, uri: image.path,type: image.type}) ;
             }
         }
         this.setState({
@@ -138,8 +142,12 @@ class MultipleImagePicker extends Component {
             forceJpg: true,
         }).then(images => {
             //将选择的图片加入到列表
+            console.log('0000fdsuhweiurghiwuhvrwiuf');
+            console.log(images);
             this.appendImage(images);
-            this.setState({ visibleModal: false })
+
+
+            this.setState({ visibleModal: false });
             this.uploadImages();
         }).catch(e => alert(e));
     }
@@ -150,9 +158,8 @@ class MultipleImagePicker extends Component {
      * @returns {*}
      */
     uploadImages(){
-
+        console.log('00000000')
         console.log(this.state.images);
-
         this.props.imageCallback(this.state.images);
     }
 
@@ -172,25 +179,18 @@ class MultipleImagePicker extends Component {
                     {readOnly ? null : <HavaAdd images={this.props.images} onPress = {()=> this.toggleModal()} />}
                 </View>
 
-
+                <Modal onBackdropPress={() => this.toggleModal()} isVisible={this.state.visibleModal}>
+                    <View style={styles.modalContent}>
+                        <RenderModal item='相册' onPress={() => this.pickMultiple()} />
+                        <RenderModal item='拍照' onPress={() => this.pickSingleWithCamera()} />
+                        <RenderModal item="摄像" onPress={() => this.selectVideoTapped()} />
+                    </View>
+                </Modal>
 
             </View>
         );
     }
 
-}
-
-
-const Rm = () => {
-    return(
-        <Modal onBackdropPress={() => this.toggleModal()} isVisible={this.state.visibleModal}>
-            <View style={styles.modalContent}>
-                <RenderModal item='相册' onPress={() => this.pickMultiple()} />
-                <RenderModal item='拍照' onPress={() => this.pickSingleWithCamera()} />
-                <RenderModal item="摄像" onPress={() => this.selectVideoTapped()} />
-            </View>
-        </Modal>
-    );
 }
 
 const RenderModal = (props) => {
@@ -205,10 +205,6 @@ const RenderModal = (props) => {
 
 
 const PreVideo  = (video) => {
-
-    console.log('========================');
-    console.log(video);
-
     return (
         <Video source={{uri: video.uri}}
                style={{position: 'absolute',
@@ -231,9 +227,6 @@ const PreVideo  = (video) => {
 const PreView = (props) => {
     let uri = 'https://timgsa.baidu.com/timg?image&quality=80&size=b10000_10000&sec=1553929315&di=9a1db93ed5aecc160de77b1eb8e240d8&src=http://bpic.588ku.com/element_origin_min_pic/00/98/05/4456f33204e5f1f.jpg'
     const readOnly = props.readOnly;
-    //
-    // console.log(props.type);
-    // console.log(props.uri);
 
     return (
         <View key={props.index} style={styles.pre}>

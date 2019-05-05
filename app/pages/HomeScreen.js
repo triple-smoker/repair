@@ -37,7 +37,7 @@ export default class HomeScreen extends React.Component {
         // });
 
 
-        Axios.GetAxios('http://47.102.197.221:8188/api/basic/baseDept/getDeptListByType').then(
+        Axios.GetAxios('/api/basic/baseDept/getDeptListByType').then(
             (response) => {
                         console.log('----------------');
                         console.log(response);

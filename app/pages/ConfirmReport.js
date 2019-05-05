@@ -87,7 +87,7 @@ class ConfirmReport extends Component {
 
         axios({
             method: 'POST',
-            url: 'http://10.145.196.107:8082/api/repair/repRepairInfo',
+            url: '/api/repair/request/checkin',
             data: repRepairInfo,
         }).then(
             (response) => {
