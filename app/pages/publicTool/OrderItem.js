@@ -43,7 +43,28 @@ class Adds extends Component {//报修单共用组件
     _showText(){
         this.setState({showText: !this.state.showText});
     }
-
+    getLength(imagesRequest){
+        if(imagesRequest!=null){
+        return imagesRequest.length;
+        }else{
+        return 0;
+        }
+    }
+    getFirstImage(imagesRequest){
+        if(imagesRequest!=null){
+        var path = '';
+        var i=1;
+            imagesRequest.forEach(function(imageItem){
+               if(i===1){
+               path = imageItem.filePath;
+               i=i+1;
+               }
+            });
+        return <Image resizeMode='stretch' style={{width: 70, height: 70}} source={{uri:path}} />;
+        }else{
+        return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>
+        }
+    }
   render() {
     return (
             <Content style={{backgroundColor:'#fff',marginBottom:10,paddingBottom:10,paddingLeft:16,paddingRight:16,borderRadius:10}}>
@@ -67,13 +88,9 @@ class Adds extends Component {//报修单共用组件
                     <Row>
                         {this.props.type!=0 &&
                         <Col style={{width:70,marginRight:17}}>
-                             <Image
-                              style={{width: 70, height: 70}}
-                              onPress= {this._setModalVisible}
-                              source={{uri: 'http://ckimg.baidu.com/course/2016-10/21/808aa8fc57ab3684ab75bec1489473e2.jpg'}}
-                            />
+                            {this.getFirstImage(this.props.record.fileMap.imagesRequest)}
                             <Button transparent style={{position: 'absolute',width:70,height:70}} onPress= {()=>this._setModalVisible()}/>
-                            <View style={{position: 'absolute',left:40,top:5,backgroundColor:'#545658',height:20,paddingLeft:8,width:25,borderRadius:10}}><Text style={{color:'#fff'}}>3</Text></View>
+                            <View style={{position: 'absolute',left:40,top:5,backgroundColor:'#545658',height:20,paddingLeft:8,width:25,borderRadius:10}}><Text style={{color:'#fff'}}>{this.getLength(this.props.record.fileMap.imagesRequest)}</Text></View>
                                 {this.props.record.status==='6' &&
                                   <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>暂停中</Text>
                                 }
@@ -101,15 +118,17 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>已耗时长:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.hours+'小时'}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.matterName}</Text>
+                            <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.detailAddress}</Text>
                             </Row>
                             <Row>
                             <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.repairUserName}</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:30}}>{this.props.record.repairUserMobile}</Text>
-                            <TouchableHighlight
-                                style={{width:20,height:20,backgroundColor:'#fff',marginLeft:20}}
-                                onPress={() => Linking.openURL(`tel:${this.props.record.repairUserMobile}`)}>
-                                <Image style={{width:20,height:20}} source={require("../../image/list_call.png")}/>
-                            </TouchableHighlight>
+                            {(this.props.record.repairUserMobile != '' && this.props.record.repairUserMobile!=null) &&
+                                <TouchableHighlight
+                                    style={{width:20,height:20,backgroundColor:'#fff',marginLeft:20}}
+                                    onPress={() => Linking.openURL(`tel:${this.props.record.repairUserMobile}`)}>
+                                    <Image style={{width:20,height:20}} source={require("../../image/list_call.png")}/>
+                                </TouchableHighlight>
+                            }
                             </Row>
                         </Col>
                     </Row>
@@ -150,7 +169,7 @@ class Adds extends Component {//报修单共用组件
                                        alert("Modal has been closed.");
                                      }}
                         >
-                        <PictureMd Closer = {() => this._setModalVisible()} />
+                        <PictureMd Closer = {() => this._setModalVisible()} imagesRequest={this.props.record.fileMap.imagesRequest} />
                         </Modal>
                         <Modal
                             animationType={"slide"}
@@ -172,6 +191,15 @@ class Adds extends Component {//报修单共用组件
 }
 
 class PictureMd extends Component {
+
+    getImageItem(imagesRequest){
+        var i = imagesRequest.length;
+        let listItems =(  imagesRequest === null ? null : imagesRequest.map((imageItem, index) =>
+            <ImageItem num={index+1} sum={i}  imageurl={imageItem.filePath} key={index}/>
+        ))
+        return listItems;
+    }
+
         render(){
             return (
                 <View style={modalStyles.container}>
@@ -186,8 +214,7 @@ class PictureMd extends Component {
                            paginationStyle={{
                              bottom: -23, left: null, right: 10
                            }} loop>
-                                <ImageItem num='1' sum='2'  imageurl='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554368276452&di=dfa6ac0f1342c8ec5e443861ad6f60c7&imgtype=0&src=http%3A%2F%2Fstatic.open-open.com%2Fnews%2FuploadImg%2F20160113%2F20160113102614_405.png'/>
-                                <ImageItem num='2' sum='2'  imageurl='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554368276452&di=dfa6ac0f1342c8ec5e443861ad6f60c7&imgtype=0&src=http%3A%2F%2Fstatic.open-open.com%2Fnews%2FuploadImg%2F20160113%2F20160113102614_405.png'/>
+                           {this.getImageItem(this.props.imagesRequest)}
                          </Swiper>
                          </View>
                     </View>
@@ -265,7 +292,7 @@ class CancelMd extends Component {
         this.setState({reMark:remark});
     }
     pushCancel(record){
-       var   url="http://47.102.197.221:8188/api/repair/request/misinform";
+       var   url="https://dev.jxing.com.cn/api/repair/request/misinform";
        var causeList = this.state.causeList;
        var causeIds = [];
         causeList.forEach(function(cause){
@@ -277,7 +304,7 @@ class CancelMd extends Component {
         console.log(record.repairId);
        var data ={
                  repairId: record.repairId,
-                 userId : record.repairUserId,
+                 userId : "1601500545875394402",
                  remark:this.state.reMark,
                  causeIds:causeIds,
                  }
@@ -288,11 +315,12 @@ class CancelMd extends Component {
                headers:{
                     'Content-type':'application/json',
                     'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-                    'rcId':'1055390940066893827',
+                    'hospitalId':'1055390940066893827',
                     'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
                }
            }).then(
                (response) => {
+               console.log(response);
                     Alert.alert("取消成功");
                }
            ).catch((error)=> {

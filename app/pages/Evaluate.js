@@ -92,7 +92,7 @@ class OrderEvaluate extends Component {//主页面
         dataArrayD : [  { title: "评价",  content: <OrderEva record={thisRecord} setRemark={(remark)=>this.setRemark(remark)} chCause={(cause)=>this.chCause(cause)} clearCause={()=>this.clearCause()}/> }],
        };
 //       获取评价页面数据块
-       var   url="http://47.102.197.221:8188/api/repair/request/detail/1121506709878874114";
+       var   url="http://47.102.197.221:8188/api/repair/request/detail/"+thisRecord.repairId;
        var data = thisRecord.repairId;
            axios({
                method: 'GET',
@@ -101,11 +101,13 @@ class OrderEvaluate extends Component {//主页面
                headers:{
                     'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                     'rcId':'1055390940066893827',
-                    'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
+                    'Authorization':'6c7cf948-bdf9-4bde-8fea-f1256183f388',
                }
            }).then(
                (response) => {
                     var repair =  response.data.data;
+                    console.log(repair);
+                    console.log("==========================");
                     this.setState({
                         repair : repair,
                         wuZiList : repair.materialList,
@@ -125,7 +127,7 @@ class OrderEvaluate extends Component {//主页面
                 headers:{
                     'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                     'rcId':'1055390940066893827',
-                    'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
+                    'Authorization':'6c7cf948-bdf9-4bde-8fea-f1256183f388',
                 }
            }).then(
                (response) => {
