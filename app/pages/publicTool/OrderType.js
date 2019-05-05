@@ -48,7 +48,7 @@ class TypeMd extends Component {
             headers:{
                 'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                 'rcId':'1055390940066893827',
-                'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
+                'Authorization':'6c7cf948-bdf9-4bde-8fea-f1256183f388',
             }
         }).then(
             (response) => {
@@ -89,7 +89,7 @@ class TypeMd extends Component {
                 'Content-type':'application/json',
                 'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                 'rcId':'1055390940066893827',
-                'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
+                'Authorization':'6c7cf948-bdf9-4bde-8fea-f1256183f388',
             }
         }).then(
             (response) => {
@@ -103,6 +103,7 @@ class TypeMd extends Component {
       getRepairChild(){
         let repairList = this.state.repairList;
         var repairParentList = repairList.find(item=>item.repairTypeId==this.state.repairParent);
+
         let listItems =(  repairParentList.childrenList === null ? null : repairParentList.childrenList.map((repair, index) =>
                 <Button style={{width:"40%",marginTop:20,justifyContent:"center",marginRight:'10%',borderWidth:1,borderColor:'#c9c9c9',backgroundColor:'#fff'}}
                  key={index} onPress={()=>this.setChild(repair.repairTypeId,repair.repairTypeCtn)}>
@@ -139,7 +140,7 @@ class TypeMd extends Component {
                             }
                             {this.state.repairParent != '' && this.state.repairChild != '' &&
                                 <View style={{flexDirection:'row',flexWrap:'wrap',width:"100%",paddingBottom:40}}>
-                                    <QuicklyBtnList  repairCareList={this.state.repairCareList} goToRepair={(repairQuicklyType)=>{this.props.goToRepair(repairQuicklyType)}}/>
+                                    <QuicklyBtnList repairCareList={this.state.repairCareList} goToRepair={(repairTypeId,repairMatterId)=>{this.props.goToRepair(repairTypeId,repairMatterId)}}/>
                                 </View>
                             }
                         </Content>
@@ -156,7 +157,7 @@ class QuicklyBtnList extends Component{
     render() {
             let repairList = this.props.repairCareList;
             let listItems =(  repairList === null ? null : repairList.map((repair, index) =>
-              <QuicklyBtn repair={repair}  goToRepair = {(repairQuicklyType)=>this.props.goToRepair(repairQuicklyType)} key={index}/>
+              <QuicklyBtn repair={repair}  goToRepair = {(repairTypeId,repairMatterId)=>this.props.goToRepair(repairTypeId,repairMatterId)} key={index}/>
             ))
         return listItems;
     }
@@ -166,7 +167,7 @@ class QuicklyBtn extends Component {
     render(){
         return (
             <Button style={{width:"40%",marginTop:20,justifyContent:"center",marginRight:'10%',borderWidth:1,borderColor:'#c9c9c9',backgroundColor:'#fff'}}
-              onPress={()=>this.props.goToRepair(this.props.repair.matterName)}>
+              onPress={()=>this.props.goToRepair(this.props.repair.repairTypeId,this.props.repair.repairMatterId)}>
                 <Text style={{color:'#696969'}}>{this.props.repair.matterName}</Text>
             </Button>
         )

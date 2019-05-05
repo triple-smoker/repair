@@ -217,7 +217,7 @@ class OrderEvaluate extends Component {//主页面
                   expanded={0}
                 />
                 <Accordion
-                  dataArray={[{ title: "维修事项", content: <OrderPerson person={this.state.personList}/> }]}
+                  dataArray={[{ title: "维修事项", content: <OrderPerson repair={this.state.repair} person={this.state.personList}/> }]}
                   animation={true}
                   expanded={true}
                   renderHeader={this._renderHeader}

@@ -46,7 +46,8 @@ class Person extends Component {
     return (
         <Content style={{padding:15}}>
             <Col style={{height:55,borderBottomWidth:1,borderBottomColor:'#dedede'}}>
-                <Text style={{color:'#2b2b2b'}}>维修类别:</Text>
+                <Text style={{color:'#2b2b2b',fontSize:14}}>维修类别：<Text style={{color:'#4b4b4b',fontSize:13}}>{this.props.repair.parentTypeName+"/"+this.props.repair.repairTypeName}</Text></Text>
+                <Text style={{color:'#2b2b2b',fontSize:14}}>维修事项：<Text style={{color:'#4b4b4b',fontSize:13}}>{this.props.repair.matterName}</Text></Text>
             </Col>
             <Row>
                 <Col style={{width:'20%',paddingTop:18,paddingLeft:18}}>

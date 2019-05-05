@@ -210,10 +210,13 @@ class AllOrder extends Component {
     }
 
 //报修导航
-    newRepair(){
+    newRepair(repairTypeId,repairMatterId){
         this.setState({typeVisible: !this.state.typeVisible});
         const { navigate } = this.props.navigation;
-        navigate('Repair')
+        navigate('Repair',{
+            repairTypeId:repairTypeId,
+            repairMatterId:repairMatterId,
+        })
     }
 
 
@@ -237,7 +240,7 @@ class AllOrder extends Component {
                             <Text style={{color:"#252525"}}>报修</Text>
                         </Row>
                     </TouchableHighlight>
-                    <OrderType goToRepair={()=>this.newRepair()} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
+                    <OrderType goToRepair={(repairTypeId,repairMatterId)=>this.newRepair(repairTypeId,repairMatterId)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
             </Row>
             {this.state.searchVisible==true&&
                 <Tabs style={{backgroundColor:'#000'}}>
