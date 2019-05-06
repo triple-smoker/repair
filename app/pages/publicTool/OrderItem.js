@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import {  Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right,  List, ListItem, Thumbnail,Textarea} from 'native-base';
 import Swiper from 'react-native-swiper';
-import axios from 'axios';
+import Axios from '../../util/Axios';
 
 
 let ScreenWidth = Dimensions.get('window').width;
@@ -55,12 +55,17 @@ class Adds extends Component {//报修单共用组件
         var path = '';
         var i=1;
             imagesRequest.forEach(function(imageItem){
-               if(i===1){
+               if(i===1&&imageItem.filePath!=''){
                path = imageItem.filePath;
                i=i+1;
                }
             });
-        return <Image resizeMode='stretch' style={{width: 70, height: 70}} source={{uri:path}} />;
+            if(i===1){
+                return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>;
+            }else{
+                return <Image resizeMode='stretch' style={{width: 70, height: 70}} source={{uri:path}} />;
+            }
+
         }else{
         return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>
         }
@@ -179,7 +184,7 @@ class Adds extends Component {//报修单共用组件
                                        alert("Modal has been closed.");
                                      }}
                         >
-                        <CancelMd Closer = {() => this._setCancelVisible()} record={this.props.record}/>
+                        <CancelMd Closer = {() => this._setCancelVisible()} getRepairList={()=>this.props.getRepairList()} record={this.props.record}/>
                         </Modal>
 
                     </Content>
@@ -243,29 +248,18 @@ class CancelMd extends Component {
               causeList:[],
               reMark:'',
               };
-       var   url="http://47.102.197.221:8188/api/admin/sysCause/list/REP_CANCEL";
-           axios({
-               method: 'GET',
-               url: url,
-               data: null,
-               headers:{
-                    'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-                    'rcId':'1055390940066893827',
-                    'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
-               }
-           }).then(
-               (response) => {
-                    var causeList = response.data.data;
+       var   url="/api/admin/sysCause/list/REP_CANCEL";
+        Axios.GetAxios(url).then(
+            (response) => {
+                    var causeList = response.data;
                     var causeListTemp = [];
                     causeList.forEach(function(cause){
                     let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
                     causeListTemp.push(newCause);
                    });
                     this.setState({causeList:causeListTemp})
-               }
-           ).catch((error)=> {
-               console.log(error)
-           });
+                }
+        )
     }
     changeCause(visible){
         var causeList = [];
@@ -291,8 +285,8 @@ class CancelMd extends Component {
     _setRemark(remark){
         this.setState({reMark:remark});
     }
-    pushCancel(record){
-       var   url="https://dev.jxing.com.cn/api/repair/request/misinform";
+    pushCancel(record,getRepairList){
+       var   url="/api/repair/request/misinform";
        var causeList = this.state.causeList;
        var causeIds = [];
         causeList.forEach(function(cause){
@@ -308,24 +302,18 @@ class CancelMd extends Component {
                  remark:this.state.reMark,
                  causeIds:causeIds,
                  }
-           axios({
-               method: 'POST',
-               url: url,
-               data: data,
-               headers:{
+       var headers={
                     'Content-type':'application/json',
-                    'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-                    'hospitalId':'1055390940066893827',
-                    'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
                }
-           }).then(
-               (response) => {
-               console.log(response);
-                    Alert.alert("取消成功");
-               }
-           ).catch((error)=> {
-               console.log(error)
-           });
+        Axios.PostAxios(url,data,headers).then(
+            (response) => {
+                        setTimeout(function(){
+                            Alert.alert("123");
+                            getRepairList();
+                        },5000)
+                    }
+        )
+
     }
 
         render(){
@@ -343,7 +331,7 @@ class CancelMd extends Component {
                                 {this.state.reMark}
                             </Textarea>
                             <Button style={{width:60,marginLeft:ScreenWidth-140,alignItems:'center',justifyContent:"center",backgroundColor:'#fff',marginTop:12}}
-                                onPress={()=>{this.props.Closer(),this.pushCancel(this.props.record)}}>
+                                onPress={()=>{this.props.Closer(),this.pushCancel(this.props.record,this.props.getRepairList())}}>
                                 <Text>确认</Text>
                             </Button>
                          </Col>

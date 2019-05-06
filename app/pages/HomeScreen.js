@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Button, Linking, StyleSheet, Image, Text, TouchableOpacity} from "react-native";
+import {View, Button, Linking, StyleSheet, Image, Text, TouchableOpacity,Alert} from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons';
 import { Container, } from 'native-base';
@@ -130,10 +130,20 @@ export default class HomeScreen extends React.Component {
 
     }
 
+    ceshi(){
+        setTimeout(function(){
+            Alert.alert("123")
+        },5000)
+    }
+
     render() {
         return (
                 <Container>
                     <View >
+                        <Button
+                            title="延迟测试"
+                            onPress={()=>this.ceshi()}
+                        />
                         <Button
                             title="新增报修"
                             onPress={() => this.props.navigation.navigate('Repair')}

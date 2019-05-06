@@ -4,7 +4,7 @@ import { Alert } from 'react-native'
 axios.interceptors.request.use(
 
     function(config) {
-        const apiToken = '6c7cf948-bdf9-4bde-8fea-f1256183f388';
+        const apiToken = 'b04d3d72-39c9-464f-b11d-109c19d1cbc8';
         // 添加响应头等等设置
         let headers = {
             'hospitalId': '1055390940066893827',

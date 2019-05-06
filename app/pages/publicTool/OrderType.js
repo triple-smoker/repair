@@ -8,7 +8,7 @@ import {
     Image,
 } from 'react-native';
 import { Content,Row,Col,Text,List,ListItem,Button } from 'native-base';
-import axios from 'axios';
+import Axios from '../../util/Axios';
 
 
 let ScreenWidth = Dimensions.get('window').width;
@@ -40,24 +40,32 @@ class TypeMd extends Component {
         repairChildList:[],
         repairChild:'',
         repairCareList:[]};
-        var   url="http://47.102.197.221:8188/api/repair/repRepairType/list";
-        axios({
-            method: 'GET',
-            url: url,
-            data: null,
-            headers:{
-                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-                'rcId':'1055390940066893827',
-                'Authorization':'6c7cf948-bdf9-4bde-8fea-f1256183f388',
-            }
-        }).then(
+        var   url="/api/repair/repRepairType/list";
+
+        Axios.GetAxios(url).then(
             (response) => {
-                    var types = response.data.data;
+                    var types = response.data;
                     this.setState({repairList:types});
-            }
-        ).catch((error)=> {
-            console.log(error)
-        });
+                    }
+        )
+
+//        axios({
+//            method: 'GET',
+//            url: url,
+//            data: null,
+//            headers:{
+//                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+//                'rcId':'1055390940066893827',
+//                'Authorization':'6c7cf948-bdf9-4bde-8fea-f1256183f388',
+//            }
+//        }).then(
+//            (response) => {
+//                    var types = response.data.data;
+//                    this.setState({repairList:types});
+//            }
+//        ).catch((error)=> {
+//            console.log(error)
+//        });
 
       }
       setParent(visible,ctn){
@@ -75,30 +83,37 @@ class TypeMd extends Component {
       }
       setChild(visible,ctn){
         this.setState({repairChild:visible,repairChildCn:ctn})
-        var   url="http://47.102.197.221:8188/api/repair/repRepairType/getRepairMatterList";
+        var   url="/api/repair/repRepairType/getRepairMatterList";
         var data = {
             "repairTypeId":visible,
             "typeParentId":"",
             "matterName":""
         };
-        axios({
-            method: 'POST',
-            url: url,
-            data: data,
-            headers:{
-                'Content-type':'application/json',
-                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-                'rcId':'1055390940066893827',
-                'Authorization':'6c7cf948-bdf9-4bde-8fea-f1256183f388',
-            }
-        }).then(
+        Axios.PostAxios(url,data).then(
             (response) => {
-                    var cares = response.data.data;
+                    var cares = response.data;
                     this.setState({repairCareList:cares});
-            }
-        ).catch((error)=> {
-            console.log(error)
-        });
+                    }
+        )
+
+//        axios({
+//            method: 'POST',
+//            url: url,
+//            data: data,
+//            headers:{
+//                'Content-type':'application/json',
+//                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+//                'rcId':'1055390940066893827',
+//                'Authorization':'6c7cf948-bdf9-4bde-8fea-f1256183f388',
+//            }
+//        }).then(
+//            (response) => {
+//                    var cares = response.data.data;
+//                    this.setState({repairCareList:cares});
+//            }
+//        ).catch((error)=> {
+//            console.log(error)
+//        });
       }
       getRepairChild(){
         let repairList = this.state.repairList;
