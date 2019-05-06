@@ -195,10 +195,16 @@ class Adds extends Component {//报修单共用组件
 class PictureMd extends Component {
 
     getImageItem(imagesRequest){
-        var i = imagesRequest.length;
-        let listItems =(  imagesRequest === null ? null : imagesRequest.map((imageItem, index) =>
-            <ImageItem num={index+1} sum={i}  imageurl={imageItem.filePath} key={index}/>
-        ))
+        var i = 0;
+        var listItems;
+        if(imagesRequest!=null){
+            i = imagesRequest.length;
+            listItems =(  imagesRequest === null ? null : imagesRequest.map((imageItem, index) =>
+                <ImageItem num={index+1} sum={i}  imageurl={imageItem.filePath} key={index}/>
+            ))
+        }else{
+            listItems = <View style={{width:ScreenWidth,flex: 1,height:210,justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
+        }
         return listItems;
     }
 
