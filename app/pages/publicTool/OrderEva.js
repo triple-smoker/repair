@@ -10,7 +10,7 @@ import {
 import Swiper from 'react-native-swiper';
 import LinearGradient from 'react-native-linear-gradient';
 import { Content,Row,Col,Text,List,ListItem,Button,Item,Textarea } from 'native-base';
-import axios from 'axios';
+import Axios from '../../util/Axios';
 import CauseBtn from './CauseBtn';
 
 
@@ -28,39 +28,43 @@ class OrderEva extends Component {
         bttArrayMy:[],
        };
 //       获取评价选项
-       var   url="http://10.145.196.107:8082/api/admin/sysCause/list/REP_EVALUATE";
-           axios({
-               method: 'GET',
-               url: url,
-               data: null,
-           }).then(
-               (response) => {
-                       var cause = response.data.data;
+       var   url="/api/repair/service/evaluate_cause/list";
+        Axios.GetAxios(
+            url
+        ).then(
+             (response) => {
+                       var dicts = response.data;
                        var bttArrayBmy = [];
                        var bttArrayYb = [];
                        var bttArrayMy = [];
-
-                       cause.forEach(function(cause){
-                            if(cause.causeType==1){
-                                let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
-                            bttArrayBmy.push(newCause)};
-                            if(cause.causeType==2){
-                                let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
-                            bttArrayYb.push(newCause)};
-                            if(cause.causeType==3){
-                                let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
-                            bttArrayMy.push(newCause)};
+                       dicts.forEach(function(dict){
+                            if(dict.dictValue==1){
+                                dict.causeList.forEach(function(cause){
+                                        let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
+                                        bttArrayBmy.push(newCause);
+                                    })
+                                }
+                            if(dict.dictValue==2){
+                                dict.causeList.forEach(function(cause){
+                                        let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
+                                        bttArrayYb.push(newCause);
+                                    })
+                                }
+                            if(dict.dictValue==3){
+                                dict.causeList.forEach(function(cause){
+                                        let newCause = {causeCtn:cause.causeCtn,causeId:cause.causeId,showType:false};
+                                        bttArrayMy.push(newCause);
+                                    })
+                                }
                        });
-
                        this.setState({
                               bttArrayBmy : bttArrayBmy,
                               bttArrayYb : bttArrayYb,
                               bttArrayMy : bttArrayMy,
                        })
-               }
-           ).catch((error)=> {
-               console.log(error)
-           });
+                 }
+         )
+
     }
     _change(btnum){
         this.setState({ btColor:btnum});
@@ -136,6 +140,18 @@ class OrderEva extends Component {
         ))
         return listItems;
     }
+    getImageItem(repair){
+        console.log("获取评价图片===========");
+        console.log(repair);
+        var imagesList = [];
+        if(repair!=null&&repair!=''){
+            var imagesCompleted = repair.fileMap.imagesCompleted;
+            var imagesSignature = repair.fileMap.imagesSignature;
+            imagesList = imagesCompleted.concat(imagesSignature);
+        }
+        console.log(imagesList);
+
+    }
 
 
   render() {
@@ -149,6 +165,7 @@ class OrderEva extends Component {
                   paginationStyle={{
                     bottom: -23, left: null, right: 10
                   }} loop>
+                    {this.getImageItem(this.props.repair)}
                     <ImageItem num='1' sum='3' imageurl='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554368276452&di=dfa6ac0f1342c8ec5e443861ad6f60c7&imgtype=0&src=http%3A%2F%2Fstatic.open-open.com%2Fnews%2FuploadImg%2F20160113%2F20160113102614_405.png'/>
                     <ImageItem num='2' sum='3' imageurl='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554368276452&di=dfa6ac0f1342c8ec5e443861ad6f60c7&imgtype=0&src=http%3A%2F%2Fstatic.open-open.com%2Fnews%2FuploadImg%2F20160113%2F20160113102614_405.png'/>
                     <ImageItem num='3' sum='3' imageurl='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554368276452&di=dfa6ac0f1342c8ec5e443861ad6f60c7&imgtype=0&src=http%3A%2F%2Fstatic.open-open.com%2Fnews%2FuploadImg%2F20160113%2F20160113102614_405.png'/>
@@ -183,7 +200,7 @@ class OrderEva extends Component {
             <TouchableHighlight
                 style={{width:'30%'}}
                 underlayColor="#fff"
-                      onPress={()=>{this._change(1),this.props.clearCause()}}>
+                      onPress={()=>{this._change(1),this.props.clearCause(),this.props.getSatisfactionLevel('1')}}>
                 <LinearGradient
                     colors= {[(this.state.btColor==1) ? '#e9c11a':'#fff',(this.state.btColor==1) ?  '#f1a611':'#fff',(this.state.btColor==1) ?  '#fb8306':'#fff']}
                     start={ {x: 0.3, y:0} }
@@ -200,7 +217,7 @@ class OrderEva extends Component {
             <TouchableHighlight
                 style={{width:'30%'}}
                 underlayColor="#fff"
-                      onPress={()=>{this._change(2),this.props.clearCause()}}>
+                      onPress={()=>{this._change(2),this.props.clearCause(),this.props.getSatisfactionLevel('2')}}>
                 <LinearGradient
                     colors= {[(this.state.btColor==2) ? '#e9c11a':'#fff',(this.state.btColor==2) ?  '#f1a611':'#fff',(this.state.btColor==2) ?  '#fb8306':'#fff']}
                     start={ {x: 0.3, y:0} }
@@ -217,7 +234,7 @@ class OrderEva extends Component {
             <TouchableHighlight
                 style={{width:'30%'}}
                 underlayColor="#fff"
-                      onPress={()=>{this._change(3),this.props.clearCause()}}>
+                      onPress={()=>{this._change(3),this.props.clearCause(),this.props.getSatisfactionLevel('3')}}>
                 <LinearGradient
                     colors= {[(this.state.btColor==3) ? '#e9c11a':'#fff',(this.state.btColor==3) ?  '#f1a611':'#fff',(this.state.btColor==3) ?  '#fb8306':'#fff']}
                     start={ {x: 0.3, y:0} }
@@ -240,7 +257,7 @@ class OrderEva extends Component {
                    {this.getCause(this.props.chCause)}
             </View>
             }
-            <Row style={{justifyContent: "center"}}>
+            <Row style={{justifyContent: "center",marginBottom:10}}>
                     <Textarea bordered rowSpan={5} maxLength={150} onChangeText={(remark)=>{this.setState({reMark:remark}),this.props.setRemark(remark)}}  placeholder="亲，请输入您的评价和建议..."  style={{width:ScreenWidth-30,height:90,borderRadius:10}}>
                         {this.state.reMark}
                     </Textarea>

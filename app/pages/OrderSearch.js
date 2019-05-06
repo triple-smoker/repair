@@ -13,7 +13,7 @@ import {
 import {Row, Col, Container, Content, Text ,Button } from 'native-base';
 import OrderItem from './publicTool/OrderItem';
 import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
+import Axios from '../util/Axios';
 
 
 
@@ -39,7 +39,6 @@ class OrderSearch extends Component {
                 if (error) {
                     // alert('读取失败')
                 }else {
-                    console.log(result);
                     let porterList = JSON.parse(result);
                     this.getHistory(porterList);
 
@@ -60,6 +59,7 @@ class OrderSearch extends Component {
     _setSerachShow(context,index){
         this.setState({searchType:true,recordListSearch:[],searchContext:context});
         this.saveReport(context,index);
+        this._getOrders();
     }
     saveReport(context,index){
 
@@ -118,44 +118,50 @@ class OrderSearch extends Component {
 
 //搜索数据
     _getOrders(){
-        if(this.state.recordListSearch.length===0){
             let repRepairInfo = {
                         deptId: '1078386763486683138',
                         matterName:this.state.searchContext,
                      }
-            var   url="http://47.102.197.221:8188/api/repair/request/list"
+            var   url="/api/repair/request/list"
             var   data=repRepairInfo;
-            axios({
-                method: 'GET',
-                url: url,
-                data: data,
-                headers:{
-                    'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-                    'rcId':'1055390940066893827',
-                    'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
-                }
-            }).then(
-                (response) => {
-                        var records = response.data.data.records;
-                        this.setState({recordListSearch:records});
-                }
-            ).catch((error)=> {
-                console.log(error)
-            });
-        }
+
+        Axios.GetAxios(url,data).then(
+            (response) => {
+                var records = response.data.records;
+                this.setState({recordListSearch:records});
+            }
+        )
     }
 //渲染页面
-    _setOrderItem(){
+    _setOrderItem(searchContext){
+
         let recordList = this.state.recordListSearch;
         let listItems =(  recordList === null ? null : recordList.map((record, index) =>
-            <OrderItem key={index}  type={3} record={record} getEvaluate={()=>this.getEvaluate(record)} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
+            <OrderItem key={index} getRepairList={()=>this._getOrders()} type={3} record={record} getEvaluate={()=>this.getEvaluate(record,searchContext)} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
         ))
         return listItems;
     }
-    getEvaluate(record){
+    getEvaluate(record,searchContext){
         const { navigate } = this.props.navigation;
         navigate('Evaluate', {
             record: record,
+            callback: (
+                () => {
+                    let repRepairInfo = {
+                                deptId: '1078386763486683138',
+                                matterName:this.state.searchContext,
+                                limit:10000,
+                             }
+                    var   url="/api/repair/request/list?deptId="+repRepairInfo.deptId+"&matterName="+repRepairInfo.matterName+"&limit="+repRepairInfo.limit;
+                    var   data=repRepairInfo;
+                    Axios.GetAxios(url).then(
+                        (response) => {
+                            var records = response.data.records;
+                            this.setState({recordListSearch:records});
+                        }
+                    )
+                }
+            )
         })
     }
     _setModalVisible(repairId,sendDeptId,sendUserId) {
@@ -166,23 +172,15 @@ class OrderSearch extends Component {
                   sendDeptId: sendDeptId,
                   sendUserId: sendUserId
                }
-        axios({
-            method: 'POST',
-            url: 'http://47.102.197.221:8188/api/repair/request/remind',
-            data: data,
-            headers:{
+        var url='/api/repair/request/remind';
+        var headers={
                 'Content-type': 'application/json',
-                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-                'rcId':'1055390940066893827',
-                'Authorization':'5583be92-9de4-42cd-86c0-e704cba0fed6',
             }
-        }).then(
+        Axios.PostAxios(url,data).then(
             (response) => {
                 this.setState({modalVisible: true});
             }
-        ).catch((error)=> {
-            console.log(error)
-        });
+        )
     }else{
         this.setState({modalVisible: false})
         }
@@ -213,7 +211,7 @@ class OrderSearch extends Component {
         <Container style={{backgroundColor:'#f8f8f8'}}>
             <Content>
                 <Row>
-                    <TouchableHighlight onPress={()=>this.props.navigation.goBack()} style={{width:'10%',height:50}}>
+                    <TouchableHighlight onPress={()=>{this.props.navigation.goBack(),this.props.navigation.state.params.callback()}} style={{width:'10%',height:50}}>
                         <Image style={{width:12,height:25,margin:13}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
                     <Row style={{width:'80%',backgroundColor:'#f4f4f4',borderRadius:25}}>
@@ -241,8 +239,8 @@ class OrderSearch extends Component {
                     {this.state.searchType==true &&
                         <View style={{width:'100%',flexDirection:'row',flexWrap:'wrap'}}>
                             <Col>
-                            {this._getOrders()}
-                            {this._setOrderItem()}
+
+                            {this._setOrderItem(this.state.searchContext)}
                             </Col>
                         </View>
                     }
