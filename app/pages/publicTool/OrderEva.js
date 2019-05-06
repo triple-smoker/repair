@@ -146,8 +146,9 @@ class OrderEva extends Component {
         var imagesList = [];
         if(repair!=null&&repair!=''){
             var imagesCompleted = repair.fileMap.imagesCompleted;
-            var imagesSignature = repair.fileMap.imagesSignature;
-            imagesList = imagesCompleted.concat(imagesSignature);
+//            var imagesSignature = repair.fileMap.imagesSignature;
+//            imagesList = imagesCompleted.concat(imagesSignature);
+            imagesList = imagesCompleted;
         }
         var sum = imagesList.length;
         let listItems =(  imagesList === null ? null : imagesList.map((image, index) =>
