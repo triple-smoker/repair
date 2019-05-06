@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View,Text, Image, Platform, TouchableNativeFeedback} from 'react-native';
+import {View,Text, Image, Platform, TouchableNativeFeedback,StyleSheet} from 'react-native';
 import Modal from "react-native-modal";
 import {AudioRecorder, AudioUtils} from "react-native-audio";
 import Sound from "react-native-sound";
@@ -14,7 +14,9 @@ class SoundRecoding extends Component {
 		finished: false,
 		audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',
 		hasPermission: undefined,
-		visibleModal: false
+		visibleModal: false,
+		active : false,
+		showImage: true,
 	};
 	prepareRecordingPath(audioPath){
 		AudioRecorder.prepareRecordingAtPath(audioPath, {
@@ -29,15 +31,11 @@ class SoundRecoding extends Component {
 	componentDidMount() {
 		AudioRecorder.requestAuthorization().then((isAuthorised) => {
 			this.setState({ hasPermission: isAuthorised });
-
 			if (!isAuthorised) return;
-
 			this.prepareRecordingPath(this.state.audioPath);
-
 			AudioRecorder.onProgress = (data) => {
 				this.setState({currentTime: Math.floor(data.currentTime)});
 			};
-
 			AudioRecorder.onFinished = (data) => {
 				// Android callback comes in the form of a promise instead.
 				if (Platform.OS === 'ios') {
@@ -54,7 +52,6 @@ class SoundRecoding extends Component {
 	async stop() {
 		this.timer && clearTimeout(this.timer);
 		if (!this.state.recording) {
-			console.warn('Can\'t stop, not recording!');
 			return;
 		}
 
@@ -106,27 +103,28 @@ class SoundRecoding extends Component {
 	 */
 	async record() {
 
-		console.log('开始录制！');
+		this.timer = setInterval(() => {
+			this.setState(
+				{
+					showImage : !this.state.showImage
+				}
+			)
+		}, 1000);
+
+
 		this.timer = setTimeout(() => {
 			this.stop();
-			console.warn('录制时长最大60s!')
-		}, 5000);
+		}, 1000*60);
 		if (this.state.recording) {
-			console.warn('Already recording!');
 			return;
 		}
-
 		if (!this.state.hasPermission) {
-			console.warn('Can\'t record, no permission granted!');
 			return;
 		}
-
 		if(this.state.stoppedRecording){
 			this.prepareRecordingPath(this.state.audioPath);
 		}
-
 		this.setState({recording: true, paused: false});
-
 		try {
 			const filePath = await AudioRecorder.startRecording();
 		} catch (error) {
@@ -164,6 +162,16 @@ class SoundRecoding extends Component {
         )
     }
 
+    activeImage(){
+		let icon = this.state.active ? require('../image/azsh-1.png') : require('../image/azsh-0.png');
+		return <Image
+			style={{
+				top: -40,
+				width:'75%',
+				resizeMode:'contain'
+			}}
+			source={icon}/>
+	}
 
 	render(){
 		return(
@@ -189,27 +197,49 @@ class SoundRecoding extends Component {
 				</TouchableNativeFeedback>
 
 				<Modal
-					style={{
-						top: 170,
-						alignItems: 'center',}}
+					style={{alignItems: 'center',}}
 					isVisible={this.state.visibleModal}
 					swipeDirection="down"
 					onBackdropPress={() => this.setModalVisible()}>
-					<TouchableNativeFeedback
-						onPressIn={() => {this.record()}}
-						onPressOut={() => {this.stop()}}>
+
+					<View style={{flex: 1,flexDirection: 'row',alignItems: 'center',justifyContent: 'center',}}>
+
+						{this.state.showImage ? null: <Image
+							style={{marginLeft: 10, marginRight: 10}}
+							source={require('../image/duan.png')}/> }
+
 						<Image
-							style={{
-								width:'75%',
-								resizeMode:'contain'
-							}}
-							source={require('../image/azsh.png')}/>
+							style={{marginLeft: 10, marginRight: 10}}
+							source={require('../image/chang.png')}/>
+						<Text style={styles.duration} >0:{this.state.currentTime>9 ? this.state.currentTime : '0'+this.state.currentTime}</Text>
+						<Image
+							style={{marginLeft: 10, marginRight: 10}}
+							source={require('../image/chang.png')}/>
+						{this.state.showImage ? null: <Image
+							style={{marginLeft: 10, marginRight: 10}}
+							source={require('../image/duan.png')}/> }
+					</View>
+
+					<TouchableNativeFeedback
+						onPressIn={() => {this.record(), this.setState({active : true})}}
+						onPressOut={() => {this.stop(), this.setState({active : false})}}>
+						{this.activeImage()}
+
 					</TouchableNativeFeedback>
+					<Text style={styles.write}>最大录制时长一分钟</Text>
 				</Modal>
 
 			</View>
 		);
 	}
 }
-
+const styles = StyleSheet.create({
+	duration: {
+		color: '#fff',
+		fontSize: 72,
+	},
+	write: {
+		color: '#fff',
+	},
+});
 export default SoundRecoding;
