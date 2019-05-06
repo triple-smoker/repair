@@ -6,7 +6,7 @@ import MyFooter from '../components/MyFooter';
 import MultipleImagePicker from "../components/MultipleImagePicker";
 import axios from 'axios';
 import SoundRecoding from '../components/SoundRecoding';
-
+import Axios from '../util/Axios';
 class ConfirmReport extends Component {
 
     /**
@@ -31,11 +31,15 @@ class ConfirmReport extends Component {
 
         super(props);
         const { navigation } = this.props;
+        const repairTypeId = navigation.getParam('repairTypeId', '');
+        const repairMatterId = navigation.getParam('repairMatterId', '');
         const report = navigation.getParam('reporter');
         const images = navigation.getParam('images');
         const voices = navigation.getParam('voices');
         const desc = navigation.getParam('desc');
         this.state = {
+            repairTypeId : repairTypeId,
+            repairMatterId : repairMatterId,
             images : images,
             desc : desc,
             report : report,
@@ -43,36 +47,66 @@ class ConfirmReport extends Component {
         }
     }
 
+
+    async UpLoad(path, name) {
+
+        const apiToken = 'ac314f1f-38a1-4cff-ba7f-f231350c60bd';
+        let formData = new FormData();
+        let file = {type: 'multipart/form-data', uri: path, name: name};
+        formData.append("file",file);
+        const url = 'https://dev.jxing.com.cn/api/opcs/oss/upload'
+        let res = await axios(url,{
+            method:'POST',
+            headers:{
+                'Content-Type':'multipart/form-data',
+                'hospitalId': '1055390940066893827',
+                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                'Authorization': `Bearer ${apiToken}`,
+            },
+            data:formData,
+        })
+
+        return res.data
+    }
+
+    /**
+     * 提交信息，生成新的报修单
+     * @returns {Promise<void>}
+     */
     submit(){
 
-        let imagesRequest = [
-            {
-                "filePath":"https://dev.jxing.com.cn/test.jpg",
-                "fileName":"test.jpg",
-                "fileBucket":"000956",
-                "fileType": "image/jpeg",
-                "fileHost":"https://dev.jxing.com.cn"
-            }
+        let imagesRequest = [];
+        try {
+            let images = this.state.images;
 
-        ];
-        let voicesRequest = [
-            {
-                "filePath":"https://dev.jxing.com.cn/test.mp3",
-                "fileName":"test.mp3",
-                "fileBucket":"000956",
-                "fileType": "audio/mp3",
-                "fileHost":"https://dev.jxing.com.cn"
-            }
+            for(let i = 0; i<images.length; i++){
+                let image = images[i];
+                let img = this.UpLoad(image.uri, 'image'+ i + '.jpg');
+                img.then((s)=> imagesRequest.push(s));
 
-        ];
+            }
+        } catch (err) {
+            console.log(err)
+        }
+
+        let voicesRequest = [];
+
+        try {
+            let voice = this.state.voices;
+            console.log(voice)
+            let img = this.UpLoad('file://'+voice.filePath, 'voice.mp3');
+            img.then((s)=> voicesRequest.push(s));
+        } catch (err) {
+            console.log(err)
+        }
 
         let repRepairInfo = {
-            repairTypeId: "7777710032",
+            repairTypeId : this.state.repairTypeId,
+            repairMatterId : this.state.repairMatterId,
             buildingId: "1077448886292463618",
             floorId: "1077448886544121857",
             roomId: "1081114930919952386",
             inpatientWardId: "1078214053129289730",
-            repairMatterId: "888881093",
             matterName: this.state.desc,
             isUrgent:0,
             hopeRepairTime: "2019-01-10",
@@ -84,35 +118,23 @@ class ConfirmReport extends Component {
             imagesRequest : imagesRequest,
             voicesRequest : voicesRequest,
         };
-
-        axios({
-            method: 'POST',
-            url: '/api/repair/request/checkin',
-            data: repRepairInfo,
-        }).then(
-            (response) => {
-                console.log('----------------');
-                console.log(response);
+        console.log(repRepairInfo);
+        Axios.PostAxios(
+            '/api/repair/request/checkin',
+           repRepairInfo,
+        ).then(
+            () => {
+                alert("提交成功");
+                const { navigate } = this.props.navigation;
+                navigate('Home');
             }
-        ).catch((error)=> {
-            console.log('================');
-            console.log(error)
-        });
-
-        alert("提交成功");
-        const { navigate } = this.props.navigation;
-        navigate('Home');
-
+        )
     }
 
-
     render() {
-
         return (
-
             <Container  style={{backgroundColor: "#EEEEEE"}}>
                 <Content>
-
                     <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15}}>请确认您的报修单</Text>
                     <TextInput style={{color: '#000', textAlignVertical: 'top', backgroundColor: "#ffffff" , marginTop : '1.5%', marginLeft: '1.5%', marginRight: '1.5%',}}
                                multiline = {true}

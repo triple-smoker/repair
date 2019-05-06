@@ -7,7 +7,7 @@ import Notice from '../components/Notice';
 import SoundRecoding from '../components/SoundRecoding';
 import MyFooter from '../components/MyFooter';
 
-import Axios from '../util/Axios';
+
 
 import {TextInput ,Image, View} from "react-native";
 
@@ -37,6 +37,8 @@ export default class RepairScreen extends React.Component {
        const repairTypeId = navigation.getParam('repairTypeId', '');
        const repairMatterId = navigation.getParam('repairMatterId', '');
         this.state = {
+            repairTypeId : repairTypeId,
+            repairMatterId : repairMatterId,
             images: [],
             visibleModal: false,
             showNotice: false,
@@ -62,6 +64,9 @@ export default class RepairScreen extends React.Component {
         // alert(this.state.desc);
 
         const repairInfo = {
+            repairTypeId : this.state.repairTypeId,
+            repairMatterId : this.state.repairMatterId,
+            voices : this.state.record,
             images: this.state.images,
             desc : this.state.desc,
             reporter : {
