@@ -48,7 +48,7 @@ class OrderEvaluate extends Component {//主页面
         causeRemark:[],
         personList:[],
         wuZiList:[],
-        repair:[],
+        repair:"",
         evaluate:'',
         satisfactionLevel:'',
         dataArrayA : [  { title: "概况", content: <OrderItem type='4' record={thisRecord}/>}],
@@ -146,7 +146,7 @@ class OrderEvaluate extends Component {//主页面
             <Content style={{ backgroundColor: "white" }}>
                 {this.state.thisRecord.status==='8' &&
                     <Accordion
-                      dataArray={this.state.dataArrayD}
+                      dataArray={[{ title: "评价",  content: <OrderEva record={this.state.thisRecord} repair={this.state.repair} getSatisfactionLevel={(visible)=>this.getSatisfactionLevel(visible)} setRemark={(remark)=>this.setRemark(remark)} chCause={(cause)=>this.chCause(cause)} clearCause={()=>this.clearCause()}/> }]}
                       animation={true}
                       expanded={true}
                       renderHeader={this._renderHeader}

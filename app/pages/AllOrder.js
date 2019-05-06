@@ -63,7 +63,7 @@ class AllOrder extends Component {
                     this.setState({recordList1:[],tab1:0});
                 }else{
                     var records1 = response.data.records;
-                    console.log("==========================");
+                    console.log("当前订单");
                     console.log(records1);
                     this.setState({recordList1:records1,tab1:records1.length});
                 }
@@ -100,9 +100,16 @@ class AllOrder extends Component {
     }
 
 
-    goSearch(){
+    goSearch(getRepairList){
         const { navigate } = this.props.navigation;
-        navigate('OrderSearch')
+        navigate('OrderSearch',{
+            callback: (
+                () => {
+                        setTimeout(function(){
+                            getRepairList();
+                        },500)
+                })
+        })
     }
 
     onClose() {
@@ -134,76 +141,41 @@ class AllOrder extends Component {
       this.setState({searchVisible: visible});
     }
 
-    _setOrderItem(recordListTy,ty){
+    _setOrderItem(recordListTy,ty,getRepairList){
         let recordList = [];
             recordList = recordListTy;
         let listItems =(  recordList === null ? null : recordList.map((record, index) =>
-            <OrderItem key={index} getRepairList={()=>this.getRepairList()}  type={ty} getEvaluate={()=>this.getEvaluate(record)} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
+            <OrderItem key={index} getRepairList={()=>this.getRepairList()}  type={ty} getEvaluate={()=>this.getEvaluate(record,()=>getRepairList())} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
         ))
         return listItems;
     }
-    getEvaluate(record){
+    getEvaluate(record,getRepairList){
         const { navigate } = this.props.navigation;
         navigate('Evaluate', {
             record: record,
             callback: (
                 () => {
-                    let repRepairInfo = {
-                                page: 1,
-                                limit: 10000,
-                                deptId: '1078386763486683138',
-                                ownerId: '',
-                                status: ''
-                             }
-                    var    data1=repRepairInfo;
-                    var    data2=repRepairInfo;
-                    var    data3=repRepairInfo;
-                           data3.status='9,10,11';
-                    var url1 = "/api/repair/request/list/underway?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-                    var url2 = "/api/repair/request/list/evaluate?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-                    var url3 = "/api/repair/request/list?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId+"&status="+data3.status;
-                    Axios.GetAxios(url1).then(
-                        (response) => {
-                            if(Array.isArray(response.data)){
-                                this.setState({recordList1:[],tab1:0});
-                            }else{
-                                var records1 = response.data.records;
-                                this.setState({recordList1:records1,tab1:records1.length});
-                            }
-                        }
-                    )
-                    Axios.GetAxios(url2).then(
-                        (response) => {
-                            if(Array.isArray(response.data)){
-                                this.setState({recordList2:[],tab2:0});
-                            }else{
-                                var records2 = response.data.records;
-                                this.setState({recordList2:records2,tab2:records2.length});
-                            }
-                        }
-                    )
-                    Axios.GetAxios(url3).then(
-                        (response) => {
-                            if(Array.isArray(response.data)){
-                                this.setState({recordList3:[],tab3:0});
-                            }else{
-                                var records3 = response.data.records;
-                                this.setState({recordList3:records3,tab3:records3.length});
-                            }
-                        }
-                    )
+                    setTimeout(function(){
+                        getRepairList();
+                    },500)
                 }
             ),
         })
     }
 
 //报修导航
-    newRepair(repairTypeId,repairMatterId){
+    newRepair(repairTypeId,repairMatterId,getRepairList){
         this.setState({typeVisible: !this.state.typeVisible});
         const { navigate } = this.props.navigation;
         navigate('Repair',{
             repairTypeId:repairTypeId,
             repairMatterId:repairMatterId,
+            callback: (
+                () => {
+                    setTimeout(function(){
+                        getRepairList();
+                    },500)
+                })
         })
     }
 
@@ -216,7 +188,7 @@ class AllOrder extends Component {
                     <TouchableHighlight style={{width:'10%',height:50}} onPress={()=>this.goBack()}>
                         <Image style={{width:12,height:25,margin:13}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
-                    <Button  onPress={()=>this.goSearch()} transparent style={{width:'75%',backgroundColor:'#f4f4f4',borderRadius:25}}>
+                    <Button  onPress={()=>this.goSearch(()=>this.getRepairList())} transparent style={{width:'75%',backgroundColor:'#f4f4f4',borderRadius:25}}>
                             <Row>
                                 <Image style={{width:20,height:20,marginTop:5,marginLeft:10,marginRight:5}} source={require("../image/ico_seh.png")}/>
                                 <Text style={{marginTop:5,fontSize:16,color:'#d0d0d0'}}>请输入单号或内容</Text>
@@ -228,7 +200,7 @@ class AllOrder extends Component {
                             <Text style={{color:"#252525"}}>报修</Text>
                         </Row>
                     </TouchableHighlight>
-                    <OrderType goToRepair={(repairTypeId,repairMatterId)=>this.newRepair(repairTypeId,repairMatterId)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
+                    <OrderType goToRepair={(repairTypeId,repairMatterId)=>this.newRepair(repairTypeId,repairMatterId,()=>this.getRepairList())} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
             </Row>
             {this.state.searchVisible==true&&
                 <Tabs style={{backgroundColor:'#000'}}>
@@ -237,7 +209,7 @@ class AllOrder extends Component {
                             <Row style={{height:40}}>
                                 <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>{'-------共'+this.state.tab1+'条维修中工单-------'}</Text>
                             </Row>
-                            {this._setOrderItem(this.state.recordList1,1)}
+                            {this._setOrderItem(this.state.recordList1,1,()=>this.getRepairList())}
                         </View>
                   </Tab>
                   <Tab heading={'待评价('+this.state.tab2+')'} tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontSize:16}} activeTextStyle={{color:'#62c0c5',fontWeight:"normal",fontSize:16}}>
@@ -245,7 +217,7 @@ class AllOrder extends Component {
                             <Row style={{height:40}}>
                                 <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>{'-------共'+this.state.tab2+'条待评价工单-------'}</Text>
                             </Row>
-                            {this._setOrderItem(this.state.recordList2,2)}
+                            {this._setOrderItem(this.state.recordList2,2,()=>this.getRepairList())}
                         </View>
                   </Tab>
                 </Tabs>
@@ -257,7 +229,7 @@ class AllOrder extends Component {
                             <Row style={{height:40}}>
                                 <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>{'-------共'+this.state.tab3+'条维修工单-------'}</Text>
                             </Row>
-                            {this._setOrderItem(this.state.recordList3,3)}
+                            {this._setOrderItem(this.state.recordList3,3,()=>this.getRepairList())}
                         </View>
                   </Tab>
                 </Tabs>

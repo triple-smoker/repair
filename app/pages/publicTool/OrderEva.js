@@ -140,6 +140,18 @@ class OrderEva extends Component {
         ))
         return listItems;
     }
+    getImageItem(repair){
+        console.log("获取评价图片===========");
+        console.log(repair);
+        var imagesList = [];
+        if(repair!=null&&repair!=''){
+            var imagesCompleted = repair.fileMap.imagesCompleted;
+            var imagesSignature = repair.fileMap.imagesSignature;
+            imagesList = imagesCompleted.concat(imagesSignature);
+        }
+        console.log(imagesList);
+
+    }
 
 
   render() {
@@ -153,6 +165,7 @@ class OrderEva extends Component {
                   paginationStyle={{
                     bottom: -23, left: null, right: 10
                   }} loop>
+                    {this.getImageItem(this.props.repair)}
                     <ImageItem num='1' sum='3' imageurl='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554368276452&di=dfa6ac0f1342c8ec5e443861ad6f60c7&imgtype=0&src=http%3A%2F%2Fstatic.open-open.com%2Fnews%2FuploadImg%2F20160113%2F20160113102614_405.png'/>
                     <ImageItem num='2' sum='3' imageurl='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554368276452&di=dfa6ac0f1342c8ec5e443861ad6f60c7&imgtype=0&src=http%3A%2F%2Fstatic.open-open.com%2Fnews%2FuploadImg%2F20160113%2F20160113102614_405.png'/>
                     <ImageItem num='3' sum='3' imageurl='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554368276452&di=dfa6ac0f1342c8ec5e443861ad6f60c7&imgtype=0&src=http%3A%2F%2Fstatic.open-open.com%2Fnews%2FuploadImg%2F20160113%2F20160113102614_405.png'/>

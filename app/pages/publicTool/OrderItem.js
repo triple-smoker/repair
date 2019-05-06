@@ -37,9 +37,6 @@ class Adds extends Component {//报修单共用组件
     _setCancelVisible() {
       this.setState({cancelVisible: !this.state.cancelVisible});
     }
-    _cancelOrder(){
-        Alert.alert("取消订单")
-    }
     _showText(){
         this.setState({showText: !this.state.showText});
     }
@@ -308,9 +305,8 @@ class CancelMd extends Component {
         Axios.PostAxios(url,data,headers).then(
             (response) => {
                         setTimeout(function(){
-                            Alert.alert("123");
                             getRepairList();
-                        },5000)
+                        },500)
                     }
         )
 
@@ -331,7 +327,7 @@ class CancelMd extends Component {
                                 {this.state.reMark}
                             </Textarea>
                             <Button style={{width:60,marginLeft:ScreenWidth-140,alignItems:'center',justifyContent:"center",backgroundColor:'#fff',marginTop:12}}
-                                onPress={()=>{this.props.Closer(),this.pushCancel(this.props.record,this.props.getRepairList())}}>
+                                onPress={()=>{this.props.Closer(),this.pushCancel(this.props.record,()=>this.props.getRepairList())}}>
                                 <Text>确认</Text>
                             </Button>
                          </Col>

@@ -42,7 +42,7 @@ axios.interceptors.response.use(
         return Promise.reject(error)
     }
 )
-const apiToken = 'ac314f1f-38a1-4cff-ba7f-f231350c60bd';
+const apiToken = 'b04d3d72-39c9-464f-b11d-109c19d1cbc8';
 const defaultData = {};
 const postUrl = 'https://dev.jxing.com.cn';
 function PostAxios(url = '', data = defaultData,headers={} ) {

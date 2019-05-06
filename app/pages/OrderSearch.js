@@ -211,7 +211,7 @@ class OrderSearch extends Component {
         <Container style={{backgroundColor:'#f8f8f8'}}>
             <Content>
                 <Row>
-                    <TouchableHighlight onPress={()=>this.props.navigation.goBack()} style={{width:'10%',height:50}}>
+                    <TouchableHighlight onPress={()=>{this.props.navigation.goBack(),this.props.navigation.state.params.callback()}} style={{width:'10%',height:50}}>
                         <Image style={{width:12,height:25,margin:13}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
                     <Row style={{width:'80%',backgroundColor:'#f4f4f4',borderRadius:25}}>
