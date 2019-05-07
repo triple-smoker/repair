@@ -252,9 +252,7 @@ class OrderSearch extends Component {
                         animationType={"slide"}
                         transparent={true}
                         visible={this.state.modalVisible}
-                        onRequestClose={() => {
-                                   alert("Modal has been closed.");
-                                 }}
+                        onRequestClose={() =>this._setModalVisible()}
                     >
                         <MD Closer = {() => this._setModalVisible()} />
                     </Modal>

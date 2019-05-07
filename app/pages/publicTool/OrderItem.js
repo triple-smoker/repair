@@ -72,8 +72,8 @@ class Adds extends Component {//报修单共用组件
             <Content style={{backgroundColor:'#fff',marginBottom:10,paddingBottom:10,paddingLeft:16,paddingRight:16,borderRadius:10}}>
                 <View  style={{borderBottomWidth:1,borderColor:'#dfdfdf',paddingBottom:10}}>
                     <Row>
-                        <TouchableOpacity style={{width:25}}>
-                            <Image style={{marginTop:13,width:20,height:20,paddingRight:5}} source={require("../../image/btn_yy.png")}/>
+                        <TouchableOpacity style={{width:30}}>
+                            <Image style={{marginTop:10,width:25,height:25,paddingRight:5}} source={require("../../image/btn_yy.png")}/>
                         </TouchableOpacity>
                         <TouchableOpacity style={{width:ScreenWidth-55}} onPress={()=>this._showText()}>
                             {this.state.showText==false &&
@@ -100,13 +100,13 @@ class Adds extends Component {//报修单共用组件
                                   <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>已取消</Text>
                                 }
                                 {this.props.record.status==='10' &&
-                                  <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>误报</Text>
+                                  <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}> 误报</Text>
                                 }
                                 {this.props.record.status==='9' &&
                                   <Text style={{color:'#6de37e',alignItems:'center',marginLeft:10}}>已评价</Text>
                                 }
                                 {this.props.record.status==='13' &&
-                                  <Text style={{color:'#f0e292',alignItems:'center',marginLeft:10}}>委外</Text>
+                                  <Text style={{color:'#f0e292',alignItems:'center',marginLeft:10}}> 委外</Text>
                                 }
                         </Col>}
                         <Col>
@@ -123,10 +123,10 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.detailAddress}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.repairUserName}</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:30}}>{this.props.record.repairUserMobile}</Text>
+                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={{fontSize:14,marginLeft:10,color:"#737373",width:"30%"}}>{this.props.record.repairUserMobile}</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:"2%"}}>{this.props.record.repairUserMobile}</Text>
                             {(this.props.record.repairUserMobile != '' && this.props.record.repairUserMobile!=null) &&
                                 <TouchableHighlight
-                                    style={{width:20,height:20,backgroundColor:'#fff',marginLeft:20}}
+                                    style={{width:20,height:20,backgroundColor:'#fff',marginLeft:"2%"}}
                                     onPress={() => Linking.openURL(`tel:${this.props.record.repairUserMobile}`)}>
                                     <Image style={{width:20,height:20}} source={require("../../image/list_call.png")}/>
                                 </TouchableHighlight>
@@ -167,9 +167,7 @@ class Adds extends Component {//报修单共用组件
                             animationType={"slide"}
                             transparent={true}
                             visible={this.state.modalVisible}
-                            onRequestClose={() => {
-                                       alert("Modal has been closed.");
-                                     }}
+                            onRequestClose={() =>this._setModalVisible()}
                         >
                         <PictureMd Closer = {() => this._setModalVisible()} imagesRequest={this.props.record.fileMap.imagesRequest} />
                         </Modal>
@@ -177,9 +175,7 @@ class Adds extends Component {//报修单共用组件
                             animationType={"slide"}
                             transparent={true}
                             visible={this.state.cancelVisible}
-                            onRequestClose={() => {
-                                       alert("Modal has been closed.");
-                                     }}
+                            onRequestClose={() =>this._setCancelVisible()}
                         >
                         <CancelMd Closer = {() => this._setCancelVisible()} getRepairList={()=>this.props.getRepairList()} record={this.props.record}/>
                         </Modal>
@@ -203,7 +199,7 @@ class PictureMd extends Component {
                 <ImageItem num={index+1} sum={i}  imageurl={imageItem.filePath} key={index}/>
             ))
         }else{
-            listItems = <View style={{width:ScreenWidth,flex: 1,height:210,justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
+            listItems = <View style={{width:ScreenWidth,flex: 1,backgroundColor:'#000',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
         }
         return listItems;
     }
@@ -214,8 +210,9 @@ class PictureMd extends Component {
                     <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={this.props.Closer}>
                     </TouchableOpacity>
                     <View style={modalStyles.innerContainer}>
-                        <View style={{width:ScreenWidth,height:220,backgroundColor:'#fff'}}>
+                        <View>
                          <Swiper
+                           style={{width:ScreenWidth}}
                            onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
                            dot={<View style={{backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                            activeDot={<View style={{backgroundColor: '#000', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
@@ -236,8 +233,8 @@ class ImageItem extends Component{
     render(){
         return (
             <View style={stylesImage.slide}>
-                <Image resizeMode='stretch' style={stylesImage.image} source={{uri:this.props.imageurl}} />
-                <View style={{position: 'absolute',left:ScreenWidth-50,top:180,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
+                <Image resizeMode='contain' style={stylesImage.image} source={{uri:this.props.imageurl}} />
+                <View style={{position: 'relative',left:ScreenWidth-50,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
             </View>
         )
     }
@@ -358,7 +355,6 @@ const stylesImage =StyleSheet.create({
   image: {
     width:ScreenWidth,
     flex: 1,
-    height:210
   }
 })
 const stylesBody=StyleSheet.create({
@@ -387,7 +383,6 @@ const modalStyles = StyleSheet.create({
     innerContainer: {
         borderRadius: 10,
         alignItems:'center',
-        backgroundColor: '#fff',
     },
     btnContainer:{
         width:ScreenWidth,
