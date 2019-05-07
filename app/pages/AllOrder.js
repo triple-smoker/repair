@@ -241,9 +241,7 @@ class AllOrder extends Component {
                 animationType={"slide"}
                 transparent={true}
                 visible={this.state.modalVisible}
-                onRequestClose={() => {
-                           alert("Modal has been closed.");
-                         }}
+                onRequestClose={() =>this._setModalVisible()}
             >
             <MD Closer = {() => this._setModalVisible()} />
             </Modal>
@@ -256,7 +254,7 @@ class AllOrder extends Component {
                         style={{width: 25,height:25}}
                         source={(this.state.searchVisible==true) ? require('../image/tab_ico_wdwx_pre.png'):require('../image/tab_ico_wdwx_nor.png')}
                     />
-                    <Text style={{color:(this.state.searchVisible==true) ?'#56c3c8':'#a6a6a6',fontSize:12}}>历史报修</Text>
+                    <Text style={{color:(this.state.searchVisible==true) ?'#56c3c8':'#a6a6a6',fontSize:12}}>当前报修</Text>
                 </Col>
             </Button>
             <Button full style={{backgroundColor:'#fafafa'}} onPress={()=>this._setSearchVisible(false)} >

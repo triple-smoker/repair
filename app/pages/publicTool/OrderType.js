@@ -21,9 +21,7 @@ class OrderType extends Component {
                 animationType={"slide"}
                 transparent={true}
                 visible={this.props.modalVisible}
-                onRequestClose={() => {
-                           alert("Modal has been closed.");
-                         }}
+                onRequestClose={() =>this.props.isShowModal()}
             >
                 <TypeMd Close={this.props.isShowModal} goToRepair={this.props.goToRepair} />
             </Modal>
@@ -41,36 +39,18 @@ class TypeMd extends Component {
         repairChild:'',
         repairCareList:[]};
         var   url="/api/repair/repRepairType/list";
-
+//接口获取报修类型
         Axios.GetAxios(url).then(
             (response) => {
                     var types = response.data;
                     this.setState({repairList:types});
                     }
         )
-
-//        axios({
-//            method: 'GET',
-//            url: url,
-//            data: null,
-//            headers:{
-//                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-//                'rcId':'1055390940066893827',
-//                'Authorization':'6c7cf948-bdf9-4bde-8fea-f1256183f388',
-//            }
-//        }).then(
-//            (response) => {
-//                    var types = response.data.data;
-//                    this.setState({repairList:types});
-//            }
-//        ).catch((error)=> {
-//            console.log(error)
-//        });
-
       }
       setParent(visible,ctn){
         this.setState({repairParent:visible,repairParentCn:ctn})
       }
+//渲染一级类型
       getRepair(){
         let repairList = this.state.repairList;
         let listItems = (  repairList === null ? null : repairList.map((repair, index) =>
@@ -81,6 +61,7 @@ class TypeMd extends Component {
         ))
         return listItems;
       }
+//接口获取快修选项
       setChild(visible,ctn){
         this.setState({repairChild:visible,repairChildCn:ctn})
         var   url="/api/repair/repRepairType/getRepairMatterList";
@@ -96,25 +77,8 @@ class TypeMd extends Component {
                     }
         )
 
-//        axios({
-//            method: 'POST',
-//            url: url,
-//            data: data,
-//            headers:{
-//                'Content-type':'application/json',
-//                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-//                'rcId':'1055390940066893827',
-//                'Authorization':'6c7cf948-bdf9-4bde-8fea-f1256183f388',
-//            }
-//        }).then(
-//            (response) => {
-//                    var cares = response.data.data;
-//                    this.setState({repairCareList:cares});
-//            }
-//        ).catch((error)=> {
-//            console.log(error)
-//        });
       }
+//渲染二级类型
       getRepairChild(){
         let repairList = this.state.repairList;
         var repairParentList = repairList.find(item=>item.repairTypeId==this.state.repairParent);
@@ -127,7 +91,6 @@ class TypeMd extends Component {
         ))
         return listItems;
       }
-
         render(){
             return (
                 <View style={modalStyles.container}>
@@ -194,7 +157,10 @@ const modalStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        padding:20
+        paddingLeft:"7%",
+        paddingRight:"7%",
+        paddingTop:"5%",
+        paddingBottom:"5%",
     },
     innerContainer: {
         borderRadius: 10,
@@ -202,11 +168,7 @@ const modalStyles = StyleSheet.create({
         alignItems:'center',
         backgroundColor: '#fff',
     },
-    btnContainer: {
-        width:'33.3333%',
-        height:40,
-        backgroundColor:'#666'
-    }
+
 });
 
 
