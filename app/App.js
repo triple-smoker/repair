@@ -2,7 +2,7 @@
  * Sample React Native App
  * https://github.com/facebook/react-native
  *
- * @format  5.7
+ * @format  5.7  5.7
  * @flow
  */
 
