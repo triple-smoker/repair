@@ -59,7 +59,7 @@ class OrderSearch extends Component {
     _setSerachShow(context,index){
         this.setState({searchType:true,recordListSearch:[],searchContext:context});
         this.saveReport(context,index);
-        this._getOrders();
+        this._getOrders(context);
     }
     saveReport(context,index){
 
@@ -117,18 +117,22 @@ class OrderSearch extends Component {
     }
 
 //搜索数据
-    _getOrders(){
+    _getOrders(searchContext){
             let repRepairInfo = {
                         deptId: '1078386763486683138',
-                        matterName:this.state.searchContext,
+                        matterName:searchContext,
                      }
-            var   url="/api/repair/request/list"
+            var   url="/api/repair/request/list?limit=10000&deptId="+repRepairInfo.deptId+"&matterName="+repRepairInfo.matterName
             var   data=repRepairInfo;
-
-        Axios.GetAxios(url,data).then(
+        console.log(url);
+        Axios.GetAxios(url).then(
             (response) => {
-                var records = response.data.records;
-                this.setState({recordListSearch:records});
+                console.log("搜索====================")
+                console.log(response)
+                if(!Array.isArray(response.data)){
+                    var records = response.data.records;
+                    this.setState({recordListSearch:records});
+                }
             }
         )
     }
@@ -137,7 +141,7 @@ class OrderSearch extends Component {
 
         let recordList = this.state.recordListSearch;
         let listItems =(  recordList === null ? null : recordList.map((record, index) =>
-            <OrderItem key={index} getRepairList={()=>this._getOrders()} type={3} record={record} getEvaluate={()=>this.getEvaluate(record,searchContext)} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
+            <OrderItem key={index} getRepairList={()=>this._getOrders(searchContext)} type={3} record={record} getEvaluate={()=>this.getEvaluate(record,searchContext)} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
         ))
         return listItems;
     }
