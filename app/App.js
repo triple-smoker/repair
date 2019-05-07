@@ -2,7 +2,7 @@
  * Sample React Native App
  * https://github.com/facebook/react-native
  *
- * @format
+ * @format  5.7  5.7
  * @flow
  */
 
@@ -18,6 +18,7 @@ import RepairScreen from './pages/RepairScreen';
 import HomeScreen from './pages/HomeScreen';
 import ConfirmReport from './pages/ConfirmReport';
 import OrderSearch from './pages/OrderSearch';
+import Axios from "./util/Axios";
 
 
 const AppNavigator = createStackNavigator(
@@ -35,6 +36,15 @@ const AppNavigator = createStackNavigator(
         initialRouteName: "Home"
     }
 );
+
+
+Axios.GetAxios('/api/auth/oauth/token?username=10001&password=BlvxyJFFYLcg7n2OB4G5uA%3D%3D&grant_type=password&scope=server').then(
+    (response) => {
+        global.userToken = response.access_token;
+        console.log(response.access_token)
+        // DeviceStorage.save('access_token',response.access_token)
+    }
+)
 
 const AppContainer = createAppContainer(AppNavigator);
 

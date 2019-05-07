@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import {
     Image,
-    ImageBackground,
-    Alert,
     Dimensions,
     StyleSheet,
     Modal,
     TouchableHighlight,
     TouchableOpacity,
     View,
-    TextInput,
 } from 'react-native';
-import {  Footer,FooterTab,TabHeading,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
+import {  Footer,FooterTab,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 import Axios from '../util/Axios';
 import OrderType from './publicTool/OrderType'
 import OrderItem from './publicTool/OrderItem';
@@ -40,6 +37,9 @@ class AllOrder extends Component {
                 recordList3:[],
              };
             this.getRepairList();
+
+
+
     }
 
     getRepairList(){
@@ -255,7 +255,7 @@ class AllOrder extends Component {
                 </Col>
             </Button>
             <Button full style={{backgroundColor:'#fafafa'}} onPress={()=>this._setSearchVisible(false)} >
-                <Col style={{flex: 1,alignItems:'center',alignItems:'center'}}>
+                <Col style={{flex: 1,alignItems:'center'}}>
                    <Image
                         style={{width: 25,height:25}}
                         source={(this.state.searchVisible==true) ? require('../image/tab_ico_lswx_nor.png'):require('../image/tab_ico_lswx_pre.png')}
