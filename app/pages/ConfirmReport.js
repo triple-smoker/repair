@@ -123,10 +123,11 @@ class ConfirmReport extends Component {
             '/api/repair/request/checkin',
            repRepairInfo,
         ).then(
-            () => {
+            (res) => {
+                console.log(res);
                 alert("提交成功");
                 const { navigate } = this.props.navigation;
-                navigate('Home');
+                navigate('AllOrder');
             }
         )
     }

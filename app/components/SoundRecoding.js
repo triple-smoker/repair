@@ -5,7 +5,9 @@ import {AudioRecorder, AudioUtils} from "react-native-audio";
 import Sound from "react-native-sound";
 
 
+
 class SoundRecoding extends Component {
+
 	state = {
 		currentTime: 0.0,
 		recording: false,
@@ -50,6 +52,7 @@ class SoundRecoding extends Component {
 	 * @returns {Promise<void>}
 	 */
 	async stop() {
+	    clearInterval(this.showImagetimer);
 		this.timer && clearTimeout(this.timer);
 		if (!this.state.recording) {
 			return;
@@ -67,6 +70,10 @@ class SoundRecoding extends Component {
 		} catch (error) {
 			console.error(error);
 		}
+
+
+
+
 	}
 
 	/**
@@ -103,13 +110,13 @@ class SoundRecoding extends Component {
 	 */
 	async record() {
 
-		this.timer = setInterval(() => {
+		 this.showImagetimer = setInterval(() => {
 			this.setState(
 				{
 					showImage : !this.state.showImage
 				}
 			)
-		}, 1000);
+		}, 800);
 
 
 		this.timer = setTimeout(() => {
@@ -204,7 +211,7 @@ class SoundRecoding extends Component {
 
 					<View style={{flex: 1,flexDirection: 'row',alignItems: 'center',justifyContent: 'center',}}>
 
-						{this.state.showImage ? null: <Image
+						{!this.state.showImage ? null: <Image
 							style={{marginLeft: 10, marginRight: 10}}
 							source={require('../image/duan.png')}/> }
 
@@ -215,14 +222,14 @@ class SoundRecoding extends Component {
 						<Image
 							style={{marginLeft: 10, marginRight: 10}}
 							source={require('../image/chang.png')}/>
-						{this.state.showImage ? null: <Image
+						{!this.state.showImage ? null: <Image
 							style={{marginLeft: 10, marginRight: 10}}
 							source={require('../image/duan.png')}/> }
 					</View>
 
 					<TouchableNativeFeedback
 						onPressIn={() => {this.record(), this.setState({active : true})}}
-						onPressOut={() => {this.stop(), this.setState({active : false})}}>
+						onPressOut={() => {this.stop(), this.setState({active : false}),this.setModalVisible()}}>
 						{this.activeImage()}
 
 					</TouchableNativeFeedback>
