@@ -4,7 +4,7 @@ import { Alert } from 'react-native'
 axios.interceptors.request.use(
 
     function(config) {
-        const apiToken = 'b04d3d72-39c9-464f-b11d-109c19d1cbc8';
+        const apiToken = '24cea760-7884-433f-877d-b3778dab4209';
         // 添加响应头等等设置
         let headers = {
             'hospitalId': '1055390940066893827',
@@ -42,7 +42,7 @@ axios.interceptors.response.use(
         return Promise.reject(error)
     }
 )
-const apiToken = 'b04d3d72-39c9-464f-b11d-109c19d1cbc8';
+const apiToken = '24cea760-7884-433f-877d-b3778dab4209';
 const defaultData = {};
 const postUrl = 'https://dev.jxing.com.cn';
 function PostAxios(url = '', data = defaultData,headers={} ) {
