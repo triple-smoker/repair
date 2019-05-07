@@ -118,7 +118,7 @@ export default class RepairScreen extends React.Component {
                                numberOfLines = {4}
                                onChangeText={(text) => this.setState({desc : text})}
                                value={this.state.desc}
-                               placeholder={"我的报修内容..."}
+                               placeholder={"我的报修内容..."+ global.userToken}
                     />
                     <SoundRecoding recordCallBack = {(record)=>this.recordCallBack(record)}/>
                     <MultipleImagePicker

@@ -40,6 +40,9 @@ class AllOrder extends Component {
                 recordList3:[],
              };
             this.getRepairList();
+
+
+
     }
 
     getRepairList(){
@@ -257,7 +260,7 @@ class AllOrder extends Component {
                 </Col>
             </Button>
             <Button full style={{backgroundColor:'#fafafa'}} onPress={()=>this._setSearchVisible(false)} >
-                <Col style={{flex: 1,alignItems:'center',alignItems:'center'}}>
+                <Col style={{flex: 1,alignItems:'center'}}>
                    <Image
                         style={{width: 25,height:25}}
                         source={(this.state.searchVisible==true) ? require('../image/tab_ico_lswx_nor.png'):require('../image/tab_ico_lswx_pre.png')}

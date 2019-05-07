@@ -1,10 +1,12 @@
 import axios from 'axios'
 import { Alert } from 'react-native'
 //请求拦截器
+
 axios.interceptors.request.use(
 
     function(config) {
-        const apiToken = '24cea760-7884-433f-877d-b3778dab4209';
+        // const apiToken = global.userToken;
+        const apiToken = global.userToken;
         // 添加响应头等等设置
         let headers = {
             'hospitalId': '1055390940066893827',
@@ -42,10 +44,14 @@ axios.interceptors.response.use(
         return Promise.reject(error)
     }
 )
-const apiToken = '24cea760-7884-433f-877d-b3778dab4209';
+// const apiToken = '24cea760-7884-433f-877d-b3778dab4209';
 const defaultData = {};
 const postUrl = 'https://dev.jxing.com.cn';
 function PostAxios(url = '', data = defaultData,headers={} ) {
+
+    console.log(url);
+    console.log(apiToken)
+
     return axios({
         method: 'POST',
         url : postUrl + url,
@@ -56,15 +62,12 @@ function PostAxios(url = '', data = defaultData,headers={} ) {
 
 const getUrl = 'http://47.102.197.221:8188';
 function GetAxios(url = '', data = defaultData, ) {
+
     return axios({
         method: 'GET',
         url : getUrl + url,
         data,
-        headers : {
-            'hospitalId': '1055390940066893827',
-            'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-            'Authorization': `Bearer ${apiToken}`,
-        }
+
     })
 }
 
@@ -75,12 +78,6 @@ function UpLoad(path) {
     const url = 'https://dev.jxing.com.cn/api/opcs/oss/upload'
     axios(url,{
         method:'POST',
-        headers:{
-            'Content-Type':'multipart/form-data',
-            'hospitalId': '1055390940066893827',
-            'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-            'Authorization': `Bearer ${apiToken}`,
-        },
         data:formData,
         })
     }

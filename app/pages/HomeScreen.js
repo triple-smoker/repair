@@ -5,8 +5,7 @@ import Icon from 'react-native-vector-icons';
 import { Container, } from 'native-base';
 
 import ImagePicker from 'react-native-image-picker';
-
-import Axios from '../util/Axios';
+import DeviceStorage from '../util/DeviceStorage';
 
 export default class HomeScreen extends React.Component {
 
@@ -16,35 +15,9 @@ export default class HomeScreen extends React.Component {
             image: null,
             video: null
         };
-        // console.log("123456");
-        //http://10.145.196.107:8082/api/repair/repRepairInfo/dept/list?page=1&limit=5
-        // axios({
-        //     method: 'GET',
-        //     url: 'http://10.144.4.45:8080/api/basic/baseDept/getDeptListByType',
-        //     headers : {
-        //         'rcId':'1055390940066893827',
-        //         'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-        //         'Authorization' :'Bearer b3d21a2e-81ff-422c-b881-25fb241fb6ad',
-        //     }
-        // }).then(
-        //     (response) => {
-        //         console.log('----------------');
-        //         console.log(response);
-        //     }
-        // ).catch((error)=> {
-        //     console.log('=======================');
-        //     console.log(error)
-        // });
-
-
-        Axios.GetAxios('/api/basic/baseDept/getDeptListByType').then(
-            (response) => {
-                        console.log('----------------');
-                        console.log(response);
-                    }
-        )
 
     }
+
 
 
     static navigationOptions = {
@@ -136,6 +109,13 @@ export default class HomeScreen extends React.Component {
         },5000)
     }
 
+    change(){
+
+
+        console.log(global.userToken)
+
+    }
+
     render() {
         return (
                 <Container>
@@ -164,7 +144,7 @@ export default class HomeScreen extends React.Component {
                         />
                         <Button
                             title="清空缓存"
-                            onPress={() => this._deleteData()}
+                            onPress={() => this.change()}
                         />
                         <Button
                             title="搜索"
@@ -180,8 +160,9 @@ export default class HomeScreen extends React.Component {
                         <Text style={styles.text}>Select Single Video With Camera</Text>
                     </TouchableOpacity>
 
-
-
+                    <Text>
+                        {global.userToken}
+                    </Text>
                 </Container>
 
 
