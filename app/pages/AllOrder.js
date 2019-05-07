@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import {
     Image,
-    ImageBackground,
-    Alert,
     Dimensions,
     StyleSheet,
     Modal,
     TouchableHighlight,
     TouchableOpacity,
     View,
-    TextInput,
 } from 'react-native';
-import {  Footer,FooterTab,TabHeading,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
+import {  Footer,FooterTab,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 import Axios from '../util/Axios';
 import OrderType from './publicTool/OrderType'
 import OrderItem from './publicTool/OrderItem';
