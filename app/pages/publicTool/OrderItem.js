@@ -123,10 +123,10 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.detailAddress}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={{fontSize:14,marginLeft:10,color:"#737373",width:"30%"}}>{this.props.record.repairUserMobile}</Text><Text style={{fontSize:14,color:'#737373',paddingLeft:"2%",width:"35%"}}>{this.props.record.repairUserMobile}</Text>
+                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={{fontSize:14,marginLeft:10,color:"#737373",width:"30%"}}>{this.props.record.repairUserName}</Text>
                             {(this.props.record.repairUserMobile != '' && this.props.record.repairUserMobile!=null) &&
                                 <TouchableHighlight
-                                    style={{width:20,height:20,backgroundColor:'#fff',marginLeft:"1%"}}
+                                    style={{width:20,height:20,backgroundColor:'#fff',marginLeft:"2%"}}
                                     onPress={() => Linking.openURL(`tel:${this.props.record.repairUserMobile}`)}>
                                     <Image style={{width:20,height:20}} source={require("../../image/list_call.png")}/>
                                 </TouchableHighlight>
@@ -209,11 +209,11 @@ class PictureMd extends Component {
                 <View style={stylesImage.container}>
                     <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={this.props.Closer}>
                     </TouchableOpacity>
-                         <View style={{width:ScreenWidth,height:ScreenHeight,alignItems:'center',backgroundColor:'#000',justifyContent:'center'}}>
+                         <View style={{width:ScreenWidth,height:ScreenHeight,alignItems:'center',backgroundColor:'rgba(0, 0, 0, 0.5)',justifyContent:'center'}}>
                          <Swiper
                          style={{width:ScreenWidth,height:ScreenHeight}}
                            onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
-                           dot={<View style={{backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
+                           dot={<View style={{backgroundColor: 'rgba(0,0,0,0.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                            activeDot={<View style={{backgroundColor: '#000', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                            paginationStyle={{
                              bottom: -23, left: null, right: 10
