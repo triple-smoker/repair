@@ -4,9 +4,8 @@ export default class Notice extends Component{
     render() {
         return (
             <View style={styles.notice}>
-                {/*<Icon style={styles.IconColor} type="AntDesign" name='notification' />*/}
                 <Image style={{width: 16, height: 16, marginRight: 5}} source={require('../image/ico_tips.png')}/>
-                <Text style={{color:'#dbb582' ,fontSize: 16,textAlign: 'center'}}>请您上传或拍摄报修照片</Text>
+                <Text style={{color:'#dbb582' ,fontSize: 16,textAlign: 'center'}}>{this.props.text}</Text>
             </View>
         );
     }

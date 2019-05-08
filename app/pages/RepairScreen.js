@@ -6,6 +6,7 @@ import Notice from '../components/Notice';
 import SoundRecoding from '../components/SoundRecoding';
 import MyFooter from '../components/MyFooter';
 import {TextInput ,Image, View} from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 
 export default class RepairScreen extends React.Component {
@@ -43,6 +44,27 @@ export default class RepairScreen extends React.Component {
                 filePath : '',
             }
         }
+
+
+        AsyncStorage.getItem('reporterInfoHistory',function (error, result) {
+                if (error) {
+
+                }else {
+                    let porterList = JSON.parse(result);
+
+                    if( porterList!=null && porterList.length>0 ){
+                        let reporter = porterList[0]
+                        this.setState({
+                            reporter: reporter.name,
+                            phone: reporter.phone,
+                            address: reporter.address,
+                        });
+                    }
+
+                }
+            }.bind(this)
+        )
+
     }
 
 
@@ -112,7 +134,7 @@ export default class RepairScreen extends React.Component {
         return (
             <Container style={{backgroundColor: "#EEEEEE"}}>
                 <Content >
-                    {this.state.showNotice ? <Notice /> : null}
+                    {this.state.showNotice ? <Notice text = '请您上传或拍摄报修照片' /> : null}
                     <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginTop : '1.5%', marginLeft: '1.5%', marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}

@@ -48,10 +48,6 @@ axios.interceptors.response.use(
 const defaultData = {};
 const postUrl = 'https://dev.jxing.com.cn';
 function PostAxios(url = '', data = defaultData,headers={} ) {
-
-    console.log(url);
-    console.log(apiToken)
-
     return axios({
         method: 'POST',
         url : postUrl + url,

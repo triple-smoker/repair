@@ -3,6 +3,7 @@ import {StyleSheet, Alert, Image, TextInput, View} from 'react-native';
 import {Row, Container, Content, Left, Right, Button, Text, List, ListItem} from 'native-base';
 import MyFooter from '../components/MyFooter';
 import AsyncStorage from '@react-native-community/async-storage';
+import Notice from '../components/Notice';
 
 class MyAddress extends Component {
 
@@ -17,7 +18,6 @@ class MyAddress extends Component {
             flex:1,
             textAlign: 'center'
         }
-
     };
 
     constructor(props) {
@@ -32,6 +32,9 @@ class MyAddress extends Component {
             AddPhone: AddPhone,
             AddAdds: AddAdds,
             reporterList : [],
+            showNotice : false,
+            noticeText: '',
+
         };
 
         AsyncStorage.getItem('reporterInfoHistory',function (error, result) {
@@ -46,7 +49,6 @@ class MyAddress extends Component {
 
                     // alert('读取完成')
                 }
-
             }.bind(this)
         )
 
@@ -67,10 +69,40 @@ class MyAddress extends Component {
     }
 
 
+
+        // 是否电话号码
+        isPhoneNumber = (phoneNumber) => {
+            const reg = /^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$/;
+            return reg.test(phoneNumber);
+        };
+
     saveReport(){
+        console.log(this.state.AddName)
+        if(this.state.AddName===undefined){
+            this.setState({
+                showNotice : true,
+                noticeText: '姓名不允许为空！',
+            })
+            return;
+        }
+        console.log(this.state.AddPhone)
+        if(!this.isPhoneNumber(this.state.AddPhone)){
+            this.setState({
+                showNotice : true,
+                noticeText: '请填写正确的手机号！',
+            })
+            return;
+        }
+        console.log(this.state.AddAdds)
+        if(this.state.AddAdds===undefined){
+            this.setState({
+                showNotice : true,
+                noticeText: '地址不允许为空！',
+            })
+            return;
+        }
 
         let key = 'reporterInfoHistory';
-
         let reporterList = this.state.reporterList;
         let info = {
             name : this.state.AddName,
@@ -83,18 +115,35 @@ class MyAddress extends Component {
             reporterList = new Array()
         }
 
-        reporterList.splice(0,0,info);
 
-        if(reporterList.length >=6){
-            reporterList.pop()
+        // callback定义如下，三个参数： element:当前元素值；index：当前元素下标； array:当前数组
+        function callback(element, index, array) {
+            // callback函数必须返回true或者false，返回true保留该元素，false则不保留。
+            return true || false;
+        }
+        const newreporterList1 = []
+
+        for(let i in reporterList){
+            let reporter = reporterList[i];
+
+            if(reporter.name === info.name && reporter.phone === info.phone  && reporter.address === info.address) continue
+
+            newreporterList1.push(reporter);
+
+        }
+
+        newreporterList1.splice(0,0,info);
+
+        if(newreporterList1.length >=6){
+            newreporterList1.pop()
         }
 
 
         this.setState({
-            reporterList: reporterList,
+            reporterList: newreporterList1,
         });
         //json转成字符串
-        let jsonStr = JSON.stringify(reporterList);
+        let jsonStr = JSON.stringify(newreporterList1);
 
         //存储
         AsyncStorage.setItem(key, jsonStr, function (error) {
@@ -150,6 +199,7 @@ class MyAddress extends Component {
     return (
       <Container>
         <Content style={{borderTopWidth: 2,borderColor:'#e1e1e1'}}>
+            {this.state.showNotice ? <Notice text = {this.state.noticeText} /> : null}
             <MyMessage
                 changeName = {(value) => this.changeName(value)}
                 changePhone = {(value) => this.changePhone(value)}
