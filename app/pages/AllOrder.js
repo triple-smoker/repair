@@ -194,10 +194,10 @@ class AllOrder extends Component {
                                 <Text style={{marginTop:5,fontSize:16,color:'#d0d0d0'}}>请输入单号或内容</Text>
                             </Row>
                     </Button>
-                    <TouchableHighlight onPress={()=>this._setTypeVisible()} transparent style={{width:'15%',height:50,borderWidth:0,paddingTop:13,paddingLeft:5}}>
+                    <TouchableHighlight onPress={()=>this._setTypeVisible()} transparent style={{width:'15%',height:50,borderWidth:0,paddingTop:13,paddingLeft:"0.5%"}}>
                         <Row>
-                            <Image style={{width:20,height:20}} source={require("../image/navbar_ico_bx.png")}/>
-                            <Text style={{color:"#252525"}}>报修</Text>
+                            <Image style={{width:"35%",height:20}} source={require("../image/navbar_ico_bx.png")}/>
+                            <Text style={{color:"#252525",fontSize:16}}>报修</Text>
                         </Row>
                     </TouchableHighlight>
                     <OrderType goToRepair={(repairTypeId,repairMatterId)=>this.newRepair(repairTypeId,repairMatterId,()=>this.getRepairList())} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
