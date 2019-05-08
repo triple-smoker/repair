@@ -172,8 +172,6 @@ class OrderSearch extends Component {
     }
 //催单
     _setModalVisible(repairId,sendDeptId,sendUserId) {
-                console.log(">>>>>>>>>>>>>>>>>>>>>>>");
-                console.log(repairId);
         if(!this.state.modalVisible){
             var cdTimeList =[];
             AsyncStorage.getItem('cdTimeHistory',function (error, result) {
@@ -182,11 +180,13 @@ class OrderSearch extends Component {
                     }else {
                         cdTimeList = JSON.parse(result);
                         var cdInfo = "";
-                        cdTimeList.forEach(function(item){
-                            if(item.repairId==repairId&&item.sendDeptId==sendDeptId&&item.sendUserId==sendUserId){
-                                cdInfo = item;
-                            }
-                        })
+                        if(cdTimeList!=null && cdTimeList.length>0){
+                            cdTimeList.forEach(function(item){
+                                if(item.repairId==repairId&&item.sendDeptId==sendDeptId&&item.sendUserId==sendUserId){
+                                    cdInfo = item;
+                                }
+                            })
+                        }
                         if(cdInfo==""){
                             this.gotoCuiDan(cdTimeList,repairId,sendDeptId,sendUserId);
                         }else{
@@ -215,6 +215,7 @@ class OrderSearch extends Component {
     }
 //催单接口调用
     gotoCuiDan(cdTimeList,repairId,sendDeptId,sendUserId){
+        var cdTimeListNew = [];
         var currentTime = moment();
         var newCuiDanInfo = {
             currentTime: currentTime,
@@ -222,8 +223,11 @@ class OrderSearch extends Component {
             sendDeptId:sendDeptId,
             sendUserId:sendUserId,
         }
-        cdTimeList.push(newCuiDanInfo);
-        this.setState({cdTimeList:cdTimeList});
+        if(cdTimeList!=null && cdTimeList.length>1){
+            cdTimeListNew = cdTimeList;
+        }
+        cdTimeListNew.push(newCuiDanInfo);
+        this.setState({cdTimeList:cdTimeListNew});
         this.saveCdTime();
         var url= '/api/repair/request/remind';
         var data = {

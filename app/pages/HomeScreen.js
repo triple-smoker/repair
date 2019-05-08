@@ -100,6 +100,14 @@ export default class HomeScreen extends React.Component {
                 alert('删除完成')
             }
         })
+        //删除一条数据
+        AsyncStorage.removeItem('cdTimeHistory', function (error) {
+            if (error) {
+                alert('删除失败')
+            }else {
+                alert('删除完成')
+            }
+        })
 
     }
 
@@ -144,7 +152,7 @@ export default class HomeScreen extends React.Component {
                         />
                         <Button
                             title="清空缓存"
-                            onPress={() => this.change()}
+                            onPress={() => this._deleteData()}
                         />
                         <Button
                             title="搜索"
