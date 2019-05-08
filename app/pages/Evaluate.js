@@ -63,6 +63,8 @@ class OrderEvaluate extends Component {//主页面
         Axios.GetAxios(url).then(
             (response) => {
                 var repair =  response.data;
+                console.log("评价==================");
+                console.log(repair);
                 this.setState({
                     repair : repair,
                     wuZiList : repair.materialList,

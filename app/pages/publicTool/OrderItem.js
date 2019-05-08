@@ -15,6 +15,7 @@ import {
 import {  Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right,  List, ListItem, Thumbnail,Textarea} from 'native-base';
 import Swiper from 'react-native-swiper';
 import Axios from '../../util/Axios';
+import Sound from "react-native-sound";
 
 
 let ScreenWidth = Dimensions.get('window').width;
@@ -67,12 +68,42 @@ class Adds extends Component {//报修单共用组件
         return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>
         }
     }
+    _showYy(fileMap){
+        console.log("语音内容");
+        console.log(fileMap);
+        var voicesRequest = fileMap.voicesRequest;
+        if(voicesRequest!=null){
+            voicesRequest.forEach(function(voice){
+                if(voice.filePath!=null&&voice.filePath!=''){
+                    setTimeout(() => {
+                        let sound = new Sound(voice.filePath, '', (error) => {
+                            if (error) {
+                                console.log('failed to load the sound', error);
+                            }
+                        });
+                        setTimeout(() => {
+                            sound.play((success) => {
+                                if (success) {
+                                    console.log('successfully finished playing');
+                                } else {
+                                    console.log('playback failed due to audio decoding errors');
+                                }
+                            });
+                        }, 100);
+                    }, 100);
+                }
+            })
+
+        }
+    }
+
+
   render() {
     return (
             <Content style={{backgroundColor:'#fff',marginBottom:10,paddingBottom:10,paddingLeft:16,paddingRight:16,borderRadius:10}}>
                 <View  style={{borderBottomWidth:1,borderColor:'#dfdfdf',paddingBottom:10}}>
                     <Row>
-                        <TouchableOpacity style={{width:30}}>
+                        <TouchableOpacity style={{width:30}} onPress={()=>this._showYy(this.props.record.fileMap)}>
                             <Image style={{marginTop:10,width:25,height:25,paddingRight:5}} source={require("../../image/btn_yy.png")}/>
                         </TouchableOpacity>
                         <TouchableOpacity style={{width:ScreenWidth-55}} onPress={()=>this._showText()}>

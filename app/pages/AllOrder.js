@@ -7,11 +7,14 @@ import {
     TouchableHighlight,
     TouchableOpacity,
     View,
+    Alert,
 } from 'react-native';
 import {  Footer,FooterTab,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 import Axios from '../util/Axios';
 import OrderType from './publicTool/OrderType'
 import OrderItem from './publicTool/OrderItem';
+import AsyncStorage from '@react-native-community/async-storage';
+import moment from "moment";
 
 
 
@@ -35,11 +38,9 @@ class AllOrder extends Component {
                 recordList1:[],
                 recordList2:[],
                 recordList3:[],
+                cdTimeList:[],
              };
             this.getRepairList();
-
-
-
     }
 
     getRepairList(){
@@ -115,9 +116,60 @@ class AllOrder extends Component {
     onClose() {
        this.setState({modalVisible: false});
     }
+//催单
     _setModalVisible(repairId,sendDeptId,sendUserId) {
-    //催单
-    if(!this.state.modalVisible){
+
+        if(!this.state.modalVisible){
+            var cdTimeList =[];
+            AsyncStorage.getItem('cdTimeHistory',function (error, result) {
+                    if (error) {
+                         console.log('读取失败')
+                    }else {
+                        cdTimeList = JSON.parse(result);
+                        var cdInfo = "";
+                        cdTimeList.forEach(function(item){
+                            if(item.repairId==repairId&&item.sendDeptId==sendDeptId&&item.sendUserId==sendUserId){
+                                cdInfo = item;
+                            }
+                        })
+                        if(cdInfo==""){
+                            this.gotoCuiDan(cdTimeList,repairId,sendDeptId,sendUserId);
+                        }else{
+                            var oldTime = moment(cdInfo.currentTime);
+                            var nowDate = moment();
+                            var timeDiff = moment(nowDate.diff(oldTime)).minute();
+                            if(timeDiff>30){
+                                var cdTimeListNew = [];
+                                cdTimeList.forEach(function(item){
+                                    if(item.repairId==repairId&&item.sendDeptId==sendDeptId&&item.sendUserId==sendUserId){
+                                    }else{
+                                    cdTimeListNew.push(item);
+                                    }
+                                })
+                                this.gotoCuiDan(cdTimeListNew,repairId,sendDeptId,sendUserId);
+                            }else{
+                                Alert.alert("过"+(30-timeDiff)+"分钟后再次催单");
+                            }
+                        }
+                    }
+                }.bind(this)
+            )
+        }else{
+            this.setState({modalVisible: false})
+            }
+    }
+//催单接口调用
+    gotoCuiDan(cdTimeList,repairId,sendDeptId,sendUserId){
+        var currentTime = moment();
+        var newCuiDanInfo = {
+            currentTime: currentTime,
+            repairId:repairId,
+            sendDeptId:sendDeptId,
+            sendUserId:sendUserId,
+        }
+        cdTimeList.push(newCuiDanInfo);
+        this.setState({cdTimeList:cdTimeList});
+        this.saveCdTime();
         var url= '/api/repair/request/remind';
         var data = {
                   repairId: repairId,
@@ -132,11 +184,38 @@ class AllOrder extends Component {
                 this.setState({modalVisible: true});
                 }
         )
-
-    }else{
-        this.setState({modalVisible: false})
-        }
     }
+
+//催单时间缓存记录
+    saveCdTime(){
+        let key = 'cdTimeHistory';
+        var cdTimeList = this.state.cdTimeList;
+        //json转成字符串
+        let jsonStr = JSON.stringify(cdTimeList);
+        //存储
+        AsyncStorage.setItem(key, jsonStr, function (error) {
+            if (error) {
+                console.log('存储失败')
+            }else {
+                console.log('存储完成')
+            }
+        })
+    }
+    getCdTime(){
+        var cdTimeList =[]
+        AsyncStorage.getItem('cdTimeHistory',function (error, result) {
+                if (error) {
+                     console.log('读取失败')
+                }else {
+                    cdTimeList = JSON.parse(result);
+                    this.setState({cdTimeList:cdTimeList});
+                }
+            }.bind(this)
+        )
+        return cdTimeList;
+    }
+
+
     _setSearchVisible(visible) {
       this.setState({searchVisible: visible});
     }
@@ -195,7 +274,7 @@ class AllOrder extends Component {
                             </Row>
                     </Button>
                     <TouchableHighlight onPress={()=>this._setTypeVisible()} transparent style={{width:'15%',height:50,borderWidth:0,paddingTop:13,paddingLeft:"0.5%"}}>
-                        <Row>
+                        <Row style={{width:"100%"}}>
                             <Image style={{width:"35%",height:20}} source={require("../image/navbar_ico_bx.png")}/>
                             <Text style={{color:"#252525",fontSize:16}}>报修</Text>
                         </Row>
