@@ -141,19 +141,19 @@ class OrderEva extends Component {
         return listItems;
     }
     getImageItem(repair){
-        console.log("获取评价图片===========");
-        console.log(repair);
         var imagesList = [];
+        var listItems ="";
         if(repair!=null&&repair!=''){
             var imagesCompleted = repair.fileMap.imagesCompleted;
-//            var imagesSignature = repair.fileMap.imagesSignature;
-//            imagesList = imagesCompleted.concat(imagesSignature);
             imagesList = imagesCompleted;
+            var sum = imagesList.length;
+            listItems =(  imagesList === null ? null : imagesList.map((image, index) =>
+                <ImageItem key={index} num={index+1} sum={sum} imageurl={image.filePath}/>
+            ))
+        }else{
+            listItems =<View style={{width:"100%",height:"100%",backgroundColor:'#ccc',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
         }
-        var sum = imagesList.length;
-        let listItems =(  imagesList === null ? null : imagesList.map((image, index) =>
-            <ImageItem key={index} num={index+1} sum={sum} imageurl={image.filePath}/>
-        ))
+
         return listItems;
     }
 
@@ -272,7 +272,7 @@ class ImageItem extends Component{
     render(){
         return (
             <View style={stylesImage.slide}>
-                <Image resizeMode='stretch' style={stylesImage.image} source={{uri:this.props.imageurl}} />
+                <Image resizeMode='contain' style={stylesImage.image} source={{uri:this.props.imageurl}} />
                 <View style={{position: 'absolute',left:5,top:10,backgroundColor:'#545658',height:26,width:66}}><Text style={{color:'#fff',paddingLeft:5}}>维修后</Text></View>
                 <View style={{position: 'absolute',left:ScreenWidth-60,top:210,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
             </View>

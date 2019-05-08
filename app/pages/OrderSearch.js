@@ -14,6 +14,7 @@ import {Row, Col, Container, Content, Text ,Button } from 'native-base';
 import OrderItem from './publicTool/OrderItem';
 import AsyncStorage from '@react-native-community/async-storage';
 import Axios from '../util/Axios';
+import moment from "moment";
 
 
 
@@ -32,7 +33,8 @@ class OrderSearch extends Component {
         searchContext: '',
         searchType: false,
         reporterList : [],
-        recordListSearch : []
+        recordListSearch : [],
+        cdTimeList:[],
         };
         AsyncStorage.getItem('searchItemHistory',function (error, result) {
 
@@ -168,28 +170,104 @@ class OrderSearch extends Component {
             )
         })
     }
+//催单
     _setModalVisible(repairId,sendDeptId,sendUserId) {
-    //催单
-    if(!this.state.modalVisible){
-        let data = {
+                console.log(">>>>>>>>>>>>>>>>>>>>>>>");
+                console.log(repairId);
+        if(!this.state.modalVisible){
+            var cdTimeList =[];
+            AsyncStorage.getItem('cdTimeHistory',function (error, result) {
+                    if (error) {
+                         console.log('读取失败')
+                    }else {
+                        cdTimeList = JSON.parse(result);
+                        var cdInfo = "";
+                        cdTimeList.forEach(function(item){
+                            if(item.repairId==repairId&&item.sendDeptId==sendDeptId&&item.sendUserId==sendUserId){
+                                cdInfo = item;
+                            }
+                        })
+                        if(cdInfo==""){
+                            this.gotoCuiDan(cdTimeList,repairId,sendDeptId,sendUserId);
+                        }else{
+                            var oldTime = moment(cdInfo.currentTime);
+                            var nowDate = moment();
+                            var timeDiff = moment(nowDate.diff(oldTime)).minute();
+                            if(timeDiff>30){
+                                var cdTimeListNew = [];
+                                cdTimeList.forEach(function(item){
+                                    if(item.repairId==repairId&&item.sendDeptId==sendDeptId&&item.sendUserId==sendUserId){
+                                    }else{
+                                    cdTimeListNew.push(item);
+                                    }
+                                })
+                                this.gotoCuiDan(cdTimeListNew,repairId,sendDeptId,sendUserId);
+                            }else{
+                                Alert.alert("过"+(30-timeDiff)+"分钟后再次催单");
+                            }
+                        }
+                    }
+                }.bind(this)
+            )
+        }else{
+            this.setState({modalVisible: false})
+            }
+    }
+//催单接口调用
+    gotoCuiDan(cdTimeList,repairId,sendDeptId,sendUserId){
+        var currentTime = moment();
+        var newCuiDanInfo = {
+            currentTime: currentTime,
+            repairId:repairId,
+            sendDeptId:sendDeptId,
+            sendUserId:sendUserId,
+        }
+        cdTimeList.push(newCuiDanInfo);
+        this.setState({cdTimeList:cdTimeList});
+        this.saveCdTime();
+        var url= '/api/repair/request/remind';
+        var data = {
                   repairId: repairId,
                   sendDeptId: sendDeptId,
                   sendUserId: sendUserId
                }
-        var url='/api/repair/request/remind';
         var headers={
                 'Content-type': 'application/json',
             }
-        Axios.PostAxios(url,data).then(
+        Axios.PostAxios(url,data,headers).then(
             (response) => {
                 this.setState({modalVisible: true});
-            }
+                }
         )
-    }else{
-        this.setState({modalVisible: false})
-        }
     }
-
+//催单时间缓存记录
+    saveCdTime(){
+        let key = 'cdTimeHistory';
+        var cdTimeList = this.state.cdTimeList;
+        //json转成字符串
+        let jsonStr = JSON.stringify(cdTimeList);
+        //存储
+        AsyncStorage.setItem(key, jsonStr, function (error) {
+            if (error) {
+                console.log('存储失败')
+            }else {
+                console.log('存储完成')
+            }
+        })
+    }
+    getCdTime(){
+        var cdTimeList =[]
+        AsyncStorage.getItem('cdTimeHistory',function (error, result) {
+                if (error) {
+                     console.log('读取失败')
+                }else {
+                    cdTimeList = JSON.parse(result);
+                    this.setState({cdTimeList:cdTimeList});
+                }
+            }.bind(this)
+        )
+        return cdTimeList;
+    }
 
 //   清理历史纪录
     clearHistory(){
