@@ -8,6 +8,8 @@ import {
     TouchableOpacity,
     View,
     Alert,
+    RefreshControl,
+    ScrollView,
 } from 'react-native';
 import {  Footer,FooterTab,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 import Axios from '../util/Axios';
@@ -41,6 +43,7 @@ class AllOrder extends Component {
                 recordList2:[],
                 recordList3:[],
                 cdTimeList:[],
+                isRefreshing: false,
              };
             this.getRepairList();
     }
@@ -268,7 +271,11 @@ class AllOrder extends Component {
                 })
         })
     }
-
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getRepairList();
+    this.setState({refreshing: false});
+  }
 
   render() {
     return (
@@ -299,7 +306,16 @@ class AllOrder extends Component {
                             <Row style={{height:40}}>
                                 <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>{'-------共'+this.state.tab1+'条维修中工单-------'}</Text>
                             </Row>
-                            {this._setOrderItem(this.state.recordList1,1,()=>this.getRepairList())}
+                            <ScrollView
+                                refreshControl={
+                                  <RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this._onRefresh}
+                                  />
+                                }
+                            >
+                                {this._setOrderItem(this.state.recordList1,1,()=>this.getRepairList())}
+                            </ScrollView>
                         </View>
                   </Tab>
                   <Tab heading={'待评价('+this.state.tab2+')'} tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontSize:16}} activeTextStyle={{color:'#62c0c5',fontWeight:"normal",fontSize:16}}>
@@ -307,7 +323,16 @@ class AllOrder extends Component {
                             <Row style={{height:40}}>
                                 <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>{'-------共'+this.state.tab2+'条待评价工单-------'}</Text>
                             </Row>
-                            {this._setOrderItem(this.state.recordList2,2,()=>this.getRepairList())}
+                            <ScrollView
+                                refreshControl={
+                                  <RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this._onRefresh}
+                                  />
+                                }
+                            >
+                                {this._setOrderItem(this.state.recordList2,2,()=>this.getRepairList())}
+                            </ScrollView>
                         </View>
                   </Tab>
                 </Tabs>

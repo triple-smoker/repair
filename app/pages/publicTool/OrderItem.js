@@ -76,20 +76,12 @@ class Adds extends Component {//报修单共用组件
             voicesRequest.forEach(function(voice){
                 if(voice.filePath!=null&&voice.filePath!=''){
                     setTimeout(() => {
-                        let sound = new Sound(voice.filePath, '', (error) => {
+                        var sound = new Sound(voice.filePath, null, (error) => {
                             if (error) {
                                 console.log('failed to load the sound', error);
                             }
+                            sound.play(() => sound.release());
                         });
-                        setTimeout(() => {
-                            sound.play((success) => {
-                                if (success) {
-                                    console.log('successfully finished playing');
-                                } else {
-                                    console.log('playback failed due to audio decoding errors');
-                                }
-                            });
-                        }, 100);
                     }, 100);
                 }
             })
