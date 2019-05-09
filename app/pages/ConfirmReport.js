@@ -127,7 +127,7 @@ class ConfirmReport extends Component {
                 console.log(res);
                 alert("提交成功");
                 const { navigate } = this.props.navigation;
-                navigate('AllOrder');
+                navigate('AllOrder',{data:res});
             }
         )
     }
