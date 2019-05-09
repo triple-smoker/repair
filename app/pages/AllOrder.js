@@ -25,10 +25,12 @@ class AllOrder extends Component {
 
     static navigationOptions = {
         header: null,
+
     };
     constructor(props) {
-
             super(props);
+            const { navigation } = this.props;
+            const thisRecord = navigation.getParam('data', '');
             this.state = { modalVisible: false,
                 typeVisible:false,
                 searchVisible: true,
@@ -41,6 +43,9 @@ class AllOrder extends Component {
                 cdTimeList:[],
              };
             this.getRepairList();
+    }
+    componentWillReceiveProps(){
+        this.getRepairList();
     }
 
     getRepairList(){
