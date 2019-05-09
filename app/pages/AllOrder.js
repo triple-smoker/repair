@@ -344,7 +344,16 @@ class AllOrder extends Component {
                             <Row style={{height:40}}>
                                 <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>{'-------共'+this.state.tab3+'条维修工单-------'}</Text>
                             </Row>
-                            {this._setOrderItem(this.state.recordList3,3,()=>this.getRepairList())}
+                            <ScrollView
+                                refreshControl={
+                                  <RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this._onRefresh}
+                                  />
+                                }
+                            >
+                                {this._setOrderItem(this.state.recordList3,3,()=>this.getRepairList())}
+                            </ScrollView>
                         </View>
                   </Tab>
                 </Tabs>

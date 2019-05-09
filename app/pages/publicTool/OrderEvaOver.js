@@ -10,6 +10,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { Content,Row,Col,Text,List,ListItem,Button,Item,Textarea } from 'native-base';
 import axios from 'axios';
+import Swiper from 'react-native-swiper';
 
 
 let ScreenWidth = Dimensions.get('window').width;
@@ -25,11 +26,36 @@ class OrderEvaOver extends Component {
         ))
         return listItems;
     }
+//图片轮播渲染
+    getImageItem(repair){
+        var imagesList = [];
+        var listItems ="";
+        if(repair!=null&&repair!=''){
+            var imagesCompleted = repair.fileMap.imagesCompleted;
+            imagesList = imagesCompleted;
+            var sum = imagesList.length;
+            listItems =(  imagesList === null ? null : imagesList.map((image, index) =>
+                <ImageItem key={index} num={index+1} sum={sum} imageurl={image.filePath}/>
+            ))
+        }else{
+            listItems =<View style={{width:"100%",height:"100%",backgroundColor:'#ccc',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
+        }
 
+        return listItems;
+    }
 
   render() {
     return (
         <Content>
+            <Row>
+                <Swiper height={240}
+                   onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
+                   dot={<View style={{backgroundColor: 'rgba(0,0,0,0.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
+                   activeDot={<View style={{backgroundColor: '#fff', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
+                   showsPagination={false} loop>
+                    {this.getImageItem(this.props.repair)}
+                </Swiper>
+            </Row>
             <Row style={{padding:15,borderBottomWidth:1,borderColor:'#e4e4e4'}}>
                 <Col style={{width:'70%',height:60}}>
                     <Row>
@@ -103,6 +129,34 @@ class OrderEvaOver extends Component {
     );
   }
 }
+
+//图片轮播
+class ImageItem extends Component{
+    render(){
+        return (
+            <View style={stylesImage.slide}>
+                <Image resizeMode='contain' style={stylesImage.image} source={{uri:this.props.imageurl}} />
+                <View style={{position: 'absolute',left:5,top:10,backgroundColor:'#545658',height:26,width:66}}><Text style={{color:'#fff',paddingLeft:5}}>维修后</Text></View>
+                <View style={{position: 'absolute',left:ScreenWidth-50,top:210,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
+            </View>
+        )
+    }
+}
+
+const stylesImage =StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  slide: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
+  },
+  image: {
+    width:ScreenWidth,
+    flex: 1
+  }
+})
 
 
 module.exports=OrderEvaOver;
