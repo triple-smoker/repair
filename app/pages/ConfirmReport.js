@@ -143,7 +143,7 @@ class ConfirmReport extends Component {
                                value={this.state.desc}
                                editable = {false}
                     />
-                    <SoundRecoding readOnly={true}/>
+                    <SoundRecoding readOnly={true} record={this.state.voices}/>
                         <Reporter
                             name={this.state.report.reporter}
                             phone={this.state.report.phone}

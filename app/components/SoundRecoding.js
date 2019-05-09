@@ -51,6 +51,9 @@ class SoundRecoding extends Component {
     }
 
 	render(){
+
+
+
 		return(
 			<View style={{
 				marginLeft: '1.5%',
