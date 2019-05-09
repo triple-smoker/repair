@@ -182,7 +182,7 @@ class OrderEvaluate extends Component {//主页面
                 />
                 {this.state.thisRecord.status==='9' &&
                     <Accordion
-                      dataArray={[{ title: "评价", content: <OrderEvaOver evaluate={this.state.evaluate} record={this.state.thisRecord}/>}]}
+                      dataArray={[{ title: "评价", content: <OrderEvaOver evaluate={this.state.evaluate} repair={this.state.repair} record={this.state.thisRecord}/>}]}
                       animation={true}
                       expanded={true}
                       renderHeader={this._renderHeader}
