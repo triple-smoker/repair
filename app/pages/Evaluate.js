@@ -233,7 +233,7 @@ class MySub extends Component {//提交按钮模块
             remark:remark,
             satisfactionLevel:satisfactionLevel,
             causeIds:causeIds,
-            userId:"1601500545875394402",
+            userId:global.userId,
        };
         Axios.PostAxios(url,data).then(
             (response) => {

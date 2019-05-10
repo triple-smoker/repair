@@ -55,8 +55,8 @@ class AllOrder extends Component {
         let repRepairInfo = {
                     page: 1,
                     limit: 10000,
-                    deptId: '1078386763486683138',
-                    ownerId: '',
+                    deptId: global.deptId,
+                    ownerId: global.userId,
                     status: ''
                  }
         var    data1=repRepairInfo;
