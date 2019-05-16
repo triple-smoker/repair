@@ -7,6 +7,7 @@ import MultipleImagePicker from "../components/MultipleImagePicker";
 import axios from 'axios';
 import SoundRecoding from '../components/SoundRecoding';
 import Axios from '../util/Axios';
+import {Button} from "react-native-vector-icons/FontAwesome5Pro";
 class ConfirmReport extends Component {
 
     /**
@@ -44,12 +45,15 @@ class ConfirmReport extends Component {
             desc : desc,
             report : report,
             voices : voices,
+            imagesRequest : [],
+            voicesRequest :[],
+            imagesNum: 0,
+            voicesNum: 0,
+
         }
     }
 
-
     async UpLoad(path, name) {
-
         const apiToken = 'ac314f1f-38a1-4cff-ba7f-f231350c60bd';
         let formData = new FormData();
         let file = {type: 'multipart/form-data', uri: path, name: name};
@@ -69,12 +73,7 @@ class ConfirmReport extends Component {
         return res.data
     }
 
-    /**
-     * 提交信息，生成新的报修单
-     * @returns {Promise<void>}
-     */
-    submit(){
-
+    sb(){
         let imagesRequest = [];
         try {
             let images = this.state.images;
@@ -82,7 +81,28 @@ class ConfirmReport extends Component {
             for(let i = 0; i<images.length; i++){
                 let image = images[i];
                 let img = this.UpLoad(image.uri, 'image'+ i + '.jpg');
-                img.then((s)=> imagesRequest.push(s));
+                img.then(
+                    (s)=> {
+                        console.log('圣诞节不会VR标题二规划v');
+                        console.log(s);
+                        let image = {
+                            "filePath":s.fileDownloadUri,
+                            "fileName":s.originalName,
+                            "fileBucket":"000956",
+                            "fileType": "image/jpeg",
+                            "fileHost":"https://dev.jxing.com.cn"
+                        }
+                        console.log(image);
+                        imagesRequest.push(image)
+                        this.setState(
+                            {
+                                imagesRequest : imagesRequest,
+                                imagesNum : this.state.imagesNum + 1
+                            }
+                        )
+                    }
+
+                );
 
             }
         } catch (err) {
@@ -95,10 +115,47 @@ class ConfirmReport extends Component {
             let voice = this.state.voices;
             console.log(voice)
             let img = this.UpLoad('file://'+voice.filePath, 'voice.mp3');
-            img.then((s)=> voicesRequest.push(s));
+            img.then((s)=> {
+                    voicesRequest.push(s)
+                    this.setState(
+                        {
+                            voicesRequest : voicesRequest,
+                            voicesNum : this.state.voicesNum + 1
+                        }
+                    )
+            }
+            );
         } catch (err) {
             console.log(err)
         }
+
+
+        this.timer = setInterval(
+            () => {
+
+                console.log(this.state.voicesNum);
+                console.log(this.state.voicesRequest.length);
+                console.log(this.state.imagesNum);
+                console.log(this.state.imagesRequest.length);
+
+                if(this.state.voicesNum === this.state.voicesRequest.length && this.state.imagesNum === this.state.imagesRequest.length){
+                    this.submit();
+                }
+            } , 1000
+        )
+
+    }
+
+
+
+
+    /**
+     * 提交信息，生成新的报修单
+     * @returns {Promise<void>}
+     */
+    submit(){
+
+        clearInterval(this.timer);
 
         let repRepairInfo = {
             repairTypeId : this.state.repairTypeId,
@@ -115,10 +172,11 @@ class ConfirmReport extends Component {
             telNo: this.state.report.phone,
             ownerId: "1601500545875394402",
             ownerName: this.state.report.reporter,
-            imagesRequest : imagesRequest,
-            voicesRequest : voicesRequest,
+            imagesRequest : this.state.imagesRequest,
+            voicesRequest : this.state.voicesRequest,
         };
-        console.log(repRepairInfo);
+
+
         Axios.PostAxios(
             '/api/repair/request/checkin',
            repRepairInfo,
@@ -155,8 +213,9 @@ class ConfirmReport extends Component {
                             readOnly = {true}
                             style={{backgroundColor: "#fff"  ,marginLeft: '1.5%', marginRight: '1.5%',}}
                         />
+
                 </Content>
-                <MyFooter submit={() => this.submit()} value='确定'/>
+                <MyFooter submit={() => this.sb()} value='确定'/>
 
             </Container>
         );
