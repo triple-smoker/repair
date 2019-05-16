@@ -118,7 +118,7 @@ class OrderEvaOver extends Component {
             </Row>
             <Col style={{justifyContent: "center"}}>
                     <Text style={{width:ScreenWidth,borderRadius:10,padding:10}}>
-                        {this.props.evaluate.satisfactionDesc}
+                        {this.props.evaluate.remark}
                     </Text>
                     <View style={{flexDirection:'row',flexWrap:'wrap',paddingBottom:10}}>
                         {this.getCause(this.props.evaluate)}
