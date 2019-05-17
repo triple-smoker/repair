@@ -38,7 +38,8 @@ public class MainApplication extends Application implements ReactApplication {
             new AsyncStoragePackage(),
             new PickerPackage(),
             new ImagePickerPackage(),
-            new RNGestureHandlerPackage()
+            new RNGestureHandlerPackage(),
+            new RnPackages()  //add
       );
     }
 

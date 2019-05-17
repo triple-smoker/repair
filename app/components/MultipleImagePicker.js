@@ -84,6 +84,7 @@ class MultipleImagePicker extends Component {
      * @param images
      */
     appendImage(images){
+        console.log(images);
         let imagesList = this.state.images;
         let num = imagesList.length ;
         for(let i in images){

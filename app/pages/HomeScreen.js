@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Button, Linking, StyleSheet, Image, Text, TouchableOpacity,Alert} from "react-native";
+import {View, Button, Linking, StyleSheet, NativeModules, Image, Text, TouchableOpacity,Alert} from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons';
 import { Container, } from 'native-base';
@@ -124,6 +124,10 @@ export default class HomeScreen extends React.Component {
 
     }
 
+    call_button(){
+        NativeModules.ToastModule.show('调用原生方法的Demo',1);
+    }
+
     render() {
         return (
                 <Container>
@@ -160,7 +164,7 @@ export default class HomeScreen extends React.Component {
                         />
                         <Button
                             title="搜索"
-                            onPress={() => alert(this.state.woDe)}
+                            onPress={() => this.call_button()}
                         />
                     </View>
 

@@ -90,6 +90,8 @@ export default class RepairScreen extends React.Component {
                 address: this.state.address
             }
         };
+        console.log('提交参数')
+        console.log(repairInfo)
         const { navigate } = this.props.navigation;
         navigate('Confirm', repairInfo);
 
@@ -165,8 +167,8 @@ export default class RepairScreen extends React.Component {
                     {/*<Record recordCallBack = {(record)=>this.recordCallBack(record)}></Record>*/}
 
                     {/*{this.state.showVoice ? <Recorde recordCallBack = {(record)=>this.recordCallBack(record)} />: null}*/}
-
-                    {this.getNew()}
+                    <Recorde show = {this.state.showVoice} recordCallBack = {(record)=>this.recordCallBack(record)} />
+                    {/*{this.getNew()}*/}
 
                 </Content>
                 <MyFooter submit={() => this.submit()} value='提交'/>

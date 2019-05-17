@@ -172,19 +172,24 @@ class Recorde extends Component {
                             source={require('../image/duan.png')}/> }
                     </View>
                 </Modal>
-                <TouchableNativeFeedback
-                    onPressIn={() => {this._record(), this.setState({active : true}),this.setModalVisible()}}
-                    onPressOut={() => {this._stop(), this.setState({active : false}),this.setModalVisible()}}>
-                    <Image
-                        style={{
-                            marginRight: 'auto',
-                            marginLeft: 'auto',
-                            width:'75%',
-                            resizeMode:'contain'
-                        }}
-                        source={require('../image/azsh-1.png') }/>
-                </TouchableNativeFeedback>
-                <Text style={styles.write}>最大录制时长一分钟</Text>
+
+
+                    {this.props.show ? <TouchableNativeFeedback
+                        onPressIn={() => {this._record(), this.setState({active : true}),this.setModalVisible()}}
+                        onPressOut={() => {this._stop(), this.setState({active : false}),this.setModalVisible()}}>
+                        <Image
+                            style={{
+                                marginRight: 'auto',
+                                marginLeft: 'auto',
+                                width:'75%',
+                                resizeMode:'contain'
+                            }}
+                            source={require('../image/azsh-1.png') }/>
+                    </TouchableNativeFeedback>: null}
+
+
+
+
             </View>
         );
     }
