@@ -162,6 +162,10 @@ export default class HomeScreen extends React.Component {
                             title="搜索"
                             onPress={() => alert(this.state.woDe)}
                         />
+                        <Button
+                            title="sqlite"
+                            onPress={() => this.props.navigation.navigate('SQLiteDemo')}
+                        />
                     </View>
 
                     <TouchableOpacity onPress={() => this.pickSingleWithCamera(false, mediaType='video')} style={styles.button}>

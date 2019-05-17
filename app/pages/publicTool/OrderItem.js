@@ -109,7 +109,7 @@ class Adds extends Component {//报修单共用组件
                     </Row>
                 </View>
                 <Content style={{paddingTop:12}}>
-                <TouchableOpacity onPress={() => this.props.getEvaluate()}>
+                <TouchableOpacity onPress={() => (this.props.type==='4')?null:this.props.getEvaluate()}>
                     <Row>
                         {this.props.type!=0 &&
                         <Col style={{width:70,marginRight:17}}>
