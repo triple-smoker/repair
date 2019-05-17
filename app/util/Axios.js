@@ -66,6 +66,16 @@ function GetAxios(url = '', data = defaultData, ) {
 
     })
 }
+const getUrlSQLite = '';
+function GetAxiosSQLite(url = '', data = defaultData, ) {
+console.log(">>>>>>");
+    return axios({
+        method: 'GET',
+        url : 'http://10.144.4.44:8080/portal/synchronism?time=0',
+        data,
+
+    })
+}
 
 function UpLoad(path) {
     let formData = new FormData();
@@ -81,5 +91,6 @@ function UpLoad(path) {
 export default {
     PostAxios,
     GetAxios,
+    GetAxiosSQLite,
     UpLoad
 }
