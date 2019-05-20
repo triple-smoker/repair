@@ -108,6 +108,14 @@ export default class HomeScreen extends React.Component {
                 alert('删除完成')
             }
         })
+        //删除一条数据
+        AsyncStorage.removeItem('sqLiteTimeTemp', function (error) {
+            if (error) {
+                alert('删除失败')
+            }else {
+                alert('删除完成')
+            }
+        })
 
     }
 
