@@ -302,7 +302,7 @@ class OrderSearch extends Component {
                     </TouchableHighlight>
                     <Row style={{width:'80%',backgroundColor:'#f4f4f4',borderRadius:25}}>
                         <Image style={{width:20,height:20,marginTop:15,marginLeft:10,marginRight:5}} source={require("../image/ico_seh.png")}/>
-                        <TextInput underlineColorAndroid="transparent" placeholder="请输入单号或内容" style={{width:'90%',borderRadius:25,height:50,fontSize:16,backgroundColor:'#f4f4f4'}} onChangeText={(searchContext:searchContext) => this.setState({searchContext:searchContext})}>{this.state.searchContext}</TextInput>
+                        <TextInput underlineColorAndroid="transparent" placeholder="请输入单号或内容" style={{width:'90%',borderRadius:25,height:50,fontSize:16,backgroundColor:'#f4f4f4'}} onChangeText={(searchContext) => this.setState({searchContext:searchContext})}>{this.state.searchContext}</TextInput>
                     </Row>
                     <Button transparent style={{height:50,backgroundColor:'#f8f8f8',borderWidth:0}} onPress={()=>this._setSerachShow(this.state.searchContext)}><Text style={{color:"#252525"}}>搜索</Text></Button>
                 </Row>

@@ -66,12 +66,13 @@ function GetAxios(url = '', data = defaultData, ) {
 
     })
 }
-const getUrlSQLite = '';
-function GetAxiosSQLite(url = '', data = defaultData, ) {
+
+function GetAxiosSQLite(sqLiteTimeTemp, data = defaultData, ) {
 console.log(">>>>>>");
+console.log('http://10.144.4.44:8080/portal/synchronism?time='+sqLiteTimeTemp);
     return axios({
         method: 'GET',
-        url : 'http://10.144.4.44:8080/portal/synchronism?time=0',
+        url : 'http://10.144.4.44:8080/portal/synchronism?time='+sqLiteTimeTemp,
         data,
 
     })
