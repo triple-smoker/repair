@@ -19,12 +19,17 @@ import RepairScreen from './pages/RepairScreen';
 import HomeScreen from './pages/HomeScreen';
 import ConfirmReport from './pages/ConfirmReport';
 import OrderSearch from './pages/OrderSearch';
+
 import Axios from "./util/Axios";
-import SQLiteDemo from "./test/SQLiteDemo";
+
+import LoginPage from './js/pages/login/Login'
+import MainPage from './js/pages/entry/MainPage'
+// import SQLiteDemo from "./test/SQLiteDemo";
 
 
 const AppNavigator = createStackNavigator(
     {
+        MainPage: MainPage,
         Home: HomeScreen,
         Details: DetailsScreen,
         Repair: RepairScreen,
@@ -33,10 +38,11 @@ const AppNavigator = createStackNavigator(
         AllOrder: AllOrder,
         Evaluate: OrderEvaluate,
         OrderSearch : OrderSearch,
-        SQLiteDemo : SQLiteDemo,
+        Login : LoginPage
+        // SQLiteDemo : SQLiteDemo,
     },
     {
-        initialRouteName: "Home"
+        initialRouteName: "MainPage"
     }
 );
 

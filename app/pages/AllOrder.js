@@ -27,7 +27,6 @@ class AllOrder extends Component {
 
     static navigationOptions = {
         header: null,
-
     };
     constructor(props) {
             super(props);

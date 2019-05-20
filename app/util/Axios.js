@@ -6,7 +6,7 @@ axios.interceptors.request.use(
 
     function(config) {
         // const apiToken = global.userToken;
-        const apiToken = global.userToken;
+        const apiToken = global.access_token;
         // 添加响应头等等设置
         let headers = {
             'hospitalId': '1055390940066893827',
