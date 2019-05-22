@@ -21,6 +21,8 @@ import * as Dimens from '../../value/dimens';
 import Login from '../login/Login';
 import Request, {GetRepairType} from '../../http/Request';
 import Permissions from 'react-native-permissions';
+import OrderType from "../../../pages/publicTool/OrderType";
+import {Row} from "native-base";
 
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
@@ -37,7 +39,8 @@ export default class HomePage extends Component {
         this.state={
             customThemeVisible:false,
             theme:this.props.theme,
-            modalVisible:false
+            modalVisible:false,
+            typeVisible:false,
         }
     }
 
@@ -163,7 +166,8 @@ export default class HomePage extends Component {
     }
 
     repair() {
-
+        const { navigate } = this.props.navigation;
+        navigate('AllOrder');
     }
 
     historyDetail() {
@@ -190,6 +194,25 @@ export default class HomePage extends Component {
         //             }
         //         });
         // });
+    }
+
+    //报修导航
+    newRepair(repairTypeId,repairMatterId){
+        this.setState({typeVisible: !this.state.typeVisible});
+        const { navigate } = this.props.navigation;
+        navigate('Repair',{
+            repairTypeId:repairTypeId,
+            repairMatterId:repairMatterId,
+            callback: (
+                () => {
+                    // setTimeout(function(){
+                    //     getRepairList();
+                    // },500)
+                })
+        })
+    }
+    _setTypeVisible() {
+        this.setState({typeVisible: !this.state.typeVisible});
     }
 
     render() {
@@ -244,9 +267,11 @@ export default class HomePage extends Component {
             <Image source={require('../../../res/login/menu_ljyc.jpg')} style={{width:172,height:185,borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}/>
             <View style={{justifyContent:'center',alignItems:'center',marginLeft:10, }}>
                 <Image source={require('../../../res/login/menu_ljbx.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,}}/>
-                <Image source={require('../../../res/login/menu_ljdc.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,marginTop:10,}}/>
-
+                <TouchableOpacity  onPress={()=>this._setTypeVisible()}>
+                    <Image source={require('../../../res/login/menu_ljdc.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,marginTop:10,}}/>
+                </TouchableOpacity>
             </View>
+            <OrderType goToRepair={(repairTypeId,repairMatterId)=>this.newRepair(repairTypeId,repairMatterId)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
         </View>
 
         <View style={{backgroundColor:'#f6f6f6',height:10,width:Dimens.screen_width,marginTop:10,}}/>
