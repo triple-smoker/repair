@@ -24,6 +24,7 @@ import Axios from "./util/Axios";
 
 import LoginPage from './js/pages/login/Login'
 import MainPage from './js/pages/entry/MainPage'
+import AllOrderDemo from './test/AllOrderDemo'
 // import SQLiteDemo from "./test/SQLiteDemo";
 
 
@@ -38,7 +39,8 @@ const AppNavigator = createStackNavigator(
         AllOrder: AllOrder,
         Evaluate: OrderEvaluate,
         OrderSearch : OrderSearch,
-        Login : LoginPage
+        Login : LoginPage,
+        AllOrderDemo : AllOrderDemo,
         // SQLiteDemo : SQLiteDemo,
     },
     {
@@ -46,15 +48,20 @@ const AppNavigator = createStackNavigator(
     }
 );
 
-
+console.log(">>>>>>>>>>>>>>>>>>>");
 Axios.GetAxios('/api/auth/oauth/token?username=10001&password=BlvxyJFFYLcg7n2OB4G5uA%3D%3D&grant_type=password&scope=server').then(
     (response) => {
-        global.userToken = response.access_token;
+        console.log(">>>>>>>>>>>>>>>>>>>");
+        console.log(response);
+        global.access_token = response.access_token;
         console.log(response.access_token)
+
         // DeviceStorage.save('access_token',response.access_token)
         //获取用户登录信息
         Axios.GetAxios('/api/admin/user/login').then(
             (response) => {
+                console.log(">>>>>>>>>>>>>>>>>>>");
+                console.log(response);
                 var deptAddresses = response.data.deptAddresses[0];
                 global.userId = response.data.userId;
                 global.deptId = deptAddresses.deptId;

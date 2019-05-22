@@ -167,7 +167,7 @@ export default class HomePage extends Component {
 
     repair() {
         const { navigate } = this.props.navigation;
-        navigate('AllOrder');
+        navigate('AllOrderDemo');
     }
 
     historyDetail() {

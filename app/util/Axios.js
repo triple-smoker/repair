@@ -56,9 +56,10 @@ function PostAxios(url = '', data = defaultData,headers={} ) {
     })
 }
 
-const getUrl = 'http://47.102.197.221:8188';
+const getUrl = 'https://dev.jxing.com.cn';
 function GetAxios(url = '', data = defaultData, ) {
-
+console.log(">>>>>>>>>>>>>>>>>");
+console.log(getUrl + url);
     return axios({
         method: 'GET',
         url : getUrl + url,
