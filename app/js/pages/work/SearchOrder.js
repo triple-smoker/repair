@@ -77,7 +77,7 @@ export default class SearchOrder extends BaseComponent {
 
       //this._fetchData(0);
       this.loadRep();
-   
+
   }
 
   submit() {
@@ -87,8 +87,8 @@ export default class SearchOrder extends BaseComponent {
             return;
         }
 
-      var causeIds = []; 
-      var items = this.state.repList;        
+      var causeIds = [];
+      var items = this.state.repList;
         causeIds.push(items[this.state.selectIndex].causeId);
         this.setState({modalVisible:false});
         let params = {repairId:this.state.repairId, remark:otherDesc, causeIds:causeIds};
@@ -110,7 +110,7 @@ export default class SearchOrder extends BaseComponent {
         if (result && result.code === 200) {
             this.setState({repList: result.data});
         } else {
-          
+
         }
     });
   }
@@ -144,7 +144,7 @@ export default class SearchOrder extends BaseComponent {
      } else if (cachedResults.typeIndex === 2) {
         params.set('matterName', this.state.searchKey);
      }
-     
+
     Request.requestGetWithKey(GetRepairList, params, (result, key)=> {
         if (key !== cachedResults.tabIndex)return;
         if (result && result.code === 200) {
@@ -153,26 +153,26 @@ export default class SearchOrder extends BaseComponent {
             // 数组拼接
             if (result.data&&result.data.records) {//&& result.data.records.length > 0
                 items = items.concat(result.data.records);
-                cachedResults.total = result.data.total; 
-                cachedResults.pages = result.data.pages; 
+                cachedResults.total = result.data.total;
+                cachedResults.pages = result.data.pages;
                 cachedResults.nextPage = result.data.current+1;
             } else {
 
             }
-            
+
           } else { // 刷新操作
             if (result.data&&result.data.records) {
                 items = result.data.records;
-                cachedResults.total = result.data.total; 
-                cachedResults.pages = result.data.pages; 
+                cachedResults.total = result.data.total;
+                cachedResults.pages = result.data.pages;
                 cachedResults.nextPage = result.data.current+1;
             } else {
 
             }
           }
 
-          cachedResults.items = items; 
-          
+          cachedResults.items = items;
+
           if (page !== 0) { // 加载更多操作
               that.setState({
                 isLoadingTail: false,
@@ -224,7 +224,7 @@ export default class SearchOrder extends BaseComponent {
 
 
   onClear() {
-    this.setState({wordList:[], }); 
+    this.setState({wordList:[], });
   }
 
   onPressItem(data){
@@ -284,7 +284,7 @@ export default class SearchOrder extends BaseComponent {
             toastShort('恢复成功');
             that._fetchData(0);
         } else {
-          
+
         }
     });
   }
@@ -321,7 +321,7 @@ export default class SearchOrder extends BaseComponent {
 
     }
     if (data.status === '1') {
-        
+
         buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}><Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
                     <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
@@ -389,7 +389,7 @@ export default class SearchOrder extends BaseComponent {
        if (data.fileMap.voicesRequest && data.fileMap.voicesRequest.length > 0) {
           var filePath = data.fileMap.voicesRequest[0].filePath;
           voiceView = <TouchableOpacity onPress={()=>{that.onPlayVoice(filePath)}} style={{backgroundColor:'white'}}>
-                        <Image source={require('../../../res/repair/btn_voice.png')} style={{width:25,height:25,marginLeft:10, }}/> 
+                        <Image source={require('../../../res/repair/btn_voice.png')} style={{width:25,height:25,marginLeft:10, }}/>
                       </TouchableOpacity>
        }
     }
@@ -407,7 +407,7 @@ export default class SearchOrder extends BaseComponent {
                 <View style={{marginLeft:15, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:70,}} >
                     <Image source={{uri:uriImg}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
                     {statusDesc}
-                  
+
                 </View>
                 <View style={{marginLeft:15, flex:1}} >
                     <View style={{marginLeft:0, marginTop:0, flexDirection:'row',}} >
@@ -431,9 +431,9 @@ export default class SearchOrder extends BaseComponent {
                     </View>
                 </View>
               </View>
-              
+
               {buttons}
-              
+
               <View style={{height:8, width:Dimens.screen_width, marginTop:10, backgroundColor:'#f8f8f8'}}/>
           </View>
 
@@ -504,8 +504,8 @@ export default class SearchOrder extends BaseComponent {
             //item.selected = 0;
         }
       }
-    
-    this.setState({selectIndex:index, repList:items, });    
+
+    this.setState({selectIndex:index, repList:items, });
   }
 
   renderRepItem(data,i) {
@@ -543,7 +543,7 @@ export default class SearchOrder extends BaseComponent {
           isLoadingTail={this.state.isLoadingTail}
           fetchData={this._fetchData.bind(this)}
           cachedResults={cachedResults}
-          ref={component => this._listView = component} 
+          ref={component => this._listView = component}
       />
     } else {
       var list = this.state.wordList.map((item, i)=>this.renderWordItem(item,i));
@@ -574,15 +574,15 @@ export default class SearchOrder extends BaseComponent {
                 </View>
             </TouchableOpacity>
           <TouchableOpacity onPress={()=>this.search()} style={{flex:1,height:30, marginLeft:10, marginRight:0,}}>
-            <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:10, 
+            <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:10,
               borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}>
             <Text onPress={()=>this.popType()} style={{color:'#666',fontSize:12,marginLeft:10,marginRight:0,}}>{typeName}</Text>
             <Image source={require('../../../res/repair/ico_seh.png')} style={{width:16,height:16,marginLeft:10}}/>
-            <TextInput style={{color:'#333',fontSize:14,marginLeft:5, flex:1, height:40, textAlignVertical:'center'}} 
+            <TextInput style={{color:'#333',fontSize:14,marginLeft:5, flex:1, height:40, textAlignVertical:'center'}}
                 placeholder="请输入单号或内容" placeholderTextColor="#aaaaaa" underlineColorAndroid="transparent" numberOfLines={1}
                 onChangeText={(text) => {
                     keyword = text;
-                    this.setState({searchKey:text}); 
+                    this.setState({searchKey:text});
                     console.log(text);
                 }}/>
 
@@ -611,7 +611,7 @@ export default class SearchOrder extends BaseComponent {
                   {repDatas}
 
                 </View>
-                <TextInput 
+                <TextInput
                   style={styles.input_style}
                   placeholder="原因描述…"
                   placeholderTextColor="#aaaaaa"
@@ -629,7 +629,7 @@ export default class SearchOrder extends BaseComponent {
                 </View>
             </View>
         </View>
-    </Modal> 
+    </Modal>
       <Modal
             animationType={"none"}
             transparent={true}
@@ -646,10 +646,10 @@ export default class SearchOrder extends BaseComponent {
                 <Text onPress={()=>this.onChangeType(1)} style={{alignItems:'center',justifyContent:'center',textAlignVertical:'center',fontSize:14,color:'#333',marginLeft:0,textAlign:'center',marginTop:0,width:Dimens.screen_width-80, height:40}}>维修人姓名</Text>
                 <View style={{backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-80),}} />
                 <Text onPress={()=>this.onChangeType(2)} style={{alignItems:'center',justifyContent:'center',textAlignVertical:'center',fontSize:14,color:'#333',marginLeft:0,textAlign:'center',marginTop:0,width:Dimens.screen_width-80, height:40}}>报修内容</Text>
-             
+
             </View>
         </View>
-    </Modal> 
+    </Modal>
       </View>
       )
     }
@@ -668,7 +668,7 @@ onChangeType(index) {
     }
 
     search() {
-        
+
         var word = this.state.searchKey;
         if (word === '') {
           toastShort('请输入关键字');
@@ -689,8 +689,8 @@ onChangeType(index) {
         }
 
         //keyword = '';
-        //this.setState({searchKey:''}); 
-        this.setState({wordList:wordList}); 
+        //this.setState({searchKey:''});
+        this.setState({wordList:wordList});
 
         this._fetchData(0);
 
@@ -718,22 +718,20 @@ const styles = StyleSheet.create({
         marginLeft:40,
         width:Dimens.screen_width-80,
         height:390,
-        backgroundColor: 'white',
         borderBottomRightRadius: 15,
         borderBottomLeftRadius: 15,
         borderTopLeftRadius: 15,
-        borderTopRightRadius:15, 
+        borderTopRightRadius:15,
         backgroundColor: 'white',
     },
     popupStyle1:{
         marginLeft:40,
         width:Dimens.screen_width-80,
         height:174,
-        backgroundColor: 'white',
         borderBottomRightRadius: 15,
         borderBottomLeftRadius: 15,
         borderTopLeftRadius: 15,
-        borderTopRightRadius:15, 
+        borderTopRightRadius:15,
         backgroundColor: 'white',
     },
     container: {

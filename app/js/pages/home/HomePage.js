@@ -1,5 +1,3 @@
-
-
 import React, { Component } from 'react';
 import {
     StyleSheet,
@@ -10,11 +8,10 @@ import {
     InteractionManager,
     TouchableOpacity,
     ScrollView,
-    AsyncStorage,
     Modal
 } from 'react-native';
 
-
+import AsyncStorage from '@react-native-community/async-storage';
 import Swiper from 'react-native-swiper';
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
@@ -22,7 +19,6 @@ import Login from '../login/Login';
 import Request, {GetRepairType} from '../../http/Request';
 import Permissions from 'react-native-permissions';
 import OrderType from "../../../pages/publicTool/OrderType";
-import {Row} from "native-base";
 
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
@@ -46,6 +42,7 @@ export default class HomePage extends Component {
 
 
     loadUserInfo() {
+        console.log('loadUserInfo');
         var that = this;
         AsyncStorage.getItem('token', function (error, result) {
             if (error) {
@@ -58,14 +55,6 @@ export default class HomePage extends Component {
                 const {navigation} = that.props;
                 InteractionManager.runAfterInteractions(() => {
                     console.log('HP : loadUserInfo');
-                        // navigator.push({
-                        //     component: Login,
-                        //     name: 'Login',
-                        //     params:{
-                        //         theme:that.theme
-                        //     }
-                        // });
-
                     navigation.navigate('Login',{theme:that.theme})
 
                     });
@@ -95,21 +84,8 @@ export default class HomePage extends Component {
         this.eventListener = DeviceEventEmitter.addListener('Event_Home', (param) => {
             console.log('componentDidMount Home : ' + param);
         });
-        //this.baseListener = DeviceEventEmitter.addListener('ACTION_BASE_', (action, parmas)=>this.onAction(action, parmas));
         this.loadUserInfo();
         this.loadRepairTypes();
-        // this.timer = setTimeout(() => {
-        //     InteractionManager.runAfterInteractions(() => {
-        //         navigator.push({
-        //             component: Login,
-        //             name: 'Login',
-        //             params:{
-        //                 theme:this.theme
-        //             }
-        //         });
-        //     });
-        // }, 2000);
-
         Permissions.request('storage', { type: 'always' }).then(response => {
 
         })
@@ -128,7 +104,7 @@ export default class HomePage extends Component {
         var that = this;
         Request.requestGet(GetRepairType, null, (result)=> {
             if (result && result.code === 200) {
-                console.log(result)
+                console.log('loadRepairTypes : ' + result)
             } else if (result && result.code === 401) {
                 global.access_token = '';
                 AsyncStorage.setItem('token', '', function (error) {
@@ -167,7 +143,7 @@ export default class HomePage extends Component {
 
     repair() {
         const { navigate } = this.props.navigation;
-        navigate('AllOrder');
+        navigate('AllOrderDemo');
     }
 
     historyDetail() {

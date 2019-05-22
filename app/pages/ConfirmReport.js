@@ -54,7 +54,7 @@ class ConfirmReport extends Component {
     }
 
     async UpLoad(path, name) {
-        const apiToken = 'ac314f1f-38a1-4cff-ba7f-f231350c60bd';
+        const apiToken = global.access_token;
         let formData = new FormData();
         let file = {type: 'multipart/form-data', uri: path, name: name};
         formData.append("file",file);
