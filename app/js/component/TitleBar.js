@@ -58,10 +58,10 @@ export default class TitleBar extends Component {
      */
     _pressBackButton() {
         console.log('_pressBackButton');
-        const {navigator} = this.props;
+        const {navigation} = this.props;
 
-        if (navigator) {
-            navigator.pop();
+        if (navigation) {
+            navigation.pop();
         }
     }
 

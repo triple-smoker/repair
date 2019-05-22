@@ -127,8 +127,8 @@ export default class TransferOrder extends BaseComponent {
         Loading.hidden();
         if (result && result.code === 200) {
             toastShort('转单成功');
-            const {navigator} = that.props;
-            that.naviGoBack(navigator);
+            const {navigation} = that.props;
+            that.naviGoBack(navigation);
         } else {
 
         }
@@ -218,7 +218,7 @@ export default class TransferOrder extends BaseComponent {
          <TitleBar
                     centerText={'转单'}
                     isShowLeftBackIcon={true}
-                    navigator={this.props.navigator}
+                    navigation={this.props.navigation}
             />
 
         <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择维修人员</Text>

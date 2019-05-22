@@ -306,17 +306,21 @@ export default class WorkPage extends BaseComponent {
   }
 
   onPressItem(data){
+    //ok
       if (this.state.tabIndex === 2) {
-        const {navigator} = this.props;
+        const {navigation} = that.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: HistoryDetail,
-                    name: 'HistoryDetail',
-                    params:{
-                        theme:this.theme,
-                        repairId:data.repairId,
-                    }
-                });
+                // navigator.push({
+                //     component: HistoryDetail,
+                //     name: 'HistoryDetail',
+                //     params:{
+                //         theme:this.theme,
+                //         repairId:data.repairId,
+                //     }
+                // });
+                navigation.navigate('HistoryDetail',{
+                                    theme:this.theme,
+                                    repairId:data.repairId,})
         });
 
       } else if (this.state.tabIndex === 1) {
@@ -328,16 +332,19 @@ export default class WorkPage extends BaseComponent {
 
 
   gotoDetail(data) {
-    const {navigator} = this.props;
+    const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: OrderDetail,
-                    name: 'OrderDetail',
-                    params:{
-                        repairId:data.repairId,
-                        theme:this.theme,
-                    }
-                });
+                // navigator.push({
+                //     component: OrderDetail,
+                //     name: 'OrderDetail',
+                //     params:{
+                //         repairId:data.repairId,
+                //         theme:this.theme,
+                //     }
+                // });
+                navigation.navigate('OrderDetail',{
+                          repairId:data.repairId,
+                          theme:this.theme,})
         });
   }
 
@@ -356,16 +363,19 @@ export default class WorkPage extends BaseComponent {
 
   finishOrder(data) {
         global.from = 'MainPage';
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: TakePhotos,
-                    name: 'TakePhotos',
-                    params:{
-                        repairId:data.repairId,
-                        theme:this.theme
-                    }
-                });
+                // navigator.push({
+                //     component: TakePhotos,
+                //     name: 'TakePhotos',
+                //     params:{
+                //         repairId:data.repairId,
+                //         theme:this.theme
+                //     }
+                // });
+                navigation.navigate('TakePhotos',{
+                          repairId:data.repairId,
+                          theme:this.theme,})
         });
 
   }
@@ -504,6 +514,7 @@ export default class WorkPage extends BaseComponent {
 
 
 onPlayVoice(filePath) {
+  console.log('bofang')
     const s = new Sound(filePath, null, (e) => {
                 if (e) {
                      toastShort('播放失败');
@@ -528,44 +539,52 @@ onPlayVoice(filePath) {
   }
 
   search() {
-        const {navigator} = this.props;
+    console.log('search')
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: SearchOrder,
-                name: 'SearchOrder',
-                params:{
-                    theme:this.theme,
+            // navigator.push({
+            //     component: SearchOrder,
+            //     name: 'SearchOrder',
+            //     params:{
+            //         theme:this.theme,
 
-                }
-            });
+            //     }
+            // });
+            navigation.navigate('SearchOrder',{theme:this.theme,})
         });
   }
 
    arrangeWork(data) {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: ArrangeWork,
-                name: 'ArrangeWork',
-                params:{
-                    theme:this.theme,
-                    repairId:data.repairId
-                }
-            });
+            // navigator.push({
+            //     component: ArrangeWork,
+            //     name: 'ArrangeWork',
+            //     params:{
+            //         theme:this.theme,
+            //         theme:this.theme,
+            //     }
+            // });
+            navigation.navigate('ArrangeWork',{
+                      theme:this.theme,
+                      theme:this.theme,})
         });
     }
 
    transferOrder(data) {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: TransferOrder,
-                name: 'TransferOrder',
-                params:{
-                    theme:this.theme,
-                    repairId:data.repairId
-                }
-            });
+            // navigator.push({
+            //     component: TransferOrder,
+            //     name: 'TransferOrder',
+            //     params:{
+            //         theme:this.theme,
+            //         repairId:data.repairId
+            //     }
+            // });
+            navigation.navigate('TransferOrder',{
+                     theme:this.theme,
+                     repairId:data.repairId,})
         });
     }
 
@@ -665,14 +684,14 @@ onPlayVoice(filePath) {
       <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
 
       <TouchableOpacity onPress={()=>this.search()} style={{flex:1,height:30, marginLeft:10, marginRight:0,}}>
-      <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:10,
-      borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}>
+        <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:10,
+        borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}>
 
-      <Image source={require('../../../res/repair/ico_seh.png')}
-      style={{width:16,height:16,marginLeft:10}}/>
-      <Text style={{color:'#999',fontSize:14,marginLeft:5, flex:1}}>请输入单号或内容</Text>
+        <Image source={require('../../../res/repair/ico_seh.png')}
+        style={{width:16,height:16,marginLeft:10}}/>
+        <Text style={{color:'#999',fontSize:14,marginLeft:5, flex:1}}>请输入单号或内容</Text>
 
-      </View>
+        </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={()=>this.captrue()}>
             <Image style={{width:16,height:20,marginLeft:5,marginRight:10}} source={require('../../../res/repair/navbar_ico_sys.png')} />

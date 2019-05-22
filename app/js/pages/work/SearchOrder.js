@@ -204,8 +204,8 @@ export default class SearchOrder extends BaseComponent {
 
   onBack() {
 
-    const {navigator} = this.props;
-    this.naviGoBack(navigator);
+    const {navigation} = this.props;
+    this.naviGoBack(navigation);
   }
 
 

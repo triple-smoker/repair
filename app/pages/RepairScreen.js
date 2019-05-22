@@ -41,6 +41,7 @@ export default class RepairScreen extends React.Component {
             visibleModal: false,
             showNotice: false,
             showVoice: false,
+            errorTxt:'',
             desc : '',
             record : {
                 filePath : '',
@@ -68,16 +69,60 @@ export default class RepairScreen extends React.Component {
         )
 
     }
-
+    /**
+     * 判断字符是否为空的方法 
+     * */ 
+    
+		isEmpty(obj){
+			if(typeof obj == "undefined" || obj == null || obj == ""){
+					return true;
+			}else{
+					return false;
+			}
+        }
+    /**
+     * 判断错误内容
+     * */ 
+        judgeContent(obj){
+            let content =  obj;
+            // console.log(content)
+            if(this.isEmpty(content.desc) && this.isEmpty(content.voices.filePath)){
+                this.setState({
+                    showNotice: true,
+                    errorTxt:'报修内容不能为空'
+                });
+                return false;
+            }else if(this.isEmpty(content.reporter.phone) || 
+                                this.isEmpty(content.reporter.reporter) || 
+                                this.isEmpty(content.reporter.address)){
+                this.setState({
+                    showNotice: true,
+                    errorTxt:'报修人信息不能为空'
+                });
+                return false;
+            }else if(content.images.length == 0){
+                this.setState({
+                    showNotice: true,
+                    errorTxt:'请您上传或拍摄报修照片'
+                });
+                return false;
+            }else{
+                this.setState({
+                    showNotice: false,
+                    errorTxt:''
+                });
+                return true;
+            }
+	    }
 
     submit(){
-        let images = this.state.images;
-        if(images.length === 0){
-            this.setState({
-                showNotice: true,
-            });
-            return;
-        }
+        // let images = this.state.images;
+        // if(images.length === 0){
+        //     this.setState({
+        //         showNotice: true,
+        //     });
+        //     return;
+        // }
         const repairInfo = {
             repairTypeId : this.state.repairTypeId,
             repairMatterId : this.state.repairMatterId,
@@ -90,6 +135,9 @@ export default class RepairScreen extends React.Component {
                 address: this.state.address
             }
         };
+        if(this.judgeContent(repairInfo) == false){
+            return;
+        }
         console.log('提交参数')
         console.log(repairInfo)
         const { navigate } = this.props.navigation;
@@ -148,7 +196,7 @@ export default class RepairScreen extends React.Component {
         return (
             <Container style={{backgroundColor: "#EEEEEE"}}>
                 <Content >
-                    {this.state.showNotice ? <Notice text = '请您上传或拍摄报修照片' /> : null}
+                    {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
                     <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginTop : '1.5%', marginLeft: '1.5%', marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}

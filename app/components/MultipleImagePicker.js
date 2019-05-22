@@ -5,14 +5,18 @@ import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
 import ImagePickers from 'react-native-image-picker';
 import Video from 'react-native-video';
-
+import ModalView from './ModalView';
 class MultipleImagePicker extends Component {
 
     constructor(props){
         super(props);
         this.state = {
             images: [],
-            visibleModal: false
+            visibleModal: false,
+            PicMsg:{
+                visible:false,
+                index:0 
+             }
         }
     }
 
@@ -154,6 +158,23 @@ class MultipleImagePicker extends Component {
     uploadImages(){
         this.props.imageCallback(this.state.images);
     }
+    /**
+     * 传递图片index 
+     * */ 
+    largerView(ff,index){  
+        this.setModalVisible(index)
+    }
+    /** 
+     * 显示图片详情
+     * */ 
+    setModalVisible= (index = 0)=> {
+        this.setState({ 
+            PicMsg:{
+                visible: !this.state.PicMsg.visible,
+                index:index
+            }
+        })   
+    }
 
     render() {
         const readOnly = this.props.readOnly;
@@ -165,6 +186,7 @@ class MultipleImagePicker extends Component {
                                     key={image.index}
                                     readOnly = {readOnly}
                                     deleteImage={()=> {this.deleteImage(image.index)}}
+                                    largerView={() => {this.largerView(this.props.images,image.index)}}
                                     uri={image.uri}
                                     type={image.type}/>) : null
                     }
@@ -178,7 +200,11 @@ class MultipleImagePicker extends Component {
                         <RenderModal item="摄像" onPress={() => this.selectVideoTapped()} />
                     </View>
                 </Modal>
-
+                <ModalView
+                   PicMsg={this.state.PicMsg}
+                   setModalVisible={this.setModalVisible}
+                   imagesRequest={this.props.images}
+                   ></ModalView> 
             </View>
         );
     }
@@ -230,7 +256,10 @@ const PreView = (props) => {
 
             {props.type === 'video' ?
                 <PreVideo uri={props.uri}/> :
-                <Image style={styles.imageStyle} source={{uri: props.uri}} />
+                <TouchableOpacity onPress={props.largerView}>
+                    <Image style={styles.imageStyle} 
+                       source={{uri: props.uri}} />
+                </TouchableOpacity>
             }
         </View>
     );
