@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import {
     StyleSheet,
-    Text,
     View,
     Image,
     DeviceEventEmitter
@@ -28,10 +27,10 @@ export const FLAG_TAB = {
     flag_favoriteTab: 'flag_favoriteTab'
 }
 
-
-
 export default class MainPage extends BaseComponent {
-
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props){
         super(props);
         let selectedTab = this.props.selectedTab?this.props.selectedTab:FLAG_TAB.flag_popularTab
