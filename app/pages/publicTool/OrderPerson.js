@@ -53,7 +53,7 @@ class Person extends Component {
                 <Col style={{width:'20%',paddingTop:18,paddingLeft:18}}>
                     {this._getIcon(this.props.person)}
                 </Col>
-                <Col style={{width:'80%',paddingTop:17}}>
+                <Col style={{width:'80%',paddingTop:14}}>
                     {this._getPerson(this.props.person)}
                 </Col>
             </Row>

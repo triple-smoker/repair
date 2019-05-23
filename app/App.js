@@ -22,9 +22,16 @@ import OrderSearch from './pages/OrderSearch';
 
 import LoginPage from './js/pages/login/Login'
 import MainPage from './js/pages/entry/MainPage'
+import AllOrderDemo from './test/AllOrderDemo'
 // import SQLiteDemo from "./test/SQLiteDemo";
 
-
+import HistoryDetail from './js/pages/repair/HistoryDetail';
+import OrderDetail from './js/pages/repair/detail/OrderDetail'
+import TakePhotos from './js/pages/repair/detail/TakePhotos'
+import ArrangeWork from './js/pages/repair/ArrangeWork';
+import TransferOrder from './js/pages/repair/TransferOrder';
+import SearchOrder from './js/pages/work/SearchOrder'
+// import {store} from './util/store'
 const AppNavigator = createStackNavigator(
     {
         MainPage: MainPage,
@@ -36,8 +43,15 @@ const AppNavigator = createStackNavigator(
         AllOrder: AllOrder,
         Evaluate: OrderEvaluate,
         OrderSearch : OrderSearch,
-        Login : LoginPage
+        Login : LoginPage,
+        AllOrderDemo : AllOrderDemo,
         // SQLiteDemo : SQLiteDemo,
+        HistoryDetail : HistoryDetail,
+        OrderDetail : OrderDetail,
+        TakePhotos : TakePhotos,
+        ArrangeWork:ArrangeWork,
+        TransferOrder : TransferOrder,
+        SearchOrder : SearchOrder,
     },
     {
         initialRouteName: "MainPage"

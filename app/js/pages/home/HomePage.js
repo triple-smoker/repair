@@ -77,14 +77,19 @@ export default class HomePage extends Component {
         });
 
         AsyncStorage.getItem('uinfo', function (error, result) {
-            console.log('uinfo: result = ' + result + ', error = ' + error);
+            // console.log('uinfo: result = ' + result + ', error = ' + error);
             if (error) {
                 console.log('读取失败')
             } else {
                if (result && result.length) {
 
                     global.uinfo = JSON.parse(result);
-                    console.log('global.uinfo.userId: ' + global.uinfo.userId)
+                    // console.log('global.uinfo.deptId: ' + result)
+               //     userId deptId单独存储
+                   global.userId=global.uinfo.userId;
+                   global.deptId=global.uinfo.deptAddresses[0].deptId;
+
+
                }
 
             }

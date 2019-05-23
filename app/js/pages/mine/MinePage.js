@@ -21,7 +21,7 @@ export default class MinePage extends Component {
             <TitleBar
                     centerText={'我的'}
                     isShowLeftBackIcon={false}
-                    navigator={this.props.navigator}
+                    navigation={this.props.navigation}
             />
       
        <Text
@@ -47,15 +47,16 @@ export default class MinePage extends Component {
 
             });
 
-        const {navigator} = this.props;
+        const {navigation} = this.props;
                 InteractionManager.runAfterInteractions(() => {
-                        navigator.push({
-                            component: Login,
-                            name: 'Login',
-                            params:{
-                                theme:this.theme
-                            }
-                        });
+                        // navigator.push({
+                        //     component: Login,
+                        //     name: 'Login',
+                        //     params:{
+                        //         theme:this.theme
+                        //     }
+                        // });
+                        navigation.navigate('Login',{theme:this.theme})
                     });
         }
 
