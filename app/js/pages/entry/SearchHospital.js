@@ -133,7 +133,7 @@ export default class SearchHospital extends BaseComponent {
       <View style={styles.container}>
 
       <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-      <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigator)}>
+      <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigation)}>
       <Image source={require('../../../res/login/navbar_ico_back.png')} 
       style={{width:9,height:20,marginLeft:10}}/>
       </TouchableOpacity>

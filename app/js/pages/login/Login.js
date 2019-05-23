@@ -16,9 +16,9 @@ import {
 
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
-import Setting from './Setting';
+// import Setting from './Setting';
 import Pop from 'rn-global-modal'
-import HospitalPicker from '../entry/HospitalPicker';
+// import HospitalPicker from '../entry/HospitalPicker';
 
 import Request, {AuthToken, GetUserInfo} from '../../http/Request';
 import {Toast} from '../../component/Toast'
@@ -146,28 +146,30 @@ export default class Login extends BaseComponent {
     }
 
     _setting() {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: Setting,
-                name: 'Setting',
-                params:{
-                    theme:this.theme
-                }
-            });
+            // navigator.push({
+            //     component: Setting,
+            //     name: 'Setting',
+            //     params:{
+            //         theme:this.theme
+            //     }
+            // });
+            navigation.navigate( 'Setting',{theme:this.theme})
         });
     }
 
     _onForgotPsw() {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: HospitalPicker,
-                name: 'HospitalPicker',
-                params:{
-                    theme:this.theme
-                }
-            });
+            // navigator.push({
+            //     component: HospitalPicker,
+            //     name: 'HospitalPicker',
+            //     params:{
+            //         theme:this.theme
+            //     }
+            // });
+            navigation.navigate('HospitalPicker',{theme:this.theme})
         });
     }
 

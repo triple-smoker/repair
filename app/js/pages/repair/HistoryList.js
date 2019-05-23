@@ -18,9 +18,9 @@ import {
 
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
-import ArrangeWork from './ArrangeWork';
-import TransferOrder from './TransferOrder';
-import OrderDetail from './detail/OrderDetail';
+// import ArrangeWork from './ArrangeWork';
+// import TransferOrder from './TransferOrder';
+// import OrderDetail from './detail/OrderDetail';
 import Request, {GetRepairList, GetUserInfo} from '../../http/Request';
 
 import RefreshListView from '../../component/RefreshListView'
@@ -148,15 +148,18 @@ export default class HistoryList extends BaseComponent {
 
   onPressItem(data){
 
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: OrderDetail,
-                    name: 'OrderDetail',
-                    params:{
-                        theme:this.theme
-                    }
-                });
+                // navigator.push({
+                //     component: OrderDetail,
+                //     name: 'OrderDetail',
+                //     params:{
+                //         theme:this.theme
+                //     }
+                // });
+                navigation.navigate('OrderDetail',{
+                      theme:this.theme
+                })
         });
 
   }
@@ -203,28 +206,34 @@ export default class HistoryList extends BaseComponent {
   }
 
    arrangeWork() {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: ArrangeWork,
-                name: 'ArrangeWork',
-                params:{
+            // navigator.push({
+            //     component: ArrangeWork,
+            //     name: 'ArrangeWork',
+            //     params:{
+            //         theme:this.theme
+            //     }
+            // });
+            navigation.navigate('ArrangeWork',{
                     theme:this.theme
-                }
-            });
+            })
         });
     }
 
    transferOrder(data) {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: TransferOrder,
-                name: 'TransferOrder',
-                params:{
-                    theme:this.theme
-                }
-            });
+            // navigator.push({
+            //     component: TransferOrder,
+            //     name: 'TransferOrder',
+            //     params:{
+            //         theme:this.theme
+            //     }
+            // });
+            navigation.navigate('TransferOrder',{
+              theme:this.theme
+            })
         });
     }
 
@@ -235,7 +244,7 @@ export default class HistoryList extends BaseComponent {
       <View style={styles.container}>
 
       <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-      <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigator)}>
+      <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigation)}>
       <Image source={require('../../../res/login/navbar_ico_back.png')}
       style={{width:9,height:20,marginLeft:15}}/>
       </TouchableOpacity>

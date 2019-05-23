@@ -225,16 +225,20 @@ export default class TaskList extends BaseComponent {
 
   onPressItem(data){
       if (this.state.tabIndex === 2) {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: HistoryDetail,
-                    name: 'HistoryDetail',
-                    params:{
-                        theme:this.theme,
-                        repairId:data.repairId,
-                    }
-                });
+                // navigator.push({
+                //     component: HistoryDetail,
+                //     name: 'HistoryDetail',
+                //     params:{
+                //         theme:this.theme,
+                //         repairId:data.repairId,
+                //     }
+                // });
+                navigation.navigate('HistoryDetail',{
+                  theme:this.theme,
+                  repairId:data.repairId,
+                })
         });
 
       } else if (this.state.tabIndex === 1) {
@@ -246,16 +250,19 @@ export default class TaskList extends BaseComponent {
 
 
   gotoDetail(data) {
-    const {navigator} = this.props;
+    const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: OrderDetail,
-                    name: 'OrderDetail',
-                    params:{
+                // navigator.push({
+                //     component: OrderDetail,
+                //     name: 'OrderDetail',
+                //     params:{
+                //         repairId:data.repairId,
+                //         theme:this.theme,
+                //     }
+                // });
+                navigation.navigate('OrderDetail',{
                         repairId:data.repairId,
-                        theme:this.theme,
-                    }
-                });
+                        theme:this.theme,})
         });
   }
 
@@ -273,16 +280,19 @@ export default class TaskList extends BaseComponent {
   }
 
   finishOrder(data) {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: TakePhotos,
-                    name: 'TakePhotos',
-                    params:{
-                        repairId:data.repairId,
-                        theme:this.theme
-                    }
-                });
+                // navigator.push({
+                //     component: TakePhotos,
+                //     name: 'TakePhotos',
+                //     params:{
+                //         repairId:data.repairId,
+                //         theme:this.theme
+                //     }
+                // });
+                navigation.navigate('TakePhotos',{
+                      repairId:data.repairId,
+                      theme:this.theme,})
         });
 
   }
@@ -428,29 +438,34 @@ export default class TaskList extends BaseComponent {
   }
 
    arrangeWork(data) {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: ArrangeWork,
-                name: 'ArrangeWork',
-                params:{
+            // navigator.push({
+            //     component: ArrangeWork,
+            //     name: 'ArrangeWork',
+            //     params:{
+            //         theme:this.theme,
+            //         repairId:data.repairId
+            //     }
+            // });
+            navigation.navigate('ArrangeWork',{
                     theme:this.theme,
-                    repairId:data.repairId
-                }
-            });
+                    repairId:data.repairId,})
         });
     }
 
    transferOrder(data) {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: TransferOrder,
-                name: 'TransferOrder',
-                params:{
-                    theme:this.theme
-                }
-            });
+            // navigator.push({
+            //     component: TransferOrder,
+            //     name: 'TransferOrder',
+            //     params:{
+            //         theme:this.theme
+            //     }
+            // });
+            navigation.navigate('TransferOrder',{
+              theme:this.theme,})
         });
     }
 
@@ -548,7 +563,7 @@ export default class TaskList extends BaseComponent {
       <View style={styles.container}>
 
       <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-      <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigator)}>
+      <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigation)}>
       <Image source={require('../../../res/login/navbar_ico_back.png')} 
       style={{width:9,height:20,marginLeft:15}}/>
       </TouchableOpacity>

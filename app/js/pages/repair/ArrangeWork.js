@@ -128,8 +128,8 @@ export default class ArrangeWork extends BaseComponent {
      Request.requestPost(DispatchWork, params, (result)=> {
         if (result && result.code === 200 && !result.data.error) {
             toastShort('派工成功');
-            const {navigator} = that.props;
-            naviGoBack(navigator);
+            const {navigation} = that.props;
+            naviGoBack(navigation);
         } else {
             if (result && result.data && result.data.error){
                 toastShort(result.data.message);
@@ -174,7 +174,7 @@ export default class ArrangeWork extends BaseComponent {
          <TitleBar
                     centerText={'派工'}
                     isShowLeftBackIcon={true}
-                    navigator={this.props.navigator}
+                    navigation={this.props.navigation}
             />
         <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择维修人员</Text>
         <TouchableOpacity onPress={()=>{this.selectDept()}} style={{height:40}}>

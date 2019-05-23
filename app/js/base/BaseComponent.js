@@ -61,8 +61,7 @@ export default class BaseComponent extends Component {
         })
     }
 
-    naviGoBack(navigation) {
-        console.log('naviGoBack ： ' + navigator.getCurrentRoutes().length);
+    naviGoBack(navigation) {   
         if (navigation) { // && navigator.getCurrentRoutes().length > 1
             //  navigator.pop();
             navigation.goBack();

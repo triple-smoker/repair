@@ -19,7 +19,7 @@ let ScreenHeight = Dimensions
     .height;
 let dialogWidth = ScreenWidth - 80;
 
-class ModalView extends Component {
+class ImgPreview extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -150,4 +150,4 @@ const StyleImages = StyleSheet.create({
     }
 })
 
-module.exports = ModalView;
+module.exports = ImgPreview;

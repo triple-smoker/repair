@@ -18,14 +18,16 @@ import {
 
 import TitleBar from '../../../component/TitleBar';
 import * as Dimens from '../../../value/dimens';
-import AddOption from './AddOption';
-import MaterielList from './MaterielList';
-import TakePhotos from './TakePhotos';
+// import AddOption from './AddOption';
+// import MaterielList from './MaterielList';
+// import TakePhotos from './TakePhotos';
 import Request, {GetRepairList, RepairDetail, RepPause, DoPause, RepairCommenced} from '../../../http/Request';
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
 export default class OrderDetail extends BaseComponent {
-
+    static navigationOptions = {
+        header: null,
+    };
   constructor(props){
     super(props);
     this.state={
@@ -72,16 +74,19 @@ export default class OrderDetail extends BaseComponent {
 
    takePhotos() {
         global.from = 'OrderDetail';
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: TakePhotos,
-                    name: 'TakePhotos',
-                    params:{
+                // navigator.push({
+                //     component: TakePhotos,
+                //     name: 'TakePhotos',
+                //     params:{
+                //         theme:this.theme,
+                //         repairId:this.state.repairId
+                //     }
+                // });
+                navigation.navigate('TakePhotos',{
                         theme:this.theme,
-                        repairId:this.state.repairId
-                    }
-                });
+                        repairId:this.state.repairId})
         });
   }
 
@@ -102,30 +107,36 @@ export default class OrderDetail extends BaseComponent {
   }
 
   addOption() {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: AddOption,
-                    name: 'AddOption',
-                    params:{
+                // navigator.push({
+                //     component: AddOption,
+                //     name: 'AddOption',
+                //     params:{
+                //         theme:this.theme,
+                //         repairId: this.state.repairId
+                //     }
+                // });
+                navigation.navigate('AddOption',{
                         theme:this.theme,
-                        repairId: this.state.repairId
-                    }
-                });
+                        repairId: this.state.repairId})
         });
   }
 
  materielList() {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: MaterielList,
-                    name: 'MaterielList',
-                    params:{
+                // navigator.push({
+                //     component: MaterielList,
+                //     name: 'MaterielList',
+                //     params:{
+                //         theme:this.theme,
+                //         repairId: this.state.repairId
+                //     }
+                // });
+                navigation.navigate('MaterielList',{
                         theme:this.theme,
-                        repairId: this.state.repairId
-                    }
-                });
+                        repairId: this.state.repairId})
         });
   }
 
@@ -293,7 +304,7 @@ renderPersonItem(data,i) {
       <TitleBar
       centerText={'维修单详情'}
       isShowLeftBackIcon={true}
-      navigator={this.props.navigator}
+      navigation={this.props.navigation}
       />
       <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64, width:Dimens.screen_width,flex:1}}>
 

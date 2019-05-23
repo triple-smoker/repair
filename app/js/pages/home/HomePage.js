@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Swiper from 'react-native-swiper';
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
-import Login from '../login/Login';
+// import Login from '../login/Login';
 import Request, {GetRepairType} from '../../http/Request';
 import Permissions from 'react-native-permissions';
 import OrderType from "../../../pages/publicTool/OrderType";
@@ -147,16 +147,18 @@ export default class HomePage extends Component {
     }
 
     login() {
-        const {navigator} = this.props;
+        // const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
             console.log('hp : login')
-                navigator.push({
-                    component: Login,
-                    name: 'Login',
-                    params:{
-                        theme:this.theme
-                    }
-                });
+                // navigator.push({
+                //     component: Login,
+                //     name: 'Login',
+                //     params:{
+                //         theme:this.theme
+                //     }
+                // });
+                navigation.navigate('Login', {theme:this.theme})
             });
     }
 
@@ -216,7 +218,7 @@ export default class HomePage extends Component {
           <TitleBar
           centerText={'首页'}
           isShowLeftBackIcon={false}
-          navigator={this.props.navigator}
+          navigation={this.props.navigation}
           />
           <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-49-64, width:Dimens.screen_width,flex:1}}>
           <View style={styles.images}>
