@@ -57,14 +57,14 @@ export default class TakePicture extends BaseComponent {
             uri => {
                 console.log("uri "+uri);
                 DeviceEventEmitter.emit('Event_Take_Photo', uri);
-                that.naviGoBack(that.props.navigator);
+                that.naviGoBack(that.props.navigation);
             },
             error => console.error("Oops, snapshot failed", error)
         );
     } else {
               
         DeviceEventEmitter.emit('Event_Take_Photo', this.state.imagePtath);
-        this.naviGoBack(this.props.navigator);
+        this.naviGoBack(this.props.navigation);
     }
     
   }
@@ -122,7 +122,7 @@ export default class TakePicture extends BaseComponent {
           aspect={Camera.constants.Aspect.fill}>
           
         <View style = {{flex: 0, flexDirection: 'row', justifyContent: 'space-between',}}>
-        <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigator)}>
+        <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigation)}>
             <Image source={require('../../../../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginLeft:15,marginTop:15, }}/>
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>this.switchCamera()}>

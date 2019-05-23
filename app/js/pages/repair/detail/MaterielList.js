@@ -91,7 +91,7 @@ export default class MaterielList extends BaseComponent {
         	if (result && result.code === 200) {
         		toastShort('提交成功');
         		DeviceEventEmitter.emit('Event_Refresh_Detail', 'Event_Refresh_Detail');
-        		this.naviGoBack(this.props.navigator);
+        		this.naviGoBack(this.props.navigation);
         	} else {
           
         	}
@@ -480,7 +480,7 @@ renderTabItem(data, i) {
         <TitleBar
             centerText={'添加物料'}
             isShowLeftBackIcon={true}
-            navigator={this.props.navigator}
+            navigation={this.props.navigation}
            />
          <View style={{height:40,width:Dimens.screen_width,}}>
         <ScrollView keyboardDismissMode={'on-drag'} style={styles.scrollViewStyle} horizontal={true} showsHorizontalScrollIndicator={false}>

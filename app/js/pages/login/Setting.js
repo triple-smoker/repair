@@ -39,8 +39,8 @@ export default class Setting extends BaseComponent {
           <TitleBar
           centerText={'系统设置'}
           isShowLeftBackIcon={true}
-          navigator={this.props.navigator}
-          leftPress={() => this.naviGoBack(this.props.navigator)}
+          navigation={this.props.navigation}
+          leftPress={() => this.naviGoBack(this.props.navigation)}
           
           />
           

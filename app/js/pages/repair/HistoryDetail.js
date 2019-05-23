@@ -243,7 +243,7 @@ loadEvaluateCause() {
       <TitleBar
       centerText={'报修单评价'}
       isShowLeftBackIcon={true}
-      navigator={this.props.navigator}
+      navigation={this.props.navigation}
       />
       <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64, width:Dimens.screen_width,flex:1}}>
       

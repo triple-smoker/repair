@@ -13,7 +13,7 @@ import {
     ListView,
     Modal,
     ScrollView,
-    Slider
+    // Slider
 
 } from 'react-native';
 
@@ -23,7 +23,7 @@ import Request, {GetRepairType, RepairMatterList, GetDeptListByType, GetUserList
 
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
-//import Slider from "react-native-slider";
+import Slider from "react-native-slider";
 import {Loading} from '../../../component/Loading'
 
 
@@ -192,8 +192,10 @@ export default class AddOption extends BaseComponent {
         if (result && result.code === 200) {
             toastShort('提交成功');
             DeviceEventEmitter.emit('Event_Refresh_Detail', 'Event_Refresh_Detail');
-            const {navigator} = that.props;
-            that.naviGoBack(navigator);
+            // const {navigator} = that.props;
+            // that.naviGoBack(navigator);
+            const {navigation} = that.props;
+            that.naviGoBack(navigation);
         } else {
             if (result && result.data && result.data.error){
                 toastShort(result.data.message);
@@ -314,7 +316,7 @@ export default class AddOption extends BaseComponent {
       <TitleBar
       centerText={'添加维修事项'}
       isShowLeftBackIcon={true}
-      navigator={this.props.navigator}
+      navigation={this.props.navigation}
       />
 
       <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-50-64, width:Dimens.screen_width,flex:1}}>

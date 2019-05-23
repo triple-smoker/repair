@@ -17,7 +17,7 @@ import {
 
 import TitleBar from '../../../component/TitleBar';
 import * as Dimens from '../../../value/dimens';
-import AddOption from './AddOption';
+// import AddOption from './AddOption';
 import MaterielList from './MaterielList';
 import TakePhotos from './TakePhotos';
 import Palette from '../../../component/Palette';
@@ -64,15 +64,16 @@ loadDetail() {
 
 
   addOption() {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: AddOption,
-                    name: 'AddOption',
-                    params:{
-                        theme:this.theme
-                    }
-                });
+                // navigator.push({
+                //     component: AddOption,
+                //     name: 'AddOption',
+                //     params:{
+                //         theme:this.theme
+                //     }
+                // });
+                navigation.navigate('AddOption',{theme:this.theme})
         });
   }
 
@@ -144,7 +145,8 @@ loadDetail() {
         if (result && result.code === 200) {
             DeviceEventEmitter.emit('Event_Refresh_Detail', 'Event_Refresh_Detail');
 
-            that.routeToPage(that.props.navigator, global.from);
+            // that.routeToPage(that.props.navigator, global.from);
+            that.routeToPage(that.props.navigation, global.from);
         } else {
             Toast.show('操作失败，请重试');
         }
@@ -211,7 +213,7 @@ renderMaterialItem(data, i) {
       <TitleBar
       centerText={'完工'}
       isShowLeftBackIcon={true}
-      navigator={this.props.navigator}
+      navigation={this.props.navigation}
       />
       <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64, width:Dimens.screen_width,flex:1}}>
         <Text style={{color:'#909399',fontSize:15, height:40, justifyContent:'flex-start',textAlignVertical:'center',paddingLeft:15,marginTop:5,}}>维修事项：{matterName}</Text>
