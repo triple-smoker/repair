@@ -7,6 +7,7 @@ axios.interceptors.request.use(
     function(config) {
         // const apiToken = global.userToken;
         const apiToken = global.access_token;
+        console.log(apiToken);
         // 添加响应头等等设置
         let headers = {
             'hospitalId': '1055390940066893827',
@@ -56,7 +57,7 @@ function PostAxios(url = '', data = defaultData,headers={} ) {
     })
 }
 
-const getUrl = 'http://47.102.197.221:8188';
+const getUrl = 'https://dev.jxing.com.cn';
 function GetAxios(url = '', data = defaultData, ) {
 
     return axios({

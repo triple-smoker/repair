@@ -39,6 +39,20 @@ export default class HomePage extends Component {
             typeVisible:false,
         }
     }
+    //删除
+    _deleteData(){
+        console.log('删除')
+
+        //删除一条数据
+        AsyncStorage.removeItem('token', function (error) {
+            if (error) {
+                alert('删除失败')
+            }else {
+                alert('删除完成')
+            }
+        })
+
+    }
 
 
     loadUserInfo() {
@@ -274,9 +288,9 @@ export default class HomePage extends Component {
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                <TouchableOpacity >
+                <TouchableOpacity onPress={()=>this._deleteData()} >
                 <Image source={require('../../../res/login/ico_dc.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>订餐</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>清缓存</Text>
                 </TouchableOpacity>
             </View>
         </View>
