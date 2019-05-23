@@ -304,7 +304,7 @@ renderPersonItem(data,i) {
     </View>
 
         <View style={{marginLeft:0,backgroundColor:'white',}} >
-              <Text style={{fontSize:13,color:'#333',marginLeft:10,marginTop:8,}}>报修内容：{matterName}</Text>
+              <Text style={{fontSize:13,color:'#333',marginLeft:10,marginTop:8,}}>报修内容111111111111111111111111111：{matterName}</Text>
               <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:10, marginRight:10, backgroundColor:'#eeeeee'}}/>
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
                 <View style={{marginLeft:10, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:60,}} >
