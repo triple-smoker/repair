@@ -67,6 +67,8 @@ class AllOrder extends Component {
         var url3 = "/api/repair/request/list?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId+"&status="+data3.status;
         Axios.GetAxios(url1).then(
             (response) => {
+                console.log('==========================')
+                console.log(response)
                 if(Array.isArray(response.data)){
                     this.setState({recordList1:[],tab1:0});
                 }else{
