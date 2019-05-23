@@ -32,7 +32,7 @@ export default class OrderDetail extends BaseComponent {
     super(props);
     this.state={
         detaiData:null,
-        repairId:props.repairId,
+        repairId:props.navigation.state.params.repairId,
         repList:[],
         selectIndex:-1,
         modalVisible:false,
@@ -158,7 +158,7 @@ export default class OrderDetail extends BaseComponent {
   }
 
 renderRepItem(data,i) {
-      return (<Text onPress={()=>{this.onPressRepItem(data, i)}} style={{width:(Dimens.screen_width-130)/3,flexWrap:'nowrap', marginLeft:10,
+      return (<Text key={i} onPress={()=>{this.onPressRepItem(data, i)}} style={{width:(Dimens.screen_width-130)/3,flexWrap:'nowrap', marginLeft:10,
               color:(this.state.selectIndex===i?'#369CED':'#333333'),fontSize:11, height:35, marginTop:10,
               textAlignVertical:'center', textAlign:'center',borderWidth:1, borderColor:(this.state.selectIndex===i?'#369CED':'#aaaaaa'),
                 borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>{data.causeCtn}</Text>
@@ -169,7 +169,7 @@ renderRepItem(data,i) {
 renderMaterialItem(data, i) {
     var that = this;
     return (
-    <View >
+    <View key={i}>
         <View style={{backgroundColor:'white', paddingTop:10, paddingBottom:10,flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
             <View style={{marginLeft:15,}}>
                 <Text style={{color:'#333',fontSize:14,}}>{data.materialName}</Text>
@@ -188,19 +188,19 @@ renderMaterialItem(data, i) {
 renderPersonItem(data,i) {
     var withSel = Math.round(data.itemPercentage*150/100);
       return (
-                                        <View style={{backgroundColor:'white', height:60, textAlignVertical:'center',marginLeft:0, marginRight:0, marginTop:6,}}>
-                                            <View style={{flexDirection:'row',marginLeft:10,marginTop:5, }}>
-                                                <Text style={{color:'#000',fontSize:14, textAlignVertical:'center', width:55}}>{data.assistantName}</Text>
-                                                <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:10,}}>{data.assistantMobile}</Text>
-                                            </View>
-                                            <View style={{flexDirection:'row',marginLeft:10,height:25,textAlignVertical:'center',}}>
-                                                <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
-                                                <View style={{marginLeft:10,marginTop:8,flexDirection:'row',height:3,backgroundColor:'#f0f0f0', width: 150}}> 
-                                                    <View style={{flexDirection:'row',height:3,backgroundColor:'#3F9AED', width: withSel}}/>
-                                                </View>
-                                                <Text style={{color:'#3F9AED',fontSize:12, marginLeft:10,}}>%{data.itemPercentage}</Text>
-                                            </View>
-                                        </View>
+            <View key={i} style={{backgroundColor:'white', height:60, textAlignVertical:'center',marginLeft:0, marginRight:0, marginTop:6,}}>
+                <View style={{flexDirection:'row',marginLeft:10,marginTop:5, }}>
+                    <Text style={{color:'#000',fontSize:14, textAlignVertical:'center', width:55}}>{data.assistantName}</Text>
+                    <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:10,}}>{data.assistantMobile}</Text>
+                </View>
+                <View style={{flexDirection:'row',marginLeft:10,height:25,textAlignVertical:'center',}}>
+                    <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
+                    <View style={{marginLeft:10,marginTop:8,flexDirection:'row',height:3,backgroundColor:'#f0f0f0', width: 150}}> 
+                        <View style={{flexDirection:'row',height:3,backgroundColor:'#3F9AED', width: withSel}}/>
+                    </View>
+                    <Text style={{color:'#3F9AED',fontSize:12, marginLeft:10,}}>%{data.itemPercentage}</Text>
+                </View>
+            </View>
                               
     );
   }
@@ -209,12 +209,12 @@ renderPersonItem(data,i) {
 
   renderIconItem(data,i) {
      if (i === 0) {
-     return (<View style={{backgroundColor:'white',}}>
+     return (<View key={i} style={{backgroundColor:'white',}}>
                    <Image source={require('../../../../res/repair/user_wx.png')} style={{width:30,height:30,marginLeft:15,marginTop:10,}}/>               
             </View> 
         );                               
      } else {
-      return (<View style={{backgroundColor:'white',}}>
+      return (<View key={i} style={{backgroundColor:'white',}}>
                    <Image source={require('../../../../res/repair/line_wg.png')} style={{width:2,height:50,marginLeft:29,marginTop:0,}}/>
                    <Image source={require('../../../../res/repair/steps_xzr.png')} style={{width:18,height:18,marginLeft:21,marginTop:0,}}/>                 
             </View> 
@@ -315,7 +315,7 @@ renderPersonItem(data,i) {
     </View>
 
         <View style={{marginLeft:0,backgroundColor:'white',}} >
-              <Text style={{fontSize:13,color:'#333',marginLeft:10,marginTop:8,}}>报修内容111111111111111111111111111：{matterName}</Text>
+              <Text style={{fontSize:13,color:'#333',marginLeft:10,marginTop:8,}}>报修内容：{matterName}</Text>
               <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:10, marginRight:10, backgroundColor:'#eeeeee'}}/>
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
                 <View style={{marginLeft:10, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:60,}} >

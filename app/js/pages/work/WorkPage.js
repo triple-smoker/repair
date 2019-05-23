@@ -23,7 +23,7 @@ import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
 import ArrangeWork from '../repair/ArrangeWork';
 import TransferOrder from '../repair/TransferOrder';
-import OrderDetail from '../repair/detail/OrderDetail';
+// import OrderDetail from '../repair/detail/OrderDetail';
 import Request, {GetRepairList, GetUserInfo, CancelPause, RepPause, DoPause} from '../../http/Request';
 
 import RefreshListView from '../../component/RefreshListView'
@@ -307,8 +307,9 @@ export default class WorkPage extends BaseComponent {
 
   onPressItem(data){
     //ok
+    console.log(this.state);
       if (this.state.tabIndex === 2) {
-        const {navigation} = that.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
                 // navigator.push({
                 //     component: HistoryDetail,
@@ -332,6 +333,7 @@ export default class WorkPage extends BaseComponent {
 
 
   gotoDetail(data) {
+    console.log(data)
     const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
                 // navigator.push({
@@ -466,7 +468,7 @@ export default class WorkPage extends BaseComponent {
     }
 
     return (
-      <TouchableOpacity onPress={()=>{that.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
+      <TouchableOpacity onPress={()=>{this.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
               <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:5,}}>报修位置：{data.repairDeptName}</Text>
               <View style={{flexDirection:'row',}} >

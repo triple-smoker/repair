@@ -21,6 +21,9 @@ import SearchHospital from './SearchHospital';
 
 
 export default class HospitalPicker extends BaseComponent {
+  static navigationOptions = {
+    header: null,
+  };
   constructor(props){
     super(props);
     this.state={

@@ -75,6 +75,9 @@ const _DATA={
 };
 
 export default class SearchHospital extends BaseComponent {
+  static navigationOptions = {
+    header: null,
+  };
   constructor(props){
     super(props);
     this.state={
