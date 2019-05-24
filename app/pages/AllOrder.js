@@ -75,6 +75,9 @@ class AllOrder extends BaseComponent {
     componentDidMount() {
         this._fetchData(0);
     }
+    componentWillReceiveProps(){
+        this._fetchData(0);
+    }
     _fetchData(page) {
         console.log('WP : _fetchData')
         var that = this;
