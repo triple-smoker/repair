@@ -569,7 +569,7 @@ onPlayVoice(filePath) {
             // });
             navigation.navigate('ArrangeWork',{
                       theme:this.theme,
-                      theme:this.theme,})
+                     })
         });
     }
 

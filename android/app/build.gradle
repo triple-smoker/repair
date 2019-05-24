@@ -110,16 +110,17 @@ android {
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
         targetSdkVersion 27
+        missingDimensionStrategy 'react-native-camera', 'general'
     }
 
-    signingConfigs {
-        release {
-            storeFile file(MYAPP_RELEASE_STORE_FILE)
-            storePassword MYAPP_RELEASE_STORE_PASSWORD
-            keyAlias MYAPP_RELEASE_KEY_ALIAS
-            keyPassword MYAPP_RELEASE_KEY_PASSWORD
-        }
-    }
+//27    signingConfigs {
+//        release {
+//            storeFile file(MYAPP_RELEASE_STORE_FILE)
+//            storePassword MYAPP_RELEASE_STORE_PASSWORD
+//            keyAlias MYAPP_RELEASE_KEY_ALIAS
+//            keyPassword MYAPP_RELEASE_KEY_PASSWORD
+//        }
+//    }
 
     splits {
         abi {
@@ -131,7 +132,7 @@ android {
     }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -152,6 +153,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-view-shot')
     implementation project(':react-native-video')
     implementation project(':react-native-sound')
     implementation project(':react-native-audio')
@@ -161,6 +163,8 @@ dependencies {
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-image-picker')
     implementation project(':react-native-gesture-handler')
+    //new
+    implementation project(':react-native-camera')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules

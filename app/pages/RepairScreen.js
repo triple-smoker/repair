@@ -48,7 +48,7 @@ export default class RepairScreen extends React.Component {
             }
         }
 
-
+        
         AsyncStorage.getItem('reporterInfoHistory',function (error, result) {
                 if (error) {
 
@@ -206,6 +206,7 @@ export default class RepairScreen extends React.Component {
                     />
                     <SoundRecoding show={() => this.setState({showVoice : true})} record={this.state.record}/>
                     <MultipleImagePicker
+                        navigation={this.props.navigation}
                         imageCallback = {(images)=> this.imageCallback(images)}
                         images={this.state.images}
                         style={{backgroundColor: "#fff" ,marginTop: '1.5%', marginLeft: '1.5%', marginRight: '1.5%',}}
