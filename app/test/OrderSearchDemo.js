@@ -1,22 +1,20 @@
 import React, { Component } from 'react';
 import {
-    Image,
     Dimensions,
-    StyleSheet,
-    Modal,
-    TouchableHighlight,
-    TouchableOpacity,
     View,
     Alert,
-    RefreshControl,
-    ScrollView,
+    TextInput,
+    TouchableHighlight,
+    TouchableOpacity,
+    Image,
+    Modal,
+    StyleSheet,
     ListView
 } from 'react-native';
-import {  Footer,FooterTab,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
-import Axios from '../util/Axios';
-import OrderType from './publicTool/OrderType';
-import OrderItem from './publicTool/OrderItem';
+import {Row, Col, Container, Content, Text ,Button } from 'native-base';
+import OrderItem from '../pages/publicTool/OrderItem';
 import AsyncStorage from '@react-native-community/async-storage';
+import Axios from '../util/Axios';
 import moment from "moment";
 import BaseComponent from '../js/base/BaseComponent';
 import RefreshListView from '../js/component/RefreshListView'
@@ -28,33 +26,24 @@ let cachedResults = {
     items: [], // listview 数据
     total: 0, // 总数
     pages:0,
-    tabIndex:0,//待维修、待评价、历史订单、。。。。编码
-    timeIndex: 0,//自定义时间编码
+    context:'',
 };
-
-
 let ScreenWidth = Dimensions.get('window').width;
 let dialogWidth = ScreenWidth-80;
-class AllOrder extends BaseComponent {
-
+class OrderSearch extends BaseComponent {
 
     static navigationOptions = {
-        header: null,
+        header : null
     };
+
     constructor(props) {
         super(props);
-        const { navigation } = this.props;
-        const thisRecord = navigation.getParam('data', '');
-        this.state = { modalVisible: false,
-            typeVisible:false,
-            searchVisible: true,
-            tabIndex:0,
-            tab1:0,
-            tab2:0,
-            tab3:0,
-            recordList1:[],
-            recordList2:[],
-            recordList3:[],
+        this.state = {
+            modalVisible: false,
+            searchContext: '',
+            searchType: false,
+            reporterList : [],
+            recordListSearch : [],
             cdTimeList:[],
             isRefreshing: false,
             dataSource: new ListView.DataSource({
@@ -67,13 +56,20 @@ class AllOrder extends BaseComponent {
                 }
             }),
             isLoadingTail: false, // loading?
-            tabLength0:0,//页头数据量记录
-            tabLength1:0,//页头数据量记录
-            tabLength2:0,//页头数据量记录
         };
-    }
-    componentDidMount() {
-        this._fetchData(0);
+        AsyncStorage.getItem('searchItemHistory',function (error, result) {
+
+                if (error) {
+                    // alert('读取失败')
+                }else {
+                    let porterList = JSON.parse(result);
+                    this.getHistory(porterList);
+
+                    // alert('读取完成')
+                }
+
+            }.bind(this)
+        )
     }
     _fetchData(page) {
         console.log('WP : _fetchData')
@@ -97,61 +93,16 @@ class AllOrder extends BaseComponent {
             limit: 10,
             deptId: global.deptId,
             ownerId: global.userId,
-            status: ''
+            matterName:cachedResults.context,
         }
         console.log(repRepairInfo);
-
-        var url = "";
-        if(cachedResults.tabIndex===0){
-            url = "/api/repair/request/list/underway?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-        }
-        if(cachedResults.tabIndex===1){
-            url = "/api/repair/request/list/evaluate?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-
-        }
-        if(cachedResults.tabIndex===2){
-            url = "/api/repair/request/list?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId+"&status=9,10,11";
-            Axios.GetAxios(url).then(
-                (response) => {
-                    if (response && response.code === 200) {
-                        if (response.data&&response.data.records) {
-                            this.setState({tabLength2:response.data.total})
-                        }
-                    }
-                }
-            )
-        }
-        console.log("======");
-        console.log(url);
-        if(cachedResults.tabIndex===0||cachedResults.tabIndex===1){
-            var url0 = "/api/repair/request/list/underway?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-            Axios.GetAxios(url0).then(
-                (response) => {
-                    if (response && response.code === 200) {
-                        if (response.data&&response.data.records) {
-                            this.setState({tabLength0:response.data.total})
-                        }
-                    }
-                }
-            )
-            var url1 = "/api/repair/request/list/evaluate?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-            Axios.GetAxios(url1).then(
-                (response) => {
-                    if (response && response.code === 200) {
-                        if (response.data&&response.data.records) {
-                            this.setState({tabLength1:response.data.total})
-                        }
-                    }
-                }
-            )
-        }
-
+        var url="/api/repair/request/list?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId+"&matterName="+repRepairInfo.matterName;
         Axios.GetAxios(url).then(
             (response) => {
                 console.log(">>>>>>>>>>>>>>>>>>>>>>>>>");
                 console.log(response);
                 if (response && response.code === 200) {
-
+                    console.log(response);
                     var items = [];
                     cachedResults.total = 0;
                     if (response.data.current&&response.data.current !== 1) { // 加载更多操作
@@ -208,34 +159,106 @@ class AllOrder extends BaseComponent {
         )
 
     }
-
-    goBack(){
-        const { navigate } = this.props.navigation;
-        this.props.navigation.goBack();
+    getHistory(porterList){
+        this.setState({
+            reporterList: porterList
+        });
     }
-    _setTypeVisible() {
-        this.setState({typeVisible: !this.state.typeVisible});
+    _setSerachShow(context){
+        cachedResults.context=context;
+        this.setState({searchType:true,recordListSearch:[],searchContext:context});
+        this.saveReport(context);
+        console.log(this.state.searchContext)
+        // this._getOrders(context);
+        this._fetchData(0);
     }
+    saveReport(context){
+
+        let key = 'searchItemHistory';
+
+        let reporterList = this.state.reporterList;
 
 
-    goSearch(getRepairList){
-        const { navigate } = this.props.navigation;
-        navigate('OrderSearch',{
-            callback: (
-                () => {
-                    setTimeout(function(){
-                        getRepairList();
-                    },500)
-                })
+        if(reporterList === null){
+            reporterList = new Array()
+        }
+        var temp = [];
+//        reporterList.splice(index,1,context);
+        for(var i = 0 ; i < reporterList.length;i++){
+            if(context === reporterList[i]){
+                temp.splice(0,0,i)
+            }
+        }
+        for(var j = 0 ; j < temp.length;j++){
+            reporterList.splice(temp[j],1);
+        }
+
+        if(context != null && context != ''){
+            reporterList.splice(0,0,context);
+        }
+
+        if(reporterList.length >=6){
+            reporterList.pop()
+        }
+
+
+        this.setState({
+            reporterList: reporterList,
+        });
+        //json转成字符串
+        let jsonStr = JSON.stringify(reporterList);
+
+        //存储
+        AsyncStorage.setItem(key, jsonStr, function (error) {
+
+            if (error) {
+                console.log('存储失败')
+            }else {
+                console.log('存储完成')
+            }
         })
     }
 
-    onClose() {
-        this.setState({modalVisible: false});
+    history(){
+        const reporterList = this.state.reporterList;
+        const listItems =  reporterList === null ? null : reporterList.map((report, index) =>
+            <SearchItem key={index} getSearch={(context)=>this._setSerachShow(context)} searchContext={report}/>
+        );
+        return listItems;
+    }
+
+
+
+    //渲染页面
+    _setOrderItemNew(record){
+
+        return <OrderItem getRepairList={()=>this._fetchData(0)} type={3} record={record} getEvaluate={()=>this.getEvaluate(record)} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>;
+    }
+    getEvaluate(record){
+        const { navigate } = this.props.navigation;
+        navigate('Evaluate', {
+            record: record,
+            callback: (
+                () => {
+                    let repRepairInfo = {
+                        deptId: '1078386763486683138',
+                        matterName:this.state.searchContext,
+                        limit:10000,
+                    }
+                    var   url="/api/repair/request/list?deptId="+repRepairInfo.deptId+"&matterName="+repRepairInfo.matterName+"&limit="+repRepairInfo.limit;
+                    var   data=repRepairInfo;
+                    Axios.GetAxios(url).then(
+                        (response) => {
+                            var records = response.data.records;
+                            this.setState({recordListSearch:records});
+                        }
+                    )
+                }
+            )
+        })
     }
 //催单
     _setModalVisible(repairId,sendDeptId,sendUserId) {
-
         if(!this.state.modalVisible){
             var cdTimeList =[];
             AsyncStorage.getItem('cdTimeHistory',function (error, result) {
@@ -308,7 +331,6 @@ class AllOrder extends BaseComponent {
             }
         )
     }
-
 //催单时间缓存记录
     saveCdTime(){
         let key = 'cdTimeHistory';
@@ -338,134 +360,85 @@ class AllOrder extends BaseComponent {
         return cdTimeList;
     }
 
+//   清理历史纪录
+    clearHistory(){
+        let key = 'searchItemHistory';
+        var reporterList = [];
+        this.setState({reporterList:[]});
+        //json转成字符串
+        let jsonStr = JSON.stringify(reporterList);
 
-    _setSearchVisible(visible) {
-        this.setState({searchVisible: visible});
+        //存储
+        AsyncStorage.setItem(key, jsonStr, function (error) {
 
+            if (error) {
+                console.log('清除失败')
+            }else {
+                console.log('清除成功')
+            }
+        })
     }
-
-    _setOrderItemNew(record){
-        var ty = cachedResults.tabIndex+1;
-        return (
-            <OrderItem  getRepairList={()=>this._fetchData(0)}  type={ty} getEvaluate={()=>this.getEvaluate(record,()=>this._fetchData(0))} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
-        );
-    }
-
-    _renderSeparatorView(sectionID, rowID, adjacentRowHighlighted) {
+    _renderSeparatorView(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
         return (
             <View key={`${sectionID}-${rowID}`} style={styles.separator} />
         );
     }
 
-
-
-
-
-    getEvaluate(record,getRepairList){
-        const { navigate } = this.props.navigation;
-        navigate('Evaluate', {
-            record: record,
-            callback: (
-                () => {
-                    setTimeout(function(){
-                        getRepairList();
-                    },500)
-                }
-            ),
-        })
-    }
-
-//报修导航
-    newRepair(repairTypeId,repairMatterId,getRepairList){
-        this.setState({typeVisible: !this.state.typeVisible});
-        const { navigate } = this.props.navigation;
-        navigate('Repair',{
-            repairTypeId:repairTypeId,
-            repairMatterId:repairMatterId,
-            callback: (
-                () => {
-                    setTimeout(function(){
-                        getRepairList();
-                    },500)
-                })
-        })
-    }
-    onPressTabItem(index){
-        console.log(">>>>>>>>>>"+index);
-        cachedResults.items = [];
-        cachedResults.tabIndex = index;
-        cachedResults.total = 0;
-        cachedResults.pages = 0;
-        cachedResults.nextPage = 1;
-        this.setState({tabIndex:index, dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)});
-        this._fetchData(0);
-    }
-
-
     render() {
         return (
             <View style={styles.container}>
                 <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-                    <TouchableHighlight style={{width:20,height:50}} onPress={()=>this.goBack()}>
+                    <TouchableHighlight style={{width:20,height:50}} onPress={()=>{this.props.navigation.goBack(),this.props.navigation.state.params.callback()}}>
                         <Image style={{width:12,height:25,margin:10}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
-                    <TouchableOpacity onPress={()=>this.goSearch(()=>this._fetchData(0))} style={{flex:1,height:30, marginRight:0,}}>
-                        <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:5,
-                            borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}>
+                    <View style={{flex:1, height:40,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:5,
+                        borderBottomRightRadius: 20,borderBottomLeftRadius: 20,borderTopLeftRadius: 20,borderTopRightRadius: 20,}}>
 
-                            <Image source={require('../image/ico_seh.png')}
-                                   style={{width:16,height:16,marginLeft:10}}/>
-                            <Text style={{color:'#999',fontSize:14,marginLeft:5, flex:1}}>请输入单号或内容</Text>
+                        <Image source={require('../image/ico_seh.png')}
+                               style={{width:16,height:16}}/>
+                        <TextInput underlineColorAndroid="transparent" placeholder="请输入单号或内容" style={{width:'90%',height:40,fontSize:14,backgroundColor:'#f4f4f4'}} onChangeText={(searchContext) => this.setState({searchContext:searchContext})}>{this.state.searchContext}</TextInput>
 
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>this._setTypeVisible()} style={{width:60,flexDirection:'row'}}>
-                        <Image style={{width:20,height:20,marginRight:2}} source={require('../image/navbar_ico_bx.png')} />
-                        <Text style={{color:"#252525",fontSize:16}}>报修</Text>
+                    </View>
+                    <TouchableOpacity onPress={()=>this._setSerachShow(this.state.searchContext)} style={{width:60,flexDirection:'row'}}>
+                        <Text style={{color:"#252525"}}>搜索</Text>
                     </TouchableOpacity>
                 </View>
-                {this.state.tabIndex!=2&&
-                <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-                    <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
-                        <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
-                            <Text style={{color:this.state.tabIndex===0 ?'#5ec4c8':'#999',fontSize:16, textAlign:'center', textAlignVertical:'center'}}>{"待维修("+this.state.tabLength0+")"}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>{this.onPressTabItem(1)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
-                        <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
-                            <Text style={{color:this.state.tabIndex===1 ?'#5ec4c8':'#999',fontSize:16, textAlign:'center', textAlignVertical:'center'}}>{"待评价("+this.state.tabLength1+")"}</Text>
-                        </View>
-                    </TouchableOpacity>
+                <Row style={{height:50,paddingTop:20,paddingLeft:20}}>
+                    <Text style={{color:'#919191',fontSize:14}}>
+                        最近搜索
+                    </Text>
+                    <TouchableHighlight  style={{marginLeft:'77%'}} onPress={()=>this.clearHistory()}>
+                        <Image style={{width:15,height:18}}
+                               source={require("../image/ico_del.png")}
+                        />
+                    </TouchableHighlight>
+                </Row>
+                {this.state.searchType==false &&
+                <View style={{width:'100%',flexDirection:'row',flexWrap:'wrap'}}>
+                    {this.history()}
                 </View>
                 }
-                {this.state.tabIndex===2&&
-                <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-                    <TouchableOpacity style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
-                        <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
-                            <Text style={{color:'#5ec4c8',fontSize:16, textAlign:'center', textAlignVertical:'center'}}>{"历史维修("+this.state.tabLength2+")"}</Text>
-                        </View>
-                    </TouchableOpacity>
+                {this.state.searchType==true &&
+                <View style={{width:'100%',flexDirection:'row',flexWrap:'wrap'}}>
+                    <RefreshListView
+                        style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44*2-49}}
+                        onEndReachedThreshold={10}
+                        dataSource={this.state.dataSource}
+                        // 渲染item(子组件)
+                        renderRow={this._setOrderItemNew.bind(this)}
+                        renderSeparator={this._renderSeparatorView.bind(this)}
+                        // 是否可以刷新
+                        isRefreshing={this.state.isRefreshing}
+                        // 是否可以加载更多
+                        isLoadingTail={this.state.isLoadingTail}
+                        // 请求数据
+                        fetchData={this._fetchData.bind(this)}
+                        // 缓存列表数据
+                        cachedResults={cachedResults}
+                        ref={component => this._listView = component}
+                    />
                 </View>
                 }
-                <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',margin:7,fontSize:12}}>{'-------共'+cachedResults.total+'条报修单-------'}</Text>
-                <OrderType goToRepair={(repairTypeId,repairMatterId)=>this.newRepair(repairTypeId,repairMatterId,()=>this.getRepairList())} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
-                <RefreshListView
-                    style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44*2-49}}
-                    onEndReachedThreshold={10}
-                    dataSource={this.state.dataSource}
-                    // 渲染item(子组件)
-                    renderRow={this._setOrderItemNew.bind(this)}
-                    renderSeparator={this._renderSeparatorView.bind(this)}
-                    // 是否可以刷新
-                    isRefreshing={this.state.isRefreshing}
-                    // 是否可以加载更多
-                    isLoadingTail={this.state.isLoadingTail}
-                    // 请求数据
-                    fetchData={this._fetchData.bind(this)}
-                    // 缓存列表数据
-                    cachedResults={cachedResults}
-                    ref={component => this._listView = component}
-                />
                 <Modal
                     animationType={"slide"}
                     transparent={true}
@@ -474,30 +447,21 @@ class AllOrder extends BaseComponent {
                 >
                     <MD Closer = {() => this._setModalVisible()} />
                 </Modal>
-                <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',bottom:0}}>
-                    <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
-                        <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
-                            <Image
-                                style={{width: 25,height:25}}
-                                source={(this.state.tabIndex==0||this.state.tabIndex==1) ? require('../image/tab_ico_wdwx_pre.png'):require('../image/tab_ico_wdwx_nor.png')}
-                            />
-                            <Text style={{color:(this.state.tabIndex==0||this.state.tabIndex==1) ?'#5ec4c8':'#999',fontSize:10, textAlign:'center', textAlignVertical:'center'}}>当前报修</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>{this.onPressTabItem(2)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
-                        <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
-                            <Image
-                                style={{width: 25,height:25}}
-                                source={(this.state.tabIndex==0||this.state.tabIndex==1) ? require('../image/tab_ico_lswx_nor.png'):require('../image/tab_ico_lswx_pre.png')}
-                            />
-                            <Text style={{color:(this.state.tabIndex==0||this.state.tabIndex==1) ?'#999':'#5ec4c8',fontSize:10, textAlign:'center', textAlignVertical:'center'}}>历史报修</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
             </View>
 
+    );
+    }
+}
 
-        );
+class SearchItem extends Component{
+    render(){
+        return (
+            <Button style={{height:30,marginLeft:20,marginTop:20,backgroundColor:'#ccc',borderRadius:15}}
+                    onPress={()=>this.props.getSearch(this.props.searchContext)}
+            >
+                <Text style={{color:'#555'}}>{this.props.searchContext}</Text>
+            </Button>
+        )
     }
 }
 
@@ -527,9 +491,6 @@ class MD extends Component {
         );
     }
 }
-
-
-
 const modalStyles = StyleSheet.create({
     container: {
         flex: 1,
@@ -555,7 +516,6 @@ const modalStyles = StyleSheet.create({
         marginTop:10,
     },
 });
-
 const styles = StyleSheet.create({
     modelStyle:{
         flex: 1,
@@ -633,4 +593,4 @@ const styles = StyleSheet.create({
 });
 
 
-module.exports=AllOrder;
+module.exports=OrderSearch;
