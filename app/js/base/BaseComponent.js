@@ -61,8 +61,7 @@ export default class BaseComponent extends Component {
         })
     }
 
-    naviGoBack(navigation) {
-        console.log('naviGoBack ： ' + navigator.getCurrentRoutes().length);
+    naviGoBack(navigation) {   
         if (navigation) { // && navigator.getCurrentRoutes().length > 1
             //  navigator.pop();
             navigation.goBack();
@@ -72,21 +71,27 @@ export default class BaseComponent extends Component {
         return false;
     }
 
-   routeToPage(navigator, page) {
-    const routes = navigator.state.routeStack;//this.props.navigator.state.routeStack;
-    let destinationRoute = '';
-    for (let i = routes.length - 1; i >= 0; i--) {
-        if(routes[i].name === page) {
-            destinationRoute = navigator.getCurrentRoutes()[i];
-        }
-    }
+   routeToPage(navigation, page) {
+    //    console.log('routeToPage');
+    //     console.log(page);
+    // const routes = navigator.state.routeStack;//this.props.navigator.state.routeStack;
+    // let destinationRoute = '';
+    // for (let i = routes.length - 1; i >= 0; i--) {
+    //     if(routes[i].name === page) {
+    //         destinationRoute = navigator.getCurrentRoutes()[i];
+    //     }
+    // }
+    //
+    // if (destinationRoute === '') {
+    //     navigator.pop();
+    //     navigator.pop();
+    //     return ;
+    // }
+    // navigator.popToRoute(destinationRoute);
 
-    if (destinationRoute === '') {
-        navigator.pop();
-        navigator.pop();
-        return ;
-    }
-    navigator.popToRoute(destinationRoute);
+       navigation.navigate(page);
+
+
   }
 
  routeToPageEx(navigator, page, page1) {

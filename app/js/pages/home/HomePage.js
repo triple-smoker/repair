@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Swiper from 'react-native-swiper';
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
-import Login from '../login/Login';
+// import Login from '../login/Login';
 import Request, {GetRepairType} from '../../http/Request';
 import Permissions from 'react-native-permissions';
 import OrderType from "../../../pages/publicTool/OrderType";
@@ -38,6 +38,20 @@ export default class HomePage extends Component {
             modalVisible:false,
             typeVisible:false,
         }
+    }
+    //删除
+    _deleteData(){
+        console.log('删除')
+
+        //删除一条数据
+        AsyncStorage.removeItem('token', function (error) {
+            if (error) {
+                alert('删除失败')
+            }else {
+                alert('删除完成')
+            }
+        })
+
     }
 
 
@@ -133,16 +147,18 @@ export default class HomePage extends Component {
     }
 
     login() {
-        const {navigator} = this.props;
+        // const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
             console.log('hp : login')
-                navigator.push({
-                    component: Login,
-                    name: 'Login',
-                    params:{
-                        theme:this.theme
-                    }
-                });
+                // navigator.push({
+                //     component: Login,
+                //     name: 'Login',
+                //     params:{
+                //         theme:this.theme
+                //     }
+                // });
+                navigation.navigate('Login', {theme:this.theme})
             });
     }
 
@@ -202,7 +218,7 @@ export default class HomePage extends Component {
           <TitleBar
           centerText={'首页'}
           isShowLeftBackIcon={false}
-          navigator={this.props.navigator}
+          navigation={this.props.navigation}
           />
           <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-49-64, width:Dimens.screen_width,flex:1}}>
           <View style={styles.images}>
@@ -279,9 +295,9 @@ export default class HomePage extends Component {
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                <TouchableOpacity >
+                <TouchableOpacity onPress={()=>this._deleteData()} >
                 <Image source={require('../../../res/login/ico_dc.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>订餐</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>清缓存</Text>
                 </TouchableOpacity>
             </View>
         </View>

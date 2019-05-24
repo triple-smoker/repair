@@ -20,6 +20,9 @@ import * as Dimens from '../../value/dimens';
 
 
 export default class Setting extends BaseComponent {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props){
         super(props);
         this.state={
@@ -39,8 +42,8 @@ export default class Setting extends BaseComponent {
           <TitleBar
           centerText={'系统设置'}
           isShowLeftBackIcon={true}
-          navigator={this.props.navigator}
-          leftPress={() => this.naviGoBack(this.props.navigator)}
+          navigation={this.props.navigation}
+          leftPress={() => this.naviGoBack(this.props.navigation)}
           
           />
           

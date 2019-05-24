@@ -17,7 +17,7 @@ import {
 
 import TitleBar from '../../../component/TitleBar';
 import * as Dimens from '../../../value/dimens';
-import AddOption from './AddOption';
+// import AddOption from './AddOption';
 import MaterielList from './MaterielList';
 import TakePhotos from './TakePhotos';
 import Palette from '../../../component/Palette';
@@ -35,7 +35,9 @@ var reson = '';
 var way = '';
 var userNo = '';
 export default class FinishWork extends BaseComponent {
-
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props){
         super(props);
         this.state={
@@ -57,22 +59,23 @@ loadDetail() {
         if (result && result.code === 200) {
             that.setState({detaiData:result.data});
         } else {
-          
+
         }
     });
 }
 
 
   addOption() {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: AddOption,
-                    name: 'AddOption',
-                    params:{
-                        theme:this.theme
-                    }
-                });
+                // navigator.push({
+                //     component: AddOption,
+                //     name: 'AddOption',
+                //     params:{
+                //         theme:this.theme
+                //     }
+                // });
+                navigation.navigate('AddOption',{theme:this.theme})
         });
   }
 
@@ -84,7 +87,7 @@ loadDetail() {
     var materials = [];
     var imagesCompleted = [];
     var imagesSignature = [];
-    
+
     var processList = this.state.detaiData.processList;
     for (var i = 0; i < processList.length; i++) {
         var item = processList[i];
@@ -110,7 +113,7 @@ loadDetail() {
             fileType: 'image/jpeg', fileHost:imageUrl.fileHost, flowType:1,};
         imagesCompleted.push(image);
     }
-    
+
     imageUrl = global.imageUrl2;
     if (imageUrl) {
         let image = {filePath: imageUrl.fileDownloadUri, fileName:imageUrl.fileName, fileBucket:imageUrl.bucketName,
@@ -144,7 +147,8 @@ loadDetail() {
         if (result && result.code === 200) {
             DeviceEventEmitter.emit('Event_Refresh_Detail', 'Event_Refresh_Detail');
 
-            that.routeToPage(that.props.navigator, global.from);
+            // that.routeToPage(that.props.navigator, global.from);
+            that.routeToPage(that.props.navigation, global.from);
         } else {
             Toast.show('操作失败，请重试');
         }
@@ -164,7 +168,7 @@ renderMaterialItem(data, i) {
             <Text style={{color:'#999',fontSize:12,  marginLeft:10,marginTop:1,}}>规格：{data.spec}；品牌：{data.brand}</Text>
             </View>
             <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                    <Text style={{color:'#666',fontSize:14, height:40, textAlignVertical:'center', marginLeft:5,marginRight:10,}}>x{data.qty}</Text>          
+                    <Text style={{color:'#666',fontSize:14, height:40, textAlignVertical:'center', marginLeft:5,marginRight:10,}}>x{data.qty}</Text>
             </View>
         </View>
         <View style={{backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-30), marginLeft:15, marginRight:15,}} />
@@ -172,7 +176,7 @@ renderMaterialItem(data, i) {
     );
 }
 
-  
+
 
   render() {
     var startY = (Dimens.screen_height-490)/2+40;
@@ -205,59 +209,59 @@ renderMaterialItem(data, i) {
     var uri1 = global.imageUrl1?global.imageUrl1.fileDownloadUri:null;
     var uri2 = global.imageUrl2?global.imageUrl2.fileDownloadUri:null;
     var uri3 = global.imageUrl3?global.imageUrl3.fileDownloadUri:null;
-    
+
     return (
       <View style={styles.container}>
       <TitleBar
       centerText={'完工'}
       isShowLeftBackIcon={true}
-      navigator={this.props.navigator}
+      navigation={this.props.navigation}
       />
       <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64, width:Dimens.screen_width,flex:1}}>
         <Text style={{color:'#909399',fontSize:15, height:40, justifyContent:'flex-start',textAlignVertical:'center',paddingLeft:15,marginTop:5,}}>维修事项：{matterName}</Text>
         <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#999',fontSize:14, height:40, width:70, textAlignVertical:'center', marginLeft:10,}}>维修工时</Text>
-            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}} 
+            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}}
                 placeholder="请输入工时" placeholderTextColor="#aaaaaa" underlineColorAndroid="transparent" numberOfLines={1}
                 onChangeText={(text) => {
                     hours = text;
                 }}/>
             <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
                     <Text style={{color:'#666',fontSize:14, height:40, textAlignVertical:'center', marginLeft:5,marginRight:10,}}>小时</Text>
-                                
+
             </View>
         </View>
         <View style={styles.line} />
         <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#999',fontSize:14, height:40, width:70,textAlignVertical:'center', marginLeft:10,}}>维修成本</Text>
-            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}} 
+            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}}
                 placeholder="请输入成本" placeholderTextColor="#aaaaaa" underlineColorAndroid="transparent" numberOfLines={1}
                 onChangeText={(text) => {
                     moneyBen = text;
                 }}/>
             <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
                    <Text style={{color:'#666',fontSize:14, height:40, textAlignVertical:'center', marginLeft:5,marginRight:10,}}>元</Text>
-                                
+
             </View>
         </View>
         <View style={styles.line} />
         <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#999',fontSize:14, height:40, width:70, textAlignVertical:'center', marginLeft:10,}}>人工费</Text>
-            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}} 
+            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}}
                 placeholder="请输入人工费" placeholderTextColor="#aaaaaa" underlineColorAndroid="transparent" numberOfLines={1}
                 onChangeText={(text) => {
                     moneyRen = text;
                 }}/>
             <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
                     <Text style={{color:'#666',fontSize:14, height:40, textAlignVertical:'center', marginLeft:5,marginRight:10,}}>元</Text>
-                                
+
             </View>
         </View>
         <View style={styles.line} />
         <View style={{backgroundColor:'white', height:40, justifyContent:'flex-end',textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#333',fontSize:16, height:40, textAlignVertical:'center', marginLeft:5,}}>合计</Text>
             <Text style={{color:'#EA6060',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center', marginRight:10,}}>¥0</Text>
-            
+
         </View>
 
         {materialView}
@@ -286,33 +290,33 @@ renderMaterialItem(data, i) {
 
         <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, marginTop:15, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#999',fontSize:14, height:40, width:70, textAlignVertical:'center', marginLeft:10,}}>故障原因</Text>
-            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}} 
+            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}}
                 placeholder="请输入故障原因" placeholderTextColor="#aaaaaa" underlineColorAndroid="transparent" numberOfLines={1}
                 onChangeText={(text) => {
                     reson = text;
                 }}/>
-            
+
         </View>
         <View style={styles.line} />
         <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#999',fontSize:14, height:40, width:70,textAlignVertical:'center', marginLeft:10,}}>维修方法</Text>
-            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}} 
+            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}}
                 placeholder="请输入维修方法" placeholderTextColor="#aaaaaa" underlineColorAndroid="transparent" numberOfLines={1}
                 onChangeText={(text) => {
                     way = text;
                 }}/>
-            
+
         </View>
         <View style={styles.line} />
         <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#999',fontSize:14, height:40, width:70, textAlignVertical:'center', marginLeft:10,}}>工号</Text>
-            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}} 
+            <TextInput style={{color:'#333',fontSize:14, height:40, width:150, marginLeft:10,textAlignVertical:'center'}}
                 placeholder="请输入工号" placeholderTextColor="#aaaaaa" underlineColorAndroid="transparent" numberOfLines={1}
                  value = {global.uinfo.workNumber?global.uinfo.workNumber:''}
                 onChangeText={(text) => {
                     userNo = text;
                 }}/>
-            
+
         </View>
         <View style={{width:Dimens.screen_width,height:120}} />
     </ScrollView>
@@ -343,24 +347,24 @@ renderMaterialItem(data, i) {
                 </View>
             </View>
         </View>
-    </Modal> 
+    </Modal>
 
 
     </View>
-    ) 
+    )
     }
 
 
     uploadFile(path) {
         var that = this;
         Request.uploadFile(path, (result)=> {
-    
+
             if (result && result.code === 200) {
-              
+
                 that.setState({signatureData:result.data, modalVisible:false});
                 that.completed(result.data);
             } else {
-              
+
                 Toast.show('上传失败，请重试');
             }
       });
@@ -369,7 +373,7 @@ renderMaterialItem(data, i) {
 
     cancel() {
         this.setState({modalVisible:false});
-       
+
     }
 
     submit() {
@@ -441,8 +445,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 15,
         borderBottomLeftRadius: 15,
         borderTopLeftRadius: 15,
-        borderTopRightRadius:15, 
-        backgroundColor: 'white',
+        borderTopRightRadius:15,
     },
     container: {
         flex: 1,

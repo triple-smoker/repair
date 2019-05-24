@@ -21,7 +21,9 @@ import BaseComponent from '../../../base/BaseComponent'
 
 
 export default class MaterielList extends BaseComponent {
-
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props){
         super(props);
         this.state={
@@ -91,7 +93,7 @@ export default class MaterielList extends BaseComponent {
         	if (result && result.code === 200) {
         		toastShort('提交成功');
         		DeviceEventEmitter.emit('Event_Refresh_Detail', 'Event_Refresh_Detail');
-        		this.naviGoBack(this.props.navigator);
+        		this.naviGoBack(this.props.navigation);
         	} else {
           
         	}
@@ -227,7 +229,7 @@ export default class MaterielList extends BaseComponent {
 renderTabItem(data, i) {
 	var that = this;
     return (
-    <TouchableOpacity onPress={()=>{that.onPressTabItem(data)}} style = {styles.itemStyle}>
+    <TouchableOpacity key={i} onPress={()=>{that.onPressTabItem(data)}} style = {styles.itemStyle}>
     		<View style = {styles.itemStyle}>
         		<Text style={{color:data.selected===1 ?'#6DC5C9':'#777',fontSize:13, textAlign:'center', textAlignVertical:'center', flex:1, marginLeft:5,marginRight:10,}}>{data.materialTypeName}</Text>
         		<View style={{backgroundColor: data.selected===1?'#6DC5C9':'#fff', height:data.selected===1?2:0, marginLeft:5,marginRight:10, width:60}}/>
@@ -480,7 +482,7 @@ renderTabItem(data, i) {
         <TitleBar
             centerText={'添加物料'}
             isShowLeftBackIcon={true}
-            navigator={this.props.navigator}
+            navigation={this.props.navigation}
            />
          <View style={{height:40,width:Dimens.screen_width,}}>
         <ScrollView keyboardDismissMode={'on-drag'} style={styles.scrollViewStyle} horizontal={true} showsHorizontalScrollIndicator={false}>

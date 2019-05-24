@@ -5,7 +5,7 @@ import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
 import ImagePickers from 'react-native-image-picker';
 import Video from 'react-native-video';
-import ModalView from './ModalView';
+import ImgPreview from './ImgPreview';
 class MultipleImagePicker extends Component {
 
     constructor(props){
@@ -200,11 +200,10 @@ class MultipleImagePicker extends Component {
                         <RenderModal item="摄像" onPress={() => this.selectVideoTapped()} />
                     </View>
                 </Modal>
-                <ModalView
+                <ImgPreview
                    PicMsg={this.state.PicMsg}
                    setModalVisible={this.setModalVisible}
-                   imagesRequest={this.props.images}
-                   ></ModalView> 
+                   imagesRequest={this.props.images}></ImgPreview> 
             </View>
         );
     }

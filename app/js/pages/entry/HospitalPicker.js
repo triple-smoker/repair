@@ -21,6 +21,9 @@ import SearchHospital from './SearchHospital';
 
 
 export default class HospitalPicker extends BaseComponent {
+  static navigationOptions = {
+    header: null,
+  };
   constructor(props){
     super(props);
     this.state={
@@ -35,15 +38,16 @@ export default class HospitalPicker extends BaseComponent {
   }
 
   _onSearch() {
-    const {navigator} = this.props;
+    const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: SearchHospital,
-                name: 'SearchHospital',
-                params:{
-                    theme:this.theme
-                }
-            });
+            // navigator.push({
+            //     component: SearchHospital,
+            //     name: 'SearchHospital',
+            //     params:{
+            //         theme:this.theme
+            //     }
+            // });
+            navigation.navigate('SearchHospital',{theme:this.theme})
         });
 
   }
@@ -54,8 +58,8 @@ export default class HospitalPicker extends BaseComponent {
       <TitleBar
       centerText={'医院选择'}
       isShowLeftBackIcon={false}
-      navigator={this.props.navigator}
-      leftPress={() => this.naviGoBack(this.props.navigator)}
+      navigation={this.props.navigation}
+      leftPress={() => this.naviGoBack(this.props.navigation)}
 
       /> 
 

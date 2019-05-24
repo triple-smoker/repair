@@ -11,7 +11,7 @@ import {
     Platform,
     Image,
 } from 'react-native'
-import MainPage from './MainPage'
+// import MainPage from './MainPage'
 import ThemeDao from '../../dao/ThemeDao'
 
 
@@ -19,7 +19,7 @@ export default class WelcomePage extends Component {
 
     componentDidMount() {
 
-        const {navigator} = this.props;
+        const {navigation} = this.props;
 
         new ThemeDao().getTheme().then((data)=>{
             this.theme=data;
@@ -27,13 +27,14 @@ export default class WelcomePage extends Component {
 
         this.timer = setTimeout(() => {
             InteractionManager.runAfterInteractions(() => {
-                navigator.resetTo({
-                    component: MainPage,
-                    name: 'MainPage',
-                    params:{
-                        theme:this.theme
-                    }
-                });
+                // navigator.resetTo({
+                //     component: MainPage,
+                //     name: 'MainPage',
+                //     params:{
+                //         theme:this.theme
+                //     }
+                // });
+                navigation.navigate('MainPage',{theme:this.theme})
             });
         }, 2000);
     }

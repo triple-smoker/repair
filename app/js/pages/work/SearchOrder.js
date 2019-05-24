@@ -43,6 +43,9 @@ let cachedResults = {
 var keyword = '';
 var otherDesc = '';
 export default class SearchOrder extends BaseComponent {
+  static navigationOptions = {
+    header: null,
+  };
  constructor(props){
     super(props);
     this.state={
@@ -205,6 +208,8 @@ export default class SearchOrder extends BaseComponent {
   onBack() {
 
     const {navigation} = this.props;
+    //.getCurrentRoutes().length)
+    console.log( navigation);
     this.naviGoBack(navigation);
   }
 
@@ -215,7 +220,7 @@ export default class SearchOrder extends BaseComponent {
   }
 
   renderWordItem(data, i) {
-      return (<Text onPress={()=>{this.onPressWordItem(data, i)}} style={{flexWrap:'nowrap', marginLeft:10,
+      return (<Text key={i} onPress={()=>{this.onPressWordItem(data, i)}} style={{flexWrap:'nowrap', marginLeft:10,
               color:'#333333',fontSize:11, height:35, marginTop:10,
               textAlignVertical:'center', textAlign:'center',borderWidth:0, backgroundColor:'#f0f0f0',
                 borderBottomRightRadius:17.5,borderBottomLeftRadius:17.5,borderTopLeftRadius:17.5,borderTopRightRadius:17.5, paddingLeft:10, paddingRight:10}}>{data}</Text>
@@ -245,16 +250,20 @@ export default class SearchOrder extends BaseComponent {
 
 
  gotoHistory(data) {
-    const {navigator} = this.props;
+    const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: HistoryDetail,
-                    name: 'HistoryDetail',
-                    params:{
-                        theme:this.theme,
-                        repairId:data.repairId,
-                    }
-                });
+                // navigator.push({
+                //     component: HistoryDetail,
+                //     name: 'HistoryDetail',
+                //     params:{
+                //         theme:this.theme,
+                //         repairId:data.repairId,
+                //     }
+                // });
+                navigation.navigate('HistoryDetail',{
+                      theme:this.theme,
+                      repairId:data.repairId,
+                })
         });
  }
 
@@ -263,16 +272,20 @@ export default class SearchOrder extends BaseComponent {
  }
 
   gotoDetail(data) {
-    const {navigator} = this.props;
+    const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: OrderDetail,
-                    name: 'OrderDetail',
-                    params:{
+                // navigator.push({
+                //     component: OrderDetail,
+                //     name: 'OrderDetail',
+                //     params:{
+                //         repairId:data.repairId,
+                //         theme:this.theme,
+                //     }
+                // });
+                navigation.navigate('OrderDetail',{
                         repairId:data.repairId,
                         theme:this.theme,
-                    }
-                });
+                })
         });
   }
 
@@ -291,16 +304,20 @@ export default class SearchOrder extends BaseComponent {
 
   finishOrder(data) {
         global.from = 'SearchOrder';
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: TakePhotos,
-                    name: 'TakePhotos',
-                    params:{
+                // navigator.push({
+                //     component: TakePhotos,
+                //     name: 'TakePhotos',
+                //     params:{
+                //         repairId:data.repairId,
+                //         theme:this.theme
+                //     }
+                // });
+                navigation.navigate('TakePhotos',{
                         repairId:data.repairId,
                         theme:this.theme
-                    }
-                });
+                })
         });
 
   }
@@ -467,30 +484,38 @@ export default class SearchOrder extends BaseComponent {
 
 
    arrangeWork(data) {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: ArrangeWork,
-                name: 'ArrangeWork',
-                params:{
-                    theme:this.theme,
+            // navigator.push({
+            //     component: ArrangeWork,
+            //     name: 'ArrangeWork',
+            //     params:{
+            //         theme:this.theme,
+            //         repairId:data.repairId
+            //     }
+            // });
+            navigation.navigate('ArrangeWork',{
+                    heme:this.theme,
                     repairId:data.repairId
-                }
-            });
+            })
         });
     }
 
    transferOrder(data) {
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigator.push({
-                component: TransferOrder,
-                name: 'TransferOrder',
-                params:{
-                    theme:this.theme,
-                    repairId:data.repairId
-                }
-            });
+            // navigator.push({
+            //     component: TransferOrder,
+            //     name: 'TransferOrder',
+            //     params:{
+            //         theme:this.theme,
+            //         repairId:data.repairId
+            //     }
+            // });
+            navigation.navigate('TransferOrder',{
+              heme:this.theme,
+              repairId:data.repairId
+            })
         });
     }
   onPressRepItem(data, index) {
@@ -509,7 +534,7 @@ export default class SearchOrder extends BaseComponent {
   }
 
   renderRepItem(data,i) {
-      return (<Text onPress={()=>{this.onPressRepItem(data, i)}} style={{width:(Dimens.screen_width-130)/3,flexWrap:'nowrap', marginLeft:10,
+      return (<Text key={i} onPress={()=>{this.onPressRepItem(data, i)}} style={{width:(Dimens.screen_width-130)/3,flexWrap:'nowrap', marginLeft:10,
               color:(this.state.selectIndex===i?'#369CED':'#333333'),fontSize:11, height:35, marginTop:10,
               textAlignVertical:'center', textAlign:'center',borderWidth:1, borderColor:(this.state.selectIndex===i?'#369CED':'#aaaaaa'),
                 borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>{data.causeCtn}</Text>

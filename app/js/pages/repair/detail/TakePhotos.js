@@ -16,8 +16,8 @@ import {
 import TitleBar from '../../../component/TitleBar';
 import * as Dimens from '../../../value/dimens';
 
-import FinishWork from './FinishWork';
-import TakePicture from './TakePicture'
+// import FinishWork from './FinishWork';
+// import TakePicture from './TakePicture'
 import Request, {RepairCommenced} from '../../../http/Request';
 import BaseComponent from '../../../base/BaseComponent'
 import {Loading} from '../../../component/Loading'
@@ -25,7 +25,9 @@ import {Toast} from '../../../component/Toast'
 
 var imagePos = -1;
 export default class TakePhotos extends BaseComponent {
-
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props){
         super(props);
         this.state={
@@ -95,15 +97,18 @@ export default class TakePhotos extends BaseComponent {
   onTake(index) {
     //this.routeToPage(this.props.navigator, 'OrderDetail');
     imagePos = index;
-    const {navigator} = this.props;
+    const {navigation} = this.props;
     InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: TakePicture,
-                    name: 'TakePicture',
-                    params:{
-                        theme:this.theme
-                    }
-                });
+                // navigator.push({
+                //     component: TakePicture,
+                //     name: 'TakePicture',
+                //     params:{
+                //         theme:this.theme
+                //     }
+                // });
+                navigation.navigate('TakePicture',{
+                    theme:this.theme
+                })
     });
   }
 
@@ -126,16 +131,20 @@ export default class TakePhotos extends BaseComponent {
         //     return;
         // }
 
-        const {navigator} = this.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                navigator.push({
-                    component: FinishWork,
-                    name: 'FinishWork',
-                    params:{
+                // navigator.push({
+                //     component: FinishWork,
+                //     name: 'FinishWork',
+                //     params:{
+                //         theme:this.theme,
+                //         repairId:this.state.repairId
+                //     }
+                // });
+                navigation.navigate('FinishWork',{
                         theme:this.theme,
                         repairId:this.state.repairId
-                    }
-                });
+                })
             });
   }
 
@@ -148,7 +157,7 @@ export default class TakePhotos extends BaseComponent {
         <TitleBar
             centerText={'完工拍照'}
             isShowLeftBackIcon={true}
-            navigator={this.props.navigator}
+            navigation={this.props.navigation}
         />
 
         <View style={{flexDirection:'row', width:Dimens.screen_width, flex:1}}>
