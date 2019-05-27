@@ -34,7 +34,7 @@ export default class MaterielList extends BaseComponent {
             modalVisible: false,
             dataLists:[],
             theme:this.props.theme,
-            repairId:props.repairId,
+            repairId:props.navigation.state.params.repairId,
             tabList: [],
   			carList: [],
   			dataSource: new ListView.DataSource({

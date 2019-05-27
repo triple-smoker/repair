@@ -1,6 +1,7 @@
 'use strict';
 import React from 'react-native';
 
+import axios from 'axios'
 
 export const HOST = 'https://dev.jxing.com.cn/';
 export const XTenantKey = 'Uf2k7ooB77T16lMO4eEkRg==';
@@ -211,22 +212,39 @@ static uploadFile(path, callback) {
         headers['Authorization'] = 'Bearer ' + token;
     }
 
-    console.log('url: ' + url + ', headers: ' + JSON.stringify(headers));
+    // console.log('url: ' + url + ', headers: ' + JSON.stringify(headers));
     var fetchOptions = {
             method: 'POST',
             headers: headers,
             body:formData
         };
 
-     fetch(url, fetchOptions)
-     .then((response) => response.json())
-     .then((responseText) => {
-        // console.log('responseText: ' + JSON.stringify(responseText));
-        callback(responseText);
-     })
-     .catch(error=>{
-        callback(JSON.stringify(error));
-    });//.done();
+    //  fetch(url, fetchOptions)
+    //  .then((response) =>
+    //  {
+    //     console.log(response)
+    //     return response.json()
+    //  })
+    //  .then((responseText) => {
+    //     console.log('responseText: ' + JSON.stringify(responseText));
+    //     callback(responseText);
+    //  })
+    //  .catch(error=>{
+    //     callback(JSON.stringify(error));
+    // });
+    axios(url,{
+        method:'POST',
+        headers:headers,
+        data:formData   
+    }).then((response)=>{
+        callback(response)
+    }).then((responseText)=>{
+        callback(responseText)
+    }).catch(
+        error=>{
+            callback(JSON.stringify(error))
+        }
+    )
  }
 
 }

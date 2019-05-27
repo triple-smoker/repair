@@ -31,7 +31,7 @@ export default class TransferOrder extends BaseComponent {
       dataMap:new Map(),
       repList:[],
       selectDeptState:false,
-      repairId:props.repairId,
+      repairId:props.navigation.state.params.repairId,
       detaiData:null,
       selectIndex:-1,
       modelTitle:'',

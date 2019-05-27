@@ -34,7 +34,7 @@ export default class AddOption extends BaseComponent {
     constructor(props){
         super(props);
         this.state={
-            repairId:props.repairId,
+            repairId:props.navigation.state.params.repairId,
             selectMatterState:false,
             modelTitle:'',
             selectMatterPos:-1,
@@ -264,7 +264,7 @@ export default class AddOption extends BaseComponent {
     var that = this;
     return (
 
-         <View style={{height:60, marginTop:15, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
+         <View key={i} style={{height:60, marginTop:15, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
             <Image source={require('../../../../res/repair/user_wx.png')} style={{width:30,height:30,marginLeft:15}}/>
             <View style={{backgroundColor:'white', marginLeft:10, marginRight:10, textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, }}>

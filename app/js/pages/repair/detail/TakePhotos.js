@@ -37,7 +37,7 @@ export default class TakePhotos extends BaseComponent {
             imageUrl1:null,
             imageUrl2:null,
             imageUrl3:null,
-            repairId:props.repairId,
+            repairId:props.navigation.state.params.repairId,
             theme:this.props.theme,
             
         }

@@ -28,6 +28,7 @@ export default class Palette extends PureComponent {
             startY: this.props.startY,
             position: this.props.position,
             panColor: this.props.panColor,
+            backgroundColor : this.props.backgroundColor
         };
 
         //每次移动的临时数组
@@ -129,7 +130,7 @@ export default class Palette extends PureComponent {
         } 
 
         return (
-            <View style={[styles.container, {width: this.state.width, height: this.state.height,}]} {...this._panResponder.panHandlers} >
+            <View style={[styles.container, {width: this.state.width, height: this.state.height,backgroundColor:this.state.backgroundColor}]} {...this._panResponder.panHandlers} >
                 <Surface width={this.state.width} height={this.state.height}>
                     <Group>
                         <Shape d={path} stroke="#000000" strokeWidth={2}/>
@@ -142,6 +143,7 @@ export default class Palette extends PureComponent {
 
 const styles = StyleSheet.create({
     container: {
+        // backgroundColor:'white',
         flex: 1,
       
     },

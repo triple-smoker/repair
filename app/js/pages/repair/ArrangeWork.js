@@ -37,7 +37,7 @@ export default class ArrangeWork extends BaseComponent {
             selectUserData:null,
             selectDeptName:null,
             selectUserName:null,
-            repairId:props.repairId,
+            repairId:props.navigation.state.params.repairId,
             deptList:[],
             userList:[],
             dataSource: new ListView.DataSource({
