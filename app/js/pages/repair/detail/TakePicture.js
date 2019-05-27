@@ -30,7 +30,7 @@ export default class TakePicture extends BaseComponent {
             imagePtath: null,
             isCaptrue: false,
             isEditable: false,
-            cameraType: Camera.constants.Type.back
+            cameraType: RNCamera.Constants.Type.back
       };
   }
 
