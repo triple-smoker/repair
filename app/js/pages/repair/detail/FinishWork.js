@@ -35,7 +35,9 @@ var reson = '';
 var way = '';
 var userNo = '';
 export default class FinishWork extends BaseComponent {
-
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props){
         super(props);
         this.state={

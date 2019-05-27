@@ -220,7 +220,7 @@ export default class SearchOrder extends BaseComponent {
   }
 
   renderWordItem(data, i) {
-      return (<Text onPress={()=>{this.onPressWordItem(data, i)}} style={{flexWrap:'nowrap', marginLeft:10,
+      return (<Text key={i} onPress={()=>{this.onPressWordItem(data, i)}} style={{flexWrap:'nowrap', marginLeft:10,
               color:'#333333',fontSize:11, height:35, marginTop:10,
               textAlignVertical:'center', textAlign:'center',borderWidth:0, backgroundColor:'#f0f0f0',
                 borderBottomRightRadius:17.5,borderBottomLeftRadius:17.5,borderTopLeftRadius:17.5,borderTopRightRadius:17.5, paddingLeft:10, paddingRight:10}}>{data}</Text>
@@ -534,7 +534,7 @@ export default class SearchOrder extends BaseComponent {
   }
 
   renderRepItem(data,i) {
-      return (<Text onPress={()=>{this.onPressRepItem(data, i)}} style={{width:(Dimens.screen_width-130)/3,flexWrap:'nowrap', marginLeft:10,
+      return (<Text key={i} onPress={()=>{this.onPressRepItem(data, i)}} style={{width:(Dimens.screen_width-130)/3,flexWrap:'nowrap', marginLeft:10,
               color:(this.state.selectIndex===i?'#369CED':'#333333'),fontSize:11, height:35, marginTop:10,
               textAlignVertical:'center', textAlign:'center',borderWidth:1, borderColor:(this.state.selectIndex===i?'#369CED':'#aaaaaa'),
                 borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>{data.causeCtn}</Text>

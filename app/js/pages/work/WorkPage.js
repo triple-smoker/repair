@@ -23,7 +23,7 @@ import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
 import ArrangeWork from '../repair/ArrangeWork';
 import TransferOrder from '../repair/TransferOrder';
-import OrderDetail from '../repair/detail/OrderDetail';
+// import OrderDetail from '../repair/detail/OrderDetail';
 import Request, {GetRepairList, GetUserInfo, CancelPause, RepPause, DoPause} from '../../http/Request';
 
 import RefreshListView from '../../component/RefreshListView'
@@ -307,8 +307,9 @@ export default class WorkPage extends BaseComponent {
 
   onPressItem(data){
     //ok
+    console.log(this.state);
       if (this.state.tabIndex === 2) {
-        const {navigation} = that.props;
+        const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
                 // navigator.push({
                 //     component: HistoryDetail,
@@ -332,6 +333,7 @@ export default class WorkPage extends BaseComponent {
 
 
   gotoDetail(data) {
+    console.log(data)
     const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
                 // navigator.push({
@@ -418,7 +420,7 @@ export default class WorkPage extends BaseComponent {
     } else if (data.status === '5') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text onPress={()=>this.finishOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.onPressItem(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>完工</Text>
                     <Text onPress={()=>this.pauseOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>暂停</Text>
@@ -466,7 +468,7 @@ export default class WorkPage extends BaseComponent {
     }
 
     return (
-      <TouchableOpacity onPress={()=>{that.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
+      <TouchableOpacity onPress={()=>{this.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
               <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:5,}}>报修位置：{data.repairDeptName}</Text>
               <View style={{flexDirection:'row',}} >
@@ -567,7 +569,7 @@ onPlayVoice(filePath) {
             // });
             navigation.navigate('ArrangeWork',{
                       theme:this.theme,
-                      theme:this.theme,})
+                     })
         });
     }
 

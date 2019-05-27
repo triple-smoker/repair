@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import {  Footer,FooterTab,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 import Axios from '../util/Axios';
-import OrderType from '../pages/publicTool/OrderType'
+import OrderType from '../pages/publicTool/OrderType';
 import OrderItem from '../pages/publicTool/OrderItem';
 import AsyncStorage from '@react-native-community/async-storage';
 import moment from "moment";
@@ -28,7 +28,7 @@ let cachedResults = {
     items: [], // listview 数据
     total: 0, // 总数
     pages:0,
-    tabIndex:0,//个人任务、部门任务、。。。。编码
+    tabIndex:0,//待维修、待评价、历史订单、。。。。编码
     timeIndex: 0,//自定义时间编码
 };
 
@@ -48,6 +48,7 @@ class AllOrder extends BaseComponent {
             this.state = { modalVisible: false,
                 typeVisible:false,
                 searchVisible: true,
+                tabIndex:0,
                 tab1:0,
                 tab2:0,
                 tab3:0,
@@ -66,12 +67,11 @@ class AllOrder extends BaseComponent {
                     }
                 }),
                 isLoadingTail: false, // loading?
+                tabLength0:0,//页头数据量记录
+                tabLength1:0,//页头数据量记录
+                tabLength2:0,//页头数据量记录
              };
-            // this.getRepairList();
     }
-    // componentWillReceiveProps(){
-    //     this.getRepairList();
-    // }
     componentDidMount() {
         this._fetchData(0);
     }
@@ -100,8 +100,53 @@ class AllOrder extends BaseComponent {
             status: ''
         }
         console.log(repRepairInfo);
-        var url1 = "/api/repair/request/list/underway?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-        Axios.GetAxios(url1).then(
+
+        var url = "";
+        if(cachedResults.tabIndex===0){
+            url = "/api/repair/request/list/underway?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
+        }
+        if(cachedResults.tabIndex===1){
+            url = "/api/repair/request/list/evaluate?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
+
+        }
+        if(cachedResults.tabIndex===2){
+            url = "/api/repair/request/list?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId+"&status=9,10,11";
+            Axios.GetAxios(url).then(
+                (response) => {
+                    if (response && response.code === 200) {
+                        if (response.data&&response.data.records) {
+                            this.setState({tabLength2:response.data.total})
+                        }
+                    }
+                }
+            )
+        }
+        console.log("======");
+        console.log(url);
+        if(cachedResults.tabIndex===0||cachedResults.tabIndex===1){
+            var url0 = "/api/repair/request/list/underway?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
+            Axios.GetAxios(url0).then(
+                (response) => {
+                    if (response && response.code === 200) {
+                        if (response.data&&response.data.records) {
+                            this.setState({tabLength0:response.data.total})
+                        }
+                    }
+                }
+            )
+            var url1 = "/api/repair/request/list/evaluate?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
+            Axios.GetAxios(url1).then(
+                (response) => {
+                    if (response && response.code === 200) {
+                        if (response.data&&response.data.records) {
+                            this.setState({tabLength1:response.data.total})
+                        }
+                    }
+                }
+            )
+        }
+
+        Axios.GetAxios(url).then(
             (response) => {
                 console.log(">>>>>>>>>>>>>>>>>>>>>>>>>");
                 console.log(response);
@@ -165,55 +210,6 @@ class AllOrder extends BaseComponent {
 
     }
 
-    getRepairList(){
-        let repRepairInfo = {
-                    page: 1,
-                    limit: 10000,
-                    deptId: global.deptId,
-                    ownerId: global.userId,
-                    status: ''
-                 }
-        var    data1=repRepairInfo;
-        var    data2=repRepairInfo;
-        var    data3=repRepairInfo;
-               data3.status='9,10,11';
-        var url1 = "/api/repair/request/list/underway?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-        var url2 = "/api/repair/request/list/evaluate?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-        var url3 = "/api/repair/request/list?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId+"&status="+data3.status;
-        Axios.GetAxios(url1).then(
-            (response) => {
-                if(Array.isArray(response.data)){
-                    this.setState({recordList1:[],tab1:0});
-                }else{
-                    var records1 = response.data.records;
-                    console.log("当前订单");
-                    console.log(records1);
-                    this.setState({recordList1:records1,tab1:records1.length});
-                }
-            }
-        )
-        Axios.GetAxios(url2).then(
-            (response) => {
-                if(Array.isArray(response.data)){
-                    this.setState({recordList2:[],tab2:0});
-                }else{
-                    var records2 = response.data.records;
-                    this.setState({recordList2:records2,tab2:records2.length});
-                }
-            }
-        )
-        Axios.GetAxios(url3).then(
-            (response) => {
-                if(Array.isArray(response.data)){
-                    this.setState({recordList3:[],tab3:0});
-                }else{
-                    var records3 = response.data.records;
-                    this.setState({recordList3:records3,tab3:records3.length});
-                }
-            }
-        )
-    }
-
     goBack(){
         const { navigate } = this.props.navigation;
         this.props.navigation.goBack();
@@ -225,7 +221,7 @@ class AllOrder extends BaseComponent {
 
     goSearch(getRepairList){
         const { navigate } = this.props.navigation;
-        navigate('OrderSearch',{
+        navigate('OrderSearchDemo',{
             callback: (
                 () => {
                         setTimeout(function(){
@@ -345,21 +341,14 @@ class AllOrder extends BaseComponent {
 
 
     _setSearchVisible(visible) {
-      this.setState({searchVisible: visible});
+            this.setState({searchVisible: visible});
+
     }
 
-    _setOrderItem(recordListTy,ty,getRepairList){
-        let recordList = [];
-            recordList = recordListTy;
-        let listItems =(  recordList === null ? null : recordList.map((record, index) =>
-            <OrderItem key={index} getRepairList={()=>this.getRepairList()}  type={ty} getEvaluate={()=>this.getEvaluate(record,()=>getRepairList())} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
-        ))
-        return listItems;
-    }
     _setOrderItemNew(record){
-        console.log(record);
+        var ty = cachedResults.tabIndex+1;
         return (
-            <OrderItem  getRepairList={()=>this.getRepairList()}  type={2} getEvaluate={()=>this.getEvaluate(record,()=>this.getRepairList())} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
+            <OrderItem  getRepairList={()=>this._fetchData(0)}  type={ty} getEvaluate={()=>this.getEvaluate(record,()=>this._fetchData(0))} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
         );
     }
 
@@ -402,43 +391,112 @@ class AllOrder extends BaseComponent {
                 })
         })
     }
-  _onRefresh = () => {
-    this.setState({refreshing: true});
-    this.getRepairList();
-    this.setState({refreshing: false});
-  }
+    onPressTabItem(index){
+        console.log(">>>>>>>>>>"+index);
+        cachedResults.items = [];
+        cachedResults.tabIndex = index;
+        cachedResults.total = 0;
+        cachedResults.pages = 0;
+        cachedResults.nextPage = 1;
+        this.setState({tabIndex:index, dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)});
+        this._fetchData(0);
+    }
+
 
   render() {
     return (
         <View style={styles.container}>
-        <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
+            <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
+                <TouchableHighlight style={{width:20,height:50}} onPress={()=>this.goBack()}>
+                    <Image style={{width:12,height:25,margin:10}} source={require("../image/navbar_ico_back.png")}/>
+                </TouchableHighlight>
+                <TouchableOpacity onPress={()=>this.goSearch(()=>this._fetchData(0))} style={{flex:1,height:30, marginRight:0,}}>
+                    <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:5,
+                        borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}>
 
-                <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:10,
-                    borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}>
+                        <Image source={require('../image/ico_seh.png')}
+                               style={{width:16,height:16,marginLeft:10}}/>
+                        <Text style={{color:'#999',fontSize:14,marginLeft:5, flex:1}}>请输入单号或内容</Text>
 
-                    <Text style={{color:'#999',fontSize:14,marginLeft:5, flex:1}}>请输入单号或内容</Text>
-
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>this._setTypeVisible()} style={{width:60,flexDirection:'row'}}>
+                    <Image style={{width:20,height:20,marginRight:2}} source={require('../image/navbar_ico_bx.png')} />
+                    <Text style={{color:"#252525",fontSize:16}}>报修</Text>
+                </TouchableOpacity>
+            </View>
+            {this.state.tabIndex!=2&&
+                <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
+                    <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                        <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                            <Text style={{color:this.state.tabIndex===0 ?'#5ec4c8':'#999',fontSize:16, textAlign:'center', textAlignVertical:'center'}}>{"待维修("+this.state.tabLength0+")"}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{this.onPressTabItem(1)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                        <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                            <Text style={{color:this.state.tabIndex===1 ?'#5ec4c8':'#999',fontSize:16, textAlign:'center', textAlignVertical:'center'}}>{"待评价("+this.state.tabLength1+")"}</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
+            }
+            {this.state.tabIndex===2&&
+                <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
+                    <TouchableOpacity style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                        <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                            <Text style={{color:'#5ec4c8',fontSize:16, textAlign:'center', textAlignVertical:'center'}}>{"历史维修("+this.state.tabLength2+")"}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            }
+            <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',margin:7,fontSize:12}}>{'-------共'+cachedResults.total+'条报修单-------'}</Text>
+            <OrderType goToRepair={(repairTypeId,repairMatterId)=>this.newRepair(repairTypeId,repairMatterId,()=>this.getRepairList())} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
+            <RefreshListView
+                    style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44*2-49}}
+                    onEndReachedThreshold={10}
+                    dataSource={this.state.dataSource}
+                    // 渲染item(子组件)
+                    renderRow={this._setOrderItemNew.bind(this)}
+                    renderSeparator={this._renderSeparatorView.bind(this)}
+                    // 是否可以刷新
+                    isRefreshing={this.state.isRefreshing}
+                    // 是否可以加载更多
+                    isLoadingTail={this.state.isLoadingTail}
+                    // 请求数据
+                    fetchData={this._fetchData.bind(this)}
+                    // 缓存列表数据
+                    cachedResults={cachedResults}
+                    ref={component => this._listView = component}
+                />
+            <Modal
+                animationType={"slide"}
+                transparent={true}
+                visible={this.state.modalVisible}
+                onRequestClose={() =>this._setModalVisible()}
+            >
+                <MD Closer = {() => this._setModalVisible()} />
+            </Modal>
+            <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',bottom:0}}>
+                <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                    <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                        <Image
+                            style={{width: 25,height:25}}
+                            source={(this.state.tabIndex==0||this.state.tabIndex==1) ? require('../image/tab_ico_wdwx_pre.png'):require('../image/tab_ico_wdwx_nor.png')}
+                        />
+                        <Text style={{color:(this.state.tabIndex==0||this.state.tabIndex==1) ?'#5ec4c8':'#999',fontSize:10, textAlign:'center', textAlignVertical:'center'}}>当前报修</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{this.onPressTabItem(2)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                    <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                        <Image
+                            style={{width: 25,height:25}}
+                            source={(this.state.tabIndex==0||this.state.tabIndex==1) ? require('../image/tab_ico_lswx_nor.png'):require('../image/tab_ico_lswx_pre.png')}
+                        />
+                        <Text style={{color:(this.state.tabIndex==0||this.state.tabIndex==1) ?'#999':'#5ec4c8',fontSize:10, textAlign:'center', textAlignVertical:'center'}}>历史报修</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
         </View>
 
-                            <RefreshListView
-                                style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44*2-49}}
-                                onEndReachedThreshold={10}
-                                dataSource={this.state.dataSource}
-                                // 渲染item(子组件)
-                                renderRow={this._setOrderItemNew.bind(this)}
-                                renderSeparator={this._renderSeparatorView.bind(this)}
-                                // 是否可以刷新
-                                isRefreshing={this.state.isRefreshing}
-                                // 是否可以加载更多
-                                isLoadingTail={this.state.isLoadingTail}
-                                // 请求数据
-                                fetchData={this._fetchData.bind(this)}
-                                // 缓存列表数据
-                                cachedResults={cachedResults}
-                                ref={component => this._listView = component}
-                            />
-        </View>
 
     );
   }
@@ -471,35 +529,7 @@ class MD extends Component {
         }
 }
 
-class MyHeader extends Component {//head模块
-  render() {
-    return (
-        <Header  searchBar rounded style={stylesHeader.headerColor}>
-              <Item style={{backgroundColor:'#666',width:300}}>
-                <Icon name="search"/>
-                <Input placeholder="Search"/>
-              </Item>
-              <Button transparent>
-                <Text>Search</Text>
-              </Button>
-        </Header>
-    );
-  }
-}
 
-const stylesHeader=StyleSheet.create({
-       headerColor:{
-           backgroundColor:'#fff',
-           width:ScreenWidth
-       },
-      headerBordy:{
-            alignItems: 'center',
-            marginLeft:100
-       },
-       titleColor:{
-           color:'#000'
-       },
-});
 
 const modalStyles = StyleSheet.create({
     container: {

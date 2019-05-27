@@ -12,7 +12,7 @@ import {
     ListView
 } from 'react-native';
 import {Row, Col, Container, Content, Text ,Button } from 'native-base';
-import OrderItem from './publicTool/OrderItem';
+import OrderItem from '../pages/publicTool/OrderItem';
 import AsyncStorage from '@react-native-community/async-storage';
 import Axios from '../util/Axios';
 import moment from "moment";
@@ -449,7 +449,7 @@ class OrderSearch extends BaseComponent {
                 </Modal>
             </View>
 
-        );
+    );
     }
 }
 

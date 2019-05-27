@@ -20,7 +20,9 @@ import { toastShort } from '../../util/ToastUtil';
 import BaseComponent from '../../base/BaseComponent'
 
 export default class ArrangeWork extends BaseComponent {
-
+    static navigationOptions = {
+        header: null,
+    };
   constructor(props){
     super(props);
     this.state={

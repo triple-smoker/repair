@@ -20,6 +20,9 @@ import * as Dimens from '../../value/dimens';
 
 
 export default class Setting extends BaseComponent {
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props){
         super(props);
         this.state={

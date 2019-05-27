@@ -21,7 +21,9 @@ import BaseComponent from '../../../base/BaseComponent'
 
 
 export default class MaterielList extends BaseComponent {
-
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props){
         super(props);
         this.state={
@@ -227,7 +229,7 @@ export default class MaterielList extends BaseComponent {
 renderTabItem(data, i) {
 	var that = this;
     return (
-    <TouchableOpacity onPress={()=>{that.onPressTabItem(data)}} style = {styles.itemStyle}>
+    <TouchableOpacity key={i} onPress={()=>{that.onPressTabItem(data)}} style = {styles.itemStyle}>
     		<View style = {styles.itemStyle}>
         		<Text style={{color:data.selected===1 ?'#6DC5C9':'#777',fontSize:13, textAlign:'center', textAlignVertical:'center', flex:1, marginLeft:5,marginRight:10,}}>{data.materialTypeName}</Text>
         		<View style={{backgroundColor: data.selected===1?'#6DC5C9':'#fff', height:data.selected===1?2:0, marginLeft:5,marginRight:10, width:60}}/>

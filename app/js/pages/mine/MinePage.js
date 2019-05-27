@@ -15,6 +15,9 @@ import TitleBar from '../../component/TitleBar';
 import Login from '../login/Login';
 
 export default class MinePage extends Component {
+    static navigationOptions = {
+        header: null,
+    };
   render() {
     return (
       <View style={styles.container}>

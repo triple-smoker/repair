@@ -22,6 +22,9 @@ import BaseComponent from '../../base/BaseComponent'
 
 var username = '';
 export default class TransferOrder extends BaseComponent {
+  static navigationOptions = {
+    header: null,
+  };
   constructor(props){
     super(props);
     this.state={

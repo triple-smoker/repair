@@ -25,7 +25,9 @@ import {Toast} from '../../../component/Toast'
 
 var imagePos = -1;
 export default class TakePhotos extends BaseComponent {
-
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props){
         super(props);
         this.state={

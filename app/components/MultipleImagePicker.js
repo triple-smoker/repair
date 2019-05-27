@@ -1,23 +1,44 @@
 import React, {Component} from 'react';
-import {View, TouchableOpacity, Image, TouchableNativeFeedback, Text, Alert, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, Image, DeviceEventEmitter, TouchableNativeFeedback,InteractionManager, Text, Alert, StyleSheet} from 'react-native';
 import {ListItem} from "native-base";
 import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
 import ImagePickers from 'react-native-image-picker';
 import Video from 'react-native-video';
 import ImgPreview from './ImgPreview';
-class MultipleImagePicker extends Component {
+
+import BaseComponent from '../js/base/BaseComponent'
+
+
+class MultipleImagePicker extends BaseComponent {
 
     constructor(props){
         super(props);
         this.state = {
+            theme:this.props.theme,
             images: [],
             visibleModal: false,
             PicMsg:{
                 visible:false,
                 index:0 
-             }
+             },
+             imagePath1:null,
+            imagePath2:null,
+            imagePath3:null,
         }
+    }
+    componentDidMount(){
+        this.eventListener = DeviceEventEmitter.addListener('Event_Take_Photo', (param) => {
+            console.log('componentDidMount Event_Take_Photo : ' + param );
+            let im = {
+                    path : param,
+                    type : 'image',
+                   }
+            let images = [];
+             images.push(im);
+             this.appendImage(images);
+            // that.uploadFile(param);
+        });
     }
 
     /**
@@ -66,21 +87,31 @@ class MultipleImagePicker extends Component {
      * @param mediaType
      */
     pickSingleWithCamera(){
-        ImagePicker.openCamera({
-        }).then(image => {
-            console.log('received image', image);
+        
+        // ImagePicker.openCamera({
+        // }).then(image => {
+        //     console.log('received image', image);
+        //     let im = {
+        //         path : image.path,
+        //         type : 'image',
+        //     }
 
-            let im = {
-                path : image.path,
-                type : 'image',
-            }
+        //     let images = [];
+        //     images.push(im);
+        //     this.appendImage(images);
+        //     this.setState({ visibleModal: false })
+        // }).catch(e => alert(e));
+        // this.uploadImages();
+        console.log(this.props)
 
-            let images = [];
-            images.push(im);
-            this.appendImage(images);
-            this.setState({ visibleModal: false })
-        }).catch(e => alert(e));
-        this.uploadImages();
+        
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+                    navigation.navigate('TakePicture',{
+                        theme:this.theme
+                    })
+        });
+        this.setState({ visibleModal: false })
     }
 
     /**
