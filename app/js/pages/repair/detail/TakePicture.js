@@ -10,7 +10,7 @@ import {
   Image,
   DeviceEventEmitter
 } from 'react-native';
-import Camera from 'react-native-camera';
+import {RNCamera} from 'react-native-camera';
 import BaseComponent from '../../../base/BaseComponent'
 import * as Dimens from '../../../value/dimens';
 import Permissions from 'react-native-permissions';
@@ -26,7 +26,7 @@ export default class TakePicture extends BaseComponent {
             imagePtath: null,
             isCaptrue: false,
             isEditable: false,
-            cameraType: Camera.constants.Type.back
+            cameraType: RNCamera.Constants.Type.back
       };
   }
 
@@ -43,7 +43,7 @@ export default class TakePicture extends BaseComponent {
     // })
 
   }
- 
+
 
   savePic() {
     var that = this;
@@ -62,11 +62,11 @@ export default class TakePicture extends BaseComponent {
             error => console.error("Oops, snapshot failed", error)
         );
     } else {
-              
+
         DeviceEventEmitter.emit('Event_Take_Photo', this.state.imagePtath);
         this.naviGoBack(this.props.navigation);
     }
-    
+
   }
 
   reset() {
@@ -113,14 +113,25 @@ export default class TakePicture extends BaseComponent {
 
     return (
       <View style={styles.container}>
-        <Camera
+        <RNCamera
           ref={(cam) => {
             this.camera = cam;
           }}
           style={styles.preview}
           type={this.state.cameraType}
-          aspect={Camera.constants.Aspect.fill}>
-          
+          >
+
+
+              {({ camera, status, recordAudioPermissionStatus }) => {
+                  if (status !== 'READY') return <PendingView />;
+                  return (
+                      <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                          <TouchableOpacity onPress={() => this.takePicture(camera)} style={styles.capture}>
+                              <Text style={{ fontSize: 14 }}> SNAP </Text>
+                          </TouchableOpacity>
+                      </View>
+                  );
+              }}
         <View style = {{flex: 0, flexDirection: 'row', justifyContent: 'space-between',}}>
         <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigation)}>
             <Image source={require('../../../../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginLeft:15,marginTop:15, }}/>
@@ -135,23 +146,23 @@ export default class TakePicture extends BaseComponent {
             <Image source={require('../../../../res/repair/ic_photo_captrue.png')} style={{width:90,height:90, marginTop:10, marginBottom:10}}/>
         </TouchableOpacity>
         </View>
-        </Camera>
-        
+        </RNCamera>
+
       </View>
     );
   }
- 
+
   //切换前后摄像头
   switchCamera() {
     var state = this.state;
-    if(state.cameraType === Camera.constants.Type.back) {
-      state.cameraType = Camera.constants.Type.front;
+    if(state.cameraType === RNCamera.Constants.Type.back) {
+      state.cameraType = RNCamera.Constants.Type.front;
     }else{
-      state.cameraType = Camera.constants.Type.back;
+      state.cameraType = RNCamera.Constants.Type.back;
     }
     this.setState(state);
   }
- 
+
   //拍摄照片
   takePicture() {
     var that = this;
@@ -165,7 +176,7 @@ export default class TakePicture extends BaseComponent {
       .catch(err => console.error(err));
   }
 }
- 
+
 const styles = StyleSheet.create({
   buttonSwitch:{
       width:35,
@@ -193,7 +204,7 @@ const styles = StyleSheet.create({
     margin: 40,
     backgroundColor: '#000000',
     justifyContent: 'space-between',
- 
+
   },
   button: {
     flex: 0,
