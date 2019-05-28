@@ -25,6 +25,8 @@ export default class ArrangeWork extends BaseComponent {
     };
   constructor(props){
     super(props);
+      const { navigation } = this.props;
+      const thisRepairId = navigation.getParam('repairId', '');
     this.state={
             dataMap:new Map(),
             detaiData:null,
@@ -37,7 +39,7 @@ export default class ArrangeWork extends BaseComponent {
             selectUserData:null,
             selectDeptName:null,
             selectUserName:null,
-            repairId:props.repairId,
+            repairId:thisRepairId,
             deptList:[],
             userList:[],
             dataSource: new ListView.DataSource({
@@ -128,10 +130,12 @@ export default class ArrangeWork extends BaseComponent {
         };
 
      Request.requestPost(DispatchWork, params, (result)=> {
+
         if (result && result.code === 200 && !result.data.error) {
             toastShort('派工成功');
-            const {navigation} = that.props;
-            naviGoBack(navigation);
+            this.props.navigation.state.params.callback();
+            this.props.navigation.goBack();
+
         } else {
             if (result && result.data && result.data.error){
                 toastShort(result.data.message);
