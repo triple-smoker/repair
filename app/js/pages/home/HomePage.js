@@ -88,8 +88,8 @@ export default class HomePage extends Component {
                //     userId deptId单独存储
                    global.userId=global.uinfo.userId;
                    global.deptId=global.uinfo.deptAddresses[0].deptId;
-
-
+                   var permissions = global.uinfo.permissions.indexOf("biz_repair_mgr")===-1? false:true;
+                   global.permissions = permissions;
                }
 
             }
