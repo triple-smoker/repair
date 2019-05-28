@@ -150,8 +150,13 @@ loadDetail() {
         if (result && result.code === 200) {
             DeviceEventEmitter.emit('Event_Refresh_Detail', 'Event_Refresh_Detail');
 
-            // that.routeToPage(that.props.navigator, global.from);
-            that.routeToPage(that.props.navigation, global.from);
+            console.log('global')
+            console.log(global)
+           
+            // that.props.navigation.popToTop(result.code)
+            that.props.navigation.navigate('MainPage',{
+                code : result.code
+            })
         } else {
             Toast.show('操作失败，请重试');
         }

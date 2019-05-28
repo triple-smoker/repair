@@ -128,6 +128,7 @@ export default class ArrangeWork extends BaseComponent {
         };
 
      Request.requestPost(DispatchWork, params, (result)=> {
+         console.log(result)
         if (result && result.code === 200 && !result.data.error) {
             toastShort('派工成功');
             const {navigation} = that.props;

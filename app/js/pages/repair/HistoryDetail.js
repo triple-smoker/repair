@@ -124,8 +124,8 @@ loadEvaluateCause() {
     var likedDeptName = null;
     var causeViews = null;
     var advViews = null;
-    console.log(detaiData)
     if (detaiData) {
+        console.log(detaiData)
         var evaluateInfo = detaiData.evaluateInfo;
         if (evaluateInfo) {
             likedUser = evaluateInfo.likedUser;
@@ -204,7 +204,7 @@ loadEvaluateCause() {
                                         <View style={{backgroundColor:'white', height:60, textAlignVertical:'center',marginLeft:0, marginRight:0, marginTop:6,}}>
                                             <View style={{flexDirection:'row',marginLeft:10,marginTop:5, }}>
                                                 <Text style={{color:'#000',fontSize:14, textAlignVertical:'center', width:55}}>{detaiData.itemPersonList[0].assistantName}</Text>
-                                                <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:10,}}>138000100008</Text>
+                                                <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:10,}}>{detaiData.itemPersonList[0].assistantMobile}</Text>
                                             </View>
                                             <View style={{flexDirection:'row',marginLeft:10,height:25,textAlignVertical:'center',}}>
                                                 <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
@@ -218,11 +218,21 @@ loadEvaluateCause() {
                                     </View>
                             </View>
                           </View>
+                return
             } else {
-                var viewList = detaiData.itemPersonList.map((item, i)=>this.renderPersonItem(item, i));
+                var viewList = detaiData.itemPersonList.map((item, i)=>{
+                    if(item.assistantId !=null){
+                        return this.renderPersonItem(item, i)
+                        }
+                    });
                 var newList = detaiData.itemPersonList.slice(0); 
                 newList.pop();
-                var iconList = newList.map((item, i)=>this.renderIconItem(item, i));
+                var iconList = newList.map((item, i)=>{
+                    if(item.assistantId !=null){
+                        // console.log(item)
+                        return this.renderIconItem(item, i)
+                    }
+                });
                 processList = <View style={{backgroundColor:'white', paddingTop:10, paddingBottom:10,}}>
                             <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>维修类别：{detaiData.parentTypeName}</Text>
                             <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', marginBottom:10, }}>维修事项：{detaiData.matterName}</Text>
