@@ -1,8 +1,8 @@
 
-import {
-    AsyncStorage,
-} from 'react-native';
-
+// import {
+//     AsyncStorage,
+// } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import ThemeFactory , {ThemeFlags} from '../../res/styles/ThemeFactory'
 const THEME_KEY = 'theme_key'
 

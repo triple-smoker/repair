@@ -7,13 +7,12 @@ import {
     View,
     Image,
     DeviceEventEmitter,
-    AsyncStorage,
     InteractionManager
 } from 'react-native';
 
 import TitleBar from '../../component/TitleBar';
 import Login from '../login/Login';
-
+import AsyncStorage from '@react-native-community/async-storage';
 export default class MinePage extends Component {
     static navigationOptions = {
         header: null,

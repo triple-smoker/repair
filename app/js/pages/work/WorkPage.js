@@ -85,7 +85,15 @@ export default class WorkPage extends BaseComponent {
 
       //DeviceEventEmitter.emit('Event_Home', 'Event_Home');
   }
-
+  componentWillReceiveProps(nextProps){  
+    console.log(nextProps)
+    if(nextProps.navigation.state.params.code == 200){
+        this._fetchData(0);
+    }
+      
+    
+    
+  }
 
     submit() {
       var that = this;
@@ -336,14 +344,6 @@ export default class WorkPage extends BaseComponent {
   gotoDetail(data) {
     const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                // navigator.push({
-                //     component: OrderDetail,
-                //     name: 'OrderDetail',
-                //     params:{
-                //         repairId:data.repairId,
-                //         theme:this.theme,
-                //     }
-                // });
                 navigation.navigate('OrderDetail',{
                           repairId:data.repairId,
                           theme:this.theme,})

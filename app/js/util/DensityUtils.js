@@ -10,9 +10,9 @@ import {
     PixelRatio,
     Dimensions,
     Platform,
-    AsyncStorage
+    // AsyncStorage
 } from 'react-native';
-
+import AsyncStorage from '@react-native-community/async-storage';
 export let screenW = Dimensions.get('window').width;
 export let screenH = Dimensions.get('window').height;
 const fontScale = PixelRatio.getFontScale();
