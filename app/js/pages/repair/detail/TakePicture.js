@@ -29,7 +29,7 @@ export default class TakePicture extends BaseComponent {
       this.state = {
             imagePtath: null,
             isCaptrue: false,
-            isEditable: true,
+            isEditable: false,
             cameraType: RNCamera.Constants.Type.back
       };
   }
@@ -47,7 +47,7 @@ export default class TakePicture extends BaseComponent {
     // })
     console.log(this.state)
   }
- 
+
 
   savePic() {
     var that = this;
@@ -66,11 +66,11 @@ export default class TakePicture extends BaseComponent {
             error => console.error("Oops, snapshot failed", error)
         );
     } else {
-              
+
         DeviceEventEmitter.emit('Event_Take_Photo', this.state.imagePtath);
         this.naviGoBack(this.props.navigation);
     }
-    
+
   }
 
   reset() {
@@ -131,7 +131,7 @@ export default class TakePicture extends BaseComponent {
           }}
           type={this.state.cameraType}
           flashMode={RNCamera.Constants.FlashMode.on}
-         
+
           >
           <View style = {{flex: 0, flexDirection: 'row', justifyContent: 'space-between',}}>
           <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigation)}>
@@ -152,7 +152,7 @@ export default class TakePicture extends BaseComponent {
       </View>
     );
   }
- 
+
   //切换前后摄像头
   switchCamera() {
     console.log('huan')
@@ -164,7 +164,7 @@ export default class TakePicture extends BaseComponent {
     }
     this.setState(state);
   }
- 
+
   //拍摄照片
   takePicture() {
     var that = this;
@@ -181,7 +181,7 @@ export default class TakePicture extends BaseComponent {
 
 
 }
- 
+
 const styles = StyleSheet.create({
   buttonSwitch:{
       width:35,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     margin: 40,
     backgroundColor: '#000000',
     justifyContent: 'space-between',
- 
+
   },
   button: {
     flex: 0,

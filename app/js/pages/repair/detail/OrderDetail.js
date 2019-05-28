@@ -95,6 +95,7 @@ export default class OrderDetail extends BaseComponent {
     var that = this;
     Request.requestGet(RepairDetail+this.state.repairId, null, (result)=> {
         if (result && result.code === 200) {
+            console.log(result)
             that.setState({detaiData:result.data});
         } else {
           
@@ -469,7 +470,7 @@ renderPersonItem(data,i) {
         // params.set('repairId', this.state.repairId);
         // params.set('remark', otherDesc);
         // params.set('causeIds', causeIds);
-        let params = {repairId:this.state.repairId, remark:otherDesc, causeIds:causeIds};
+        let params = {repairId:this.state.repairId, remark:otherDesc ? otherDesc : '', causeIds:causeIds};
         console.log(params);
         Request.requestPost(DoPause, params, (result)=> {
             if (result && result.code === 200) {
