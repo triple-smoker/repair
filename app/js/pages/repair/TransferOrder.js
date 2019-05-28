@@ -153,8 +153,8 @@ export default class TransferOrder extends BaseComponent {
         Loading.hidden();
         if (result && result.code === 200) {
             toastShort('提交成功');
-            const {navigation} = that.props;
-            that.naviGoBack(navigation);
+            this.props.navigation.state.params.callback();
+            this.props.navigation.goBack();
         } else {
 
         }
