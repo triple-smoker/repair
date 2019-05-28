@@ -210,8 +210,8 @@ export default class WorkPage extends BaseComponent {
         var today = '' + year + strMonth + strDay;
         if (cachedResults.timeIndex === 0) {
           //params = {page:cachedResults.nextPage, limit:'20', repairDeptId: global.uinfo.deptAddresses[0].deptId, beginCreate:today, endCreate:today, };
-           params.set('beginCreate', today);
-           params.set('endCreate', today);
+           params.set('begincreate', today);
+           params.set('endcreate', today);
         } else if (cachedResults.timeIndex === 1) {
           var weekStartDate = new Date(year, month, day - nowDayOfWeek);
           //var beginDay = this.formatDate(weekStartDate);
@@ -230,14 +230,14 @@ export default class WorkPage extends BaseComponent {
           var beginDay = ''+myyear + mymonth + myweekday;
           //params = {page:cachedResults.nextPage, limit:'20', repairDeptId: global.uinfo.deptAddresses[0].deptId, beginCreate:beginDay, endCreate:today, };
 
-           params.set('beginCreate', beginDay);
-           params.set('endCreate', today);
+           params.set('begincreate', beginDay);
+           params.set('endcreate', today);
         } else if (cachedResults.timeIndex === 2) {
           var beginDay = '' + year + strMonth + '01';
 
           //params = {page:cachedResults.nextPage, limit:'20', repairDeptId: global.uinfo.deptAddresses[0].deptId, beginCreate:beginDay, endCreate:today, };
-          params.set('beginCreate', beginDay);
-           params.set('endCreate', today);
+          params.set('begincreate', beginDay);
+           params.set('endcreate', today);
         }
     }
 
