@@ -20,11 +20,9 @@ class MultipleImagePicker extends BaseComponent {
             visibleModal: false,
             PicMsg:{
                 visible:false,
-                index:0 
+                index:0
              },
-             imagePath1:null,
-            imagePath2:null,
-            imagePath3:null,
+
         }
     }
     componentDidMount(){
@@ -34,8 +32,10 @@ class MultipleImagePicker extends BaseComponent {
                     path : param,
                     type : 'image',
                    }
+           console.log('Event_Take_Photo : '+ im);
             let images = [];
              images.push(im);
+
              this.appendImage(images);
             // that.uploadFile(param);
         });
@@ -52,12 +52,16 @@ class MultipleImagePicker extends BaseComponent {
         };
 
         ImagePickers.launchCamera(options, (response) => {
+
+            console.log('video response : ' + response)
+
             response.type = 'video';
 
             let image = {
-                path : response.path,
+                path : 'file://' + response.path,
                 type : 'video',
             }
+            console.log('video : ' + image)
             let images = [];
             images.push(image);
             this.appendImage(images);
@@ -87,7 +91,7 @@ class MultipleImagePicker extends BaseComponent {
      * @param mediaType
      */
     pickSingleWithCamera(){
-        
+
         // ImagePicker.openCamera({
         // }).then(image => {
         //     console.log('received image', image);
@@ -104,7 +108,6 @@ class MultipleImagePicker extends BaseComponent {
         // this.uploadImages();
         console.log(this.props)
 
-        
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
                     navigation.navigate('TakePicture',{
@@ -140,6 +143,7 @@ class MultipleImagePicker extends BaseComponent {
 
     }
 
+
     /**
      * 删除图片
      */
@@ -172,10 +176,14 @@ class MultipleImagePicker extends BaseComponent {
             waitAnimationEnd: false,
             includeExif: true,
             forceJpg: true,
+            mediaType: 'photo',
         }).then(images => {
             //将选择的图片加入到列表
 
+            console.log('pickimage : ' +  images);
             this.appendImage(images);
+
+
             this.setState({ visibleModal: false });
             this.uploadImages();
         }).catch(e => alert(e));
@@ -190,21 +198,21 @@ class MultipleImagePicker extends BaseComponent {
         this.props.imageCallback(this.state.images);
     }
     /**
-     * 传递图片index 
-     * */ 
-    largerView(ff,index){  
+     * 传递图片index
+     * */
+    largerView(ff,index){
         this.setModalVisible(index)
     }
-    /** 
+    /**
      * 显示图片详情
-     * */ 
+     * */
     setModalVisible= (index = 0)=> {
-        this.setState({ 
+        this.setState({
             PicMsg:{
                 visible: !this.state.PicMsg.visible,
                 index:index
             }
-        })   
+        })
     }
 
     render() {
@@ -234,7 +242,7 @@ class MultipleImagePicker extends BaseComponent {
                 <ImgPreview
                    PicMsg={this.state.PicMsg}
                    setModalVisible={this.setModalVisible}
-                   imagesRequest={this.props.images}></ImgPreview> 
+                   imagesRequest={this.props.images} />
             </View>
         );
     }
@@ -287,7 +295,7 @@ const PreView = (props) => {
             {props.type === 'video' ?
                 <PreVideo uri={props.uri}/> :
                 <TouchableOpacity onPress={props.largerView}>
-                    <Image style={styles.imageStyle} 
+                    <Image style={styles.imageStyle}
                        source={{uri: props.uri}} />
                 </TouchableOpacity>
             }

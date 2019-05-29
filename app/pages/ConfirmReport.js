@@ -48,17 +48,19 @@ class ConfirmReport extends Component {
             voices : voices,
             imagesRequest : [],
             voicesRequest :[],
-            // imagesNum: 0,
-            // voicesNum: 0,
+            videosRequest : [],
         }
+
 
 
     }
 
     async UpLoad(path, name) {
+        let pos = path.lastIndexOf("/");
+        let file = {type:'multipart/form-data', uri: path, name:path.substr(pos+1)};
         const apiToken = global.access_token;
         let formData = new FormData();
-        let file = {type: 'multipart/form-data', uri: path, name: name};
+        // let file = {type: 'multipart/form-data', uri: path, name: name};
         formData.append("file",file);
         const url = 'https://dev.jxing.com.cn/api/opcs/oss/upload'
         let res = await axios(url,{
@@ -86,29 +88,48 @@ class ConfirmReport extends Component {
 
             for(let i = 0; i<images.length; i++){
                 let image = images[i];
-              let s  = this.UpLoad(image.uri, 'image'+ i + '.jpg')
+                let s  = this.UpLoad(image.uri, 'image'+ i + '.jpg')
                   s.then(
                     (s)=> {
+                        console.log(s);
                         let imageLoad = {
                             "filePath":s.fileDownloadUri,
                             "fileName":s.originalName,
-                            "fileBucket":"000956",
-                            "fileType": "image/jpeg",
-                            "fileHost":"https://dev.jxing.com.cn"
+                            "fileBucket":s.bucketName,
+                            "fileType": s.fileType,
+                            "fileHost":s.fileHost,
                         }
 
-                        console.log('上传成功')
-                        console.log(imageLoad)
-                        imagesRequest.push(imageLoad)
-                        this.setState(
-                            {
-                                imagesRequest : imagesRequest,
-                                // imagesNum : this.state.imagesNum + 1
-                            }
-                        )
+                        console.log('上传成功');
+                        console.log(imageLoad);
+
+                        if(image.type==='video'){
+                            let videoRequest = [];
+                            videoRequest.push(imageLoad)
+
+                            this.setState(
+                                {
+                                    videosRequest : videoRequest,
+                                }
+                            )
+                        }else{
+                            imagesRequest.push(imageLoad)
+
+                            this.setState(
+                                {
+                                    imagesRequest : imagesRequest,
+                                    // imagesNum : this.state.imagesNum + 1
+                                }
+                            )
+                        }
+
+
                     }
 
                 );
+
+
+
 
             }
         } catch (err) {
@@ -142,8 +163,8 @@ class ConfirmReport extends Component {
                 console.log('this.state.voicesRequest.length :  '+this.state.voicesRequest.length);
                 console.log('this.state.images.length :  '+this.state.images.length);
                 console.log('this.state.imagesRequest.length :  '+this.state.imagesRequest.length);
-
-                if(this.state.images.length === this.state.imagesRequest.length){
+                console.log('this.state.videosRequest.length :  '+this.state.videosRequest.length);
+                if(this.state.images.length === this.state.imagesRequest.length + this.state.videosRequest.length){
                     if(1 === this.state.voicesRequest.length){
                         this.submit();
                     }
@@ -216,7 +237,7 @@ class ConfirmReport extends Component {
                                value={this.state.desc}
                                editable = {false}
                     />
-                    {this.state.voices.filePath == '' ? null : <SoundRecoding readOnly={true} record={this.state.voices}/>}  
+                    {this.state.voices.filePath == '' ? null : <SoundRecoding readOnly={true} record={this.state.voices}/>}
                         <Reporter
                             name={this.state.report.reporter}
                             phone={this.state.report.phone}

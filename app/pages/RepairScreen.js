@@ -48,7 +48,7 @@ export default class RepairScreen extends React.Component {
             }
         }
 
-        
+
         AsyncStorage.getItem('reporterInfoHistory',function (error, result) {
                 if (error) {
 
@@ -70,9 +70,9 @@ export default class RepairScreen extends React.Component {
 
     }
     /**
-     * 判断字符是否为空的方法 
-     * */ 
-    
+     * 判断字符是否为空的方法
+     * */
+
 		isEmpty(obj){
 			if(typeof obj == "undefined" || obj == null || obj == ""){
 					return true;
@@ -82,7 +82,7 @@ export default class RepairScreen extends React.Component {
         }
     /**
      * 判断错误内容
-     * */ 
+     * */
         judgeContent(obj){
             let content =  obj;
             // console.log(content)
@@ -92,8 +92,8 @@ export default class RepairScreen extends React.Component {
                     errorTxt:'报修内容不能为空'
                 });
                 return false;
-            }else if(this.isEmpty(content.reporter.phone) || 
-                                this.isEmpty(content.reporter.reporter) || 
+            }else if(this.isEmpty(content.reporter.phone) ||
+                                this.isEmpty(content.reporter.reporter) ||
                                 this.isEmpty(content.reporter.address)){
                 this.setState({
                     showNotice: true,
@@ -177,6 +177,7 @@ export default class RepairScreen extends React.Component {
 
     }
     imageCallback(images){
+        console.log('pickImageList' + images);
         this.setState({
             images : images
         })
