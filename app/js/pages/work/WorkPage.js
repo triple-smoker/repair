@@ -85,14 +85,11 @@ export default class WorkPage extends BaseComponent {
 
       //DeviceEventEmitter.emit('Event_Home', 'Event_Home');
   }
-  componentWillReceiveProps(nextProps){  
-    console.log(nextProps)
-    if(nextProps.navigation.state.params.code == 200){
+  componentWillReceiveProps(){
+    // console.log(nextProps)
+    // if(nextProps.navigation.state != this.props.navigation.state){
         this._fetchData(0);
-    }
-      
-    
-    
+    // }
   }
 
     submit() {
