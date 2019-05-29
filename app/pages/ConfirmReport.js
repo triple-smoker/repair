@@ -201,7 +201,8 @@ class ConfirmReport extends Component {
 
         let repRepairInfo = {
             repairTypeId : this.state.repairTypeId,
-            repairMatterId : this.state.repairMatterId,
+            //报修通通三级目录暂时不传
+            // repairMatterId : this.state.repairMatterId,
             buildingId: "1077448886292463618",
             floorId: "1077448886544121857",
             roomId: "1081114930919952386",
