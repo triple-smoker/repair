@@ -229,6 +229,8 @@ fetchUserInfo() {
             //         expires: null
             //     });
             global.uinfo = result.data;
+            global.userId=global.uinfo.userId;
+            global.deptId=global.uinfo.deptAddresses[0].deptId;
 
             //console.log('uinfo: data = ' + JSON.stringify(result.data));
             AsyncStorage.setItem('uinfo', JSON.stringify(result.data), function (error) {
