@@ -8,7 +8,8 @@ import {
     InteractionManager,
     TouchableOpacity,
     ScrollView,
-    Modal
+    Modal, Linking,
+    Alert
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -20,6 +21,7 @@ import Request, {GetRepairType} from '../../http/Request';
 import Permissions from 'react-native-permissions';
 import OrderType from "../../../pages/publicTool/OrderType";
 
+import NfcManager, {Ndef} from 'react-native-nfc-manager';
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
 require('../../../res/default/banner_02.jpg'),
@@ -212,6 +214,48 @@ export default class HomePage extends Component {
         this.setState({typeVisible: !this.state.typeVisible});
     }
 
+    _parseText = (tag) => {
+        try {
+            if (Ndef.isType(tag.ndefMessage[0], Ndef.TNF_WELL_KNOWN, Ndef.RTD_TEXT)) {
+                return Ndef.text.decodePayload(tag.ndefMessage[0].payload);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        return null;
+    }
+
+    _onTagDiscovered = tag => {
+        console.log('Tag Discovered', tag);
+        this.setState({ tag });
+        //
+        // let text = this._parseText(tag);
+        // this.setState({parsedText: text});
+
+        Alert.alert(tag.id);
+
+    }
+
+    _startDetection = () => {
+        NfcManager.registerTagEvent(this._onTagDiscovered)
+            .then(result => {
+                console.log('registerTagEvent OK', result)
+            })
+            .catch(error => {
+                console.warn('registerTagEvent fail', error)
+            })
+    }
+
+    _stopDetection = () => {
+        NfcManager.unregisterTagEvent()
+            .then(result => {
+                console.log('unregisterTagEvent OK', result)
+            })
+            .catch(error => {
+                console.warn('unregisterTagEvent fail', error)
+            })
+    }
+
     render() {
         return (
           <View style={styles.container}>
@@ -304,13 +348,17 @@ export default class HomePage extends Component {
 
         <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:20,paddingLeft:0,paddingRight:0,}}>
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
+                <TouchableOpacity onPress={()=>this. _startDetection()} >
                 <Image source={require('../../../res/login/ico_bj.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>保洁</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>读标签</Text>
+                </TouchableOpacity>
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
+                <TouchableOpacity onPress={()=>this. _stopDetection()} >
                 <Image source={require('../../../res/login/ico_yf.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>医费</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>关闭</Text>
+                </TouchableOpacity>
             </View>
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <Image source={require('../../../res/login/ico_ys.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
