@@ -102,8 +102,14 @@ class AllOrder extends BaseComponent {
             ownerId: global.userId,
             status: ''
         }
-        console.log(repRepairInfo);
-
+        //获取维修单数量
+        Axios.GetAxios("/api/repair/request/list/page_total?deptId="+repRepairInfo.deptId).then(
+            (response) => {
+                if (response && response.code === 200) {
+                    this.setState({tabLength0:response.data.page_total_underway,tabLength1:response.data.page_total_evaluate,tabLength2:response.data.page_total_history})
+                }
+            }
+        );
         var url = "";
         if(cachedResults.tabIndex===0){
             url = "/api/repair/request/list/underway?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
@@ -114,39 +120,6 @@ class AllOrder extends BaseComponent {
         }
         if(cachedResults.tabIndex===2){
             url = "/api/repair/request/list?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId+"&status=9,10,11";
-            Axios.GetAxios(url).then(
-                (response) => {
-                    if (response && response.code === 200) {
-                        if (response.data&&response.data.records) {
-                            this.setState({tabLength2:response.data.total})
-                        }
-                    }
-                }
-            )
-        }
-        console.log("======");
-        console.log(url);
-        if(cachedResults.tabIndex===0||cachedResults.tabIndex===1){
-            var url0 = "/api/repair/request/list/underway?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-            Axios.GetAxios(url0).then(
-                (response) => {
-                    if (response && response.code === 200) {
-                        if (response.data&&response.data.records) {
-                            this.setState({tabLength0:response.data.total})
-                        }
-                    }
-                }
-            )
-            var url1 = "/api/repair/request/list/evaluate?page="+repRepairInfo.page+"&limit="+repRepairInfo.limit+"&deptId="+repRepairInfo.deptId;
-            Axios.GetAxios(url1).then(
-                (response) => {
-                    if (response && response.code === 200) {
-                        if (response.data&&response.data.records) {
-                            this.setState({tabLength1:response.data.total})
-                        }
-                    }
-                }
-            )
         }
 
         Axios.GetAxios(url).then(
@@ -228,7 +201,7 @@ class AllOrder extends BaseComponent {
                 () => {
                     setTimeout(function(){
                         getRepairList();
-                    },500)
+                    },200)
                 })
         })
     }
@@ -372,7 +345,7 @@ class AllOrder extends BaseComponent {
                 () => {
                     setTimeout(function(){
                         getRepairList();
-                    },500)
+                    },200)
                 }
             ),
         })
@@ -389,7 +362,7 @@ class AllOrder extends BaseComponent {
                 () => {
                     setTimeout(function(){
                         getRepairList();
-                    },500)
+                    },200)
                 })
         })
     }

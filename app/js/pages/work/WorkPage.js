@@ -15,7 +15,8 @@ import {
     ListView,
     Modal,
     DeviceEventEmitter,
-    Linking
+    Linking,
+    Alert
 } from 'react-native';
 
 
@@ -33,6 +34,7 @@ import HistoryDetail from '../repair/HistoryDetail';
 import SearchOrder from './SearchOrder'
 
 import Sound from 'react-native-sound';
+import Axios from "../../../util/Axios";
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -83,7 +85,12 @@ export default class WorkPage extends BaseComponent {
 
       //DeviceEventEmitter.emit('Event_Home', 'Event_Home');
   }
-
+  componentWillReceiveProps(){
+    // console.log(nextProps)
+    // if(nextProps.navigation.state != this.props.navigation.state){
+        this._fetchData(0);
+    // }
+  }
 
     submit() {
       var that = this;
@@ -176,7 +183,7 @@ export default class WorkPage extends BaseComponent {
      } else if (cachedResults.tabIndex === 0) {
         //params = {page:cachedResults.nextPage, limit:'20', status:'1,2,3,5,6', repairDeptId: global.uinfo.deptAddresses[0].deptId};
         params.set('repairDeptId', global.uinfo.deptAddresses[0].deptId);
-        params.set('status', '1,2,3,5,6');
+        params.set('status', '20');
     } else if (cachedResults.tabIndex === 2) {
         params.set('repairDeptId', global.uinfo.deptAddresses[0].deptId);
         params.set('status', '8,9,10,11');
@@ -200,8 +207,8 @@ export default class WorkPage extends BaseComponent {
         var today = '' + year + strMonth + strDay;
         if (cachedResults.timeIndex === 0) {
           //params = {page:cachedResults.nextPage, limit:'20', repairDeptId: global.uinfo.deptAddresses[0].deptId, beginCreate:today, endCreate:today, };
-           params.set('beginCreate', today);
-           params.set('endCreate', today);
+           params.set('begincreate', today);
+           params.set('endcreate', today);
         } else if (cachedResults.timeIndex === 1) {
           var weekStartDate = new Date(year, month, day - nowDayOfWeek);
           //var beginDay = this.formatDate(weekStartDate);
@@ -220,14 +227,14 @@ export default class WorkPage extends BaseComponent {
           var beginDay = ''+myyear + mymonth + myweekday;
           //params = {page:cachedResults.nextPage, limit:'20', repairDeptId: global.uinfo.deptAddresses[0].deptId, beginCreate:beginDay, endCreate:today, };
 
-           params.set('beginCreate', beginDay);
-           params.set('endCreate', today);
+           params.set('begincreate', beginDay);
+           params.set('endcreate', today);
         } else if (cachedResults.timeIndex === 2) {
           var beginDay = '' + year + strMonth + '01';
 
           //params = {page:cachedResults.nextPage, limit:'20', repairDeptId: global.uinfo.deptAddresses[0].deptId, beginCreate:beginDay, endCreate:today, };
-          params.set('beginCreate', beginDay);
-           params.set('endCreate', today);
+          params.set('begincreate', beginDay);
+           params.set('endcreate', today);
         }
     }
 
@@ -307,7 +314,6 @@ export default class WorkPage extends BaseComponent {
 
   onPressItem(data){
     //ok
-    console.log(this.state);
       if (this.state.tabIndex === 2) {
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
@@ -333,17 +339,8 @@ export default class WorkPage extends BaseComponent {
 
 
   gotoDetail(data) {
-    console.log(data)
     const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                // navigator.push({
-                //     component: OrderDetail,
-                //     name: 'OrderDetail',
-                //     params:{
-                //         repairId:data.repairId,
-                //         theme:this.theme,
-                //     }
-                // });
                 navigation.navigate('OrderDetail',{
                           repairId:data.repairId,
                           theme:this.theme,})
@@ -381,6 +378,24 @@ export default class WorkPage extends BaseComponent {
         });
 
   }
+    //接单
+    pullOrder(data){
+        var responseInfo = {
+            repair_id: data.repairId,
+            userId: global.userId,
+        };
+        Axios.PostAxios("/api/repair/service/taken",responseInfo).then(
+            (response) => {
+                console.log("接单接口:"+response)
+                if (response && response.code === 200) {
+                    toastShort('接单成功');
+                    this._fetchData(0);
+                }else{
+                    toastShort('接单失败');
+                }
+            }
+        );
+    }
 
   renderItem(data) {
     var that = this;
@@ -388,32 +403,27 @@ export default class WorkPage extends BaseComponent {
     let statusDesc = null;
     if (data.status === '1') {
 
-        buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}><Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+        buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
+                    <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
-        if (this.state.tabIndex === 0) {
-                    buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text>
-                    <Text onPress={()=>this.arrangeWork(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>派工</Text></View>
-        }
-
+                    <Text onPress={()=>this.transferOrder(data,1,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>拒绝</Text>
+        </View>
     } else if (data.status === '2') {
 
-      buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}><Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+      buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
+                    <Text onPress={()=>this.gotoDetail(data)}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>拍照开始维修</Text>
+                    <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
     } else if (data.status === '3') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
                     <Text onPress={()=>this.gotoDetail(data)}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>拍照开始维修</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
     } else if (data.status === '4') {
 
@@ -424,22 +434,30 @@ export default class WorkPage extends BaseComponent {
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>完工</Text>
                     <Text onPress={()=>this.pauseOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>暂停</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
     } else if (data.status === '6') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
                     <Text onPress={()=>this.resetOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>恢复</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
-    } else if (data.status === '7') {
-
-      buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+    } else if (data.status === '20') {
+        if(global.permissions){
+            buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
+                <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
+                <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text>
+                <Text onPress={()=>this.arrangeWork(data,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>派工</Text></View>
+        }else{
+            buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
+                <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>抢单</Text></View>
+        }
+
     }
 
     if (data.statusDesc) {
@@ -556,7 +574,9 @@ onPlayVoice(filePath) {
         });
   }
 
-   arrangeWork(data) {
+   arrangeWork(data,_fetchData) {
+     console.log("<<<<<")
+     console.log(data)
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
             // navigator.push({
@@ -569,24 +589,33 @@ onPlayVoice(filePath) {
             // });
             navigation.navigate('ArrangeWork',{
                       theme:this.theme,
-                     })
+                      repairId:data.repairId,
+                      callback: (
+                            () => {
+                                setTimeout(function(){
+                                    _fetchData(0);
+                                },100)
+                            }
+                        ),
+                      })
         });
     }
 
-   transferOrder(data) {
+   transferOrder(data,typeCode,_fetchData) {
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            // navigator.push({
-            //     component: TransferOrder,
-            //     name: 'TransferOrder',
-            //     params:{
-            //         theme:this.theme,
-            //         repairId:data.repairId
-            //     }
-            // });
             navigation.navigate('TransferOrder',{
                      theme:this.theme,
-                     repairId:data.repairId,})
+                     typeCode:typeCode,
+                     repairId:data.repairId,
+                     callback: (
+                        () => {
+                            setTimeout(function(){
+                                _fetchData(0);
+                            },100)
+                        }
+                     ),
+            })
         });
     }
 

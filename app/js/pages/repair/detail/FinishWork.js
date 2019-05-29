@@ -22,7 +22,7 @@ import MaterielList from './MaterielList';
 import TakePhotos from './TakePhotos';
 import Palette from '../../../component/Palette';
 import Request, {RepairCompleted, RepairDetail} from '../../../http/Request';
-
+import Axios from '../../../../util/Axios'
 import { captureScreen, captureRef } from "react-native-view-shot";
 import {Toast} from '../../../component/Toast'
 import {Loading} from '../../../component/Loading'
@@ -43,7 +43,7 @@ export default class FinishWork extends BaseComponent {
         this.state={
             theme:this.props.theme,
             modalVisible:false,
-            repairId:props.repairId,
+            repairId:props.navigation.state.params.repairId,
             signatureData:null,
             detaiData:null,
         }
@@ -55,6 +55,8 @@ export default class FinishWork extends BaseComponent {
 
 loadDetail() {
     var that = this;
+    console.log(that.props)
+    console.log(that.state)
     Request.requestGet(RepairDetail+this.state.repairId, null, (result)=> {
         if (result && result.code === 200) {
             that.setState({detaiData:result.data});
@@ -140,15 +142,21 @@ loadDetail() {
         imagesCompleted:imagesCompleted,
         imagesSignature:imagesSignature,
     };
-
+    console.log('params')
+    console.log(params)
     Loading.show();
     Request.requestPost(RepairCompleted, params, (result)=> {
         Loading.hidden();
         if (result && result.code === 200) {
             DeviceEventEmitter.emit('Event_Refresh_Detail', 'Event_Refresh_Detail');
 
-            // that.routeToPage(that.props.navigator, global.from);
-            that.routeToPage(that.props.navigation, global.from);
+            console.log('global')
+            console.log(global)
+           
+            // that.props.navigation.popToTop(result.code)
+            that.props.navigation.navigate('MainPage',{
+                code : result.code
+            })
         } else {
             Toast.show('操作失败，请重试');
         }
@@ -161,7 +169,7 @@ loadDetail() {
 renderMaterialItem(data, i) {
     var that = this;
     return (
-    <View >
+    <View key={i}>
         <View style={{backgroundColor:'white', paddingTop:10, paddingBottom:10, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
             <View style={{}} >
             <Text style={{color:'#333',fontSize:14,  marginLeft:10,}}>{data.materialName}</Text>
@@ -336,6 +344,7 @@ renderMaterialItem(data, i) {
                 <Palette
                     width={Dimens.screen_width-50}
                     height={400}
+                    backgroundColor = {'white'}
                     startX={25}
                     startY={startY}
                     ref = 'palette'
@@ -358,14 +367,14 @@ renderMaterialItem(data, i) {
     uploadFile(path) {
         var that = this;
         Request.uploadFile(path, (result)=> {
-
             if (result && result.code === 200) {
-
                 that.setState({signatureData:result.data, modalVisible:false});
                 that.completed(result.data);
+                return;
             } else {
-
-                Toast.show('上传失败，请重试');
+                if(result && result.data && result.data.error){
+                    Toast.show(result.data.message);
+                }   
             }
       });
     }
@@ -390,7 +399,6 @@ renderMaterialItem(data, i) {
             snapshotContentContainer: false
         }).then(
             uri => {
-                console.log("uri "+uri);
                 this.uploadFile(uri);
             },
             error => console.error("Oops, snapshot failed", error)

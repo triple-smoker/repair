@@ -11,9 +11,10 @@ import {
     TextInput,
     ListView,
     Modal,
-    AsyncStorage,
+    // AsyncStorage,
 } from 'react-native';
 
+import AsyncStorage from '@react-native-community/async-storage';
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
 // import Setting from './Setting';

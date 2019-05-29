@@ -7,6 +7,8 @@ import MultipleImagePicker from "../components/MultipleImagePicker";
 import axios from 'axios';
 import SoundRecoding from '../components/SoundRecoding';
 import Axios from '../util/Axios';
+import { toastShort } from '../js/util/ToastUtil';
+
 class ConfirmReport extends Component {
 
     /**
@@ -196,7 +198,7 @@ class ConfirmReport extends Component {
         ).then(
             (res) => {
                 console.log(res);
-                alert("提交成功");
+                toastShort('提交成功');
                 const { navigate } = this.props.navigation;
                 navigate('AllOrder',{data:res});
             }

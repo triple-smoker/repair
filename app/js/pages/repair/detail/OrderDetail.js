@@ -95,6 +95,7 @@ export default class OrderDetail extends BaseComponent {
     var that = this;
     Request.requestGet(RepairDetail+this.state.repairId, null, (result)=> {
         if (result && result.code === 200) {
+            console.log(result)
             that.setState({detaiData:result.data});
         } else {
           
@@ -276,8 +277,16 @@ renderPersonItem(data,i) {
         }
 
         if (detaiData.itemPersonList && detaiData.itemPersonList.length > 0) {
-            var viewList = detaiData.itemPersonList.map((item, i)=>this.renderPersonItem(item, i));
-            var iconList = detaiData.itemPersonList.map((item, i)=>this.renderIconItem(item, i));
+            var viewList = detaiData.itemPersonList.map((item, i)=>{
+                if(item.assistantId != null){
+                    return this.renderPersonItem(item, i)
+                }       
+            });
+            var iconList = detaiData.itemPersonList.map((item, i)=>{
+                if(item.assistantId != null){
+                    return this.renderIconItem(item, i)
+                }
+            });
             processList = <View style={{backgroundColor:'white', paddingTop:10, paddingBottom:10,}}>
                             <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>维修类别：{detaiData.parentTypeName}</Text>
                             <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', marginBottom:10, }}>维修事项：{detaiData.matterName}</Text>
@@ -469,7 +478,7 @@ renderPersonItem(data,i) {
         // params.set('repairId', this.state.repairId);
         // params.set('remark', otherDesc);
         // params.set('causeIds', causeIds);
-        let params = {repairId:this.state.repairId, remark:otherDesc, causeIds:causeIds};
+        let params = {repairId:this.state.repairId, remark:otherDesc ? otherDesc : '', causeIds:causeIds};
         console.log(params);
         Request.requestPost(DoPause, params, (result)=> {
             if (result && result.code === 200) {

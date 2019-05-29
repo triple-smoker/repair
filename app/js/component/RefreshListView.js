@@ -72,7 +72,10 @@ export default class RefreshListView extends Component {
    */
   _onRefresh() {
     // console.log('下拉刷新');
-    if (this.props.isRefreshing || !this._hasMore()) {
+    // if (this.props.isRefreshing || !this._hasMore()) {
+    //   return
+    // }
+    if (this.props.isRefreshing) {
       return
     }
     // 向后台发送 '0',告知刷新操作

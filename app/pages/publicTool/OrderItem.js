@@ -330,7 +330,7 @@ class CancelMd extends Component {
             (response) => {
                         setTimeout(function(){
                             getRepairList();
-                        },500)
+                        },200)
                     }
         )
 

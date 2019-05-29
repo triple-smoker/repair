@@ -27,11 +27,15 @@ export default class TransferOrder extends BaseComponent {
   };
   constructor(props){
     super(props);
+      const { navigation } = this.props;
+      const thisRepairId = navigation.getParam('repairId', '');
+      const thisTypeCode = navigation.getParam('typeCode', '');
     this.state={
       dataMap:new Map(),
       repList:[],
       selectDeptState:false,
-      repairId:props.repairId,
+      repairId:thisRepairId,
+      typeCode:thisTypeCode,
       detaiData:null,
       selectIndex:-1,
       modelTitle:'',
@@ -104,12 +108,12 @@ export default class TransferOrder extends BaseComponent {
   _onSure() {
 
     var that = this;
-    if (this.state.selectDeptPos === -1) {
+    if (this.state.selectDeptPos === -1 && this.state.typeCode === 0 ) {
         toastShort('请选择班组');
         return;
     }
 
-    if (this.state.selectUserPos === -1) {
+    if (this.state.selectUserPos === -1 && this.state.typeCode === 0 ) {
         toastShort('请选择维修人员');
         return;
     }
@@ -124,14 +128,33 @@ export default class TransferOrder extends BaseComponent {
 
       causeIds.push(items[this.state.selectIndex].causeId);
 
-    let params = {repairDeptId:this.state.deptList[this.state.selectDeptPos].deptId, repairUserId:this.state.userList[this.state.selectUserPos].userId, causeIds:causeIds, remark:username, repairId:that.state.repairId, userId:global.uinfo.userId};
+    var params = "";
+    if(this.state.typeCode === 0){
+        params = {
+            repairDeptId:this.state.deptList[this.state.selectDeptPos].deptId,
+            repairUserId:this.state.userList[this.state.selectUserPos].userId,
+            causeIds:causeIds,
+            remark:username,
+            repairId:that.state.repairId,
+            userId:global.uinfo.userId
+        };
+    }else{
+        params = {
+            repairDeptId:this.state.detaiData.deptId,
+            repairUserId:this.state.detaiData.ownerId,
+            causeIds:causeIds,
+            remark:username,
+            repairId:that.state.repairId,
+            userId:global.uinfo.userId
+        };
+    }
     Loading.show();
     Request.requestPost(DoTransfer, params, (result)=> {
         Loading.hidden();
         if (result && result.code === 200) {
-            toastShort('转单成功');
-            const {navigation} = that.props;
-            that.naviGoBack(navigation);
+            toastShort('提交成功');
+            this.props.navigation.state.params.callback();
+            this.props.navigation.goBack();
         } else {
 
         }
@@ -180,7 +203,7 @@ export default class TransferOrder extends BaseComponent {
   }
 
   renderRepItem(data,i) {
-      return (<Text onPress={()=>{this.onPressRepItem(data, i)}} style={{width:(Dimens.screen_width-130)/3,flexWrap:'nowrap', marginLeft:10,
+      return (<Text onPress={()=>{this.onPressRepItem(data, i)}} key={i} style={{width:(Dimens.screen_width-130)/3,flexWrap:'nowrap', marginLeft:10,
               color:(this.state.selectIndex===i?'#369CED':'#333333'),fontSize:11, height:35, marginTop:10,
               textAlignVertical:'center', textAlign:'center',borderWidth:1, borderColor:(this.state.selectIndex===i?'#369CED':'#999999'),
                 borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>{data.causeCtn}</Text>
@@ -218,44 +241,60 @@ export default class TransferOrder extends BaseComponent {
 
     return (
       <View style={styles.container}>
-         <TitleBar
-                    centerText={'转单'}
-                    isShowLeftBackIcon={true}
-                    navigation={this.props.navigation}
-            />
+          {this.state.typeCode === 0 &&
+              <TitleBar
+                  centerText={'转单'}
+                  isShowLeftBackIcon={true}
+                  navigation={this.props.navigation}
+              />
+          }
+          {this.state.typeCode === 1 &&
+              <TitleBar
+                  centerText={'拒绝'}
+                  isShowLeftBackIcon={true}
+                  navigation={this.props.navigation}
+              />
+          }
+          {this.state.typeCode === 0 &&
+              <View>
+                  <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择维修人员</Text>
+                  <TouchableOpacity onPress={()=>{this.selectDept()}} style={{height:40}}>
+                      <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
+                          <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组</Text>
+                          <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectDeptName}</Text>
+                          <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
+                              <Image source={require('../../../res/login/ic_arrow.png')}
+                                     style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
 
-        <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择维修人员</Text>
-        <TouchableOpacity onPress={()=>{this.selectDept()}} style={{height:40}}>
-        <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
-            <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组</Text>
-            <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectDeptName}</Text>
-            <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                                <Image source={require('../../../res/login/ic_arrow.png')}
-                                       style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
+                          </View>
+                      </View>
+                  </TouchableOpacity>
+                  <View style={styles.line} />
+                  <TouchableOpacity onPress={()=>{this.selectUser()}} style={{height:40}}>
+                      <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
+                          <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>人员</Text>
+                          <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectUserName}</Text>
+                          <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
+                              <Image source={require('../../../res/login/ic_arrow.png')}
+                                     style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
 
-            </View>
-        </View>
-        </TouchableOpacity>
-        <View style={styles.line} />
-        <TouchableOpacity onPress={()=>{this.selectUser()}} style={{height:40}}>
-        <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
-            <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>人员</Text>
-            <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectUserName}</Text>
-            <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                                <Image source={require('../../../res/login/ic_arrow.png')}
-                                       style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
+                          </View>
+                      </View>
+                  </TouchableOpacity>
+                  <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择转单原因</Text>
+              </View>
+          }
+          {this.state.typeCode===1 &&
+                <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择拒绝原因</Text>
+          }
 
-            </View>
-        </View>
-        </TouchableOpacity>
-        <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择转单原因</Text>
         <View style={styles.listViewStyle}>
                   {repDatas}
         </View>
 
         <TextInput
             style={styles.input_style}
-            placeholder="转单描述…"
+            placeholder="原因描述…"
             placeholderTextColor="#aaaaaa"
             underlineColorAndroid="transparent"
             multiline = {true}
