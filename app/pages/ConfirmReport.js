@@ -144,7 +144,14 @@ class ConfirmReport extends Component {
 
             let img = this.UpLoad('file://'+voice.filePath, 'voice.mp3');
             img.then((s)=> {
-                    voicesRequest.push(s)
+                    let voice = {
+                        "filePath":s.fileDownloadUri,
+                        "fileName":s.originalName,
+                        "fileBucket":s.bucketName,
+                        "fileType": s.fileType,
+                        "fileHost":s.fileHost,
+                    }
+                    voicesRequest.push(voice)
                     this.setState(
                         {
                             voicesRequest : voicesRequest,
