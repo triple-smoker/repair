@@ -69,6 +69,12 @@ export default class RepairScreen extends React.Component {
         )
 
     }
+
+    componentDidMount(){
+        console.log(this.props)
+    }   
+    
+    
     /**
      * 判断字符是否为空的方法 
      * */ 

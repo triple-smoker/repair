@@ -18,9 +18,6 @@ import {
 
 import TitleBar from '../../../component/TitleBar';
 import * as Dimens from '../../../value/dimens';
-// import AddOption from './AddOption';
-// import MaterielList from './MaterielList';
-// import TakePhotos from './TakePhotos';
 import Request, {GetRepairList, RepairDetail, RepPause, DoPause, RepairCommenced} from '../../../http/Request';
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
@@ -36,6 +33,7 @@ export default class OrderDetail extends BaseComponent {
         repList:[],
         selectIndex:-1,
         modalVisible:false,
+        status:null
     }
   }
 
@@ -51,24 +49,34 @@ export default class OrderDetail extends BaseComponent {
   }
 
 
-  commenced() {
+  complete() {
     var that = this;
-    var imagesStarted = [];
-    let obj = {};
-    imagesStarted.push(obj);
-    let params = {
-        repairId:that.state.repairId,
-        userId:global.uinfo.userId,
-        imagesStarted:imagesStarted,
-    };
-
-    Request.requestPost(RepairCommenced, params, (result)=> {
-        if (result && result.code === 200) {
-            that.takePhotos();
-        } else {
-          
-        }
+    console.log('跳到拍照')
+    global.from = 'OrderDetail';
+    const {navigation} = this.props;
+    InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('TakePhotos',{
+                    theme:this.theme,
+                    title:'完工开始拍照',
+                    step:2,
+                    repairId:this.state.repairId})
     });
+    // var imagesStarted = [];
+    // let obj = {};
+    // imagesStarted.push(obj);
+    // let params = {
+    //     repairId:that.state.repairId,
+    //     userId:global.uinfo.userId,
+    //     imagesStarted:imagesStarted,
+    // };
+    
+    // Request.requestPost(RepairCommenced, params, (result)=> {
+    //     if (result && result.code === 200) {
+    //         
+    //     } else {
+          
+    //     }
+    // });
   }
 
 
@@ -76,14 +84,6 @@ export default class OrderDetail extends BaseComponent {
         global.from = 'OrderDetail';
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                // navigator.push({
-                //     component: TakePhotos,
-                //     name: 'TakePhotos',
-                //     params:{
-                //         theme:this.theme,
-                //         repairId:this.state.repairId
-                //     }
-                // });
                 navigation.navigate('TakePhotos',{
                         theme:this.theme,
                         repairId:this.state.repairId})
@@ -96,7 +96,10 @@ export default class OrderDetail extends BaseComponent {
     Request.requestGet(RepairDetail+this.state.repairId, null, (result)=> {
         if (result && result.code === 200) {
             console.log(result)
-            that.setState({detaiData:result.data});
+            that.setState({
+                detaiData:result.data,
+                status:result.data.status
+            });
         } else {
           
         }
@@ -110,14 +113,6 @@ export default class OrderDetail extends BaseComponent {
   addOption() {
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                // navigator.push({
-                //     component: AddOption,
-                //     name: 'AddOption',
-                //     params:{
-                //         theme:this.theme,
-                //         repairId: this.state.repairId
-                //     }
-                // });
                 navigation.navigate('AddOption',{
                         theme:this.theme,
                         repairId: this.state.repairId})
@@ -126,15 +121,7 @@ export default class OrderDetail extends BaseComponent {
 
  materielList() {
         const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-                // navigator.push({
-                //     component: MaterielList,
-                //     name: 'MaterielList',
-                //     params:{
-                //         theme:this.theme,
-                //         repairId: this.state.repairId
-                //     }
-                // });
+        InteractionManager.runAfterInteractions(() => {             
                 navigation.navigate('MaterielList',{
                         theme:this.theme,
                         repairId: this.state.repairId})
@@ -190,9 +177,14 @@ renderPersonItem(data,i) {
     var withSel = Math.round(data.itemPercentage*150/100);
       return (
             <View key={i} style={{backgroundColor:'white', height:60, textAlignVertical:'center',marginLeft:0, marginRight:0, marginTop:6,}}>
-                <View style={{flexDirection:'row',marginLeft:10,marginTop:5, }}>
-                    <Text style={{color:'#000',fontSize:14, textAlignVertical:'center', width:55}}>{data.assistantName}</Text>
-                    <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:10,}}>{data.assistantMobile}</Text>
+                <View style={{flexDirection:'row',justifyContent : 'flex-start',marginLeft:10,marginTop:5, }}>
+                    <Text style={{color:'#000',fontSize:14, marginLeft:10,textAlignVertical:'center', width:55}}>{data.assistantName}</Text>
+                    <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', width: 140,}}>{data.assistantMobile}</Text>
+                    {
+                        data.personType == 1 ? <Text style={{color:'#000',fontSize:13, textAlignVertical:'center',}}>主修人</Text> : 
+                        <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:5,}}> </Text> 
+                    }
+                    
                 </View>
                 <View style={{flexDirection:'row',marginLeft:10,height:25,textAlignVertical:'center',}}>
                     <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
@@ -362,14 +354,13 @@ renderPersonItem(data,i) {
                 style={{width:20,height:20,marginLeft:10, marginRight:10,}}/>
             <Text style={{color:'#666',fontSize:14, height:35, textAlignVertical:'center',paddingLeft:0, flex:1}}>维修事项</Text>
 
-            <TouchableOpacity onPress={()=>this.addOption()} style={{}}>
+            {this.state.status === '5' ? <TouchableOpacity onPress={()=>this.addOption()} style={{}}>
             <View style={{backgroundColor:'white',justifyContent:'flex-end',flexDirection:'row',alignItems:'center',  marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius:15, borderWidth:1, borderColor:'#eee'}}>
                     <Image source={require('../../../../res/repair/btn_ico_tj.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
-                    <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加</Text>
-                                
+                    <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加</Text>                    
             </View>
-            </TouchableOpacity>
+            </TouchableOpacity> : null }
     </View>
 
     {processList}
@@ -377,23 +368,23 @@ renderPersonItem(data,i) {
             <Image source={require('../../../../res/repair/collapse_02.png')} 
                 style={{width:20,height:20,marginLeft:10, marginRight:10,}}/>
             <Text style={{color:'#666',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:0, flex:1}}>物料</Text>
-            <TouchableOpacity onPress={()=>this.materielList()} style={{}}>
-            <View style={{backgroundColor:'white',justifyContent:'flex-end',flexDirection:'row',alignItems:'center',  marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
+            {this.state.status === '5' ? <TouchableOpacity onPress={()=>this.materielList()} style={{}}>
+             <View style={{backgroundColor:'white',justifyContent:'flex-end',flexDirection:'row',alignItems:'center',  marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius:15, borderWidth:1, borderColor:'#eee'}}>
                     <Image source={require('../../../../res/repair/btn_ico_tj.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
-                    <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加</Text>
-                                
+                     <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加</Text>                     
             </View>
-            </TouchableOpacity>
+            </TouchableOpacity> : null}
     </View>
 
     {materialList}
  
     </ScrollView>
-    <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
+    {this.state.status === '5' ? <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
         <Text onPress={()=>this.pauseOrder()} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>暂停</Text>
-        <Text onPress={()=>this.commenced()} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>完工</Text>
+        <Text onPress={()=>this.complete()} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>完工</Text>
     </View>
+    : null}
 
         <Modal
             animationType={"none"}
@@ -427,7 +418,7 @@ renderPersonItem(data,i) {
                 <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
                     <Text onPress={()=>this.cancel()} style={{borderBottomLeftRadius: 15,textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:40, textAlign:'center', flex:1}}>取消</Text>
                     <Text onPress={()=>this.submit()} style={{borderBottomRightRadius: 15,textAlignVertical:'center',backgroundColor:'#E1E4E8', color:'#333',fontSize:16, height:40, textAlign:'center', flex:1}}>确定</Text>
-                </View>
+                </View> 
             </View>
         </View>
     </Modal> 

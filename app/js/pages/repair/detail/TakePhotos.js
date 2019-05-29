@@ -31,6 +31,7 @@ export default class TakePhotos extends BaseComponent {
     constructor(props){
         super(props);
         this.state={
+            imagePath0:null,
             imagePath1:null,
             imagePath2:null,
             imagePath3:null,
@@ -39,6 +40,7 @@ export default class TakePhotos extends BaseComponent {
             imageUrl3:null,
             repairId:props.navigation.state.params.repairId,
             theme:this.props.theme,
+            step:props.navigation.state.params.step
             
         }
     }
@@ -48,7 +50,9 @@ export default class TakePhotos extends BaseComponent {
         var that = this;
         this.eventListener = DeviceEventEmitter.addListener('Event_Take_Photo', (param) => {
             console.log('componentDidMount Event_Take_Photo : ' + param + ", imagePos : " + imagePos);
-            if (imagePos === 1) {
+            if(imagePos === 0){
+                that.setState({imagePath0:param,});
+            }else if (imagePos === 1) {
                 that.setState({imagePath1:param, });
             } else if (imagePos === 2) {
                 that.setState({imagePath2:param, });
@@ -63,6 +67,7 @@ export default class TakePhotos extends BaseComponent {
 
 
     componentWillUnmount() {
+        global.imageUrl0 = null;
         global.imageUrl1 = null;
         global.imageUrl2 = null;
         global.imageUrl3 = null;
@@ -76,9 +81,15 @@ export default class TakePhotos extends BaseComponent {
         Loading.show();
         var that = this;
         Request.uploadFile(path, (result)=> {
+            console.log('path')
+            console.log(path)
+            console.log('result')
+            console.log(result)
             if (result && result.code === 200) {
-                
-                if (imagePos === 1) {
+                if(imagePos === 0){
+                    global.imageUrl0 = result.data;
+                    that.setState({imageUrl0:JSON.stringify(result.data), });
+                }else if (imagePos === 1) {
                     global.imageUrl1 = result.data;
                     that.setState({imageUrl1:JSON.stringify(result.data), });
                 } else if (imagePos === 2) {
@@ -99,14 +110,7 @@ export default class TakePhotos extends BaseComponent {
     imagePos = index;
     const {navigation} = this.props;
     InteractionManager.runAfterInteractions(() => {
-                // navigator.push({
-                //     component: TakePicture,
-                //     name: 'TakePicture',
-                //     params:{
-                //         theme:this.theme
-                //     }
-                // });
-                navigation.navigate('TakePicture',{
+                    navigation.navigate('TakePicture',{
                     theme:this.theme
                 })
     });
@@ -115,7 +119,7 @@ export default class TakePhotos extends BaseComponent {
 
 
   _onSure() {
- 
+        
         // if (!global.imageUrl1) {
         //     Toast.showLong('请拍旧物件照片');
         //     return;
@@ -130,63 +134,107 @@ export default class TakePhotos extends BaseComponent {
         //     Toast.showLong('请拍摄维修后照片');
         //     return;
         // }
-
         const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-                // navigator.push({
-                //     component: FinishWork,
-                //     name: 'FinishWork',
-                //     params:{
-                //         theme:this.theme,
-                //         repairId:this.state.repairId
-                //     }
-                // });
+        if(this.state.step === 2){
+            InteractionManager.runAfterInteractions(() => {
                 navigation.navigate('FinishWork',{
                         theme:this.theme,
                         repairId:this.state.repairId
                 })
             });
+        }else if(this.state.step === 1){
+            var imagesStarted = [];
+            let obj = global.imageUrl0 ;
+            
+            var data = {
+                "filePath":obj.fileDownloadUri,
+                "fileName":obj.fileName,
+                "fileBucket":obj.bucketName,
+                "fileType": obj.fileType,
+                "fileHost": obj.fileHost
+            }
+            
+            imagesStarted.push(data);
+            console.log(imagesStarted)
+            let params = {
+                repairId:this.state.repairId,
+                userId:global.uinfo.userId,
+                imagesStarted:imagesStarted,
+            };
+            
+            Request.requestPost(RepairCommenced, params, (result)=> {
+                console.log(result)
+                if (result && result.code === 200) {
+                    this.props.navigation.navigate('MainPage',{
+                        code : result.code
+                    })
+                } else {
+                
+                }
+            });
+        }
+        
+        
   }
 
   render() {
+    var imageSource0 = this.state.imagePath0 ? {uri:this.state.imagePath0} : require('../../../../res/repair/ico_wgpz.png');
     var imageSource1 = this.state.imagePath1 ? {uri:this.state.imagePath1} : require('../../../../res/repair/ico_wgpz.png');
     var imageSource2 = this.state.imagePath2 ? {uri:this.state.imagePath2} : require('../../../../res/repair/ico_wgpz.png');
     var imageSource3 = this.state.imagePath3 ? {uri:this.state.imagePath3} : require('../../../../res/repair/ico_wgpz.png');
+    var TakePictureStep = this.state.step ? this.state.step : 1;
+    var contentList = null;
+    if(TakePictureStep == 2){
+        contentList = <View style={{flexDirection:'row', width:Dimens.screen_width, flex:1}}>
+                        <View style={{width:Dimens.screen_width/2, flex:1}}> 
+                            <Text style={{fontSize:25,color:'#333',marginLeft:25,marginTop:55,}}>01/</Text>
+                            <Text style={{fontSize:15,color:'#333',marginLeft:25,marginTop:11,}}>请拍摄旧物件照片</Text>
+                            <Image source={require('../../../../res/repair/line_wg.png')} style={{width:2,height:74,marginTop:5,marginLeft:55,}}/>
+
+                            <Text style={{fontSize:25,color:'#333',marginLeft:25,marginTop:5,}}>02/</Text>
+                            <Text style={{fontSize:15,color:'#333',marginLeft:25,marginTop:11,}}>请拍摄新物件照片</Text>
+                            <Image source={require('../../../../res/repair/line_wg.png')} style={{width:2,height:74,marginTop:5,marginLeft:55,}}/>
+
+                            <Text style={{fontSize:25,color:'#333',marginLeft:25,marginTop:5,}}>03/</Text>
+                            <Text style={{fontSize:15,color:'#333',marginLeft:25,marginTop:11,}}>请拍摄维修后照片</Text>
+                        
+                        </View>
+
+                        <View style={{width:Dimens.screen_width/2, flex:1}}>
+                            <TouchableOpacity onPress={()=>{this.onTake(1)}} style={styles.action}>
+                                <Image source={imageSource1} style={{width:70,height:55,}}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.onTake(2)}} style={styles.action}>
+                                <Image source={imageSource2} style={{width:70,height:55,}}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.onTake(3)}} style={styles.action}>
+                                <Image source={imageSource3} style={{width:70,height:55,}}/>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+    }else if(TakePictureStep == 1){
+        contentList = <View style={{flexDirection:'row', width:Dimens.screen_width, flex:1}}>
+                        <View style={{width:Dimens.screen_width/2, flex:1}}> 
+                            <Text style={{fontSize:25,color:'#333',marginLeft:25,marginTop:55,}}>01/</Text>
+                            <Text style={{fontSize:15,color:'#333',marginLeft:25,marginTop:11,}}>请拍摄维修前照片</Text> 
+                        </View>
+
+                        <View style={{width:Dimens.screen_width/2, flex:1}}>
+                            <TouchableOpacity onPress={()=>{this.onTake(0)}} style={styles.action}>
+                                <Image source={imageSource0} style={{width:70,height:55,}}/>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+    }
     return (
       <View style={styles.container}>
         <TitleBar
-            centerText={'完工拍照'}
+            centerText={this.props.navigation.state.params.title}
             isShowLeftBackIcon={true}
             navigation={this.props.navigation}
         />
 
-        <View style={{flexDirection:'row', width:Dimens.screen_width, flex:1}}>
-            <View style={{width:Dimens.screen_width/2, flex:1}}> 
-                <Text style={{fontSize:25,color:'#333',marginLeft:25,marginTop:55,}}>01/</Text>
-                <Text style={{fontSize:15,color:'#333',marginLeft:25,marginTop:11,}}>请拍摄旧物件照片</Text>
-                <Image source={require('../../../../res/repair/line_wg.png')} style={{width:2,height:74,marginTop:5,marginLeft:55,}}/>
-
-                <Text style={{fontSize:25,color:'#333',marginLeft:25,marginTop:5,}}>02/</Text>
-                <Text style={{fontSize:15,color:'#333',marginLeft:25,marginTop:11,}}>请拍摄新物件照片</Text>
-                <Image source={require('../../../../res/repair/line_wg.png')} style={{width:2,height:74,marginTop:5,marginLeft:55,}}/>
-
-                <Text style={{fontSize:25,color:'#333',marginLeft:25,marginTop:5,}}>03/</Text>
-                <Text style={{fontSize:15,color:'#333',marginLeft:25,marginTop:11,}}>请拍摄维修后照片</Text>
-               
-            </View>
-
-            <View style={{width:Dimens.screen_width/2, flex:1}}>
-                <TouchableOpacity onPress={()=>{this.onTake(1)}} style={styles.action}>
-                    <Image source={imageSource1} style={{width:70,height:55,}}/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{this.onTake(2)}} style={styles.action}>
-                    <Image source={imageSource2} style={{width:70,height:55,}}/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{this.onTake(3)}} style={styles.action}>
-                    <Image source={imageSource3} style={{width:70,height:55,}}/>
-                </TouchableOpacity>
-            </View>
-        </View>
+        {contentList}
 
         <Text onPress={()=>this._onSure()} style={styles.button}>提交</Text>
       </View>

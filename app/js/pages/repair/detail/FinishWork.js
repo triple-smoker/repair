@@ -56,8 +56,9 @@ export default class FinishWork extends BaseComponent {
 loadDetail() {
     var that = this;
     console.log(that.props)
-    console.log(that.state)
     Request.requestGet(RepairDetail+this.state.repairId, null, (result)=> {
+        console.log('result')
+        console.log(result)
         if (result && result.code === 200) {
             that.setState({detaiData:result.data});
         } else {
@@ -192,7 +193,8 @@ renderMaterialItem(data, i) {
     var uri0 = null;
     var matterName = null;
     if (this.state.detaiData && this.state.detaiData.materialList && this.state.detaiData.materialList.length > 0) {
-            matterName = this.state.detaiData.matterName;
+        console.log(this.state.detaiData)    
+        matterName = this.state.detaiData.matterName;
             uri0 = this.state.detaiData.fileMap.imagesStarted[0].filePath;
             var materialList = this.state.detaiData.materialList;
             var total = 0;

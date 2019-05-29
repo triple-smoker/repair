@@ -19,7 +19,7 @@ import {
 
 import TitleBar from '../../../component/TitleBar';
 import * as Dimens from '../../../value/dimens';
-import Request, {GetRepairType, RepairMatterList, GetDeptListByType, GetUserListByDeptId, SaveRepairMatter} from '../../../http/Request';
+import Request, {GetRepairType, RepairMatterList, RepairDetail ,GetDeptListByType, GetUserListByDeptId, SaveRepairMatter} from '../../../http/Request';
 
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
@@ -53,6 +53,8 @@ export default class AddOption extends BaseComponent {
             selectUserPos:-1,
             selectDeptData:null,
             selectUserData:null,
+            oldItemPersonList:null,
+            type:1,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
@@ -85,11 +87,23 @@ export default class AddOption extends BaseComponent {
     }
 
   componentDidMount() {
-      this.loadRepairTypes();
-
-      this.getDeptListByType();
+    this.loadRepairTypes();
+    this.getRepairDetail();  
+    this.getDeptListByType();
+      
   }
-
+  getRepairDetail(){
+    var that = this;
+    Request.requestGet(RepairDetail+this.state.repairId, null, (result)=> {
+        if (result && result.code === 200) {
+            that.setState({
+                oldItemPersonList:result.data.itemPersonList,
+            });
+        } else {
+          
+        }
+    });
+  }
   getDeptListByType() {
     var that = this;
     Request.requestGet(GetDeptListByType, null, (result)=> {
@@ -169,17 +183,19 @@ export default class AddOption extends BaseComponent {
     }
 
     var matterItem = this.state.repairMatterList[this.state.selectMatterPos];
+                     
     var deleteIds = [];
-    //deleteIds.push({});
+
+    var oldList = this.state.oldItemPersonList
+    for(var i = 0;i < oldList.length;i++){
+        deleteIds.push(oldList[i].itemAssistantId)
+    }
     var itemPersonList = [];
     for (var i = 0; i < this.state.selUserList.length; i++) {
         var item = this.state.selUserList[i];
-        var personType = 2;
-        if (i === 0) {
-            personType = 1;
-        }
-
-        itemPersonList.push({assistantId:''+item.userId, repairItemId:''+matterItem.repairMatterId, itemPercentage:''+Math.round(item.process), personType:personType});
+        itemPersonList.push({
+                assistantId:''+item.userId, repairItemId:''+matterItem.repairMatterId,
+                itemPercentage:''+Math.round(item.process), personType:item.type});
     }
 
      let params = {
@@ -194,8 +210,6 @@ export default class AddOption extends BaseComponent {
         if (result && result.code === 200) {
             toastShort('提交成功');
             DeviceEventEmitter.emit('Event_Refresh_Detail', 'Event_Refresh_Detail');
-            // const {navigator} = that.props;
-            // that.naviGoBack(navigator);
             const {navigation} = that.props;
             that.naviGoBack(navigation);
         } else {
@@ -209,8 +223,11 @@ export default class AddOption extends BaseComponent {
 
   }
 
-  addMan() {
-    this.setState({modalVisible:true, dataSource:this.state.dataSource.cloneWithRows(this.state.deptList),});
+  addMan(type) {
+    this.setState({
+        modalVisible:true, 
+        type:type,
+        dataSource:this.state.dataSource.cloneWithRows(this.state.deptList),});
   }
 
   _hide() {
@@ -218,6 +235,7 @@ export default class AddOption extends BaseComponent {
   }
 
   submit() {
+    var type = this.state.type
     if (this.state.selectUserData) {
         var list = this.state.selUserList;
         for (var i = 0; i < list.length; i++) {
@@ -228,8 +246,13 @@ export default class AddOption extends BaseComponent {
             }
         }
 
-        let userInfo = {userName:this.state.selectUserData.userName, process:0,
-            userId:this.state.selectUserData.userId, telNo:this.state.selectUserData.telNo};
+        let userInfo = {
+            userName:this.state.selectUserData.userName, 
+            process:0,
+            userId:this.state.selectUserData.userId, 
+            telNo:this.state.selectUserData.telNo,
+            type:type
+        };
         list.push(userInfo);
         this.setState({modalVisible:false, selectUserData:null, selUserList:list});
 
@@ -346,8 +369,15 @@ export default class AddOption extends BaseComponent {
         </View>
         </TouchableOpacity>
         {selectUser}
+        <TouchableOpacity onPress={()=>this.addMan(1)} style={{marginTop:25,}}>
+        <View style={{height:40, backgroundColor:'white',justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:0, marginLeft:20, marginRight:20,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#6DC5C9'}}>
+                    <Image source={require('../../../../res/repair/btn_ico_tjxzr.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
+                    <Text style={{color:'#6DC5C9',fontSize:14,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加主修人</Text>
 
-        <TouchableOpacity onPress={()=>this.addMan()} style={{marginTop:25,}}>
+        </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>this.addMan(2)} style={{marginTop:25,}}>
         <View style={{height:40, backgroundColor:'white',justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:0, marginLeft:20, marginRight:20,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#6DC5C9'}}>
                     <Image source={require('../../../../res/repair/btn_ico_tjxzr.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
@@ -355,6 +385,7 @@ export default class AddOption extends BaseComponent {
 
         </View>
         </TouchableOpacity>
+        
         <View style={{ height:100, }} />
         </ScrollView>
         <Text
