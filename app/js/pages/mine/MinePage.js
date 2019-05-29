@@ -35,6 +35,8 @@ export default class MinePage extends Component {
 
   logout() {
     global.access_token = null;
+      global.deptId = null;
+      global.userId = null;
             AsyncStorage.setItem('token', '', function (error) {
                 if (error) {
                    console.log('error: save error');
