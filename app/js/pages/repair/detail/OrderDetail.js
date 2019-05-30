@@ -237,7 +237,7 @@ renderPersonItem(data,i) {
             repairHours = detaiData.repairHours+'小时';
         }
         
-        repairUserName = detaiData.ownerName + '   ' + (detaiData.telNo?detaiData.telNo:'');
+        repairUserName = detaiData.ownerName;
         telNo = detaiData.telNo;
         parentTypeName = detaiData.parentTypeName;
 
@@ -335,6 +335,10 @@ renderPersonItem(data,i) {
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>已耗时长：</Text>
                         <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairHours}</Text>
+                    </View>
+                    <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                        <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
+                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{detailAddress}</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
