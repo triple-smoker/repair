@@ -9,6 +9,7 @@ import SoundRecoding from '../components/SoundRecoding';
 import Axios from '../util/Axios';
 import { toastShort } from '../js/util/ToastUtil';
 
+
 class ConfirmReport extends Component {
 
     /**
@@ -85,7 +86,7 @@ class ConfirmReport extends Component {
     sb(){
 
         if(this.state.isUpLoad){
-            // Alert.alert('正在提交！')
+            toastShort('正在提交');
             return;
         }
 
