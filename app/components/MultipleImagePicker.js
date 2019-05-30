@@ -293,7 +293,11 @@ const PreView = (props) => {
             )}
 
             {props.type === 'video' ?
-                <PreVideo uri={props.uri}/> :
+                <TouchableOpacity  style={styles.imageStyle} onPress={props.largerView}>
+                    <Image style={styles.playStyle}  source={require('../image/icon_video_play.png')}/>
+                    <PreVideo style={styles.imageStyle} uri={props.uri}/> 
+                </TouchableOpacity>
+                :
                 <TouchableOpacity onPress={props.largerView}>
                     <Image style={styles.imageStyle}
                        source={{uri: props.uri}} />
@@ -321,6 +325,14 @@ const styles = StyleSheet.create({
         height: 25,
         right: 5,
         top: 5,
+        zIndex: 1,
+    },
+    playStyle : {
+        position: 'absolute',
+        width: 50,
+        height: 50,
+        right: 35,
+        top: 35,
         zIndex: 1,
     },
     modalContent: {

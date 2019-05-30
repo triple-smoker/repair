@@ -26,6 +26,7 @@
     "react-native-image-picker": "^0.28.1",
     "react-native-linear-gradient": "^2.5.4",
     "react-native-modal": "^9.0.0",
+    "react-native-nfc-manager": "^1.2.2",
     "react-native-permissions": "^1.1.1",
     "react-native-progress": "^3.6.0",
     "react-native-root-siblings": "^3.2.0",

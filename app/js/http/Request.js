@@ -30,9 +30,9 @@ export const SaveRepairMatter   =  "api/repair/service/assistant/save";//提交�
 export const GetMaterialTypeTree   =  "api/warehouse/whseMaterialType/getMaterialTypeTree";//物料类型获取接口
 export const QueryMaterialListByTypeId   =  "api/warehouse/whseMaterial/queryMaterialListByTypeId/";//  根据物料类型获取物料列表
 
-export const SaveMaterial   =  "api/repair/service/material/save";//
+export const SaveMaterial   =  "api/repair/service/material/save";//提交物料
 
-export const RepairCommenced   =  "api/repair/service/commenced";//进入完工
+export const RepairCommenced   =  "api/repair/service/commenced";//进入完工 开始任务
 export const RepairCompleted   =  "api/repair/service/completed";//完工提交
 
 //https://dev.jxing.com.cn/api/auth/oauth/token?username=10001&password=BlvxyJFFYLcg7n2OB4G5uA%3D%3D&grant_type=password&scope=server

@@ -92,6 +92,8 @@ class TypeMd extends Component {
         return listItems;
       }
         render(){
+            var repairParentCn = this.state.repairParentCn;
+            var repairChildCn = this.state.repairChildCn;
             return (
                 <View style={modalStyles.container}>
                     <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={this.props.Close}>
@@ -103,7 +105,7 @@ class TypeMd extends Component {
                                 {this.state.repairParentCn !='' &&
                                 <Button transparent block
                                 onPress={()=>this.setState({repairParent:'',repairParentCn:'',repairChild:'',repairChildCn:''})}>
-                                    <Text style={{color:'#1890ff'}}>{this.state.repairParentCn+"/"+this.state.repairChildCn}</Text>
+                                    <Text style={{color:'#1890ff'}}>{repairParentCn+"/"+repairChildCn}</Text>
                                 </Button>}
                             </Col>
                             {this.state.repairParent == '' && this.state.repairChild == '' &&
@@ -118,7 +120,10 @@ class TypeMd extends Component {
                             }
                             {this.state.repairParent != '' && this.state.repairChild != '' &&
                                 <View style={{flexDirection:'row',flexWrap:'wrap',width:"100%",paddingBottom:40}}>
-                                    <QuicklyBtnList repairCareList={this.state.repairCareList} goToRepair={(repairTypeId,repairMatterId)=>{this.props.goToRepair(repairTypeId,repairMatterId)}}/>
+                                    <QuicklyBtnList repairCareList={this.state.repairCareList} repairParentCn={repairParentCn} repairChildCn={repairChildCn} goToRepair={
+                                        (repairTypeId,repairMatterIdm,repairParentCn,repairChildCn)=>{
+                                            this.props.goToRepair(repairTypeId,repairMatterIdm,repairParentCn,repairChildCn)}
+                                    }/>
                                 </View>
                             }
                         </Content>
@@ -135,7 +140,7 @@ class QuicklyBtnList extends Component{
     render() {
             let repairList = this.props.repairCareList;
             let listItems =(  repairList === null ? null : repairList.map((repair, index) =>
-              <QuicklyBtn repair={repair}  goToRepair = {(repairTypeId,repairMatterId)=>this.props.goToRepair(repairTypeId,repairMatterId)} key={index}/>
+              <QuicklyBtn repair={repair} repairParentCn={this.props.repairParentCn} repairChildCn={this.props.repairChildCn} goToRepair = {(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.props.goToRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} key={index}/>
             ))
         return listItems;
     }
@@ -145,7 +150,15 @@ class QuicklyBtn extends Component {
     render(){
         return (
             <Button style={{width:"40%",marginTop:20,justifyContent:"center",marginRight:'10%',borderWidth:1,borderColor:'#c9c9c9',backgroundColor:'#fff'}}
-              onPress={()=>this.props.goToRepair(this.props.repair.repairTypeId,this.props.repair.repairMatterId)}>
+              onPress={()=>this.props.goToRepair(
+                                        this.props.repair.repairTypeId,
+                                        this.props.repair.repairMatterId,
+                                        this.props.repairParentCn,
+                                        this.props.repairChildCn
+                                        // this.state.repairParentCn,
+                                        // this.state.repairChildCn,
+                                        // this.state.matterName
+                                        )}>
                 <Text style={{color:'#696969'}}>{this.props.repair.matterName}</Text>
             </Button>
         )

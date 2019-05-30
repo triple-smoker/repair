@@ -156,6 +156,7 @@ export default class WorkPage extends BaseComponent {
 
   _fetchData(page) {
      console.log('WP : _fetchData')
+     console.log(this.state)
     var that = this;
 
     if (page !== 0) { // 加载更多操作
@@ -336,7 +337,16 @@ export default class WorkPage extends BaseComponent {
         this.gotoDetail(data);
       }
   }
-
+  gotoCommenced(data){
+    const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+                navigation.navigate('TakePhotos',{
+                          repairId:data.repairId,
+                          title:'维修开始拍照',
+                          step:1,
+                          theme:this.theme,})
+        });
+  }
 
   gotoDetail(data) {
     const {navigation} = this.props;
@@ -401,6 +411,7 @@ export default class WorkPage extends BaseComponent {
     var that = this;
     let buttons = null;
     let statusDesc = null;
+    console.log(data)
     if (data.status === '1') {
 
         buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
@@ -414,14 +425,14 @@ export default class WorkPage extends BaseComponent {
     } else if (data.status === '2') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text onPress={()=>this.gotoDetail(data)}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.gotoCommenced(data)}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>拍照开始维修</Text>
                     <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
     } else if (data.status === '3') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text onPress={()=>this.gotoDetail(data)}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.gotoCommenced(data)}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>拍照开始维修</Text>
                     <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
@@ -480,7 +491,7 @@ export default class WorkPage extends BaseComponent {
        if (data.fileMap.voicesRequest && data.fileMap.voicesRequest.length > 0) {
           var filePath = data.fileMap.voicesRequest[0].filePath;
           voiceView = <TouchableOpacity onPress={()=>{that.onPlayVoice(filePath)}} style={{backgroundColor:'white'}}>
-                        <Image source={require('../../../res/repair/btn_voice.png')} style={{width:25,height:25,marginLeft:10, }}/>
+                        <Image source={require('../../../res/repair/btn_voice.png')} style={{width:25,height:25,marginRight:5, }}/>
                       </TouchableOpacity>
        }
     }
@@ -488,10 +499,9 @@ export default class WorkPage extends BaseComponent {
     return (
       <TouchableOpacity onPress={()=>{this.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
-              <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:5,}}>报修位置：{data.repairDeptName}</Text>
-              <View style={{flexDirection:'row',}} >
-                <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:3,}}>报修内容：{data.matterName}</Text>
+              <View style={{flexDirection:'row',paddingLeft:15}} >
                 {voiceView}
+                <Text style={{fontSize:14,color:'#333',marginTop:3,}}>报修内容：{data.matterName}</Text>
               </View>
               <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:15, marginRight:15, backgroundColor:'#eeeeee'}}/>
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
@@ -514,8 +524,12 @@ export default class WorkPage extends BaseComponent {
                         <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.hours}小时</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                        <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
+                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.detailAddress}</Text>
+                    </View>
+                    <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
-                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.ownerName}   {data.telNo}</Text>
+                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.ownerName}</Text>
                         <TouchableOpacity onPress={()=>{that.callPhone(data.telNo)}} style={{marginLeft:10}}>
                             <Image source={require('../../../res/repair/list_call.png')} style={{width:20,height:20,}}/>
                         </TouchableOpacity>
