@@ -194,8 +194,10 @@ export default class AddOption extends BaseComponent {
     for (var i = 0; i < this.state.selUserList.length; i++) {
         var item = this.state.selUserList[i];
         itemPersonList.push({
-                assistantId:''+item.userId, repairItemId:''+matterItem.repairMatterId,
-                itemPercentage:''+Math.round(item.process), personType:item.type});
+                assistantId:''+item.userId, 
+                repairItemId:''+matterItem.repairMatterId,
+                itemPercentage:''+Math.round(item.process), 
+                personType:item.type});
     }
 
      let params = {
