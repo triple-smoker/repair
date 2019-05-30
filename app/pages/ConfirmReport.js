@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Image, TextInput, View, Alert} from 'react-native';
+import {Image, TextInput, View} from 'react-native';
 import { Container, Content,Text } from 'native-base';
 import Reporter from '../components/Reporter';
 import MyFooter from '../components/MyFooter';
@@ -8,8 +8,6 @@ import axios from 'axios';
 import SoundRecoding from '../components/SoundRecoding';
 import Axios from '../util/Axios';
 import { toastShort } from '../js/util/ToastUtil';
-
-import Request from '../js/http/Request';
 
 class ConfirmReport extends Component {
 
@@ -61,33 +59,34 @@ class ConfirmReport extends Component {
 
 
     }
-    //
-    // async UpLoad(path, name) {
-    //     let pos = path.lastIndexOf("/");
-    //     let file = {type:'multipart/form-data', uri: path, name:path.substr(pos+1)};
-    //     const apiToken = global.access_token;
-    //     let formData = new FormData();
-    //     // let file = {type: 'multipart/form-data', uri: path, name: name};
-    //     formData.append("file",file);
-    //     const url = 'https://dev.jxing.com.cn/api/opcs/oss/upload'
-    //     let res = await axios(url,{
-    //         method:'POST',
-    //         headers:{
-    //             'Content-Type':'multipart/form-data',
-    //             'hospitalId': '1055390940066893827',
-    //             'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
-    //             'Authorization': `Bearer ${apiToken}`,
-    //         },
-    //         data:formData,
-    //     })
-    //
-    //     return res.data
-    // }
+
+    async UpLoad(path, name) {
+        let pos = path.lastIndexOf("/");
+        let file = {type:'multipart/form-data', uri: path, name:path.substr(pos+1)};
+        const apiToken = global.access_token;
+        let formData = new FormData();
+        // let file = {type: 'multipart/form-data', uri: path, name: name};
+        formData.append("file",file);
+        const url = 'https://dev.jxing.com.cn/api/opcs/oss/upload'
+        let res = await axios(url,{
+            method:'POST',
+            headers:{
+                'Content-Type':'multipart/form-data',
+                'hospitalId': '1055390940066893827',
+                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                'Authorization': `Bearer ${apiToken}`,
+            },
+            data:formData,
+        })
+
+        return res.data
+    }
 
     sb(){
 
         if(this.state.isUpLoad){
-            Alert.alert('正在提交！')
+            // Alert.alert('正在提交！')
+            return;
         }
 
         this.setState({
@@ -104,39 +103,48 @@ class ConfirmReport extends Component {
 
             for(let i = 0; i<images.length; i++){
                 let image = images[i];
-                Request.uploadFile(path, (s)=> {
-                    console.log(s);
-                    let imageLoad = {
-                        "filePath":s.fileDownloadUri,
-                        "fileName":s.originalName,
-                        "fileBucket":s.bucketName,
-                        "fileType": s.fileType,
-                        "fileHost":s.fileHost,
+                let s  = this.UpLoad(image.uri, 'image'+ i + '.jpg')
+                s.then(
+                    (s)=> {
+                        console.log(s);
+                        let imageLoad = {
+                            "filePath":s.fileDownloadUri,
+                            "fileName":s.originalName,
+                            "fileBucket":s.bucketName,
+                            "fileType": s.fileType,
+                            "fileHost":s.fileHost,
+                        }
+
+                        console.log('上传成功');
+                        console.log(imageLoad);
+
+                        if(image.type==='video'){
+                            let videoRequest = [];
+                            videoRequest.push(imageLoad)
+
+                            this.setState(
+                                {
+                                    videosRequest : videoRequest,
+                                }
+                            )
+                        }else{
+                            imagesRequest.push(imageLoad)
+
+                            this.setState(
+                                {
+                                    imagesRequest : imagesRequest,
+                                    // imagesNum : this.state.imagesNum + 1
+                                }
+                            )
+                        }
+
+
                     }
 
-                    console.log('上传成功');
-                    console.log(imageLoad);
+                );
 
-                    if(image.type==='video'){
-                        let videoRequest = [];
-                        videoRequest.push(imageLoad)
 
-                        this.setState(
-                            {
-                                videosRequest : videoRequest,
-                            }
-                        )
-                    }else{
-                        imagesRequest.push(imageLoad)
 
-                        this.setState(
-                            {
-                                imagesRequest : imagesRequest,
-                                // imagesNum : this.state.imagesNum + 1
-                            }
-                        )
-                    }
-                })
 
             }
         } catch (err) {
@@ -146,29 +154,30 @@ class ConfirmReport extends Component {
 
         let voicesRequest = [];
 
+        try {
+            let voice = this.state.voices;
 
-        let voice = this.state.voices;
-        if(voice.filePath != ''){
-            Request.uploadFile('file://'+voice.filePath, (s)=> {
-                let voice = {
-                    "filePath":s.fileDownloadUri,
-                    "fileName":s.originalName,
-                    "fileBucket":s.bucketName,
-                    "fileType": s.fileType,
-                    "fileHost":s.fileHost,
-                }
-                voicesRequest.push(voice)
-                this.setState(
-                    {
-                        voicesRequest : voicesRequest,
-                        // voicesNum : this.state.voicesNum + 1
+            let img = this.UpLoad('file://'+voice.filePath, 'voice.mp3');
+            img.then((s)=> {
+                    let voice = {
+                        "filePath":s.fileDownloadUri,
+                        "fileName":s.originalName,
+                        "fileBucket":s.bucketName,
+                        "fileType": s.fileType,
+                        "fileHost":s.fileHost,
                     }
-                )
-            })
+                    voicesRequest.push(voice)
+                    this.setState(
+                        {
+                            voicesRequest : voicesRequest,
+                            // voicesNum : this.state.voicesNum + 1
+                        }
+                    )
+                }
+            );
+        } catch (err) {
+            console.log(err)
         }
-
-            // let img = this.UpLoad('file://'+voice.filePath, 'voice.mp3');
-
 
         this.timer = setInterval(
             () => {
@@ -203,8 +212,6 @@ class ConfirmReport extends Component {
      */
     submit(){
 
-
-
         clearInterval(this.timer);
 
         let repRepairInfo = {
@@ -231,7 +238,7 @@ class ConfirmReport extends Component {
 
         Axios.PostAxios(
             '/api/repair/request/checkin',
-           repRepairInfo,
+            repRepairInfo,
         ).then(
             (res) => {
                 console.log(res);
@@ -246,28 +253,28 @@ class ConfirmReport extends Component {
         return (
             <Container  style={{backgroundColor: "#EEEEEE"}}>
                 <Content>
-                    <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15,marginLeft:'1.5%', paddingLeft:3}}>请确认您的报修单</Text>
-                    <Text style={{backgroundColor:"#fff",flex:1,color:"#666",marginLeft:'1.5%',fontSize:16, paddingLeft:3,alignItems:"center",height:18,marginTop:15}}>
+                    <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15}}>请确认您的报修单</Text>
+                    <Text style={{backgroundColor:"#fff",flex:1,color:"#666",marginLeft:'1.5%',fontSize:16,alignItems:"center",height:18,marginTop:15}}>
                         {this.state.repairParentCn}/{this.state.repairChildCn}
                     </Text>
-                    <TextInput style={{color: '#000', textAlignVertical: 'top', backgroundColor: "#ffffff" ,paddingLeft:3, marginLeft: '1.5%', marginRight: '1.5%',}}
+                    <TextInput style={{color: '#000', textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}
                                value={this.state.desc}
                                editable = {false}
                     />
                     {this.state.voices.filePath == '' ? null : <SoundRecoding readOnly={true} record={this.state.voices}/>}
-                        <Reporter
-                            name={this.state.report.reporter}
-                            phone={this.state.report.phone}
-                            adds={this.state.report.address}
-                            readOnly = {true}
-                        />
-                        <MultipleImagePicker
-                            images={this.state.images}
-                            readOnly = {true}
-                            style={{backgroundColor: "#fff"  ,marginLeft: '1.5%', marginRight: '1.5%',}}
-                        />
+                    <Reporter
+                        name={this.state.report.reporter}
+                        phone={this.state.report.phone}
+                        adds={this.state.report.address}
+                        readOnly = {true}
+                    />
+                    <MultipleImagePicker
+                        images={this.state.images}
+                        readOnly = {true}
+                        style={{backgroundColor: "#fff"  ,marginLeft: '1.5%', marginRight: '1.5%',}}
+                    />
                 </Content>
                 <MyFooter submit={() => this.sb()} value='确定'/>
 
