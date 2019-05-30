@@ -281,7 +281,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 50,
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
         position: 'absolute',
         top: 0,
         right: 0
