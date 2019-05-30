@@ -21,6 +21,7 @@ import * as Dimens from '../../../value/dimens';
 import Request, {GetRepairList, RepairDetail, RepPause, DoPause, RepairCommenced} from '../../../http/Request';
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
+import Sound from "react-native-sound";
 export default class OrderDetail extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -182,6 +183,20 @@ renderPersonItem(data,i) {
     );
   }
 
+    onPlayVoice(filePath) {
+        console.log('bofang')
+        const s = new Sound(filePath, null, (e) => {
+            if (e) {
+                toastShort('播放失败');
+                return;
+            }
+
+            toastShort('开始播放');
+            s.play(() => s.release());
+        });
+
+    }
+
 
 
   renderIconItem(data,i) {
@@ -209,6 +224,9 @@ renderPersonItem(data,i) {
     var repairUserName = null;
     var parentTypeName = null;
     var telNo = null;
+    //语音和图片
+    var uriImg = null;
+    var voiceView = null;
     var materialList = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无内容</Text>;
     var processList = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无内容</Text>;
     if (detaiData) {
@@ -281,12 +299,38 @@ renderPersonItem(data,i) {
                             </View>
                           </View>
         }
+
+        var repDatas = null;
+        if (this.state.modalVisible) {
+            repDatas = this.state.repList.map((item, i)=>this.renderRepItem(item,i));
+        }
+        //语音和图片
+        if (detaiData.fileMap) {
+            if (detaiData.fileMap.imagesRequest && detaiData.fileMap.imagesRequest.length > 0) {
+                if(data.fileMap.imagesRequest[0].filePath!=null) {
+                    uriImg = detaiData.fileMap.imagesRequest[0].filePath;
+                }
+            }
+
+            if (detaiData.fileMap.voicesRequest && detaiData.fileMap.voicesRequest.length > 0) {
+                if(data.fileMap.voicesRequest[0].filePath!=null) {
+                    var filePath = detaiData.fileMap.voicesRequest[0].filePath;
+                    voiceView = <TouchableOpacity onPress={() => {
+                        this.onPlayVoice(filePath)
+                    }} style={{backgroundColor: 'white'}}>
+                        <Image source={require('../../../../res/repair/btn_voice.png')}
+                               style={{width: 25, height: 25, marginRight: 5,}}/>
+                    </TouchableOpacity>
+                }
+            }
+        }
     }
 
-    var repDatas = null;
-    if (this.state.modalVisible) {
-        repDatas = this.state.repList.map((item, i)=>this.renderRepItem(item,i));
-    }
+
+
+
+
+
 
     return (
       <View style={styles.container}>
@@ -304,7 +348,10 @@ renderPersonItem(data,i) {
     </View>
 
         <View style={{marginLeft:0,backgroundColor:'white',}} >
-              <Text style={{fontSize:13,color:'#333',marginLeft:10,marginTop:8,}}>报修内容：{matterName}</Text>
+            <View style={{flexDirection:'row',paddingLeft:10}} >
+                {voiceView}
+              <Text style={{fontSize:14,color:'#333',marginTop:3,}}>报修内容：{matterName}</Text>
+            </View>
               <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:10, marginRight:10, backgroundColor:'#eeeeee'}}/>
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
                 <View style={{marginLeft:10, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:60,}} >

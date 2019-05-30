@@ -485,14 +485,20 @@ export default class WorkPage extends BaseComponent {
     var voiceView = null;
     if (data.fileMap) {
        if (data.fileMap.imagesRequest && data.fileMap.imagesRequest.length > 0) {
-          uriImg = data.fileMap.imagesRequest[0].filePath;
+           if(data.fileMap.imagesRequest[0].filePath!=null){
+               uriImg = data.fileMap.imagesRequest[0].filePath;
+           }
+
+
        }
 
        if (data.fileMap.voicesRequest && data.fileMap.voicesRequest.length > 0) {
-          var filePath = data.fileMap.voicesRequest[0].filePath;
-          voiceView = <TouchableOpacity onPress={()=>{that.onPlayVoice(filePath)}} style={{backgroundColor:'white'}}>
-                        <Image source={require('../../../res/repair/btn_voice.png')} style={{width:25,height:25,marginRight:5, }}/>
-                      </TouchableOpacity>
+           if(data.fileMap.voicesRequest[0].filePath!=null){
+               var filePath = data.fileMap.voicesRequest[0].filePath;
+               voiceView = <TouchableOpacity onPress={()=>{that.onPlayVoice(filePath)}} style={{backgroundColor:'white'}}>
+                   <Image source={require('../../../res/repair/btn_voice.png')} style={{width:25,height:25,marginRight:5, }}/>
+               </TouchableOpacity>
+           }
        }
     }
 
