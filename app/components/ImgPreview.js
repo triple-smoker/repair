@@ -10,6 +10,7 @@ import {
   View
 } from 'react-native';
 import Swiper from 'react-native-swiper';
+import VideoPlayer from './VideoPlayer';
 
 let ScreenWidth = Dimensions
   .get('window')
@@ -23,17 +24,18 @@ class ImgPreview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalVisible: false //没用到
+      modalVisible: false, //没用到
+      imageItemRefMap: new Map() //存储子组件模板节点
     }
   }
-  getImageItem(imagesRequest) {
+  getImageItem(imagesRequest,setModalVisible) {
     var i = 0;
     var listItems;
     if (imagesRequest != null) {
       i = imagesRequest.length;
       listItems = (imagesRequest === null
         ? null
-        : imagesRequest.map((imageItem, index) => <ImageItem num={index + 1} sum={i} imageurl={imageItem.uri} key={index}/>))
+        : imagesRequest.map((imageItem, index) => <ImageItem onRef={this.onRef} setModalVisible={setModalVisible} num={index + 1} sum={i} imageurl={imageItem.uri} type={imageItem.type} key={index}/>))
     } else {
       listItems = <View
         style={{
@@ -51,6 +53,29 @@ class ImgPreview extends Component {
     }
     return listItems;
   }
+
+  onRef = (ref) => {
+    this.imageItemRef = ref
+    if(ref.props.type == 'video'){
+      this.appentRefMap(ref.props.num,ref);
+    }
+  }
+
+  appentRefMap(index,ref){
+    let map = this.state.imageItemRefMap;
+    map.set(index,ref);
+    this.setState({
+      imageItemRefMap: map
+    });
+  }
+
+  setVideoCurrentTime = (index) => {
+    let imageItemRef = this.state.imageItemRefMap.get(index + 1);
+    if(imageItemRef){
+      imageItemRef.setVideoCurrentTime();
+    }
+  }
+
   render() {
     let num = typeof(this.props.PicMsg.index) == 'number'
       ? this.props.PicMsg.index
@@ -69,7 +94,7 @@ class ImgPreview extends Component {
               width: ScreenWidth,
               height: ScreenHeight / 3
             }}
-              onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
+              onMomentumScrollEnd={(e, state, context) => (console.log('index:', state.index),this.setVideoCurrentTime(state.index))}
               dot={< View style = {{backgroundColor: 'rgba(0,0,0,0.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}}/>}
               activeDot={< View style = {{backgroundColor: '#000', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}}/>}
               paginationStyle={{
@@ -79,7 +104,7 @@ class ImgPreview extends Component {
             }}
               loop={false}
               index={num}>
-              {this.getImageItem(this.props.imagesRequest)}
+              {this.getImageItem(this.props.imagesRequest,this.props.setModalVisible)}
             </Swiper>
           </View>
         </View>
@@ -90,15 +115,34 @@ class ImgPreview extends Component {
 }
 
 class ImageItem extends Component {
+
+  //获取VideoPlayer组件模板元素
+  onRef = (ref) => {
+    if(this.props.type == 'video'){
+      this.videoPlayerRef = ref;
+    }
+  }
+
+  componentDidMount(){
+    this.props.onRef(this);
+  }
+
+  setVideoCurrentTime = (e) =>{
+    this.videoPlayerRef.setVideoCurrentTime(0);
+  }
+
   render() {
     return (
       <View style={StyleImages.slide}>
-        <Image
-          resizeMode='contain'
-          style={StyleImages.image}
-          source={{
-          uri: this.props.imageurl
-        }}/>
+        {
+          this.props.type === 'video' ? <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.props.imageurl}></VideoPlayer> :
+          <Image
+            resizeMode='contain'
+            style={StyleImages.image}
+            source={{
+            uri: this.props.imageurl
+          }}/>
+        }
         <View
           style={{
           position: 'relative',
