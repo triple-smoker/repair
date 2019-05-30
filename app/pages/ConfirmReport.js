@@ -9,7 +9,7 @@ import SoundRecoding from '../components/SoundRecoding';
 import Axios from '../util/Axios';
 import { toastShort } from '../js/util/ToastUtil';
 
-import Request from '../../../http/Request';
+import Request from '../js/http/Request';
 
 class ConfirmReport extends Component {
 

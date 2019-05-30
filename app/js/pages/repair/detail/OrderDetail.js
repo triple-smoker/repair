@@ -307,13 +307,13 @@ renderPersonItem(data,i) {
         //语音和图片
         if (detaiData.fileMap) {
             if (detaiData.fileMap.imagesRequest && detaiData.fileMap.imagesRequest.length > 0) {
-                if(data.fileMap.imagesRequest[0].filePath!=null) {
+                if(detaiData.fileMap.imagesRequest[0].filePath!=null) {
                     uriImg = detaiData.fileMap.imagesRequest[0].filePath;
                 }
             }
 
             if (detaiData.fileMap.voicesRequest && detaiData.fileMap.voicesRequest.length > 0) {
-                if(data.fileMap.voicesRequest[0].filePath!=null) {
+                if(detaiData.fileMap.voicesRequest[0].filePath!=null) {
                     var filePath = detaiData.fileMap.voicesRequest[0].filePath;
                     voiceView = <TouchableOpacity onPress={() => {
                         this.onPlayVoice(filePath)
