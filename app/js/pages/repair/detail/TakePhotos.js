@@ -144,10 +144,18 @@ export default class TakePhotos extends BaseComponent {
             });
         }else if(this.state.step === 1){
             var imagesStarted = [];
+            var filePath = null;
+            if (!global.imageUrl0) {
+                Toast.showLong('请拍摄照片');
+                return;
+            }
             let obj = global.imageUrl0 ;
             
+            if(obj.fileDownloadUri){
+                filePath = obj.fileDownloadUri
+            }
             var data = {
-                "filePath":obj.fileDownloadUri,
+                "filePath":filePath,
                 "fileName":obj.fileName,
                 "fileBucket":obj.bucketName,
                 "fileType": obj.fileType,

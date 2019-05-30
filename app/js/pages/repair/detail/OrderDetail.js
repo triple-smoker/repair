@@ -61,22 +61,6 @@ export default class OrderDetail extends BaseComponent {
                     step:2,
                     repairId:this.state.repairId})
     });
-    // var imagesStarted = [];
-    // let obj = {};
-    // imagesStarted.push(obj);
-    // let params = {
-    //     repairId:that.state.repairId,
-    //     userId:global.uinfo.userId,
-    //     imagesStarted:imagesStarted,
-    // };
-    
-    // Request.requestPost(RepairCommenced, params, (result)=> {
-    //     if (result && result.code === 200) {
-    //         
-    //     } else {
-          
-    //     }
-    // });
   }
 
 
@@ -233,8 +217,12 @@ renderPersonItem(data,i) {
         repairNo = detaiData.repairNo;
         createTime = new Date(detaiData.createTime).format("yyyy-MM-dd hh:mm:ss");
 
-        if (detaiData.repairHours) {
-            repairHours = detaiData.repairHours+'小时';
+        if (detaiData.hours.hoursRequest) {
+            // maio / 60 /60
+            var desc = detaiData.hours.hoursRequest
+            var hours = null;
+            hours  = (desc/3600).toFixed(1)
+            repairHours = hours+'小时';
         }
         
         repairUserName = detaiData.ownerName + '   ' + (detaiData.telNo?detaiData.telNo:'');
@@ -270,14 +258,14 @@ renderPersonItem(data,i) {
 
         if (detaiData.itemPersonList && detaiData.itemPersonList.length > 0) {
             var viewList = detaiData.itemPersonList.map((item, i)=>{
-                if(item.assistantId != null){
+                if(item.assistantId != null){}
                     return this.renderPersonItem(item, i)
-                }       
+                      
             });
             var iconList = detaiData.itemPersonList.map((item, i)=>{
-                if(item.assistantId != null){
+                if(item.assistantId != null){}
                     return this.renderIconItem(item, i)
-                }
+                
             });
             processList = <View style={{backgroundColor:'white', paddingTop:10, paddingBottom:10,}}>
                             <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>维修类别：{detaiData.parentTypeName}</Text>
