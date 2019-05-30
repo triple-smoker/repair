@@ -35,6 +35,8 @@ class ConfirmReport extends Component {
         const { navigation } = this.props;
         const repairTypeId = navigation.getParam('repairTypeId', '');
         const repairMatterId = navigation.getParam('repairMatterId', '');
+        const repairParentCn = navigation.getParam('repairParentCn', '');
+        const repairChildCn = navigation.getParam('repairChildCn', '');
         const report = navigation.getParam('reporter');
         const images = navigation.getParam('images');
         const voices = navigation.getParam('voices', '');
@@ -42,6 +44,8 @@ class ConfirmReport extends Component {
         this.state = {
             repairTypeId : repairTypeId,
             repairMatterId : repairMatterId,
+            repairParentCn : repairParentCn,
+            repairChildCn : repairChildCn,
             images : images,
             desc : desc,
             report : report,
@@ -239,7 +243,10 @@ class ConfirmReport extends Component {
             <Container  style={{backgroundColor: "#EEEEEE"}}>
                 <Content>
                     <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15}}>请确认您的报修单</Text>
-                    <TextInput style={{color: '#000', textAlignVertical: 'top', backgroundColor: "#ffffff" , marginTop : '1.5%', marginLeft: '1.5%', marginRight: '1.5%',}}
+                    <Text style={{backgroundColor:"#fff",flex:1,color:"#666",marginLeft:'1.5%',fontSize:16, paddingLeft:3,alignItems:"center",height:18,marginTop:15}}>
+                        {this.state.repairParentCn}/{this.state.repairChildCn}
+                    </Text>
+                    <TextInput style={{color: '#000', textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}
                                value={this.state.desc}
