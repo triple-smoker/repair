@@ -136,6 +136,8 @@ export default class RepairScreen extends React.Component {
         const repairInfo = {
             repairTypeId : this.state.repairTypeId,
             repairMatterId : this.state.repairMatterId,
+            repairParentCn : this.state.repairParentCn,
+            repairChildCn : this.state.repairChildCn,
             voices : this.state.record,
             images: this.state.images,
             desc : this.state.desc,
@@ -208,10 +210,10 @@ export default class RepairScreen extends React.Component {
             <Container style={{backgroundColor: "#EEEEEE"}}>
                 <Content >
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
-                    <Text style={{flex:1,color:"#666",marginLeft:'1.5%',fontSize:16,alignItems:"center",height:18}}>
+                    <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:3,marginTop : '1.5%',marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
                         {this.state.repairParentCn}/{this.state.repairChildCn}
                     </Text>
-                    <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginTop : '1.5%', marginLeft: '1.5%', marginRight: '1.5%',}}
+                    <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}
                                onChangeText={(text) => this.setState({desc : text})}
