@@ -32,7 +32,7 @@ class VideoPlayer extends Component {
             currentTime: 0,        // 视频当前播放的时间
             duration: 0,           // 视频的总时长
             playFromBeginning: false, // 是否从头开始播放
-            modalVisible: false,   //是否显示视频组件
+            modalVisible: true,   //是否显示视频组件
             isFullScreen: false,     // 当前是否全屏显示
         };
     }
@@ -40,17 +40,25 @@ class VideoPlayer extends Component {
     render() {
 
         return (
-            <Content>
-                <TouchableOpacity style={styles.imageStyle} onPress={() => { this._setModalVisible() }}>
-                    <Video 
-                        source={{uri:this.props.uri}}
-                        style={styles.videoNormalFrame}
-                        rate={1}
-                        paused={true}
-                        volume={1}
-                        muted={false}
-                        resizeMode={'contain'}
-                    />
+            <View style={styles.container} onLayout={this._onLayout}>
+                <Video
+                    ref={(ref) => this.videoPlay = ref}
+                    source={{uri:this.props.uri}}
+                    style={styles.videoNormalFrame} 
+                    rate={1.0}
+                    volume={1.0}
+                    muted={false}
+                    paused={!this.state.isPlaying}
+                    resizeMode={'contain'}
+                    playWhenInactive={false}
+                    playInBackground={false}
+                    ignoreSilentSwitch={'ignore'}
+                    progressUpdateInterval={250.0}
+                    onLoad={this._onLoaded}
+                    onProgress={this._onProgressChanged}
+                    onEnd={this._onPlayEnd}
+                />
+                <TouchableWithoutFeedback onPress={() => { this.hideControl() }}>
                     <View
                         style={{
                             position: 'absolute',
@@ -58,97 +66,58 @@ class VideoPlayer extends Component {
                             left: 0,
                             bottom: 0,
                             right: 0,
-                            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                            backgroundColor: this.state.isPlaying ? 'transparent' : 'rgba(0, 0, 0, 0.2)',
                             alignItems: 'center',
                             justifyContent: 'center'
                         }}>
-                        <Image style={styles.playIcon} source={require('../image/icon_video_play.png')}/>
+                        {
+                            this.state.isPlaying ? null :
+                            <TouchableWithoutFeedback onPress={() => { this.onPressPlayButton() }}>
+                                <Image
+                                    style={styles.playButton}
+                                    source={require('../image/icon_video_play.png')}
+                                />
+                            </TouchableWithoutFeedback>
+                        }
+                        {
+                            this.state.showVideoControl && this.state.isPlaying ?
+                            <TouchableWithoutFeedback onPress={() => { this.onPressPlayButton() }}>
+                                <Image
+                                    style={styles.playButton}
+                                    source={require('../image/icon_video_pause.png')}
+                                />
+                            </TouchableWithoutFeedback> : null
+                        }
                     </View>
-                </TouchableOpacity>
-                <Modal
-                    animationType={"slide"}
-                    transparent={true}
-                    visible={this.state.modalVisible}
-                    onRequestClose={() => this._setModalVisible()}
-                >
-                <View style={styles.container} onLayout={this._onLayout}>
-                    <Video
-                        ref={(ref) => this.videoPlay = ref}
-                        source={{uri:this.props.uri}}
-                        style={styles.videoNormalFrame} 
-                        rate={1.0}
-                        volume={1.0}
-                        muted={false}
-                        paused={!this.state.isPlaying}
-                        resizeMode={'contain'}
-                        playWhenInactive={false}
-                        playInBackground={false}
-                        ignoreSilentSwitch={'ignore'}
-                        progressUpdateInterval={250.0}
-                        onLoad={this._onLoaded}
-                        onProgress={this._onProgressChanged}
-                        onEnd={this._onPlayEnd}
-                    />
-                    <TouchableWithoutFeedback onPress={() => { this.hideControl() }}>
-                        <View
-                            style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                bottom: 0,
-                                right: 0,
-                                backgroundColor: this.state.isPlaying ? 'transparent' : 'rgba(0, 0, 0, 0.2)',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                            {
-                                this.state.isPlaying ? null :
-                                <TouchableWithoutFeedback onPress={() => { this.onPressPlayButton() }}>
-                                    <Image
-                                        style={styles.playButton}
-                                        source={require('../image/icon_video_play.png')}
-                                    />
-                                </TouchableWithoutFeedback>
-                            }
-                            {
-                                this.state.showVideoControl && this.state.isPlaying ?
-                                <TouchableWithoutFeedback onPress={() => { this.onPressPlayButton() }}>
-                                    <Image
-                                        style={styles.playButton}
-                                        source={require('../image/icon_video_pause.png')}
-                                    />
-                                </TouchableWithoutFeedback> : null
-                            }
-                        </View>
-                    </TouchableWithoutFeedback>
-                    {
-                        this.state.showVideoControl ?
-                        <View>
-                            <TouchableOpacity style={styles.header} onPress={() => { this._setModalVisible() }}>
-                                <Image style={styles.shrinkControl} source={require('../image/mesbox_close@2.png')}/>
-                            </TouchableOpacity>
-                        </View> : null
-                    }
-                    {
-                        this.state.showVideoControl ?
-                        <View style={[styles.control, { width: this.state.videoWidth }]}>
-                            <Text style={styles.time}>{formatTime(this.state.currentTime)}</Text>
-                            <Slider
-                                style={{ flex: 1 }}
-                                maximumTrackTintColor={'#999999'}   
-                                minimumTrackTintColor={'#00c06d'}
-                                thumbImage={require('../image/icon_video_slider.png')}
-                                value={this.state.currentTime}
-                                minimumValue={0}
-                                maximumValue={this.state.duration}
-                                onValueChange={(currentTime) => { this.onSliderValueChanged(currentTime) }}
-                            />
-                            <Text style={styles.time}>{formatTime(this.state.duration)}</Text>
-                        </View> : null
-                    }
-                </View>
-                </Modal>
-            </Content>
+                </TouchableWithoutFeedback>
+                {
+                    this.state.showVideoControl ?
+                    <View>
+                        
+                        <TouchableOpacity style={styles.header} onPress={this.props.closeVideoPlayer}>
+                        {/* <TouchableOpacity style={styles.header} onPress={() => { this._setModalVisible() }}> */}
+                            <Image style={styles.shrinkControl} source={require('../image/mesbox_close@2.png')}/>
+                        </TouchableOpacity>
+                    </View> : null
+                }
+                {
+                    this.state.showVideoControl ?
+                    <View style={[styles.control, { width: this.state.videoWidth }]}>
+                        <Text style={styles.time}>{formatTime(this.state.currentTime)}</Text>
+                        <Slider
+                            style={{ flex: 1 }}
+                            maximumTrackTintColor={'#999999'}   
+                            minimumTrackTintColor={'#00c06d'}
+                            thumbImage={require('../image/icon_video_slider.png')}
+                            value={this.state.currentTime}
+                            minimumValue={0}
+                            maximumValue={this.state.duration}
+                            onValueChange={(currentTime) => { this.onSliderValueChanged(currentTime) }}
+                        />
+                        <Text style={styles.time}>{formatTime(this.state.duration)}</Text>
+                    </View> : null
+                }
+            </View>
         );
     }
 
@@ -157,7 +126,6 @@ class VideoPlayer extends Component {
     _onLoaded = (data) => {
         console.log('视频加载完成');
         this.setState({
-            isPlaying : true,
             duration: data.duration,
         });
     };
@@ -253,6 +221,18 @@ class VideoPlayer extends Component {
             modalVisible: !this.state.modalVisible 
         });
     }
+
+    componentDidMount(){
+        this.props.onRef(this)
+    }
+
+    setVideoCurrentTime = (time) => {
+        this.videoPlay.seek(time);
+        this.setState({
+            currentTime: time || 0,
+            isPlaying: false,
+        })
+    }
 }
 
 // 样式
@@ -264,6 +244,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
+        marginBottom: -20,
+        marginTop: 10
     },
     videoNormalFrame: {
         position: 'absolute',
