@@ -43,7 +43,8 @@ class SoundRecoding extends Component {
                 <Image
                     style={{
                         width: 35,
-                        height: 35
+                        height: 35,
+                        marginLeft: 4,
                     }}
                     source={require('../image/btn_yy.png')}/>
             </TouchableHighlight>
@@ -55,12 +56,13 @@ class SoundRecoding extends Component {
 			<View style={{
 				marginLeft: '1.5%',
 				height: 40,
-				flexDirection: 'row',
+                flexDirection: 'row',
                 backgroundColor: "#ffffff",
+                paddingLeft:3
 			}}>
                 {this.props.readOnly ? null : this.recordButtom()}
-				<TouchableHighlight style={{left: 9}} onPress={() => {this._play()}}>
-                    <View >
+				<TouchableHighlight style={{left: 1}} onPress={() => {this._play()}}>
+                    <View style={{ marginLeft: '1.5%'}}>
                         <Image
                             style={{left: 15,top: 7,position: 'absolute',width: 20, height: 20, zIndex: 1}}
                             source={require('../image/os.png')}/>

@@ -213,7 +213,7 @@ export default class RepairScreen extends React.Component {
                     <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:3,marginTop : '1.5%',marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
                         {this.state.repairParentCn}/{this.state.repairChildCn}
                     </Text>
-                    <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', marginRight: '1.5%',}}
+                    <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', paddingLeft:3, marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}
                                onChangeText={(text) => this.setState({desc : text})}
