@@ -186,7 +186,7 @@ class MultipleImagePicker extends BaseComponent {
 
             this.setState({ visibleModal: false });
             this.uploadImages();
-        }).catch(e => alert(e));
+        }).catch();
     }
 
 
