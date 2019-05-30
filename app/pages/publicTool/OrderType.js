@@ -120,7 +120,7 @@ class TypeMd extends Component {
                             }
                             {this.state.repairParent != '' && this.state.repairChild != '' &&
                                 <View style={{flexDirection:'row',flexWrap:'wrap',width:"100%",paddingBottom:40}}>
-                                    <QuicklyBtnList repairCareList={this.state.repairCareList} goToRepair={
+                                    <QuicklyBtnList repairCareList={this.state.repairCareList} repairParentCn={repairParentCn} repairChildCn={repairChildCn} goToRepair={
                                         (repairTypeId,repairMatterIdm,repairParentCn,repairChildCn)=>{
                                             this.props.goToRepair(repairTypeId,repairMatterIdm,repairParentCn,repairChildCn)}
                                     }/>
@@ -140,7 +140,7 @@ class QuicklyBtnList extends Component{
     render() {
             let repairList = this.props.repairCareList;
             let listItems =(  repairList === null ? null : repairList.map((repair, index) =>
-              <QuicklyBtn repair={repair}  goToRepair = {(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.props.goToRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} key={index}/>
+              <QuicklyBtn repair={repair} repairParentCn={this.props.repairParentCn} repairChildCn={this.props.repairChildCn} goToRepair = {(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.props.goToRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} key={index}/>
             ))
         return listItems;
     }
@@ -153,8 +153,8 @@ class QuicklyBtn extends Component {
               onPress={()=>this.props.goToRepair(
                                         this.props.repair.repairTypeId,
                                         this.props.repair.repairMatterId,
-                                        this.props.repair.repairParentCn,
-                                        this.props.repair.repairChildCn
+                                        this.props.repairParentCn,
+                                        this.props.repairChildCn
                                         // this.state.repairParentCn,
                                         // this.state.repairChildCn,
                                         // this.state.matterName

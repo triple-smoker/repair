@@ -196,17 +196,17 @@ export default class HomePage extends Component {
     }
 
     //报修导航
-    newRepair(repairTypeId,repairMatterId){
+    newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn){
         this.setState({typeVisible: !this.state.typeVisible});
         const { navigate } = this.props.navigation;
         navigate('Repair',{
             repairTypeId:repairTypeId,
             repairMatterId:repairMatterId,
+            repairParentCn:repairParentCn,
+            repairChildCn:repairChildCn,
             callback: (
                 () => {
-                    // setTimeout(function(){
-                    //     getRepairList();
-                    // },500)
+
                 })
         })
     }
@@ -312,7 +312,7 @@ export default class HomePage extends Component {
                     <Image source={require('../../../res/login/menu_ljdc.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,marginTop:10,}}/>
                 </TouchableOpacity>
             </View>
-            <OrderType goToRepair={(repairTypeId,repairMatterId)=>this.newRepair(repairTypeId,repairMatterId)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
+            <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
         </View>
 
         <View style={{backgroundColor:'#f6f6f6',height:10,width:Dimens.screen_width,marginTop:10,}}/>

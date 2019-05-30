@@ -352,12 +352,14 @@ class AllOrder extends BaseComponent {
     }
 
 //报修导航
-    newRepair(repairTypeId,repairMatterId,getRepairList){
+    newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn,getRepairList){
         this.setState({typeVisible: !this.state.typeVisible});
         const { navigate } = this.props.navigation;
         navigate('Repair',{
             repairTypeId:repairTypeId,
             repairMatterId:repairMatterId,
+            repairParentCn:repairParentCn,
+            repairChildCn:repairChildCn,
             callback: (
                 () => {
                     setTimeout(function(){
@@ -424,7 +426,7 @@ class AllOrder extends BaseComponent {
                 </View>
                 }
                 <Text style={{width:ScreenWidth,textAlign:'center',color:'#a7a7a7',margin:7,fontSize:12}}>{'-------共'+cachedResults.total+'条报修单-------'}</Text>
-                <OrderType goToRepair={(repairTypeId,repairMatterId)=>this.newRepair(repairTypeId,repairMatterId,()=>this.getRepairList())} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
+                <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn,()=>this.getRepairList())} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
                 <RefreshListView
                     style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44*2-49}}
                     onEndReachedThreshold={10}
