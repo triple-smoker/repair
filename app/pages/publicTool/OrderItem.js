@@ -16,6 +16,8 @@ import {  Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container,
 import Swiper from 'react-native-swiper';
 import Axios from '../../util/Axios';
 import Sound from "react-native-sound";
+import Video from 'react-native-video';
+import VideoPlayer from '../../components/VideoPlayer';
 
 
 let ScreenWidth = Dimensions.get('window').width;
@@ -41,31 +43,47 @@ class Adds extends Component {//报修单共用组件
     _showText(){
         this.setState({showText: !this.state.showText});
     }
-    getLength(imagesRequest){
+    getLength(imagesRequest,videosRequest){
+        var length = 0;
         if(imagesRequest!=null){
-        return imagesRequest.length;
-        }else{
-        return 0;
+            length += imagesRequest.length;
         }
+        if(videosRequest != null ){
+            length += videosRequest.length;
+        }
+        return length;
     }
-    getFirstImage(imagesRequest){
-        if(imagesRequest!=null){
-        var path = '';
-        var i=1;
+    getFirstImage(imagesRequest,videosRequest){
+        if(imagesRequest != null){
+            var path = '';
+            var i=1;
             imagesRequest.forEach(function(imageItem){
-               if(i===1&&imageItem.filePath!=''){
-               path = imageItem.filePath;
-               i=i+1;
-               }
+                if(i===1&&imageItem.filePath!=''){
+                    path = imageItem.filePath;
+                    i=i+1;
+                }
             });
             if(i===1){
                 return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>;
             }else{
                 return <Image resizeMode='stretch' style={{width: 70, height: 70}} source={{uri:path}} />;
             }
-
+        }else if(videosRequest != null){
+            var path = '';
+            var i=1;
+            videosRequest.forEach(function(videoItem){
+                if(i===1 && videoItem.filePath != ''){
+                    path = videoItem.filePath;
+                    i = i+1;
+                }
+            });
+            if(i === 1){
+                return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>;
+            }else{
+                return <PreVideo uri={path}/> 
+            }
         }else{
-        return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>
+            return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>
         }
     }
     _showYy(fileMap){
@@ -115,9 +133,9 @@ class Adds extends Component {//报修单共用组件
                     <Row>
                         {this.props.type!=0 &&
                         <Col style={{width:70,marginRight:17}}>
-                            {this.getFirstImage(this.props.record.fileMap.imagesRequest)}
+                            {this.getFirstImage(this.props.record.fileMap.imagesRequest,this.props.record.fileMap.videosRequest)}
                             <Button transparent style={{position: 'absolute',width:70,height:70}} onPress= {()=>this._setModalVisible()}/>
-                            <View style={{position: 'absolute',left:40,top:5,backgroundColor:'#545658',height:20,paddingLeft:8,width:25,borderRadius:10}}><Text style={{color:'#fff'}}>{this.getLength(this.props.record.fileMap.imagesRequest)}</Text></View>
+                            <View style={{position: 'absolute',left:40,top:5,backgroundColor:'#545658',height:20,paddingLeft:8,width:25,borderRadius:10}}><Text style={{color:'#fff'}}>{this.getLength(this.props.record.fileMap.imagesRequest,this.props.record.fileMap.videosRequest)}</Text></View>
                                 {this.props.record.status==='6' &&
                                   <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>暂停中</Text>
                                 }
@@ -194,7 +212,7 @@ class Adds extends Component {//报修单共用组件
                             visible={this.state.modalVisible}
                             onRequestClose={() =>this._setModalVisible()}
                         >
-                        <PictureMd Closer = {() => this._setModalVisible()} imagesRequest={this.props.record.fileMap.imagesRequest} />
+                        <PictureMd Closer = {() => this._setModalVisible()} setModalVisible={()=>this._setModalVisible()} imagesRequest={this.props.record.fileMap.imagesRequest} videosRequest={this.props.record.fileMap.videosRequest}/>
                         </Modal>
                         <Modal
                             animationType={"slide"}
@@ -215,16 +233,61 @@ class Adds extends Component {//报修单共用组件
 
 class PictureMd extends Component {
 
-    getImageItem(imagesRequest){
+    constructor(props) {
+        super(props);
+        this.state = {
+          videoItemRefMap: new Map() //存储子组件模板节点
+        }
+      }
+
+    onRef = (ref) => {
+        this.videoItemRef = ref
+        this.appentRefMap(ref.props.num,ref);
+      }
+    
+      appentRefMap(index,ref){
+        let map = this.state.videoItemRefMap;
+        map.set(index,ref);
+        this.setState({
+            videoItemRefMap: map
+        });
+      }
+    
+      setVideoCurrentTime = (index) => {
+        let videoItemRef = this.state.videoItemRefMap.get(index + 1);
+        if(videoItemRef){
+            videoItemRef.setVideoCurrentTime();
+        }
+      }
+
+    getImageItem(imagesRequest,videosRequest,setModalVisible){
         var i = 0;
-        var listItems;
-        if(imagesRequest!=null){
-            i = imagesRequest.length;
-            listItems =(  imagesRequest === null ? null : imagesRequest.map((imageItem, index) =>
-                <ImageItem num={index+1} sum={i}  imageurl={imageItem.filePath} key={index}/>
-            ))
-        }else{
+        var j = 0;
+        var listItems = "";
+
+        if((imagesRequest == null || imagesRequest.length == 0) && (videosRequest == null || videosRequest.length == 0)){
             listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
+            return listItems;
+        }
+
+        if(imagesRequest != null){
+            j = imagesRequest.length;
+            i += imagesRequest.length;
+        }
+        if(videosRequest != null){
+            i += videosRequest.length;
+        }
+
+        if(imagesRequest!=null && imagesRequest.length > 0){
+            listItems =(  imagesRequest === null ? null : imagesRequest.map((imageItem, index) =>
+                <ImageItem  setModalVisible={setModalVisible} num={index+1} sum={i}  imageurl={imageItem.filePath} key={index}/>
+            ))
+        }
+        if(videosRequest!=null && videosRequest.length > 0){
+             let videoItems =(  videosRequest === null ? null : videosRequest.map((videoItem, index) =>
+                <VideoItem  onRef={this.onRef} setModalVisible={setModalVisible} num={index+1+j} sum={i}  imageurl={videoItem.filePath} key={index}/>
+            ))
+            listItems = listItems.concat(videoItems);
         }
         return listItems;
     }
@@ -237,13 +300,13 @@ class PictureMd extends Component {
                          <View style={{width:ScreenWidth,height:ScreenHeight,alignItems:'center',backgroundColor:'rgba(0, 0, 0, 0.5)',justifyContent:'center'}}>
                          <Swiper
                          style={{width:ScreenWidth,height:ScreenHeight}}
-                           onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
+                           onMomentumScrollEnd={(e, state, context) => (console.log('index:', state.index),this.setVideoCurrentTime(state.index))}
                            dot={<View style={{backgroundColor: 'rgba(0,0,0,0.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                            activeDot={<View style={{backgroundColor: '#000', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                            paginationStyle={{
                              bottom: -23, left: null, right: 10
                            }} loop>
-                           {this.getImageItem(this.props.imagesRequest)}
+                           {this.getImageItem(this.props.imagesRequest,this.props.videosRequest,this.props.setModalVisible)}
                          </Swiper>
                          </View>
                     <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={this.props.Closer}>
@@ -261,6 +324,53 @@ class ImageItem extends Component{
             </View>
         )
     }
+}
+
+class VideoItem extends Component{
+
+        //获取VideoPlayer组件模板元素
+    onRef = (ref) => {
+        this.videoPlayerRef = ref;
+    }
+
+    componentDidMount(){
+        this.props.onRef(this);
+    }
+
+    setVideoCurrentTime = (e) =>{
+        this.videoPlayerRef.setVideoCurrentTime(0);
+    }
+
+    render(){
+        return (
+            <View style={stylesImage.slide}>
+                <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.props.imageurl}></VideoPlayer> 
+                <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
+            </View>
+        )
+    }
+}
+
+const PreVideo  = (video) => {
+    return (
+        <Video source={{uri: video.uri}}
+               style={{position: 'absolute',
+                   top: 0,
+                   left: 0,
+                   bottom: 0,
+                   right: 0,
+                   width: 70, 
+                   height: 70
+               }}
+               rate={1}
+               paused={true}
+               volume={1}
+               muted={false}
+               resizeMode={'cover'}
+               onError={e => console.log(e)}
+               onLoad={load => console.log(load)}
+               repeat={true} />
+    );
 }
 
 class CancelMd extends Component {
