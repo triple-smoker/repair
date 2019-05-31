@@ -61,7 +61,7 @@ export default class ArrangeWork extends BaseComponent {
   componentDidMount() {
       this.loadDetail();
       this.getDeptListByType();
-      
+
   }
 
   getDeptListByType() {
@@ -70,7 +70,7 @@ export default class ArrangeWork extends BaseComponent {
         if (result && result.code === 200) {
             that.setState({deptList:result.data});
         } else {
-          
+
         }
     });
   }
@@ -88,7 +88,7 @@ export default class ArrangeWork extends BaseComponent {
             that.state.dataMap.set(that.state.selectDeptData.deptId, result.data);
             that.setState({userList:result.data});
         } else {
-          
+
         }
     });
   }
@@ -100,7 +100,7 @@ export default class ArrangeWork extends BaseComponent {
         if (result && result.code === 200) {
             that.setState({detaiData:result.data});
         } else {
-          
+
         }
     });
   }
@@ -120,11 +120,11 @@ export default class ArrangeWork extends BaseComponent {
         toastShort('维修信息为空');
         return;
     }
-     
+
      let params = {
-        repairId: ''+this.state.repairId, 
-        repairUserId: ''+this.state.selectUserData.userId, 
-        repairDeptId: ''+this.state.selectDeptData.deptId, 
+        repairId: ''+this.state.repairId,
+        repairUserId: ''+this.state.selectUserData.userId,
+        repairDeptId: ''+this.state.selectDeptData.deptId,
         userId:''+global.uinfo.userId,
         remark:''
         };
@@ -195,9 +195,9 @@ export default class ArrangeWork extends BaseComponent {
             <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组</Text>
             <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectDeptName}</Text>
             <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                                <Image source={require('../../../res/login/ic_arrow.png')} 
+                                <Image source={require('../../../res/login/ic_arrow.png')}
                                        style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
-                                
+
             </View>
         </View>
         </TouchableOpacity>
@@ -207,9 +207,9 @@ export default class ArrangeWork extends BaseComponent {
             <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>人员</Text>
             <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectUserName}</Text>
             <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                                <Image source={require('../../../res/login/ic_arrow.png')} 
+                                <Image source={require('../../../res/login/ic_arrow.png')}
                                        style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
-                                
+
             </View>
         </View>
         </TouchableOpacity>
@@ -220,7 +220,7 @@ export default class ArrangeWork extends BaseComponent {
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
                 <View style={{marginLeft:10, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:60,}} >
                     <Image source={{uri:uriImg}} style={{width:60,height:60,marginLeft:0}}/>
-                   
+
                 </View>
                 <View style={{marginLeft:5, flex:1, }} >
                     <View style={{marginLeft:0, marginTop:0, flexDirection:'row',}} >
@@ -277,7 +277,7 @@ export default class ArrangeWork extends BaseComponent {
                 </View>
             </View>
         </View>
-    </Modal> 
+    </Modal>
       </View>
     )
   }
@@ -312,13 +312,13 @@ export default class ArrangeWork extends BaseComponent {
   }
 
   submit() {
-        
-        if (this.state.selectDeptState) { 
+
+        if (this.state.selectDeptState) {
             if (this.state.selectDeptPos != -1) {
                 this.setState({modalVisible:false, selectDeptName:this.state.selectDeptData.deptName,selectUserPos:-1,selectUserData:null,selectUserName:null});
                 this.getUserListByDeptId();
             }
-            
+
         } else {
             if (this.state.selectUserPos != -1) {
                 this.setState({modalVisible:false, selectUserName:this.state.selectUserData.userName});
@@ -332,21 +332,21 @@ export default class ArrangeWork extends BaseComponent {
     );
   }
 
-  
+
 
   onPressItem(data) {
     var pos = 0;
 
     if (this.state.selectDeptState) {
       var items = this.state.deptList;
-      
+
       for (var i = 0; i < items.length; i++) {
         var item = items[i];
         if (item.deptId === data.deptId) {
             pos = i;
-        } 
+        }
     }
-    
+
       this.setState({dataSource:this.state.dataSource.cloneWithRows(items), selectDeptPos:pos, selectDeptData:data});
     } else {
       var items = this.state.userList;
@@ -356,10 +356,10 @@ export default class ArrangeWork extends BaseComponent {
             pos = i;
         }
        }
-    
+
        this.setState({dataSource:this.state.dataSource.cloneWithRows(items), selectUserPos:pos, selectUserData:data});
     }
-    
+
   }
 
 
@@ -384,7 +384,7 @@ export default class ArrangeWork extends BaseComponent {
             </TouchableOpacity>
         );
     }
-    
+
   }
 
 }
@@ -405,8 +405,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 15,
         borderBottomLeftRadius: 15,
         borderTopLeftRadius: 15,
-        borderTopRightRadius:15, 
-        backgroundColor: 'white',
+        borderTopRightRadius:15,
     },
     container: {
         flex: 1,
@@ -415,7 +414,7 @@ const styles = StyleSheet.create({
 
     welcome:{
         color:'#123456',
-       
+
     },
     line:{
         backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-40),marginTop:0,marginLeft:20,

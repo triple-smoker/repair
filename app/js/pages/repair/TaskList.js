@@ -75,7 +75,7 @@ export default class TaskList extends BaseComponent {
       this._fetchData(0);
       this.loadRep();
       //DeviceEventEmitter.emit('ACTION_BASE_', "_onLogin_", null);
-     
+
       //DeviceEventEmitter.emit('Event_Home', 'Event_Home');
   }
 
@@ -87,7 +87,7 @@ export default class TaskList extends BaseComponent {
             return;
         }
 
-      var causeIds = []; 
+      var causeIds = [];
       var items = this.state.repList;
       // for (var i = 0; i < items.length; i++) {
       //   var item = items[i];
@@ -95,7 +95,7 @@ export default class TaskList extends BaseComponent {
       //       causeIds.push(item.causeId);
       //   }
       // }
-        
+
         causeIds.push(items[this.state.selectIndex].causeId);
         this.setState({modalVisible:false});
         // var params = new Map();
@@ -121,7 +121,7 @@ export default class TaskList extends BaseComponent {
         if (result && result.code === 200) {
             this.setState({repList: result.data});
         } else {
-          
+
         }
     });
   }
@@ -163,18 +163,18 @@ export default class TaskList extends BaseComponent {
             // 数组拼接
             if (result.data&&result.data.records) {//&& result.data.records.length > 0
                 items = items.concat(result.data.records);
-                cachedResults.total = result.data.total; 
-                cachedResults.pages = result.data.pages; 
+                cachedResults.total = result.data.total;
+                cachedResults.pages = result.data.pages;
                 cachedResults.nextPage = result.data.current+1;
             } else {
 
             }
-            
+
           } else { // 刷新操作
             if (result.data&&result.data.records) {
                 items = result.data.records;
-                cachedResults.total = result.data.total; 
-                cachedResults.pages = result.data.pages; 
+                cachedResults.total = result.data.total;
+                cachedResults.pages = result.data.pages;
                 cachedResults.nextPage = result.data.current+1;
             } else {
 
@@ -182,7 +182,7 @@ export default class TaskList extends BaseComponent {
           }
 
           cachedResults.items = items; // 视频列表数据
-          
+
           //this.setState({dataSource:this.state.dataSource.cloneWithRows(result.data.records), dataList:result.data.records});
           if (page !== 0) { // 加载更多操作
               that.setState({
@@ -274,7 +274,7 @@ export default class TaskList extends BaseComponent {
             toastShort('恢复成功');
             that._fetchData(0);
         } else {
-          
+
         }
     });
   }
@@ -307,7 +307,7 @@ export default class TaskList extends BaseComponent {
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5,backgroundColor:'#f0f0f0'}}>{data.statusDesc}</Text>
 
         }
-        
+
         buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}><Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
                     <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
@@ -401,7 +401,7 @@ export default class TaskList extends BaseComponent {
                 <View style={{marginLeft:15, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:70,}} >
                     <Image source={require('../../../res/repair/user_wx.png')} style={{width:70,height:70,marginLeft:0}}/>
                     {statusDesc}
-                  
+
                 </View>
                 <View style={{marginLeft:15, flex:1}} >
                     <View style={{marginLeft:0, marginTop:0, flexDirection:'row',}} >
@@ -423,9 +423,9 @@ export default class TaskList extends BaseComponent {
                     </View>
                 </View>
               </View>
-              
+
               {buttons}
-              
+
               <View style={{height:1, width:Dimens.screen_width, marginTop:10, backgroundColor:'white'}}/>
           </View>
 
@@ -480,10 +480,10 @@ export default class TaskList extends BaseComponent {
             //item.selected = 0;
         }
       }
-    
-    this.setState({selectIndex:index, repList:items, });    
+
+    this.setState({selectIndex:index, repList:items, });
   }
-    
+
   renderRepItem(data,i) {
       return (<Text onPress={()=>{this.onPressRepItem(data, i)}} style={{width:(Dimens.screen_width-130)/3,flexWrap:'nowrap', marginLeft:10,
               color:(this.state.selectIndex===i?'#369CED':'#333333'),fontSize:11, height:35, marginTop:10,
@@ -564,14 +564,14 @@ export default class TaskList extends BaseComponent {
 
       <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
       <TouchableOpacity onPress={()=>this.naviGoBack(this.props.navigation)}>
-      <Image source={require('../../../res/login/navbar_ico_back.png')} 
+      <Image source={require('../../../res/login/navbar_ico_back.png')}
       style={{width:9,height:20,marginLeft:15}}/>
       </TouchableOpacity>
       <TouchableOpacity onPress={()=>this.search()} style={{flex:1,height:30, marginLeft:10, marginRight:0,}}>
-      <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:10, 
+      <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:10,
       borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}>
-      
-      <Image source={require('../../../res/repair/ico_seh.png')} 
+
+      <Image source={require('../../../res/repair/ico_seh.png')}
       style={{width:16,height:16,marginLeft:10}}/>
       <Text style={{color:'#999',fontSize:14,marginLeft:5, flex:1}}>请输入单号或内容</Text>
 
@@ -599,11 +599,11 @@ export default class TaskList extends BaseComponent {
           fetchData={this._fetchData.bind(this)}
           // 缓存列表数据
           cachedResults={cachedResults}
-          ref={component => this._listView = component} 
+          ref={component => this._listView = component}
       />
 
       <TouchableOpacity onPress={()=>this.gotoTop()} style={styles.buttonTop}>
-        <Image style={{width:35,height:35,}} source={require('../../../res/repair/ic_backtop.png')} /> 
+        <Image style={{width:35,height:35,}} source={require('../../../res/repair/ic_backtop.png')} />
       </TouchableOpacity>
       {tabBar}
 
@@ -625,7 +625,7 @@ export default class TaskList extends BaseComponent {
                   {repDatas}
 
                 </View>
-                <TextInput 
+                <TextInput
                   style={styles.input_style}
                   placeholder="原因描述…"
                   placeholderTextColor="#aaaaaa"
@@ -643,7 +643,7 @@ export default class TaskList extends BaseComponent {
                 </View>
             </View>
         </View>
-    </Modal> 
+    </Modal>
       </View>
       )
     }
@@ -659,17 +659,17 @@ export default class TaskList extends BaseComponent {
     }
 
 
-    onPressTabItem(index){   
+    onPressTabItem(index){
       cachedResults.items = [];
       cachedResults.tabIndex = index;
       cachedResults.total = 0;
       cachedResults.pages = 0;
       cachedResults.nextPage = 1;
       this.setState({tabIndex:index, dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)});
-      this._fetchData(0); 
+      this._fetchData(0);
     }
 
-    onPressTimeItem(index){    
+    onPressTimeItem(index){
       this.setState({timeIndex:index});
     }
     gotoTop() {
@@ -698,11 +698,10 @@ export default class TaskList extends BaseComponent {
         marginLeft:40,
         width:Dimens.screen_width-80,
         height:390,
-        backgroundColor: 'white',
         borderBottomRightRadius: 15,
         borderBottomLeftRadius: 15,
         borderTopLeftRadius: 15,
-        borderTopRightRadius:15, 
+        borderTopRightRadius:15,
         backgroundColor: 'white',
     },
     container: {

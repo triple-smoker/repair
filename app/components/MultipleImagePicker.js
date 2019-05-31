@@ -173,7 +173,8 @@ class MultipleImagePicker extends BaseComponent {
      * @returns {*}
      */
     uploadImages(){
-        this.props.imageCallback(this.state.images);
+        DeviceEventEmitter.emit('Add_Photo', this.state.images);
+        // this.props.imageCallback(this.state.images);
     }
     /**
      * 传递图片index
