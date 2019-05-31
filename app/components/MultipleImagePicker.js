@@ -52,19 +52,6 @@ class MultipleImagePicker extends BaseComponent {
         };
 
         ImagePickers.launchCamera(options, (response) => {
-
-            console.log('video response : ' + response)
-
-            response.type = 'video';
-
-            let image = {
-                path : 'file://' + response.path,
-                type : 'video',
-            }
-            console.log('video : ' + image)
-            let images = [];
-            images.push(image);
-            this.appendImage(images);
             if (response.didCancel) {
                 console.log('User cancelled video picker');
             } else if (response.error) {
@@ -72,10 +59,18 @@ class MultipleImagePicker extends BaseComponent {
             } else if (response.customButton) {
                 console.log('User tapped custom button: ', response.customButton);
             } else {
-                this.setState({
-                    videoSource: response.uri,
-                });
+                console.log('video response : ' + response)
+                let video = {
+                    path : 'file://' + response.path,
+                    type : 'video',
+                }
+                console.log('video : ' + video)
+                let videos = [];
+                videos.push(video);
+                this.appendImage(videos);
+                this.setState({ visibleModal: false })
             }
+
         });
     }
 
@@ -91,23 +86,6 @@ class MultipleImagePicker extends BaseComponent {
      * @param mediaType
      */
     pickSingleWithCamera(){
-
-        // ImagePicker.openCamera({
-        // }).then(image => {
-        //     console.log('received image', image);
-        //     let im = {
-        //         path : image.path,
-        //         type : 'image',
-        //     }
-
-        //     let images = [];
-        //     images.push(im);
-        //     this.appendImage(images);
-        //     this.setState({ visibleModal: false })
-        // }).catch(e => alert(e));
-        // this.uploadImages();
-        console.log(this.props)
-
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
                     navigation.navigate('TakePicture',{
@@ -122,12 +100,12 @@ class MultipleImagePicker extends BaseComponent {
      * @param images
      */
     appendImage(images){
-        console.log(images);
+        console.log('添加的文件 ： '+images);
         let imagesList = this.state.images;
         let num = imagesList.length ;
+
         for(let i in images){
-            let index = parseInt(num) +parseInt(i)
-            console.log(index);
+            let index = parseInt(num) + parseInt(i)
             if( index <6){
                 let image = images[i];
                 imagesList.push({index: index, uri: image.path,type: image.type}) ;
@@ -136,9 +114,9 @@ class MultipleImagePicker extends BaseComponent {
         this.setState({
             images: imagesList
         });
-        if(parseInt(num) + images.length >6){
-            Alert.alert("最多添加6张");
-        }
+        // if(parseInt(num) + images.length >6){
+        //     Alert.alert("最多添加6张");
+        // }
         this.uploadImages();
 
     }
@@ -295,7 +273,7 @@ const PreView = (props) => {
             {props.type === 'video' ?
                 <TouchableOpacity  style={styles.imageStyle} onPress={props.largerView}>
                     <Image style={styles.playStyle}  source={require('../image/icon_video_play.png')}/>
-                    <PreVideo style={styles.imageStyle} uri={props.uri}/> 
+                    <PreVideo style={styles.imageStyle} uri={props.uri}/>
                 </TouchableOpacity>
                 :
                 <TouchableOpacity onPress={props.largerView}>
