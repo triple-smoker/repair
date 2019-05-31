@@ -156,13 +156,21 @@ export default class ArrangeWork extends BaseComponent {
     var repairUserName = null;
     var telNo = null;
     if (detaiData) {
+        console.log(detaiData)
         detailAddress = detaiData.detailAddress;
         matterName = detaiData.matterName;
         repairNo = detaiData.repairNo;
         createTime = new Date(detaiData.createTime).format("yyyy-MM-dd hh:mm:ss");
 
-        repairHours = detaiData.repairHours+'小时';
-        repairUserName = detaiData.repairUserName + '   ' + detaiData.telNo;
+        if (detaiData.hours.hoursRequest) {
+            // maio / 60 /60
+            var desc = detaiData.hours.hoursRequest
+            var hours = null;
+            hours  = (desc/3600).toFixed(1)
+            repairHours = hours+'小时';
+        }
+        // repairHours = detaiData.hours.hoursServiceDesc
+        repairUserName = detaiData.repairUserName ? detaiData.repairUserName : '略' + '   ' + detaiData.telNo;
         telNo = detaiData.telNo;
     }
 

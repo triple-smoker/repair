@@ -599,14 +599,6 @@ onPlayVoice(filePath) {
      console.log(data)
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            // navigator.push({
-            //     component: ArrangeWork,
-            //     name: 'ArrangeWork',
-            //     params:{
-            //         theme:this.theme,
-            //         theme:this.theme,
-            //     }
-            // });
             navigation.navigate('ArrangeWork',{
                       theme:this.theme,
                       repairId:data.repairId,
@@ -822,6 +814,9 @@ onPlayVoice(filePath) {
 
 
     pauseOrder(data) {
+
+      // this.gotoCommenced(data)
+      // return
         this.setState({modalVisible:true,repairId:data.repairId});
     }
 

@@ -71,13 +71,6 @@ loadDetail() {
   addOption() {
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                // navigator.push({
-                //     component: AddOption,
-                //     name: 'AddOption',
-                //     params:{
-                //         theme:this.theme
-                //     }
-                // });
                 navigation.navigate('AddOption',{theme:this.theme})
         });
   }
@@ -93,13 +86,14 @@ loadDetail() {
 
     // var processList = this.state.detaiData.processList;
     var processList = this.state.detaiData.itemPersonList
-    for (var i = 0; i < processList.length; i++) {
-        let item = processList[i];
-        itemPersonList.push({assistantId:item.assistantId , 
-                            repairItemId:item.repairItemId, 
-                            itemPercentage:item.itemPercentage, 
-                            personType:item.personType});
-    }
+    // for (var i = 0; i < processList.length; i++) {
+    //     let item = processList[i];
+    //     itemPersonList.push({assistantId:item.assistantId , 
+    //                         repairItemId:item.repairItemId, 
+    //                         itemPercentage:item.itemPercentage, 
+    //                         personType:item.personType});
+    //                         //因添加维修事项添加维修人已提交 所以这里不提交itempersonlist
+    // }
 
     var materialList = this.state.detaiData.materialList;
     for (var i = 0; i < materialList.length; i++) {
