@@ -91,11 +91,14 @@ loadDetail() {
     var imagesCompleted = [];
     var imagesSignature = [];
 
-    var processList = this.state.detaiData.processList;
+    // var processList = this.state.detaiData.processList;
+    var processList = this.state.detaiData.itemPersonList
     for (var i = 0; i < processList.length; i++) {
-        var item = processList[i];
-        let person = {assistantId: '', repairItemId:'', itemPercentage:'', personType:'', };
-        itemPersonList.push(person);
+        let item = processList[i];
+        itemPersonList.push({assistantId:item.assistantId , 
+                            repairItemId:item.repairItemId, 
+                            itemPercentage:item.itemPercentage, 
+                            personType:item.personType});
     }
 
     var materialList = this.state.detaiData.materialList;
