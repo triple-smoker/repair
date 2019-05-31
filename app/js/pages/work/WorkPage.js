@@ -416,30 +416,12 @@ export default class WorkPage extends BaseComponent {
     }
   //  图片预览框
     _setModalPictureVisible(data) {
-        var hasImageOrVideo = false;
+        if((data.fileMap.imagesRequest && data.fileMap.imagesRequest.length > 0) || (data.fileMap.videosRequest && data.fileMap.videosRequest.length > 0 )){
+            this.setState({modalPictureVisible: !this.state.modalPictureVisible,imagesRequest:data.fileMap.imagesRequest,videosRequest:data.fileMap.videosRequest})
+        }else{
+            this.setState({modalPictureVisible: !this.state.modalPictureVisible})
+        }
 
-        if(data == undefined){
-          this.setState({modalPictureVisible: !this.state.modalPictureVisible})
-          return;
-        }
-
-        if(data.fileMap.imagesRequest && data.fileMap.imagesRequest.length > 0){
-           hasImageOrVideo = true;
-           this.setState({imagesRequest:data.fileMap.imagesRequest})
-        }else{
-           this.setState({imagesRequest:[]})
-        }
-        if(data.fileMap.videosRequest && data.fileMap.videosRequest.length > 0){
-           hasImageOrVideo = true;
-           this.setState({videosRequest:data.fileMap.videosRequest})
-        }else{
-           this.setState({videosRequest:[]})
-        }
-        if(hasImageOrVideo){
-          this.setState({modalPictureVisible: !this.state.modalPictureVisible})
-        }else{
-          this.setState({modalPictureVisible: !this.state.modalPictureVisible})
-        }
     }
 
   renderItem(data) {
@@ -773,7 +755,7 @@ onPlayVoice(filePath) {
     if(this.state.videosRequest && this.state.videosRequest.length > 0){
       let videoItems =(  this.state.videosRequest === null ? null : this.state.videosRequest.map((videoItem, index) =>
         <View style={stylesImage.slide} key={index}>
-            <VideoPlayer  onRef={this.onRef} num={index+1+j} closeVideoPlayer={()=> {this._setModalPictureVisible()}} uri={videoItem.filePath}></VideoPlayer> 
+            <VideoPlayer  onRef={this.onRef} num={index+1+j} closeVideoPlayer={()=> {this.setState({modalPictureVisible:false})}} uri={videoItem.filePath}></VideoPlayer>
             <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1+j}/{i}</Text></View>
         </View>
       ))
@@ -783,6 +765,7 @@ onPlayVoice(filePath) {
     if((this.state.imagesRequest == null || this.state.imagesRequest.length == 0) && (this.state.videosRequest == null || this.state.videosRequest.length == 0)){
         listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
     }
+
 
 
 

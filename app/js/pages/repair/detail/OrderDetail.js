@@ -23,6 +23,8 @@ import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
 import Sound from "react-native-sound";
 import Swiper from 'react-native-swiper';
+import VideoPlayer from '../../../../components/VideoPlayer';
+import Video from 'react-native-video';
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
@@ -39,7 +41,8 @@ export default class OrderDetail extends BaseComponent {
             selectIndex:-1,
             modalVisible:false,
             modalPictureVisible:false,
-            status:null
+            status:null,
+            videoItemRefMap: new Map(), //存储子组件模板节点
         }
     }
 
@@ -224,6 +227,29 @@ export default class OrderDetail extends BaseComponent {
         this.setState({modalPictureVisible: !this.state.modalPictureVisible})
     }
 
+    //获取VideoPlayer组件模板元素
+    onRef = (ref) => {
+        this.videoItemRef = ref
+        this.appentRefMap(ref.props.num,ref);
+        console.info(this.state.videoItemRefMap)
+    }
+
+    appentRefMap(index,ref){
+        let map = this.state.videoItemRefMap;
+        map.set(index,ref);
+        this.setState({
+            videoItemRefMap: map
+        });
+    }
+
+    setVideoCurrentTime = (index) => {
+
+        let videoItemRef = this.state.videoItemRefMap.get(index + 1);
+        if(videoItemRef){
+            // videoItemRef.setVideoCurrentTime()
+        }
+    }
+
     render() {
         var detaiData = this.state.detaiData;
         var detailAddress = null;
@@ -239,7 +265,8 @@ export default class OrderDetail extends BaseComponent {
         var uriImg = null;
         var voiceView = null;
         var i = 0;
-        var listItems = "";
+        var j = 0;
+        var listItems = [];
 
         var materialList = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无内容</Text>;
         var processList = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无内容</Text>;
@@ -261,15 +288,36 @@ export default class OrderDetail extends BaseComponent {
             telNo = detaiData.telNo;
             parentTypeName = detaiData.parentTypeName;
 
+
             if(detaiData.fileMap.imagesRequest && detaiData.fileMap.imagesRequest.length > 0){
-                i = detaiData.fileMap.imagesRequest.length;
+                j = detaiData.fileMap.imagesRequest.length;
+                i += detaiData.fileMap.imagesRequest.length;
+            }
+            if(detaiData.fileMap.videosRequest && detaiData.fileMap.videosRequest.length > 0){
+                i += detaiData.fileMap.videosRequest.length;
+            }
+
+
+
+            if(detaiData.fileMap.imagesRequest && detaiData.fileMap.imagesRequest.length > 0){
                 listItems =(  detaiData.fileMap.imagesRequest === null ? null : detaiData.fileMap.imagesRequest.map((imageItem, index) =>
                     <View style={stylesImage.slide} key={index}>
                         <Image resizeMode='contain' style={stylesImage.image} source={{uri:imageItem.filePath}} />
                         <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1}/{i}</Text></View>
                     </View>
                 ))
-            }else{
+            }
+
+            if(detaiData.fileMap.videosRequest && detaiData.fileMap.videosRequest.length > 0){
+                let videoItems =(  detaiData.fileMap.videosRequest === null ? null : detaiData.fileMap.videosRequest.map((videoItem, index) =>
+                    <View style={stylesImage.slide} key={index}>
+                        <VideoPlayer  onRef={this.onRef} num={index+1+j} closeVideoPlayer={()=> {this._setModalPictureVisible()}} uri={videoItem.filePath}></VideoPlayer>
+                        <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1+j}/{i}</Text></View>
+                    </View>
+                ))
+                listItems = listItems.concat(videoItems);
+            }
+            if((detaiData.fileMap.imagesRequest == null || detaiData.fileMap.imagesRequest.length == 0) && (detaiData.fileMap.videosRequest == null || detaiData.fileMap.videosRequest.length == 0)){
                 listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
             }
 
@@ -334,7 +382,27 @@ export default class OrderDetail extends BaseComponent {
             if (detaiData.fileMap) {
                 if (detaiData.fileMap.imagesRequest && detaiData.fileMap.imagesRequest.length > 0) {
                     if(detaiData.fileMap.imagesRequest[0].filePath!=null) {
-                        uriImg = detaiData.fileMap.imagesRequest[0].filePath;
+                        uriImg = <Image source={{uri:detaiData.fileMap.imagesRequest[0].filePath}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
+                    }
+                }else if(detaiData.fileMap.videosRequest && detaiData.fileMap.videosRequest.length > 0){
+                    if(detaiData.fileMap.videosRequest[0].filePath!=null){
+                        uriImg = <Video source={{uri: detaiData.fileMap.videosRequest[0].filePath}}
+                                        style={{
+                                            top: 0,
+                                            left: 0,
+                                            bottom: 0,
+                                            right: 0,
+                                            width: 70,
+                                            height: 70
+                                        }}
+                                        rate={1}
+                                        paused={true}
+                                        volume={1}
+                                        muted={false}
+                                        resizeMode={'cover'}
+                                        onError={e => console.log(e)}
+                                        onLoad={load => console.log(load)}
+                                        repeat={true} />
                     }
                 }
 
@@ -379,7 +447,7 @@ export default class OrderDetail extends BaseComponent {
                         <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',}} >
                             <TouchableOpacity onPress={()=>{this._setModalPictureVisible()}} >
                                 <View style={{marginLeft:15, textAlignVertical:'center', alignItems:'center',width:70,marginTop:4}} >
-                                    <Image source={{uri:uriImg}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
+                                    {uriImg}
                                 </View>
                             </TouchableOpacity>
                             <View style={{marginLeft:10, flex:1}} >
@@ -497,7 +565,7 @@ export default class OrderDetail extends BaseComponent {
                         <View style={{width:ScreenWidth,height:ScreenHeight,alignItems:'center',backgroundColor:'rgba(0, 0, 0, 0.5)',justifyContent:'center'}}>
                             <Swiper
                                 style={{width:ScreenWidth,height:ScreenHeight}}
-                                onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
+                                onMomentumScrollEnd={(e, state, context) => (console.log('index:', state.index),this.setVideoCurrentTime(state.index))}
                                 dot={<View style={{backgroundColor: 'rgba(0,0,0,0.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                                 activeDot={<View style={{backgroundColor: '#000', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                                 paginationStyle={{
