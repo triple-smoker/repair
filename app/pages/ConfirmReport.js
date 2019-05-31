@@ -233,6 +233,7 @@ class ConfirmReport extends Component {
             ownerName: this.state.report.reporter,
             imagesRequest : this.state.imagesRequest,
             voicesRequest : this.state.voicesRequest,
+            videosRequest : this.state.videosRequest,
         };
 
         console.log(repRepairInfo)
