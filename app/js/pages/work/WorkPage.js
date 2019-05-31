@@ -36,6 +36,7 @@ import SearchOrder from './SearchOrder'
 import Sound from 'react-native-sound';
 import Axios from "../../../util/Axios";
 import Swiper from 'react-native-swiper';
+import VideoPlayer from '../../../components/VideoPlayer';
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -59,6 +60,8 @@ export default class WorkPage extends BaseComponent {
       modalVisible:false,
       modalPictureVisible:false,
       imagesRequest:[],
+      videosRequest:[],
+      videoItemRefMap: new Map(), //存储子组件模板节点
       timeIndex: 0,
       tabIndex: 0,
       theme:this.props.theme,
@@ -412,10 +415,31 @@ export default class WorkPage extends BaseComponent {
     }
   //  图片预览框
     _setModalPictureVisible(data) {
+        console.info("qqqqqqqqqqqq")
+        console.info(data)
+        var hasImageOrVideo = false;
+
+        if(data == undefined){
+          this.setState({modalPictureVisible: !this.state.modalPictureVisible})
+          return;
+        }
+
         if(data.fileMap.imagesRequest && data.fileMap.imagesRequest.length > 0){
-           this.setState({modalPictureVisible: !this.state.modalPictureVisible,imagesRequest:data.fileMap.imagesRequest})
+           hasImageOrVideo = true;
+           this.setState({imagesRequest:data.fileMap.imagesRequest})
         }else{
-            this.setState({modalPictureVisible: !this.state.modalPictureVisible,imagesRequest:[]})
+           this.setState({imagesRequest:[]})
+        }
+        if(data.fileMap.videosRequest && data.fileMap.videosRequest.length > 0){
+           hasImageOrVideo = true;
+           this.setState({videosRequest:data.fileMap.videosRequest})
+        }else{
+           this.setState({videosRequest:[]})
+        }
+        if(hasImageOrVideo){
+          this.setState({modalPictureVisible: !this.state.modalPictureVisible})
+        }else{
+          this.setState({modalPictureVisible: !this.state.modalPictureVisible})
         }
     }
 
@@ -423,7 +447,7 @@ export default class WorkPage extends BaseComponent {
     var that = this;
     let buttons = null;
     let statusDesc = null;
-    console.log(data)
+    // console.log(data)
     if (data.status === '1') {
 
         buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
@@ -671,24 +695,76 @@ onPlayVoice(filePath) {
     );
   }
 
+  //获取VideoPlayer组件模板元素
+  onRef = (ref) => {
+    console.info("aaaaaaaaa")
+    console.info(ref)
+      this.videoItemRef = ref
+      this.appentRefMap(ref.props.num,ref);
+    console.info(this.state.videoItemRefMap)      
+  }
+  
+  appentRefMap(index,ref){
+      let map = this.state.videoItemRefMap;
+      map.set(index,ref);
+      this.setState({
+          videoItemRefMap: map
+      });
+  }
+  
+  setVideoCurrentTime = (index) => {
+      let videoItemRef = this.state.videoItemRefMap.get(index + 1);
+      if(videoItemRef){
+          videoItemRef.setVideoCurrentTime();
+      }
+  }
+
   render() {
     var repDatas = null;
     if (this.state.modalVisible) {
         repDatas = this.state.repList.map((item, i)=>this.renderRepItem(item,i));
     }
-      var i = 0;
-      var listItems = "";
-      if(this.state.imagesRequest && this.state.imagesRequest.length > 0){
-          i = this.state.imagesRequest.length;
-          listItems =(  this.state.imagesRequest === null ? null : this.state.imagesRequest.map((imageItem, index) =>
-              <View style={stylesImage.slide} key={index}>
-                  <Image resizeMode='contain' style={stylesImage.image} source={{uri:imageItem.filePath}} />
-                  <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1}/{i}</Text></View>
-              </View>
-          ))
-      }else{
-          listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
-      }
+
+    console.info("sssssssss")
+    console.info(this.state.imagesRequest)
+    console.info(this.state.videosRequest)
+   
+    var i = 0;
+    var j = 0;
+    var listItems = "";
+
+    if(this.state.imagesRequest != null){
+      j = this.state.imagesRequest.length;
+      i += this.state.imagesRequest.length;
+      console.info(j)
+    }
+    if(this.state.videosRequest != null){
+        i += this.state.videosRequest.length;
+    }
+
+
+    if(this.state.imagesRequest && this.state.imagesRequest.length > 0){
+      listItems =(  this.state.imagesRequest === null ? null : this.state.imagesRequest.map((imageItem, index) =>
+          <View style={stylesImage.slide} key={index}>
+              <Image resizeMode='contain' style={stylesImage.image} num={index+1} source={{uri:imageItem.filePath}} />
+              <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1}/{i}</Text></View>
+          </View>
+      ))
+    }
+
+    if(this.state.videosRequest && this.state.videosRequest.length > 0){
+      let videoItems =(  this.state.videosRequest === null ? null : this.state.videosRequest.map((videoItem, index) =>
+        <View style={stylesImage.slide} key={index}>
+            <VideoPlayer  onRef={this.onRef} num={index+1+j} closeVideoPlayer={()=> {this._setModalPictureVisible()}} uri={videoItem.filePath}></VideoPlayer> 
+            <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1+j}/{i}</Text></View>
+        </View>
+      ))
+      listItems = listItems.concat(videoItems);
+    }
+
+    if((this.state.imagesRequest == null || this.state.imagesRequest.length == 0) && (this.state.videosRequest == null || this.state.videosRequest.length == 0)){
+        listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
+    }
 
 
 
@@ -847,7 +923,7 @@ onPlayVoice(filePath) {
                   <View style={{width:ScreenWidth,height:ScreenHeight,alignItems:'center',backgroundColor:'rgba(0, 0, 0, 0.5)',justifyContent:'center'}}>
                       <Swiper
                           style={{width:ScreenWidth,height:ScreenHeight}}
-                          onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
+                          onMomentumScrollEnd={(e, state, context) => (console.log('index:', state.index),this.setVideoCurrentTime(state.index))}
                           dot={<View style={{backgroundColor: 'rgba(0,0,0,0.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                           activeDot={<View style={{backgroundColor: '#000', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                           paginationStyle={{
