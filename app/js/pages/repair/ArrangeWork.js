@@ -170,7 +170,7 @@ export default class ArrangeWork extends BaseComponent {
             repairHours = hours+'小时';
         }
         // repairHours = detaiData.hours.hoursServiceDesc
-        repairUserName = detaiData.repairUserName ? detaiData.repairUserName : '略' + '   ' + detaiData.telNo;
+        repairUserName = detaiData.ownerName ? detaiData.ownerName : '略';
         telNo = detaiData.telNo;
     }
 
@@ -214,7 +214,6 @@ export default class ArrangeWork extends BaseComponent {
         </View>
         </TouchableOpacity>
         <View style={{backgroundColor:'white', marginLeft:15, marginRight:15, marginTop:10, }} >
-              <Text style={{fontSize:13,color:'#333',marginLeft:10,marginTop:8,}}>报修位置：{detailAddress}</Text>
               <Text style={{fontSize:13,color:'#333',marginLeft:10,marginTop:3,}}>报修内容：{matterName}</Text>
               <View style={{height:1, width:Dimens.screen_width-50, marginTop:5, marginLeft:10, marginRight:10, backgroundColor:'#eeeeee'}}/>
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
@@ -234,6 +233,10 @@ export default class ArrangeWork extends BaseComponent {
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>已耗时长：</Text>
                         <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairHours}</Text>
+                    </View>
+                    <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                        <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
+                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{detailAddress}</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>

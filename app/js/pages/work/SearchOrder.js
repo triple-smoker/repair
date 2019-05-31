@@ -414,7 +414,6 @@ export default class SearchOrder extends BaseComponent {
     return (
       <TouchableOpacity onPress={()=>{that.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
-              <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:5,}}>报修位置：{data.repairDeptName}</Text>
               <View style={{flexDirection:'row',}} >
                 <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:3,}}>报修内容：{data.matterName}</Text>
                 {voiceView}
@@ -438,6 +437,10 @@ export default class SearchOrder extends BaseComponent {
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>已耗时长：</Text>
                         <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.hours}小时</Text>
+                    </View>
+                    <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                        <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
+                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.detailAddress}小时</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
