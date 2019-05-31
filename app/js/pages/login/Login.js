@@ -231,6 +231,8 @@ fetchUserInfo() {
             global.uinfo = result.data;
             global.userId=global.uinfo.userId;
             global.deptId=global.uinfo.deptAddresses[0].deptId;
+            var permissions = global.uinfo.permissions.indexOf("biz_repair_mgr")===-1? false:true;
+            global.permissions = permissions;
 
             //console.log('uinfo: data = ' + JSON.stringify(result.data));
             AsyncStorage.setItem('uinfo', JSON.stringify(result.data), function (error) {
