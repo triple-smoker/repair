@@ -37,6 +37,7 @@ import Sound from 'react-native-sound';
 import Axios from "../../../util/Axios";
 import Swiper from 'react-native-swiper';
 import VideoPlayer from '../../../components/VideoPlayer';
+import Video from 'react-native-video';
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -415,8 +416,6 @@ export default class WorkPage extends BaseComponent {
     }
   //  图片预览框
     _setModalPictureVisible(data) {
-        console.info("qqqqqqqqqqqq")
-        console.info(data)
         var hasImageOrVideo = false;
 
         if(data == undefined){
@@ -522,10 +521,28 @@ export default class WorkPage extends BaseComponent {
     if (data.fileMap) {
        if (data.fileMap.imagesRequest && data.fileMap.imagesRequest.length > 0) {
            if(data.fileMap.imagesRequest[0].filePath!=null){
-               uriImg = data.fileMap.imagesRequest[0].filePath;
+               uriImg = <Image source={{uri:data.fileMap.imagesRequest[0].filePath}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
            }
-
-
+       }else if(data.fileMap.videosRequest && data.fileMap.videosRequest.length > 0){
+           if(data.fileMap.videosRequest[0].filePath!=null){
+               uriImg = <Video source={{uri: data.fileMap.videosRequest[0].filePath}}
+                               style={{
+                                   top: 0,
+                                   left: 0,
+                                   bottom: 0,
+                                   right: 0,
+                                   width: 70,
+                                   height: 70
+                               }}
+                               rate={1}
+                               paused={true}
+                               volume={1}
+                               muted={false}
+                               resizeMode={'cover'}
+                               onError={e => console.log(e)}
+                               onLoad={load => console.log(load)}
+                               repeat={true} />
+           }
        }
 
        if (data.fileMap.voicesRequest && data.fileMap.voicesRequest.length > 0) {
@@ -539,6 +556,7 @@ export default class WorkPage extends BaseComponent {
     }
 
 
+
     return (
       <TouchableOpacity onPress={()=>{this.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
@@ -550,7 +568,7 @@ export default class WorkPage extends BaseComponent {
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
                 <TouchableOpacity onPress={()=>{this._setModalPictureVisible(data)}} >
                    <View style={{marginLeft:15, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:70,}} >
-                      <Image source={{uri:uriImg}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
+                       {uriImg}
                       {statusDesc}
 
                    </View>
@@ -713,9 +731,13 @@ onPlayVoice(filePath) {
   }
   
   setVideoCurrentTime = (index) => {
+     console.info("--------")
+     console.info(index)
+      console.info(this.state.videoItemRefMap)
+
       let videoItemRef = this.state.videoItemRefMap.get(index + 1);
       if(videoItemRef){
-          videoItemRef.setVideoCurrentTime();
+          // videoItemRef.setVideoCurrentTime();
       }
   }
 
@@ -725,20 +747,16 @@ onPlayVoice(filePath) {
         repDatas = this.state.repList.map((item, i)=>this.renderRepItem(item,i));
     }
 
-    console.info("sssssssss")
-    console.info(this.state.imagesRequest)
-    console.info(this.state.videosRequest)
-   
+
     var i = 0;
     var j = 0;
-    var listItems = "";
+    var listItems = [];
 
-    if(this.state.imagesRequest != null){
+    if(this.state.imagesRequest != null && this.state.imagesRequest.length > 0){
       j = this.state.imagesRequest.length;
       i += this.state.imagesRequest.length;
-      console.info(j)
     }
-    if(this.state.videosRequest != null){
+    if(this.state.videosRequest != null && this.state.videosRequest.length > 0){
         i += this.state.videosRequest.length;
     }
 

@@ -54,7 +54,7 @@ class Adds extends Component {//报修单共用组件
         return length;
     }
     getFirstImage(imagesRequest,videosRequest){
-        if(imagesRequest != null){
+        if(imagesRequest != null && imagesRequest.length>0){
             var path = '';
             var i=1;
             imagesRequest.forEach(function(imageItem){
@@ -68,7 +68,7 @@ class Adds extends Component {//报修单共用组件
             }else{
                 return <Image resizeMode='stretch' style={{width: 70, height: 70}} source={{uri:path}} />;
             }
-        }else if(videosRequest != null){
+        }else if(videosRequest != null && videosRequest.length>0){
             var path = '';
             var i=1;
             videosRequest.forEach(function(videoItem){
@@ -263,18 +263,18 @@ class PictureMd extends Component {
     getImageItem(imagesRequest,videosRequest,setModalVisible){
         var i = 0;
         var j = 0;
-        var listItems = "";
+        var listItems = [];
 
         if((imagesRequest == null || imagesRequest.length == 0) && (videosRequest == null || videosRequest.length == 0)){
             listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
             return listItems;
         }
 
-        if(imagesRequest != null){
+        if(imagesRequest != null && imagesRequest.length>0){
             j = imagesRequest.length;
             i += imagesRequest.length;
         }
-        if(videosRequest != null){
+        if(videosRequest != null && videosRequest.length>0){
             i += videosRequest.length;
         }
 
@@ -289,6 +289,7 @@ class PictureMd extends Component {
             ))
             listItems = listItems.concat(videoItems);
         }
+
         return listItems;
     }
 
