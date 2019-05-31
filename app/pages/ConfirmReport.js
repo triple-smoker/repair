@@ -149,6 +149,7 @@ class ConfirmReport extends Component {
 
             }
         } catch (err) {
+            clearInterval(this.timer);
             console.log('上传失败')
             console.log(err)
         }
@@ -178,6 +179,7 @@ class ConfirmReport extends Component {
             );
         } catch (err) {
             console.log(err)
+            clearInterval(this.timer);
         }
 
         this.timer = setInterval(
@@ -195,12 +197,16 @@ class ConfirmReport extends Component {
                         this.submit();
                     }
                 }
-
-
-
             } , 1500
         )
 
+        setTimeout(
+            ()=>
+            {
+                toastShort('提交失败，请检查后重试！');
+                clearInterval(this.timer)
+            }, 2*60*1000
+        )
 
     }
 

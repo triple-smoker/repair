@@ -26,7 +26,14 @@ import AllOrderDemo from './test/AllOrderDemo'
 import OrderSearchDemo from './test/OrderSearchDemo'
 // import SQLiteDemo from "./test/SQLiteDemo";
 
+
+
+
 import store from './util/RouterStore.js'
+import {Linking} from "react-native";
+
+
+
 const AppNavigator = createStackNavigator(
     {
         MainPage: MainPage,
@@ -49,6 +56,8 @@ const AppNavigator = createStackNavigator(
         initialRouteName: "MainPage"
     }
 );
+
+
 
 const AppContainer = createAppContainer(AppNavigator);
 
