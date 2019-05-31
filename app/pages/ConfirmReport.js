@@ -99,6 +99,8 @@ class ConfirmReport extends Component {
         console.log(this.state.images)
 
         let imagesRequest = [];
+        let videoRequest = [];
+
         try {
             let images = this.state.images;
 
@@ -120,7 +122,7 @@ class ConfirmReport extends Component {
                         console.log(imageLoad);
 
                         if(image.type==='video'){
-                            let videoRequest = [];
+
                             videoRequest.push(imageLoad)
 
                             this.setState(
