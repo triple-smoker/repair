@@ -5,7 +5,7 @@ import Reporter from '../components/Reporter';
 import Notice from '../components/Notice';
 import SoundRecoding from '../components/SoundRecoding';
 import MyFooter from '../components/MyFooter';
-import {TextInput ,Image, View} from "react-native";
+import {TextInput, Image, View, DeviceEventEmitter} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import Record from '../components/Record'
 import Recorde from "../components/Recorde";
@@ -30,6 +30,9 @@ export default class RepairScreen extends React.Component {
     };
 
     constructor(props){
+
+        console.log(props);
+
         super(props);
         const { navigation } = this.props;
         const repairTypeId = navigation.getParam('repairTypeId', '');
@@ -75,10 +78,15 @@ export default class RepairScreen extends React.Component {
     }
 
     componentDidMount(){
-        console.log(this.props)
-    }   
-    
-    
+        this.eventListener = DeviceEventEmitter.addListener('Add_Photo', (images) => {
+            console.log('componentDidMount Add_Photo : ' + images );
+
+            this.imageCallback(images);
+            // that.uploadFile(param);
+        });
+    }
+
+
     /**
      * 判断字符是否为空的方法
      * */

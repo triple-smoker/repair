@@ -161,24 +161,30 @@ class ConfirmReport extends Component {
         try {
             let voice = this.state.voices;
 
-            let img = this.UpLoad('file://'+voice.filePath, 'voice.mp3');
-            img.then((s)=> {
-                    let voice = {
-                        "filePath":s.fileDownloadUri,
-                        "fileName":s.originalName,
-                        "fileBucket":s.bucketName,
-                        "fileType": s.fileType,
-                        "fileHost":s.fileHost,
-                    }
-                    voicesRequest.push(voice)
-                    this.setState(
-                        {
-                            voicesRequest : voicesRequest,
-                            // voicesNum : this.state.voicesNum + 1
+            if('' === voice.filePath){
+                console.log('无语音文件上传');
+            }else{
+                let img = this.UpLoad('file://'+voice.filePath, 'voice.mp3');
+                img.then((s)=> {
+                        let voice = {
+                            "filePath":s.fileDownloadUri,
+                            "fileName":s.originalName,
+                            "fileBucket":s.bucketName,
+                            "fileType": s.fileType,
+                            "fileHost":s.fileHost,
                         }
-                    )
-                }
-            );
+                        voicesRequest.push(voice)
+                        this.setState(
+                            {
+                                voicesRequest : voicesRequest,
+                                // voicesNum : this.state.voicesNum + 1
+                            }
+                        )
+                    }
+                );
+            }
+
+
         } catch (err) {
             console.log(err)
             clearInterval(this.timer);

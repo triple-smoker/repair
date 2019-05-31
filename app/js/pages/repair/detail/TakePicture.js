@@ -61,14 +61,16 @@ export default class TakePicture extends BaseComponent {
             uri => {
                 console.log("uri "+uri);
                 DeviceEventEmitter.emit('Event_Take_Photo', uri);
-                that.naviGoBack(that.props.navigation);
+                // that.naviGoBack();
+                that.props.navigation.goBack();
             },
             error => console.error("Oops, snapshot failed", error)
         );
     } else {
 
         DeviceEventEmitter.emit('Event_Take_Photo', this.state.imagePtath);
-        this.naviGoBack(this.props.navigation);
+        // that.naviGoBack();
+        that.props.navigation.goBack();
     }
 
   }

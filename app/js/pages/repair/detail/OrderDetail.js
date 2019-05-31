@@ -627,7 +627,6 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 15,
         borderTopLeftRadius: 15,
         borderTopRightRadius:15,
-        backgroundColor: 'white',
     },
     input_style:{
         paddingVertical: 0,marginTop:10, textAlignVertical:'top', textAlign:'left',backgroundColor: 'white',fontSize: 14,height:80, marginLeft:15,marginRight:15, paddingLeft:8,paddingRight:8,paddingTop:5,paddingBottom:5,
