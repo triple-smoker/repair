@@ -235,14 +235,14 @@ renderPersonItem(data,i) {
         repairNo = detaiData.repairNo;
         createTime = new Date(detaiData.createTime).format("yyyy-MM-dd hh:mm:ss");
 
-        if (detaiData.hours.hoursRequest) {
-            // maio / 60 /60
-            var desc = detaiData.hours.hoursRequest
-            var hours = null;
-            hours  = (desc/3600).toFixed(1)
-            repairHours = hours+'小时';
-        }
-        
+        // if (detaiData.hours.hoursService) {
+        //     // maio / 60 /60
+        //     var desc = detaiData.hours.hoursService
+        //     var hours = null;
+        //     hours  = (desc/3600).toFixed(1)
+        //     repairHours = hours+'小时';
+        // }
+        repairHours = detaiData.hours.hoursServiceDesc
         repairUserName = detaiData.ownerName;
         telNo = detaiData.telNo;
         parentTypeName = detaiData.parentTypeName;
@@ -368,7 +368,7 @@ renderPersonItem(data,i) {
                         <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{createTime}</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
-                        <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>已耗时长：</Text>
+                        <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>维修时长：</Text>
                         <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairHours}</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >

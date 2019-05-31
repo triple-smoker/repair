@@ -79,9 +79,14 @@ loadEvaluateCause() {
     var withSel = Math.round(data.itemPercentage*150/100);
       return (
             <View key={i} style={{backgroundColor:'white', height:60, textAlignVertical:'center',marginLeft:0, marginRight:0, marginTop:6,}}>
-                <View style={{flexDirection:'row',marginLeft:10,marginTop:5, }}>
+                <View style={{flexDirection:'row',justifyContent : 'flex-start',marginLeft:10,marginTop:5, }}>
                     <Text style={{color:'#000',fontSize:14, textAlignVertical:'center', width:55}}>{data.assistantName}</Text>
-                    <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:10,}}>{data.assistantMobile}</Text>
+                    <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', width:140}}>{data.assistantMobile}</Text>
+                    {
+                        data.personType == 1 ? <Text style={{color:'#000',fontSize:13, textAlignVertical:'center',}}>主修人</Text> : 
+                        <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:5,}}> </Text> 
+                    }
+                    
                 </View>
                 <View style={{flexDirection:'row',marginLeft:10,height:25,textAlignVertical:'center',}}>
                     <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
@@ -98,6 +103,9 @@ loadEvaluateCause() {
 
 
   renderIconItem(data,i) {
+      if(i<=0){
+          return
+      }
       return (<View key={i} style={{backgroundColor:'white',}}>
                    <Image source={require('../../../res/repair/line_wg.png')} style={{width:2,height:50,marginLeft:29,marginTop:0,}}/>
                    <Image source={require('../../../res/repair/steps_xzr.png')} style={{width:18,height:18,marginLeft:21,marginTop:0,}}/>                 
@@ -155,10 +163,14 @@ loadEvaluateCause() {
         matterName = detaiData.matterName;
         repairNo = detaiData.repairNo;
         createTime = new Date(detaiData.createTime).format("yyyy-MM-dd hh:mm:ss");
-        if (detaiData.repairHours) {
-            repairHours = detaiData.repairHours+'小时';
-        }
-        
+       
+        // if (detaiData.hours.hoursService) {
+        //     var desc = detaiData.hours.hoursService
+        //     var hours = null;
+        //     hours  = (desc/3600).toFixed(1)
+        //     repairHours = hours+'小时';
+        // }
+        repairHours = detaiData.hours.hoursServiceDesc
         repairUserName = detaiData.repairUserName + '   ' + (detaiData.repairTelNo?detaiData.repairTelNo:'');
         parentTypeName = detaiData.repairTypeName;
                 if (detaiData.materialList && detaiData.materialList.length > 0) {
@@ -226,10 +238,10 @@ loadEvaluateCause() {
                         }
                     });
                 var newList = detaiData.itemPersonList.slice(0); 
-                newList.pop();
+                // newList.pop();
                 var iconList = newList.map((item, i)=>{
                     if(item.assistantId !=null){
-                        // console.log(item)
+                              console.log(item)
                         return this.renderIconItem(item, i)
                     }
                 });
@@ -307,7 +319,7 @@ loadEvaluateCause() {
             <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{createTime}</Text>
         </View>
         <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
-            <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>已耗时长：</Text>
+            <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>维修时长：</Text>
             <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{repairHours}</Text>
         </View>
         <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
