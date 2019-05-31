@@ -16,7 +16,7 @@ import {
     Modal,
     DeviceEventEmitter,
     Linking,
-    Alert
+    Alert, Dimensions
 } from 'react-native';
 
 
@@ -35,6 +35,7 @@ import SearchOrder from './SearchOrder'
 
 import Sound from 'react-native-sound';
 import Axios from "../../../util/Axios";
+import Swiper from 'react-native-swiper';
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -46,7 +47,8 @@ let cachedResults = {
 };
 
 var otherDesc = '';
-
+let ScreenWidth = Dimensions.get('window').width;
+let ScreenHeight = Dimensions.get('window').height;
 export default class WorkPage extends BaseComponent {
  constructor(props){
     super(props);
@@ -55,6 +57,8 @@ export default class WorkPage extends BaseComponent {
       selectIndex:-1,
       repList:[],
       modalVisible:false,
+      modalPictureVisible:false,
+      imagesRequest:[],
       timeIndex: 0,
       tabIndex: 0,
       theme:this.props.theme,
@@ -406,6 +410,14 @@ export default class WorkPage extends BaseComponent {
             }
         );
     }
+  //  图片预览框
+    _setModalPictureVisible(data) {
+        if(data.fileMap.imagesRequest && data.fileMap.imagesRequest.length > 0){
+           this.setState({modalPictureVisible: !this.state.modalPictureVisible,imagesRequest:data.fileMap.imagesRequest})
+        }else{
+            this.setState({modalPictureVisible: !this.state.modalPictureVisible,imagesRequest:[]})
+        }
+    }
 
   renderItem(data) {
     var that = this;
@@ -502,6 +514,7 @@ export default class WorkPage extends BaseComponent {
        }
     }
 
+
     return (
       <TouchableOpacity onPress={()=>{this.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
@@ -511,11 +524,14 @@ export default class WorkPage extends BaseComponent {
               </View>
               <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:15, marginRight:15, backgroundColor:'#eeeeee'}}/>
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
-                <View style={{marginLeft:15, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:70,}} >
-                    <Image source={{uri:uriImg}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
-                    {statusDesc}
+                <TouchableOpacity onPress={()=>{this._setModalPictureVisible(data)}} >
+                   <View style={{marginLeft:15, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:70,}} >
+                      <Image source={{uri:uriImg}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
+                      {statusDesc}
 
-                </View>
+                   </View>
+
+                </TouchableOpacity>
                 <View style={{marginLeft:15, flex:1}} >
                     <View style={{marginLeft:0, marginTop:0, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:3,}}>报修单号：</Text>
@@ -546,6 +562,7 @@ export default class WorkPage extends BaseComponent {
               {buttons}
 
               <View style={{height:8, width:Dimens.screen_width, marginTop:10, backgroundColor:'#f8f8f8'}}/>
+
           </View>
 
       </TouchableOpacity>
@@ -659,6 +676,21 @@ onPlayVoice(filePath) {
     if (this.state.modalVisible) {
         repDatas = this.state.repList.map((item, i)=>this.renderRepItem(item,i));
     }
+      var i = 0;
+      var listItems = "";
+      if(this.state.imagesRequest && this.state.imagesRequest.length > 0){
+          i = this.state.imagesRequest.length;
+          listItems =(  this.state.imagesRequest === null ? null : this.state.imagesRequest.map((imageItem, index) =>
+              <View style={stylesImage.slide} key={index}>
+                  <Image resizeMode='contain' style={stylesImage.image} source={{uri:imageItem.filePath}} />
+                  <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1}/{i}</Text></View>
+              </View>
+          ))
+      }else{
+          listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
+      }
+
+
 
     var actionBar = null;
     var tabBar = <View style={{backgroundColor:'white', height:49, justifyContent:'center', flexDirection:'row', bottom:49}}>
@@ -803,6 +835,31 @@ onPlayVoice(filePath) {
             </View>
         </View>
     </Modal>
+          <Modal
+              animationType={"slide"}
+              transparent={true}
+              visible={this.state.modalPictureVisible}
+              onRequestClose={() =>this.setState({modalPictureVisible:false})}
+          >
+              <View style={stylesImage.container}>
+                  <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={() => this.setState({modalPictureVisible:false})}>
+                  </TouchableOpacity>
+                  <View style={{width:ScreenWidth,height:ScreenHeight,alignItems:'center',backgroundColor:'rgba(0, 0, 0, 0.5)',justifyContent:'center'}}>
+                      <Swiper
+                          style={{width:ScreenWidth,height:ScreenHeight}}
+                          onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
+                          dot={<View style={{backgroundColor: 'rgba(0,0,0,0.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
+                          activeDot={<View style={{backgroundColor: '#000', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
+                          paginationStyle={{
+                              bottom: -23, left: null, right: 10
+                          }} loop>
+                          {listItems}
+                      </Swiper>
+                  </View>
+                  <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={() => this.setState({modalPictureVisible:false})}>
+                  </TouchableOpacity>
+              </View>
+          </Modal>
       </View>
       )
     }
@@ -840,6 +897,28 @@ onPlayVoice(filePath) {
         this._listView.scrollTop();
     }
   }
+
+
+const stylesImage =StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    innerContainer: {
+        borderRadius: 10,
+        alignItems:'center',
+    },
+    slide: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: 'transparent'
+    },
+    image: {
+        width:ScreenWidth,
+        flex: 1,
+    }
+})
 
 
   const styles = StyleSheet.create({

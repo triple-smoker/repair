@@ -95,9 +95,11 @@ class Adds extends Component {//报修单共用组件
             <Content style={{backgroundColor:'#fff',marginBottom:10,paddingBottom:10,paddingLeft:16,paddingRight:16,borderRadius:10}}>
                 <View  style={{borderBottomWidth:1,borderColor:'#dfdfdf',paddingBottom:10}}>
                     <Row>
+                        {(this.props.record.fileMap.voicesRequest !=null && this.props.record.fileMap.voicesRequest.length>0 && this.props.record.fileMap.voicesRequest[0].filePath!=null) &&
                         <TouchableOpacity style={{width:30}} onPress={()=>this._showYy(this.props.record.fileMap)}>
                             <Image style={{marginTop:10,width:25,height:25,paddingRight:5}} source={require("../../image/btn_yy.png")}/>
                         </TouchableOpacity>
+                        }
                         <TouchableOpacity style={{width:ScreenWidth-55}} onPress={()=>this._showText()}>
                             {this.state.showText==false &&
                             <Text numberOfLines={1}  style={{marginTop:13,fontSize:14,fontWeight:('bold'),color:'#313131'}}>报修内容：<Text style={stylesBody.orderContext}>{this.props.record.matterName}</Text></Text>
