@@ -16,11 +16,13 @@ import {
     // Slider
 
 } from 'react-native';
+import { List, Radio, Flex, WhiteSpace } from '@ant-design/react-native';
 
+const RadioItem = Radio.RadioItem;
 import TitleBar from '../../../component/TitleBar';
 import * as Dimens from '../../../value/dimens';
 import Request, {GetRepairType, RepairMatterList, RepairDetail ,GetDeptListByType, GetUserListByDeptId, SaveRepairMatter} from '../../../http/Request';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
 import Slider from "react-native-slider";
@@ -85,12 +87,34 @@ export default class AddOption extends BaseComponent {
         }
 
     }
-
+    componentWillMount(){
+        this.loadMainPerson();
+    }
   componentDidMount() {
     this.loadRepairTypes();
     this.getRepairDetail();  
     this.getDeptListByType();
-      
+    
+  }
+  loadMainPerson(){
+    let that = this
+    var list = that.state.selUserList
+    let mainPerson = {};
+    AsyncStorage.getItem('uinfo', function (error, result) {
+        var userInfo =  JSON.parse(result);
+        mainPerson = {
+            userName : userInfo.userName,
+            process : 100,
+            userId : userInfo.userId,
+            telNo : userInfo.telNo,
+            type : 1
+        };
+        
+      list.push(mainPerson)
+       that.setState({selUserList:list});
+    })
+   
+    
   }
   getRepairDetail(){
     var that = this;
@@ -282,40 +306,59 @@ export default class AddOption extends BaseComponent {
   _complete() {
     //this.setState({selUserList:this.state.selUserList});
   }
-
+  personCheck(id){
+    var selUserList = this.state.selUserList;
+    var list = [];
+    for (var i = 0; i < selUserList.length; i++) {
+        var item = selUserList[i];
+        var content = {
+            userId : item.userId,
+            userName : item.userName,
+            telNo : item.telNo,
+            process : item.process,
+            type : 2
+        }
+        item.userId == id ? content.type = 1 : content.type = 2;
+        list.push(content)
+    }
+    this.setState({selUserList:list})
+  }
   renderUserItem(data, i) {
     //console.log(data);
     //<TouchableOpacity onPress={()=>{that.onPressUserItem(data)}} style = {{marginTop:15,}}> </TouchableOpacity>
     var that = this;
     return (
+        <List key={i}>    
+          <RadioItem key={i} checked={data.type === 1} 
+            onChange={() => that.personCheck(data.userId)}>
+            <View key={i} style={{height:60, marginTop:15, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
+                <Image source={require('../../../../res/repair/user_wx.png')} style={{width:30,height:30,marginLeft:15}}/>
+                <View style={{backgroundColor:'white', marginLeft:10, marginRight:10, textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
+                        borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, }}>
+                    <View style={{flexDirection:'row',marginLeft:10,marginTop:5, }}>
+                        <Text style={{color:'#000',fontSize:14, textAlignVertical:'center', }}>{data.userName}</Text>
+                        <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:20,}}>{data.telNo}</Text>
+                    </View>
 
-         <View key={i} style={{height:60, marginTop:15, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
-            <Image source={require('../../../../res/repair/user_wx.png')} style={{width:30,height:30,marginLeft:15}}/>
-            <View style={{backgroundColor:'white', marginLeft:10, marginRight:10, textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, }}>
-                 <View style={{flexDirection:'row',marginLeft:10,marginTop:5, }}>
-                    <Text style={{color:'#000',fontSize:14, textAlignVertical:'center', }}>{data.userName}</Text>
-                    <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:20,}}>{data.telNo}</Text>
-                 </View>
-
-                 <View style={{flexDirection:'row',marginLeft:10,height:25,textAlignVertical:'center',}}>
-                    <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
-                      <View>
-                        <Slider style={{marginLeft:10,marginTop:8,height:10, width: 150}}
-                        minimumValue={0}
-                        maximumValue={100}
-                        minimumTrackTintColor={'#3F9AED'}
-                        maximumTrackTintColor={'#bbb'}
-                        value={data.process}
-                        onSlidingComplete={this._complete}
-                        onValueChange={(value)=>{that._onChange(data, i, value)}}/>
-                        </View>
-                    <Text style={{color:'#3F9AED',fontSize:12, marginLeft:15,marginRight:15,}}>{Math.round(data.process)}%</Text>
-                 </View>
+                    <View style={{flexDirection:'row',marginLeft:10,height:25,textAlignVertical:'center',}}>
+                        <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
+                        <View>
+                            <Slider style={{marginLeft:10,marginTop:8,height:10, width: 150}}
+                            minimumValue={0}
+                            maximumValue={100}
+                            minimumTrackTintColor={'#3F9AED'}
+                            maximumTrackTintColor={'#bbb'}
+                            value={data.process}
+                            onSlidingComplete={this._complete}
+                            onValueChange={(value)=>{that._onChange(data, i, value)}}/>
+                            </View>
+                        <Text style={{color:'#3F9AED',fontSize:12, marginLeft:15,marginRight:15,}}>{Math.round(data.process)}%</Text>
+                    </View>
+                </View>
             </View>
-        </View>
-
-
+          </RadioItem>
+        
+        </List>
     );
   }
 
@@ -371,14 +414,6 @@ export default class AddOption extends BaseComponent {
         </View>
         </TouchableOpacity>
         {selectUser}
-        <TouchableOpacity onPress={()=>this.addMan(1)} style={{marginTop:25,}}>
-        <View style={{height:40, backgroundColor:'white',justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:0, marginLeft:20, marginRight:20,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#6DC5C9'}}>
-                    <Image source={require('../../../../res/repair/btn_ico_tjxzr.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
-                    <Text style={{color:'#6DC5C9',fontSize:14,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加主修人</Text>
-
-        </View>
-        </TouchableOpacity>
         <TouchableOpacity onPress={()=>this.addMan(2)} style={{marginTop:25,}}>
         <View style={{height:40, backgroundColor:'white',justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:0, marginLeft:20, marginRight:20,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#6DC5C9'}}>
