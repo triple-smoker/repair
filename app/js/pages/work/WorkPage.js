@@ -361,6 +361,7 @@ export default class WorkPage extends BaseComponent {
         InteractionManager.runAfterInteractions(() => {
                 navigation.navigate('OrderDetail',{
                           repairId:data.repairId,
+                          status:data.status,
                           theme:this.theme,})
         });
   }

@@ -25,15 +25,18 @@ import Sound from "react-native-sound";
 import Swiper from 'react-native-swiper';
 import VideoPlayer from '../../../../components/VideoPlayer';
 import Video from 'react-native-video';
+import {Content,Accordion,} from "native-base";
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
+let orderStatus = "";
 export default class OrderDetail extends BaseComponent {
     static navigationOptions = {
         header: null,
     };
     constructor(props){
         super(props);
+        orderStatus = props.navigation.state.params.status;
         this.state={
             detaiData:null,
             repairId:props.navigation.state.params.repairId,
@@ -250,6 +253,105 @@ export default class OrderDetail extends BaseComponent {
         }
     }
 
+    _renderHeaderShiXiang(item, expanded) {
+        var that = this;
+        var buttons = null;
+        if(orderStatus === '5'){
+            buttons = <TouchableOpacity onPress={()=>this.addOption()}>
+                <View style={{backgroundColor:'white',alignItems:'center', flexDirection:"row", marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius:15, borderWidth:1, borderColor:'#eee'}}>
+                    <Image source={require('../../../../res/repair/btn_ico_tj.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
+                    <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加</Text>
+                </View>
+            </TouchableOpacity>
+        }
+
+
+        return (
+            <View style={{
+                borderTopWidth:1,
+                borderColor:'#fff',
+                flexDirection: "row",
+                justifyContent:"space-between",
+                padding: 10,
+                alignItems: "center" ,
+                backgroundColor: "#f8f8f8" }}>
+                <View style={{flexDirection:"row"}}>
+                    {expanded
+                        ? <Image style={{ width: 18,height:18 }} source={require('../../../../image/collapse_02.png')} />
+                        : <Image style={{ width: 18,height:18 }} source={require('../../../../image/collapse_01.png')} />}
+                    <Text style={{color:'#6b6b6b'}}>
+                        {" "}{item.title}
+                    </Text>
+                </View>
+                {buttons}
+            </View>
+        );
+    }
+
+    _renderHeaderWuLiao(item, expanded) {
+        var that = this;
+        var buttons = null;
+        if(orderStatus === '5'){
+            buttons = <TouchableOpacity onPress={()=>this.materielList()}>
+                <View style={{backgroundColor:'white',alignItems:'center', flexDirection:"row", marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius:15, borderWidth:1, borderColor:'#eee'}}>
+                    <Image source={require('../../../../res/repair/btn_ico_tj.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
+                    <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加</Text>
+                </View>
+            </TouchableOpacity>
+        }
+        return (
+            <View style={{
+                borderTopWidth:1,
+                borderColor:'#fff',
+                flexDirection: "row",
+                justifyContent:"space-between",
+                padding: 10,
+                alignItems: "center" ,
+                backgroundColor: "#f8f8f8" }}>
+                <View style={{flexDirection:"row"}}>
+                    {expanded
+                        ? <Image style={{ width: 18,height:18 }} source={require('../../../../image/collapse_02.png')} />
+                        : <Image style={{ width: 18,height:18 }} source={require('../../../../image/collapse_01.png')} />}
+                    <Text style={{color:'#6b6b6b'}}>
+                        {" "}{item.title}
+                    </Text>
+                </View>
+                {buttons}
+            </View>
+        );
+    }
+    _renderHeaderGaiKuang(item, expanded) {
+        return (
+            <View style={{
+                borderTopWidth:1,
+                borderColor:'#fff',
+                flexDirection: "row",
+                justifyContent:"space-between",
+                padding: 10,
+                alignItems: "center" ,
+                backgroundColor: "#f8f8f8" }}>
+                <View style={{flexDirection:"row"}}>
+                    {expanded
+                        ? <Image style={{ width: 18,height:18 }} source={require('../../../../image/collapse_02.png')} />
+                        : <Image style={{ width: 18,height:18 }} source={require('../../../../image/collapse_01.png')} />}
+                    <Text style={{color:'#6b6b6b'}}>
+                        {" "}{item.title}
+                    </Text>
+                </View>
+            </View>
+        );
+    }
+
+    _renderContent(item) {
+        return (
+            <Content>
+                {item.content}
+            </Content>
+        );
+    }
+
     render() {
         var detaiData = this.state.detaiData;
         var detailAddress = null;
@@ -431,84 +533,74 @@ export default class OrderDetail extends BaseComponent {
                     navigation={this.props.navigation}
                 />
                 <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64, width:Dimens.screen_width,flex:1}}>
-
-                    <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
-                        <Image source={require('../../../../res/repair/collapse_02.png')}
-                               style={{width:20,height:20,marginLeft:10, marginRight:10,}}/>
-                        <Text style={{color:'#666',fontSize:14, height:35, textAlignVertical:'center',paddingLeft:0,}}>概况</Text>
-                    </View>
-
-                    <View style={{marginLeft:0,backgroundColor:'white',}} >
-                        <View style={{flexDirection:'row',paddingLeft:10}} >
-                            {voiceView}
-                            <Text style={{fontSize:14,color:'#333',marginTop:3,}}>报修内容：{matterName}</Text>
-                        </View>
-                        <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:10, marginRight:10, backgroundColor:'#eeeeee'}}/>
-                        <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',}} >
-                            <TouchableOpacity onPress={()=>{this._setModalPictureVisible()}} >
-                                <View style={{marginLeft:15, textAlignVertical:'center', alignItems:'center',width:70,marginTop:4}} >
-                                    {uriImg}
+                    <Accordion
+                        dataArray={[{ title: "概况", content:
+                            <View style={{marginLeft:0,backgroundColor:'white',}} >
+                                <View style={{flexDirection:'row',paddingLeft:10}} >
+                                    {voiceView}
+                                    <Text style={{fontSize:14,color:'#333',marginTop:3,}}>报修内容：{matterName}</Text>
                                 </View>
-                            </TouchableOpacity>
-                            <View style={{marginLeft:10, flex:1}} >
-                                <View style={{marginLeft:0, marginTop:0, flexDirection:'row',}} >
-                                    <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:3,}}>报修单号：</Text>
-                                    <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:3,}}>{repairNo}</Text>
-                                </View>
-                                <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
-                                    <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修时间：</Text>
-                                    <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{createTime}</Text>
-                                </View>
-                                <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
-                                    <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>维修时长：</Text>
-                                    <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairHours}</Text>
-                                </View>
-                                <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
-                                    <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
-                                    <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{detailAddress}</Text>
-                                </View>
-                                <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
-                                    <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
-                                    <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairUserName}</Text>
-                                    <TouchableOpacity onPress={()=>{this.callPhone(telNo)}} style={{marginLeft:5}}>
-                                        <Image source={require('../../../../res/repair/list_call.png')} style={{width:20,height:20,}}/>
+                                <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:10, marginRight:10, backgroundColor:'#eeeeee'}}/>
+                                <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',}} >
+                                    <TouchableOpacity onPress={()=>{this._setModalPictureVisible()}} >
+                                        <View style={{marginLeft:15, textAlignVertical:'center', alignItems:'center',width:70,marginTop:4}} >
+                                            {uriImg}
+                                        </View>
                                     </TouchableOpacity>
+                                    <View style={{marginLeft:10, flex:1}} >
+                                        <View style={{marginLeft:0, marginTop:0, flexDirection:'row',}} >
+                                            <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:3,}}>报修单号：</Text>
+                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:3,}}>{repairNo}</Text>
+                                        </View>
+                                        <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                                            <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修时间：</Text>
+                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{createTime}</Text>
+                                        </View>
+                                        <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                                            <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>维修时长：</Text>
+                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairHours}</Text>
+                                        </View>
+                                        <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                                            <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
+                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{detailAddress}</Text>
+                                        </View>
+                                        <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                                            <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
+                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairUserName}</Text>
+                                            <TouchableOpacity onPress={()=>{this.callPhone(telNo)}} style={{marginLeft:5}}>
+                                                <Image source={require('../../../../res/repair/list_call.png')} style={{width:20,height:20,}}/>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
                                 </View>
+                                <View style={{height:1, width:Dimens.screen_width, marginTop:10, backgroundColor:'white'}}/>
                             </View>
-                        </View>
-                        <View style={{height:1, width:Dimens.screen_width, marginTop:10, backgroundColor:'white'}}/>
-                    </View>
+                        }]}
+                        animation={true}
+                        expanded={true}
+                        renderHeader={this._renderHeaderGaiKuang.bind(this)}
+                        renderContent={this._renderContent.bind(this)}
+                        expanded={0}
+                    />
+                    <Accordion
+                        dataArray={[{ title: "维修事项", content:processList}]}
+                        animation={true}
+                        expanded={true}
+                        renderHeader={this._renderHeaderShiXiang.bind(this)}
+                        renderContent={this._renderContent.bind(this)}
+                        expanded={0}
+                    />
 
 
-                    <View style={{backgroundColor:'transparent', height:40, flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
-                        <Image source={require('../../../../res/repair/collapse_02.png')}
-                               style={{width:20,height:20,marginLeft:10, marginRight:10,}}/>
-                        <Text style={{color:'#666',fontSize:14, height:35, textAlignVertical:'center',paddingLeft:0, flex:1}}>维修事项</Text>
 
-                        {this.state.status === '5' ? <TouchableOpacity onPress={()=>this.addOption()} style={{}}>
-                            <View style={{backgroundColor:'white',justifyContent:'flex-end',flexDirection:'row',alignItems:'center',  marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
-                                borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius:15, borderWidth:1, borderColor:'#eee'}}>
-                                <Image source={require('../../../../res/repair/btn_ico_tj.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
-                                <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加</Text>
-                            </View>
-                        </TouchableOpacity> : null }
-                    </View>
-
-                    {processList}
-                    <View style={{backgroundColor:'transparent', height:40, flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
-                        <Image source={require('../../../../res/repair/collapse_02.png')}
-                               style={{width:20,height:20,marginLeft:10, marginRight:10,}}/>
-                        <Text style={{color:'#666',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:0, flex:1}}>物料</Text>
-                        {this.state.status === '5' ? <TouchableOpacity onPress={()=>this.materielList()} style={{}}>
-                            <View style={{backgroundColor:'white',justifyContent:'flex-end',flexDirection:'row',alignItems:'center',  marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
-                                borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius:15, borderWidth:1, borderColor:'#eee'}}>
-                                <Image source={require('../../../../res/repair/btn_ico_tj.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
-                                <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加</Text>
-                            </View>
-                        </TouchableOpacity> : null}
-                    </View>
-
-                    {materialList}
+                    <Accordion
+                        dataArray={[{ title: "物料", content:materialList}]}
+                        animation={true}
+                        expanded={true}
+                        renderHeader={this._renderHeaderWuLiao.bind(this)}
+                        renderContent={this._renderContent.bind(this)}
+                        expanded={0}
+                    />
 
                 </ScrollView>
                 {this.state.status === '5' ? <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
