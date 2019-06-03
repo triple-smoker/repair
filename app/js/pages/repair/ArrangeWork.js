@@ -29,6 +29,7 @@ export default class ArrangeWork extends BaseComponent {
       const thisRepairId = navigation.getParam('repairId', '');
     this.state={
             dataMap:new Map(),
+            deptId:null,
             detaiData:null,
             modelTitle:'',
             selectDeptState:false,
@@ -77,15 +78,16 @@ export default class ArrangeWork extends BaseComponent {
 
   getUserListByDeptId() {
     var that = this;
-    if (this.state.dataMap.has(this.state.selectDeptData.deptId)) {
-        var list = this.state.dataMap.get(this.state.selectDeptData.deptId);
+    if (this.state.dataMap.has(this.deptId)) {
+        var list = this.state.dataMap.get(this.state.deptId);
         that.setState({userList:list, });
         return;
     }
 
-    Request.requestGet(GetUserListByDeptId+this.state.selectDeptData.deptId, null, (result)=> {
+    Request.requestGet(GetUserListByDeptId+this.state.deptId, null, (result)=> {
+        console.log(result)
         if (result && result.code === 200) {
-            that.state.dataMap.set(that.state.selectDeptData.deptId, result.data);
+            that.state.dataMap.set(that.state.deptId, result.data);
             that.setState({userList:result.data});
         } else {
 
@@ -98,7 +100,13 @@ export default class ArrangeWork extends BaseComponent {
     var that = this;
     Request.requestGet(RepairDetail+this.state.repairId, null, (result)=> {
         if (result && result.code === 200) {
-            that.setState({detaiData:result.data});
+            var detaiData = result.data
+            that.setState({
+                detaiData:detaiData,
+                selectDeptName:detaiData.repairDeptName,
+                deptId:detaiData.repairDeptId
+            });
+            this.getUserListByDeptId()
         } else {
 
         }
@@ -106,10 +114,10 @@ export default class ArrangeWork extends BaseComponent {
   }
 
   _onSure() {
-    if (this.state.selectDeptPos === -1) {
-        toastShort('请选择班组');
-        return;
-    }
+    // if (this.state.selectDeptPos === -1) {
+    //     toastShort('请选择班组');
+    //     return;
+    // }
 
     if (this.state.selectUserPos === -1) {
         toastShort('请选择维修人员');
@@ -124,11 +132,10 @@ export default class ArrangeWork extends BaseComponent {
      let params = {
         repairId: ''+this.state.repairId,
         repairUserId: ''+this.state.selectUserData.userId,
-        repairDeptId: ''+this.state.selectDeptData.deptId,
+        repairDeptId: ''+this.state.deptId,
         userId:''+global.uinfo.userId,
         remark:''
         };
-
      Request.requestPost(DispatchWork, params, (result)=> {
         if (result && result.code === 200 && !result.data.error) {
             toastShort('派工成功');
@@ -190,17 +197,18 @@ export default class ArrangeWork extends BaseComponent {
                     navigation={this.props.navigation}
             />
         <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择维修人员</Text>
-        <TouchableOpacity onPress={()=>{this.selectDept()}} style={{height:40}}>
+        {/* <TouchableOpacity onPress={()=>{this.selectDept()}} style={{height:40}}>
+        </TouchableOpacity> */}
         <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组</Text>
-            <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectDeptName}</Text>
+            
             <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                                <Image source={require('../../../res/login/ic_arrow.png')}
-                                       style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
-
+                                {/* <Image source={require('../../../res/login/ic_arrow.png')}
+                                       style={{width:6,height:11,marginLeft:10, marginRight:10,}}/> */}
+                <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectDeptName}</Text>
             </View>
         </View>
-        </TouchableOpacity>
+        
         <View style={styles.line} />
         <TouchableOpacity onPress={()=>{this.selectUser()}} style={{height:40}}>
         <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
@@ -298,16 +306,32 @@ export default class ArrangeWork extends BaseComponent {
   }
 
   selectDept() {
-        this.setState({modelTitle:'选择班组', selectDeptState:true, modalVisible:true, dataSource:this.state.dataSource.cloneWithRows(this.state.deptList), });
+        this.setState({
+            modelTitle:'选择班组', 
+            selectDeptState:true, 
+            modalVisible:true, 
+            dataSource:this.state.dataSource.cloneWithRows(this.state.deptList), });
   }
 
   selectUser() {
-    if (this.state.selectDeptPos === -1) {
-        toastShort('请先选择班组');
-        return;
+    // if (this.state.selectDeptPos === -1) {
+    //     toastShort('请先选择班组');
+    //     return;
+    // }
+    var userList = this.state.userList
+    var list = []
+    console.log( this.state.detaiData.ownerId)
+    for(var i = 0;i<userList.length;i++){
+        if(userList[i].userId != this.state.detaiData.ownerId){
+            list.push(userList[i])
+        }
     }
-
-    this.setState({modelTitle:'选择人员', selectDeptState:false, modalVisible:true, dataSource:this.state.dataSource.cloneWithRows(this.state.userList), });
+    console.log(list)
+    this.setState({
+        modelTitle:'选择人员', 
+        selectDeptState:false, 
+        modalVisible:true, 
+        dataSource:this.state.dataSource.cloneWithRows(list), });
   }
 
   cancel() {
@@ -315,18 +339,23 @@ export default class ArrangeWork extends BaseComponent {
   }
 
   submit() {
+    this.setState({modalVisible:false, selectUserName:this.state.selectUserData.userName});
+        // if (this.state.selectDeptState) {
+        //     if (this.state.selectDeptPos != -1) {
+        //         this.setState({
+        //             modalVisible:false, 
+        //             //selectDeptName:this.state.selectDeptData.deptName,
+        //             //selectUserPos:-1,
+        //             selectUserData:null,
+        //             selectUserName:null});
+        //         //this.getUserListByDeptId();
+        //     }
 
-        if (this.state.selectDeptState) {
-            if (this.state.selectDeptPos != -1) {
-                this.setState({modalVisible:false, selectDeptName:this.state.selectDeptData.deptName,selectUserPos:-1,selectUserData:null,selectUserName:null});
-                this.getUserListByDeptId();
-            }
-
-        } else {
-            if (this.state.selectUserPos != -1) {
-                this.setState({modalVisible:false, selectUserName:this.state.selectUserData.userName});
-            }
-        }
+        // } else {
+        //     if (this.state.selectUserPos != -1) {
+        //         this.setState({modalVisible:false, selectUserName:this.state.selectUserData.userName});
+        //     }
+        // }
   }
 
   _renderSeparatorView(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {

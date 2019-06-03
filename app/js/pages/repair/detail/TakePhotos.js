@@ -144,32 +144,36 @@ export default class TakePhotos extends BaseComponent {
             });
         }else if(this.state.step === 1){
             var imagesStarted = [];
-            var filePath = null;
-            if (!global.imageUrl0) {
-                Toast.showLong('请拍摄照片');
-                return;
+            var filePath= null;
+            let obj = {};
+            var data = {}
+            if (global.imageUrl0) {
+                var item = global.imageUrl0
+                obj = {
+                    filePath : item.fileDownloadUri,
+                    fileName : item.fileName,
+                    bucketName : item.bucketName,
+                    fileType : item.fileType,
+                    fileHost : item.fileHost
+                }
+                data = {
+                    "filePath":obj.filePath,
+                    "fileName":obj.fileName,
+                    "fileBucket":obj.bucketName,
+                    "fileType": obj.fileType,
+                    "fileHost": obj.fileHost
+                }
+                imagesStarted.push(data);
             }
-            let obj = global.imageUrl0 ;
+           
             
-            if(obj.fileDownloadUri){
-                filePath = obj.fileDownloadUri
-            }
-            var data = {
-                "filePath":filePath,
-                "fileName":obj.fileName,
-                "fileBucket":obj.bucketName,
-                "fileType": obj.fileType,
-                "fileHost": obj.fileHost
-            }
             
-            imagesStarted.push(data);
-            console.log(imagesStarted)
             let params = {
                 repairId:this.state.repairId,
                 userId:global.uinfo.userId,
                 imagesStarted:imagesStarted,
             };
-            
+            console.log(params)
             Request.requestPost(RepairCommenced, params, (result)=> {
                 console.log(result)
                 if (result && result.code === 200) {
