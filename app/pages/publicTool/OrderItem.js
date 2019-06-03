@@ -68,21 +68,24 @@ class Adds extends Component {//报修单共用组件
             }else{
                 return <Image resizeMode='stretch' style={{width: 70, height: 70}} source={{uri:path}} />;
             }
-        }else if(videosRequest != null && videosRequest.length>0){
-            var path = '';
-            var i=1;
-            videosRequest.forEach(function(videoItem){
-                if(i===1 && videoItem.filePath != ''){
-                    path = videoItem.filePath;
-                    i = i+1;
-                }
-            });
-            if(i === 1){
-                return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>;
-            }else{
-                return <PreVideo uri={path}/> 
-            }
-        }else{
+        }
+        // else if(videosRequest != null && videosRequest.length>0){
+        //     var path = '';
+        //     var i=1;
+        //     videosRequest.forEach(function(videoItem){
+        //         if(i===1 && videoItem.filePath != ''){
+        //             path = videoItem.filePath;
+        //             i = i+1;
+        //         }
+        //     });
+        //     if(i === 1){
+        //         return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>;
+        //     }
+        //     else{
+        //         return <PreVideo uri={path}/> 
+        //     }
+        // }
+        else{
             return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>
         }
     }
@@ -283,12 +286,12 @@ class PictureMd extends Component {
                 <ImageItem  setModalVisible={setModalVisible} num={index+1} sum={i}  imageurl={imageItem.filePath} key={index}/>
             ))
         }
-        if(videosRequest!=null && videosRequest.length > 0){
-             let videoItems =(  videosRequest === null ? null : videosRequest.map((videoItem, index) =>
-                <VideoItem  onRef={this.onRef} setModalVisible={setModalVisible} num={index+1+j} sum={i}  imageurl={videoItem.filePath} key={index}/>
-            ))
-            listItems = listItems.concat(videoItems);
-        }
+        // if(videosRequest!=null && videosRequest.length > 0){
+        //      let videoItems =(  videosRequest === null ? null : videosRequest.map((videoItem, index) =>
+        //         <VideoItem  onRef={this.onRef} setModalVisible={setModalVisible} num={index+1+j} sum={i}  imageurl={videoItem.filePath} key={index}/>
+        //     ))
+        //     listItems = listItems.concat(videoItems);
+        // }
 
         return listItems;
     }

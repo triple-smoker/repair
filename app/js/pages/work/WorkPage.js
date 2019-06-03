@@ -506,25 +506,25 @@ export default class WorkPage extends BaseComponent {
                uriImg = <Image source={{uri:data.fileMap.imagesRequest[0].filePath}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
            }
        }else if(data.fileMap.videosRequest && data.fileMap.videosRequest.length > 0){
-           if(data.fileMap.videosRequest[0].filePath!=null){
-               uriImg = <Video source={{uri: data.fileMap.videosRequest[0].filePath}}
-                               style={{
-                                   top: 0,
-                                   left: 0,
-                                   bottom: 0,
-                                   right: 0,
-                                   width: 70,
-                                   height: 70
-                               }}
-                               rate={1}
-                               paused={true}
-                               volume={1}
-                               muted={false}
-                               resizeMode={'cover'}
-                               onError={e => console.log(e)}
-                               onLoad={load => console.log(load)}
-                               repeat={true} />
-           }
+          //  if(data.fileMap.videosRequest[0].filePath!=null){
+          //      uriImg = <Video source={{uri: data.fileMap.videosRequest[0].filePath}}
+          //                      style={{
+          //                          top: 0,
+          //                          left: 0,
+          //                          bottom: 0,
+          //                          right: 0,
+          //                          width: 70,
+          //                          height: 70
+          //                      }}
+          //                      rate={1}
+          //                      paused={true}
+          //                      volume={1}
+          //                      muted={false}
+          //                      resizeMode={'cover'}
+          //                      onError={e => console.log(e)}
+          //                      onLoad={load => console.log(load)}
+          //                      repeat={true} />
+          //  }
        }
 
        if (data.fileMap.voicesRequest && data.fileMap.voicesRequest.length > 0) {
@@ -697,11 +697,8 @@ onPlayVoice(filePath) {
 
   //获取VideoPlayer组件模板元素
   onRef = (ref) => {
-    console.info("aaaaaaaaa")
-    console.info(ref)
-      this.videoItemRef = ref
-      this.appentRefMap(ref.props.num,ref);
-    console.info(this.state.videoItemRefMap)      
+    this.videoItemRef = ref
+    this.appentRefMap(ref.props.num,ref);
   }
   
   appentRefMap(index,ref){
@@ -713,14 +710,13 @@ onPlayVoice(filePath) {
   }
   
   setVideoCurrentTime = (index) => {
-     console.info("--------")
-     console.info(index)
-      console.info(this.state.videoItemRefMap)
+    console.info("setVideoCurrentTime : index =" + index);
+    console.info(this.state.videoItemRefMap)
 
-      let videoItemRef = this.state.videoItemRefMap.get(index + 1);
-      if(videoItemRef){
-          // videoItemRef.setVideoCurrentTime();
-      }
+    let videoItemRef = this.state.videoItemRefMap.get(index + 1);
+    if(videoItemRef){
+        // videoItemRef.setVideoCurrentTime();
+    }
   }
 
   render() {
@@ -752,15 +748,15 @@ onPlayVoice(filePath) {
       ))
     }
 
-    if(this.state.videosRequest && this.state.videosRequest.length > 0){
-      let videoItems =(  this.state.videosRequest === null ? null : this.state.videosRequest.map((videoItem, index) =>
-        <View style={stylesImage.slide} key={index}>
-            <VideoPlayer  onRef={this.onRef} num={index+1+j} closeVideoPlayer={()=> {this.setState({modalPictureVisible:false})}} uri={videoItem.filePath}></VideoPlayer>
-            <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1+j}/{i}</Text></View>
-        </View>
-      ))
-      listItems = listItems.concat(videoItems);
-    }
+    // if(this.state.videosRequest && this.state.videosRequest.length > 0){
+    //   let videoItems =(  this.state.videosRequest === null ? null : this.state.videosRequest.map((videoItem, index) =>
+    //     <View style={stylesImage.slide} key={index}>
+    //         <VideoPlayer  onRef={this.onRef} num={index+1+j} closeVideoPlayer={()=> {this.setState({modalPictureVisible:false})}} uri={videoItem.filePath}></VideoPlayer>
+    //         <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1+j}/{i}</Text></View>
+    //     </View>
+    //   ))
+    //   listItems = listItems.concat(videoItems);
+    // }
 
     if((this.state.imagesRequest == null || this.state.imagesRequest.length == 0) && (this.state.videosRequest == null || this.state.videosRequest.length == 0)){
         listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>

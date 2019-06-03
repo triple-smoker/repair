@@ -308,15 +308,15 @@ export default class OrderDetail extends BaseComponent {
                 ))
             }
 
-            if(detaiData.fileMap.videosRequest && detaiData.fileMap.videosRequest.length > 0){
-                let videoItems =(  detaiData.fileMap.videosRequest === null ? null : detaiData.fileMap.videosRequest.map((videoItem, index) =>
-                    <View style={stylesImage.slide} key={index}>
-                        <VideoPlayer  onRef={this.onRef} num={index+1+j} closeVideoPlayer={()=> {this._setModalPictureVisible()}} uri={videoItem.filePath}></VideoPlayer>
-                        <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1+j}/{i}</Text></View>
-                    </View>
-                ))
-                listItems = listItems.concat(videoItems);
-            }
+            // if(detaiData.fileMap.videosRequest && detaiData.fileMap.videosRequest.length > 0){
+            //     let videoItems =(  detaiData.fileMap.videosRequest === null ? null : detaiData.fileMap.videosRequest.map((videoItem, index) =>
+            //         <View style={stylesImage.slide} key={index}>
+            //             <VideoPlayer  onRef={this.onRef} num={index+1+j} closeVideoPlayer={()=> {this._setModalPictureVisible()}} uri={videoItem.filePath}></VideoPlayer>
+            //             <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1+j}/{i}</Text></View>
+            //         </View>
+            //     ))
+            //     listItems = listItems.concat(videoItems);
+            // }
             if((detaiData.fileMap.imagesRequest == null || detaiData.fileMap.imagesRequest.length == 0) && (detaiData.fileMap.videosRequest == null || detaiData.fileMap.videosRequest.length == 0)){
                 listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
             }
@@ -385,25 +385,25 @@ export default class OrderDetail extends BaseComponent {
                         uriImg = <Image source={{uri:detaiData.fileMap.imagesRequest[0].filePath}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
                     }
                 }else if(detaiData.fileMap.videosRequest && detaiData.fileMap.videosRequest.length > 0){
-                    if(detaiData.fileMap.videosRequest[0].filePath!=null){
-                        uriImg = <Video source={{uri: detaiData.fileMap.videosRequest[0].filePath}}
-                                        style={{
-                                            top: 0,
-                                            left: 0,
-                                            bottom: 0,
-                                            right: 0,
-                                            width: 70,
-                                            height: 70
-                                        }}
-                                        rate={1}
-                                        paused={true}
-                                        volume={1}
-                                        muted={false}
-                                        resizeMode={'cover'}
-                                        onError={e => console.log(e)}
-                                        onLoad={load => console.log(load)}
-                                        repeat={true} />
-                    }
+                    // if(detaiData.fileMap.videosRequest[0].filePath!=null){
+                    //     uriImg = <Video source={{uri: detaiData.fileMap.videosRequest[0].filePath}}
+                    //                     style={{
+                    //                         top: 0,
+                    //                         left: 0,
+                    //                         bottom: 0,
+                    //                         right: 0,
+                    //                         width: 70,
+                    //                         height: 70
+                    //                     }}
+                    //                     rate={1}
+                    //                     paused={true}
+                    //                     volume={1}
+                    //                     muted={false}
+                    //                     resizeMode={'cover'}
+                    //                     onError={e => console.log(e)}
+                    //                     onLoad={load => console.log(load)}
+                    //                     repeat={true} />
+                    // }
                 }
 
                 if (detaiData.fileMap.voicesRequest && detaiData.fileMap.voicesRequest.length > 0) {
