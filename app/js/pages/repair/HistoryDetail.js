@@ -20,6 +20,7 @@ import Request, {GetRepairList, RepairDetail, GetDeptListByType, GetUserListByDe
 import { toastShort } from '../../util/ToastUtil';
 import BaseComponent from '../../base/BaseComponent'
 import Swiper from 'react-native-swiper';
+import {Accordion, Content,} from "native-base";
 
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
@@ -111,7 +112,36 @@ loadEvaluateCause() {
                    <Image source={require('../../../res/repair/steps_xzr.png')} style={{width:18,height:18,marginLeft:21,marginTop:0,}}/>                 
             </View> 
     );
-  } 
+  }
+    _renderHeader(item, expanded) {
+        return (
+            <View style={{
+                borderTopWidth:1,
+                borderColor:'#fff',
+                flexDirection: "row",
+                justifyContent:"space-between",
+                padding: 10,
+                alignItems: "center" ,
+                backgroundColor: "#f8f8f8" }}>
+                <View style={{flexDirection:"row"}}>
+                    {expanded
+                        ? <Image style={{ width: 18,height:18 }} source={require('../../../image/collapse_02.png')} />
+                        : <Image style={{ width: 18,height:18 }} source={require('../../../image/collapse_01.png')} />}
+                    <Text style={{color:'#6b6b6b'}}>
+                        {" "}{item.title}
+                    </Text>
+                </View>
+            </View>
+        );
+    }
+
+    _renderContent(item) {
+        return (
+            <Content>
+                {item.content}
+            </Content>
+        );
+    }
 
   render() {
     var detaiData = this.state.detaiData;
@@ -273,95 +303,88 @@ loadEvaluateCause() {
       navigation={this.props.navigation}
       />
       <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64, width:Dimens.screen_width,flex:1}}>
-      
-      <View style={{backgroundColor:'transparent', flexDirection:'row', textAlignVertical:'center',alignItems:'center',}}>
-            <Image source={require('../../../res/repair/collapse_02.png')} 
-                style={{width:20,height:20,marginLeft:10, marginRight:10,}}/>
-            <Text style={{color:'#666',fontSize:14, height:35, textAlignVertical:'center',paddingLeft:0,}}>评价</Text>
-      </View>
-      {advViews}
 
-    <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
-            <Image source={require('../../../res/repair/user_wx.png')} style={{width:25,height:25,marginLeft:15}}/>
-            <Text style={{color:'#333',fontSize:16, height:40, textAlignVertical:'center', marginLeft:10,}}>{likedUser}</Text>
-            <Text style={{color:'#999',fontSize:13, height:40, marginLeft:10,textAlignVertical:'center'}}>{likedDeptName}</Text>
-            <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                    <Image source={require('../../../res/repair/ico_bmy_xq.png')} style={{width:17,height:17,marginLeft:10, marginRight:10,}}/>
-                    <Text style={{color:'#F88F0A',fontSize:13, height:40, marginLeft:0,marginRight:10,textAlignVertical:'center'}}>{satisfactionDesc}</Text>
-                                
-            </View>
-    </View>
-    <View style={styles.line} />
 
-    <View style={{backgroundColor:'white'}}>
-        <Text style={{color:'#666',fontSize:14, marginLeft:15, marginRight:15, marginTop:5, marginBottom:5,}}>{remark}</Text>
+          <Accordion
+              dataArray={[{ title: "评价", content:
+                  <View>
+                      {advViews}
+                      <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
+                          <Image source={require('../../../res/repair/user_wx.png')} style={{width:25,height:25,marginLeft:15}}/>
+                          <Text style={{color:'#333',fontSize:16, height:40, textAlignVertical:'center', marginLeft:10,}}>{likedUser}</Text>
+                          <Text style={{color:'#999',fontSize:13, height:40, marginLeft:10,textAlignVertical:'center'}}>{likedDeptName}</Text>
+                          <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
+                              <Image source={require('../../../res/repair/ico_bmy_xq.png')} style={{width:17,height:17,marginLeft:10, marginRight:10,}}/>
+                              <Text style={{color:'#F88F0A',fontSize:13, height:40, marginLeft:0,marginRight:10,textAlignVertical:'center'}}>{satisfactionDesc}</Text>
 
-    <View style={{backgroundColor:'white', flexDirection:'row',paddingBottom:10,}}>
-           {causeViews}
-    </View>
-    </View>
+                          </View>
+                      </View>
+                      <View style={styles.line} />
+                      <View style={{backgroundColor:'white'}}>
+                          <Text style={{color:'#666',fontSize:14, marginLeft:15, marginRight:15, marginTop:5, marginBottom:5,}}>{remark}</Text>
 
-    <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
-            <Image source={require('../../../res/repair/collapse_02.png')} 
-                style={{width:20,height:20,marginLeft:10, marginRight:10,}}/>
-            <Text style={{color:'#666',fontSize:14, height:35, textAlignVertical:'center',paddingLeft:0,}}>概况</Text>
-    </View>
+                          <View style={{backgroundColor:'white', flexDirection:'row',paddingBottom:10,}}>
+                              {causeViews}
+                          </View>
+                      </View>
+                  </View>
+              }]}
+              animation={true}
+              expanded={true}
+              renderHeader={this._renderHeader.bind(this)}
+              renderContent={this._renderContent.bind(this)}
+              expanded={0}
+          />
 
-    <View style={{backgroundColor:'white', paddingBottom:10,}}>
-        <Text style={{color:'#333',fontSize:14, marginLeft:15, marginRight:15, marginTop:10, marginBottom:10,}}>{matterName}</Text>
-        <View style={styles.line} />
-        <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
-            <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>报修单号：</Text>
-            <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{repairNo}</Text>
-        </View>
-        <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
-            <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>报修时间：</Text>
-            <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{createTime}</Text>
-        </View>
-        <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
-            <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>维修时长：</Text>
-            <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{repairHours}</Text>
-        </View>
-        <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
-            <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>报修地址：</Text>
-            <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{detailAddress}</Text>
-        </View>
-        <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
-            <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>维修人员：</Text>
-            <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{repairUserName}</Text>
-        </View>
-    </View>
-
-    <View style={{backgroundColor:'transparent', height:40, flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
-            <Image source={require('../../../res/repair/collapse_02.png')} 
-                style={{width:20,height:20,marginLeft:10, marginRight:10,}}/>
-            <Text style={{color:'#666',fontSize:14, height:35, textAlignVertical:'center',paddingLeft:0, flex:1}}>维修事项</Text>
-
-            <TouchableOpacity onPress={()=>this.addOption()} style={{}}>
-            <View style={{backgroundColor:'white',justifyContent:'flex-end',flexDirection:'row',alignItems:'center',  marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius:15, borderWidth:1, borderColor:'#eee'}}>
-                    
-                                
-            </View>
-            </TouchableOpacity>
-    </View>
-
-    {processList}
-    <View style={{backgroundColor:'transparent', height:40, flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
-            <Image source={require('../../../res/repair/collapse_02.png')} 
-                style={{width:20,height:20,marginLeft:10, marginRight:10,}}/>
-            <Text style={{color:'#666',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:0, flex:1}}>物料</Text>
-            <TouchableOpacity onPress={()=>this.materielList()} style={{}}>
-            <View style={{backgroundColor:'white',justifyContent:'flex-end',flexDirection:'row',alignItems:'center',  marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius:15, borderWidth:1, borderColor:'#eee'}}>
-                    
-                                
-            </View>
-            </TouchableOpacity>
-    </View>
-
-    {materialList}
-
+          <Accordion
+              dataArray={[{ title: "概况", content:
+                      <View style={{backgroundColor:'white', paddingBottom:10,}}>
+                          <Text style={{color:'#333',fontSize:14, marginLeft:15, marginRight:15, marginTop:10, marginBottom:10,}}>{matterName}</Text>
+                          <View style={styles.line} />
+                          <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
+                              <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>报修单号：</Text>
+                              <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{repairNo}</Text>
+                          </View>
+                          <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
+                              <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>报修时间：</Text>
+                              <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{createTime}</Text>
+                          </View>
+                          <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
+                              <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>维修时长：</Text>
+                              <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{repairHours}</Text>
+                          </View>
+                          <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
+                              <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>报修地址：</Text>
+                              <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{detailAddress}</Text>
+                          </View>
+                          <View style={{backgroundColor:'white', flexDirection:'row',marginTop:5,}}>
+                              <Text style={{fontSize:13,color:'#999',marginLeft:15,textAlign:'left', }}>维修人员：</Text>
+                              <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>{repairUserName}</Text>
+                          </View>
+                      </View>
+              }]}
+              animation={true}
+              expanded={true}
+              renderHeader={this._renderHeader.bind(this)}
+              renderContent={this._renderContent.bind(this)}
+              expanded={0}
+          />
+          <Accordion
+              dataArray={[{ title: "维修事项", content:processList}]}
+              animation={true}
+              expanded={true}
+              renderHeader={this._renderHeader.bind(this)}
+              renderContent={this._renderContent.bind(this)}
+              expanded={0}
+          />
+          <Accordion
+              dataArray={[{ title: "物料", content:materialList}]}
+              animation={true}
+              expanded={true}
+              renderHeader={this._renderHeader.bind(this)}
+              renderContent={this._renderContent.bind(this)}
+              expanded={0}
+          />
     </ScrollView>
     </View>
     )
