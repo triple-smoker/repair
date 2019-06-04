@@ -18,7 +18,7 @@ import Axios from '../../util/Axios';
 import Sound from "react-native-sound";
 import Video from 'react-native-video';
 import VideoPlayer from '../../components/VideoPlayer';
-
+import { toastShort } from '../../js/util/ToastUtil';
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
@@ -445,6 +445,7 @@ class CancelMd extends Component {
         Axios.PostAxios(url,data,headers).then(
             (response) => {
                         setTimeout(function(){
+                            toastShort('取消成功');
                             getRepairList();
                         },200)
                     }

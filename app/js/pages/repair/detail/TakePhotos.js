@@ -164,10 +164,9 @@ export default class TakePhotos extends BaseComponent {
                     "fileHost": obj.fileHost
                 }
                 imagesStarted.push(data);
-            }
-           
-            
-            
+            }else{
+                imagesStarted.push({})
+            }  
             let params = {
                 repairId:this.state.repairId,
                 userId:global.uinfo.userId,

@@ -27,7 +27,7 @@ import { captureScreen, captureRef } from "react-native-view-shot";
 import {Toast} from '../../../component/Toast'
 import {Loading} from '../../../component/Loading'
 import BaseComponent from '../../../base/BaseComponent'
-
+import { toastShort } from '../../../util/ToastUtil';
 var hours = '';
 var moneyBen = '';
 var moneyRen = '';
@@ -369,6 +369,7 @@ renderMaterialItem(data, i) {
             if (result && result.code === 200) {
                 that.setState({signatureData:result.data, modalVisible:false});
                 that.completed(result.data);
+                toastShort('提交成功')
                 return;
             } else {
                 if(result && result.data && result.data.error){

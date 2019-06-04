@@ -202,9 +202,7 @@ export default class ArrangeWork extends BaseComponent {
         <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组</Text>
             
-            <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                                {/* <Image source={require('../../../res/login/ic_arrow.png')}
-                                       style={{width:6,height:11,marginLeft:10, marginRight:10,}}/> */}
+            <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1,paddingRight:10}}>
                 <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectDeptName}</Text>
             </View>
         </View>
@@ -320,7 +318,6 @@ export default class ArrangeWork extends BaseComponent {
     // }
     var userList = this.state.userList
     var list = []
-    console.log( this.state.detaiData.ownerId)
     for(var i = 0;i<userList.length;i++){
         if(userList[i].userId != this.state.detaiData.ownerId){
             list.push(userList[i])
@@ -381,7 +378,13 @@ export default class ArrangeWork extends BaseComponent {
 
       this.setState({dataSource:this.state.dataSource.cloneWithRows(items), selectDeptPos:pos, selectDeptData:data});
     } else {
-      var items = this.state.userList;
+      var userList = this.state.userList;
+      var items = []
+        for(var i = 0;i<userList.length;i++){
+            if(userList[i].userId != this.state.detaiData.ownerId){
+                items.push(userList[i])
+            }
+        }
       for (var i = 0; i < items.length; i++) {
         var item = items[i];
         if (item.userId === data.userId) {
