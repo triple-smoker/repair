@@ -40,13 +40,16 @@ export default class TransferOrder extends BaseComponent {
       selectIndex:-1,
       modelTitle:'',
       modalVisible:false,
+      modalDeptVisible:false,
       selectDeptPos:-1,
       selectUserPos:-1,
       selectDeptName:null,
       selectUserName:null,
+      selectDeptData:null,
+      selectUserData:null,
       deptList:[],
       userList:[],
-      dataSource: new ListView.DataSource({
+      dataSourceDept: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
             if (r1 !== r2) {
                 //console.log("不相等=");
@@ -59,6 +62,15 @@ export default class TransferOrder extends BaseComponent {
             return true//r1.isSelected !== r2.isSelected;
         }
       }),
+      dataSourcePerson: new ListView.DataSource({
+        rowHasChanged: (r1, r2)=> {
+            if (r1 !== r2) {
+
+            } else {
+
+            }
+            return true//r1.isSelected !== r2.isSelected;
+        }}),
     }
 
   }
@@ -68,6 +80,7 @@ export default class TransferOrder extends BaseComponent {
       this.loadRep();
       this.getDeptListByType();
   }
+
 
 
   getDeptListByType() {
@@ -81,39 +94,31 @@ export default class TransferOrder extends BaseComponent {
     });
   }
 
-  getUserListByDeptId() {
-    if (!this.state.deptList) {
-        toastShort('部门列表未加载');
-      return;
-    }
 
-    var that = this;
-    var dept = this.state.deptList[this.state.selectDeptPos];
-    if (this.state.dataMap.has(dept.deptId)) {
-        var list = this.state.dataMap.get(dept.deptId);
-        that.setState({userList:list, });
-        return;
-    }
-
-    Request.requestGet(GetUserListByDeptId+dept.deptId, null, (result)=> {
-        if (result && result.code === 200) {
-            that.state.dataMap.set(dept.deptId, result.data);
-            that.setState({userList:result.data});
-        } else {
-
+    getUserListByDeptId() {
+        var that = this;
+        if (this.state.dataMap.has(this.state.selectDeptData.deptId)) {
+            var list = this.state.dataMap.get(this.state.selectDeptData.deptId);
+            that.setState({userList:list, dataSourcePerson:that.state.dataSourcePerson.cloneWithRows(list), });
+            return;
         }
-    });
-  }
+
+        Request.requestGet(GetUserListByDeptId+this.state.selectDeptData.deptId, null, (result)=> {
+            if (result && result.code === 200) {
+                that.state.dataMap.set(that.state.selectDeptData.deptId, result.data);
+                that.setState({userList:result.data, dataSourcePerson:that.state.dataSourcePerson.cloneWithRows(result.data), });
+
+            } else {
+
+            }
+        });
+    }
 
   _onSure() {
 
     var that = this;
-    if (this.state.selectDeptPos === -1 && this.state.typeCode === 0 ) {
-        toastShort('请选择班组');
-        return;
-    }
 
-    if (this.state.selectUserPos === -1 && this.state.typeCode === 0 ) {
+    if (this.state.typeCode === 0&&(this.state.selectDeptData===null||this.state.selectUserData===null)) {
         toastShort('请选择维修人员');
         return;
     }
@@ -131,8 +136,8 @@ export default class TransferOrder extends BaseComponent {
     var params = "";
     if(this.state.typeCode === 0){
         params = {
-            repairDeptId:this.state.deptList[this.state.selectDeptPos].deptId,
-            repairUserId:this.state.userList[this.state.selectUserPos].userId,
+            repairDeptId:this.state.selectDeptData.deptId,
+            repairUserId:this.state.selectUserData.userId,
             causeIds:causeIds,
             remark:username,
             repairId:that.state.repairId,
@@ -209,6 +214,68 @@ export default class TransferOrder extends BaseComponent {
                 borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>{data.causeCtn}</Text>
     );
   }
+    addMan() {
+        this.setState({
+            modalDeptVisible:true,
+            dataSourceDept:this.state.dataSourceDept.cloneWithRows(this.state.deptList),});
+    }
+
+    _hide() {
+        this.setState({modalDeptVisible:false, selectUserData:null});
+    }
+    renderItemLeft(data) {
+        var that = this;
+        var color = this.state.selectDeptData&&this.state.selectDeptData.deptId===data.deptId ? '#444' : '#999';
+        var img = null;
+        if (this.state.selectDeptData&&this.state.selectDeptData.deptId===data.deptId) {
+            img = <Image source={require('../../../res/login/ic_arrow.png')} style={{width:6,height:11,marginLeft:15,marginRight:15,}}/>
+
+        }
+        return (
+            <View key={data.id}>
+                <TouchableOpacity onPress={()=>{this.onPressItemLeft(data)}} style={{height:45,flex:1,backgroundColor: '#f6f6f6',}}>
+                    <View style={{flexDirection:'row',marginLeft:10,height:45,textAlignVertical:'center',alignItems: 'center',}} >
+
+                        <Text style={{fontSize:14,color:color,marginLeft:15,flex:1}}>{data.deptName}</Text>
+                        {img}
+                    </View>
+                </TouchableOpacity>
+
+            </View>
+        );
+    }
+    onPressItemLeft(data){
+        var that = this;
+        var items = this.state.deptList;
+        console.log(JSON.stringify(data))
+        this.setState({dataSourceDept:this.state.dataSourceDept.cloneWithRows(items), selectDeptData:data,selectDeptName:data.deptName});
+        // this.timer = setTimeout(() => {
+            that.getUserListByDeptId();
+        // }, 200);
+
+    }
+    renderItemRight(data) {
+        var that = this;
+        return (
+            <View key={data.id}>
+                <TouchableOpacity onPress={()=>{that.onPressItemRight(data)}} style={{height:45,flex:1}}>
+                    <View style={{flexDirection:'row',marginLeft:10,height:45,textAlignVertical:'center',alignItems: 'center',}} >
+                        <Image source={this.state.selectUserData&&this.state.selectUserData.userId===data.userId ? require('../../../res/login/checkbox_pre.png') : require('../../../res/login/checkbox_nor.png')} style={{width:18,height:18}}/>
+                        <Text style={{fontSize:14,color:'#777',marginLeft:15,}}>{data.userName}</Text>
+                    </View>
+                </TouchableOpacity>
+
+            </View>
+        );
+    }
+    onPressItemRight(data){
+        var items = this.state.userList;
+        this.setState({dataSourcePerson:this.state.dataSourcePerson.cloneWithRows(items), selectUserData:data,selectUserName:data.userName});
+    }
+
+    submit() {
+        this.setState({modalDeptVisible:false});
+    }
 
   render() {
     var repDatas = null;
@@ -258,21 +325,9 @@ export default class TransferOrder extends BaseComponent {
           {this.state.typeCode === 0 &&
               <View>
                   <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择维修人员</Text>
-                  <TouchableOpacity onPress={()=>{this.selectDept()}} style={{height:40}}>
+                  <TouchableOpacity onPress={()=>{this.addMan()}} style={{height:40}}>
                       <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
-                          <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组</Text>
-                          <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectDeptName}</Text>
-                          <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                              <Image source={require('../../../res/login/ic_arrow.png')}
-                                     style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
-
-                          </View>
-                      </View>
-                  </TouchableOpacity>
-                  <View style={styles.line} />
-                  <TouchableOpacity onPress={()=>{this.selectUser()}} style={{height:40}}>
-                      <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
-                          <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>人员</Text>
+                          <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组人员</Text>
                           <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectUserName}</Text>
                           <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
                               <Image source={require('../../../res/login/ic_arrow.png')}
@@ -310,145 +365,52 @@ export default class TransferOrder extends BaseComponent {
             onPress={()=>this._onSure()}
             style={styles.button}>确定</Text>
 
-      <Modal
-            animationType={"none"}
-            transparent={true}
-            visible={this.state.modalVisible}
-            onRequestClose={() => {}}
-        >
 
-        <View style={styles.modelStyle}>
-            <View style={[styles.popupStyle, {marginTop:(Dimens.screen_height-390)/2,backgroundColor:'#fbfbfb',}]}>
-                <Text style={{fontSize:16,color:'#333',marginLeft:0,marginTop:10,textAlign:'center',width:Dimens.screen_width-80, height:40}}>{this.state.modelTitle}</Text>
-                <View style={{backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-80),}} />
-                <ListView
-                        initialListSize={1}
-                        dataSource={this.state.dataSource}
-                        renderRow={(item) => this.renderItem(item)}
-                        style={{backgroundColor:'white',flex:1,height:300,width:Dimens.screen_width-80,}}
-                        onEndReachedThreshold={10}
-                        enableEmptySections={true}
-                        renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}
-                        />
-                <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
-                    <Text onPress={()=>this.cancel()} style={{borderBottomLeftRadius: 15,textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:40, textAlign:'center', flex:1}}>取消</Text>
-                    <Text onPress={()=>this.submit()} style={{borderBottomRightRadius: 15,textAlignVertical:'center',backgroundColor:'#E1E4E8', color:'#333',fontSize:16, height:40, textAlign:'center', flex:1}}>确定</Text>
-                </View>
-            </View>
-        </View>
-    </Modal>
+          <Modal
+              animationType={"none"}
+              transparent={true}
+              visible={this.state.modalDeptVisible}
+              onRequestClose={() =>this.setState({modalDeptVisible:false})}
+          >
+              <View style={{top:0,height:Dimens.screen_height,width:Dimens.screen_width,backgroundColor: 'rgba(0,0,0,0.5)',alignItems:'center',justifyContent:'center',}}>
+                  <View style={stylesDept.bottomStyle}>
+                      <View style={stylesDept.topStyle}>
+                          <Text onPress={()=>this._hide()} style={{color:'#9b9b9b', marginLeft:10, flex:1}}>取消</Text>
+                          <Text onPress={()=>this.submit()} style={{color:'#9b9b9b', marginRight:10, }}>确定</Text>
+                      </View>
+                      <View style={{flexDirection:'row', height:300,}}>
+                          <ListView
+                              initialListSize={1}
+                              dataSource={this.state.dataSourceDept}
+                              renderRow={(item) => this.renderItemLeft(item)}
+                              style={{backgroundColor:'white',flex:1,height:300,width:Dimens.screen_width/3,}}
+                              onEndReachedThreshold={10}
+                              enableEmptySections={true}
+                              renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}/>
+
+                          <ListView
+                              initialListSize={1}
+                              dataSource={this.state.dataSourcePerson}
+                              renderRow={(item) => this.renderItemRight(item)}
+                              style={{backgroundColor:'white',flex:1,height:300,width:Dimens.screen_width*2/3,}}
+                              onEndReachedThreshold={10}
+                              enableEmptySections={true}
+                              renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}/>
+
+                      </View>
+                  </View>
+              </View>
+
+          </Modal>
       </View>
     )
   }
 
 
-  selectDept() {
-        this.setState({modelTitle:'选择班组', selectDeptState:true, modalVisible:true, dataSource:this.state.dataSource.cloneWithRows(this.state.deptList), });
-  }
-
-  selectUser() {
-    if (this.state.selectDeptPos === -1) {
-        toastShort('请先选择班组');
-        return;
-    }
-
-    this.setState({modelTitle:'选择人员', selectDeptState:false, modalVisible:true, dataSource:this.state.dataSource.cloneWithRows(this.state.userList), });
-  }
-
-  cancel() {
-    if (this.state.selectDeptState) {
-        this.setState({modalVisible:false, selectDeptPos:-1});
-    } else {
-
-        this.setState({modalVisible:false, selectUserPos:-1, });
-    }
-  }
-
-  submit() {
-
-        if (this.state.selectDeptState) {
-            if (this.state.selectDeptPos != -1) {
-              var dept = this.state.deptList[this.state.selectDeptPos];
-                this.setState({modalVisible:false, selectDeptName:dept.deptName,selectUserPos:-1, selectUserName:null});
-                this.getUserListByDeptId();
-            }
-
-        } else {
-            if (this.state.selectUserPos != -1) {
-              var user = this.state.userList[this.state.selectUserPos];
-                this.setState({modalVisible:false, selectUserName:user.userName});
-            }
-        }
-  }
-
   _renderSeparatorView(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
     return (
       <View key={`${sectionID}-${rowID}`} style={styles.separator} />
     );
-  }
-
-
-
-  onPressItem(data) {
-    var pos = 0;
-
-    if (this.state.selectDeptState) {
-      var items = this.state.deptList;
-
-      for (var i = 0; i < items.length; i++) {
-        var item = items[i];
-        if (item.deptId === data.deptId) {
-            pos = i;
-        }
-    }
-
-      this.setState({dataSource:this.state.dataSource.cloneWithRows(items), selectDeptPos:pos, });
-    } else {
-      var items = this.state.userList;
-      for (var i = 0; i < items.length; i++) {
-        var item = items[i];
-        if (item.userId === data.userId) {
-            pos = i;
-        }
-       }
-
-       this.setState({dataSource:this.state.dataSource.cloneWithRows(items), selectUserPos:pos, });
-    }
-
-  }
-
-
-  renderItem(data) {
-    var that = this;
-    if (this.state.selectDeptState) {
-        var dept = null;
-        if (this.state.selectDeptPos !== -1) {
-            dept = this.state.deptList[this.state.selectDeptPos];
-        }
-        return (
-            <TouchableOpacity onPress={()=>{that.onPressItem(data)}} style={{height:45,flex:1}}>
-                <View style={{flexDirection:'row',marginLeft:15,height:45,textAlignVertical:'center',alignItems: 'center',}} >
-                <Image source={dept&&dept.deptId===data.deptId ? require('../../../res/login/checkbox_pre.png') : require('../../../res/login/checkbox_nor.png')} style={{width:18,height:18}}/>
-                <Text style={{fontSize:14,color:'#777',marginLeft:15,}}>{data.deptName}</Text>
-                </View>
-            </TouchableOpacity>
-        );
-    } else {
-
-        var user = null;
-        if (this.state.selectUserPos !== -1) {
-            user = this.state.userList[this.state.selectUserPos];
-        }
-        return (
-            <TouchableOpacity onPress={()=>{that.onPressItem(data)}} style={{height:45,flex:1}}>
-                <View style={{flexDirection:'row',marginLeft:15,height:45,textAlignVertical:'center',alignItems: 'center',}} >
-                <Image source={user&&user.userId===data.userId ? require('../../../res/login/checkbox_pre.png') : require('../../../res/login/checkbox_nor.png')} style={{width:18,height:18}}/>
-                <Text style={{fontSize:14,color:'#777',marginLeft:15,}}>{data.userName}</Text>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-
   }
 }
 
@@ -516,4 +478,73 @@ listViewStyle:{
        height: 1,
        backgroundColor: '#f6f6f6'
     },
+});
+const stylesDept = StyleSheet.create({
+    modelStyle:{
+        flex: 1,
+        width:Dimens.screen_width,
+        height:Dimens.screen_height,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+    },
+    popupStyle:{
+        marginLeft:40,
+        width:Dimens.screen_width-80,
+        height:390,
+        backgroundColor: 'white',
+        borderBottomRightRadius: 15,
+        borderBottomLeftRadius: 15,
+        borderTopLeftRadius: 15,
+        borderTopRightRadius:15,
+    },
+    container: {
+        flex: 1,
+        backgroundColor: '#f6f6f6',
+    },
+    line:{
+        backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-15),marginTop:0,marginLeft:15,
+    },
+    button:{
+        width:Dimens.screen_width,
+        height:50,
+        color:'#ffffff',
+        fontSize:18,
+        textAlign:'center',
+        backgroundColor: '#5ec4c8',
+        alignItems:'center',
+        justifyContent:'center',
+        textAlignVertical:'center',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        alignSelf: 'center'
+    },
+
+    bottomStyle:{
+        width:Dimens.screen_width,
+        height:335,
+        textAlign:'center',
+        backgroundColor: '#fff',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        alignSelf: 'center'
+    },
+    topStyle: {
+        flexDirection:'row',
+        fontSize:14,
+        backgroundColor: '#EFF0F1',
+        width:Dimens.screen_width,
+        height:35,
+        alignItems:'center',
+        justifyContent:'center',
+        textAlignVertical:'center',
+    },
+
+    separator: {
+        height: 0.5,
+        backgroundColor: '#eee'
+    }
+
 });
