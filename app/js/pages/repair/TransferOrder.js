@@ -95,17 +95,17 @@ export default class TransferOrder extends BaseComponent {
   }
 
 
-    getUserListByDeptId() {
+    getUserListByDeptId(data) {
         var that = this;
-        if (this.state.dataMap.has(this.state.selectDeptData.deptId)) {
-            var list = this.state.dataMap.get(this.state.selectDeptData.deptId);
+        if (this.state.dataMap.has(data.deptId)) {
+            var list = this.state.dataMap.get(data.deptId);
             that.setState({userList:list, dataSourcePerson:that.state.dataSourcePerson.cloneWithRows(list), });
             return;
         }
 
-        Request.requestGet(GetUserListByDeptId+this.state.selectDeptData.deptId, null, (result)=> {
+        Request.requestGet(GetUserListByDeptId+data.deptId, null, (result)=> {
             if (result && result.code === 200) {
-                that.state.dataMap.set(that.state.selectDeptData.deptId, result.data);
+                that.state.dataMap.set(data.deptId, result.data);
                 that.setState({userList:result.data, dataSourcePerson:that.state.dataSourcePerson.cloneWithRows(result.data), });
 
             } else {
@@ -250,7 +250,7 @@ export default class TransferOrder extends BaseComponent {
         console.log(JSON.stringify(data))
         this.setState({dataSourceDept:this.state.dataSourceDept.cloneWithRows(items), selectDeptData:data,selectDeptName:data.deptName});
         // this.timer = setTimeout(() => {
-            that.getUserListByDeptId();
+            that.getUserListByDeptId(data);
         // }, 200);
 
     }
