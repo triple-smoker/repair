@@ -17,7 +17,7 @@ import {
 
 } from 'react-native';
 import { List, Radio, Flex, WhiteSpace } from '@ant-design/react-native';
-
+import {Toast} from '../../../component/Toast'
 const RadioItem = Radio.RadioItem;
 import TitleBar from '../../../component/TitleBar';
 import * as Dimens from '../../../value/dimens';
@@ -57,6 +57,7 @@ export default class AddOption extends BaseComponent {
             selectUserData:null,
             oldItemPersonList:null,
             type:1,
+            userId:null,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
@@ -102,6 +103,7 @@ export default class AddOption extends BaseComponent {
     let mainPerson = {};
     AsyncStorage.getItem('uinfo', function (error, result) {
         var userInfo =  JSON.parse(result);
+         that.setState({userId:userInfo.userId})
         mainPerson = {
             userName : userInfo.userName,
             process : 100,
@@ -142,15 +144,21 @@ export default class AddOption extends BaseComponent {
   getUserListByDeptId() {
     var that = this;
     if (this.state.dataMap.has(this.state.selectDeptData.deptId)) {
-        var list = this.state.dataMap.get(this.state.selectDeptData.deptId);
+        var list = this.state.dataMap.get(this.state.selectDeptData.deptId); 
         that.setState({userList:list, dataSource1:that.state.dataSource1.cloneWithRows(list), });
         return;
     }
 
     Request.requestGet(GetUserListByDeptId+this.state.selectDeptData.deptId, null, (result)=> {
+        let list = []    
         if (result && result.code === 200) {
-            that.state.dataMap.set(that.state.selectDeptData.deptId, result.data);
-            that.setState({userList:result.data, dataSource1:that.state.dataSource1.cloneWithRows(result.data), });
+            result.data.forEach((arr,i)=>{              
+            if(arr.userId != this.state.userId){             
+                    list.push(arr)
+                }
+            })
+            that.state.dataMap.set(that.state.selectDeptData.deptId, list);
+            that.setState({userList:list, dataSource1:that.state.dataSource1.cloneWithRows(list), });
 
         } else {
 
@@ -267,7 +275,8 @@ export default class AddOption extends BaseComponent {
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             if (item.userId === this.state.selectUserData.userId) {
-                toastShort('不能重复添加');
+                // toastShort('不能重复添加');
+                Toast.show('不能重复添加')
                 return;
             }
         }
@@ -329,9 +338,9 @@ export default class AddOption extends BaseComponent {
     var that = this;
     return (
         <List key={i}>    
-          <RadioItem key={i} checked={data.type === 1} 
-            onChange={() => that.personCheck(data.userId)}>
-            <View key={i} style={{height:60, marginTop:15, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
+          {/* <RadioItem key={i} checked={data.type === 1} 
+            onChange={() => that.personCheck(data.userId)}> */}    
+            <View key={i} style={{height:60, marginTop:15, flexDirection: 'row', justifyContent:'space-between', textAlignVertical:'center',marginLeft:0, marginRight:0, alignItems:'center',}}>
                 <Image source={require('../../../../res/repair/user_wx.png')} style={{width:30,height:30,marginLeft:15}}/>
                 <View style={{backgroundColor:'white', marginLeft:10, marginRight:10, textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
                         borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, }}>
@@ -348,6 +357,7 @@ export default class AddOption extends BaseComponent {
                             maximumValue={100}
                             minimumTrackTintColor={'#3F9AED'}
                             maximumTrackTintColor={'#bbb'}
+                            step={10}
                             value={data.process}
                             onSlidingComplete={this._complete}
                             onValueChange={(value)=>{that._onChange(data, i, value)}}/>
@@ -355,8 +365,16 @@ export default class AddOption extends BaseComponent {
                         <Text style={{color:'#3F9AED',fontSize:12, marginLeft:15,marginRight:15,}}>{Math.round(data.process)}%</Text>
                     </View>
                 </View>
+                <View style={{flexDirection:'column' ,justifyContent:'space-between',marginRight:10, }}>
+                    <Text style={{color:'#000',fontSize:14, }}>{data.type && data.type === 1 ? '主修人' : ''}</Text> 
+                    <TouchableOpacity onPress={() => that.personCheck(data.userId)}>
+                        <Image source={data.type && data.type === 1 ? 
+                            require('../../../../res/login/checkbox_pre.png') : require('../../../../res/login/checkbox_nor.png')} 
+                            style={{width:19,height:19,marginLeft:14,marginRight:16}}/>
+                    </TouchableOpacity>
+                </View>
             </View>
-          </RadioItem>
+          {/* </RadioItem> */}
         
         </List>
     );
@@ -675,7 +693,9 @@ renderItem(data) {
     <View key={data.id}>
     <TouchableOpacity onPress={()=>{that.onPressItem(data)}} style={{height:45,flex:1}}>
     <View style={{flexDirection:'row',marginLeft:10,height:45,textAlignVertical:'center',alignItems: 'center',}} >
-    <Image source={this.state.selectUserData&&this.state.selectUserData.userId===data.userId ? require('../../../../res/login/checkbox_pre.png') : require('../../../../res/login/checkbox_nor.png')} style={{width:18,height:18}}/>
+    <Image source={this.state.selectUserData&&this.state.selectUserData.userId===data.userId ? 
+            require('../../../../res/login/checkbox_pre.png') : require('../../../../res/login/checkbox_nor.png')} 
+            style={{width:18,height:18}}/>
     <Text style={{fontSize:14,color:'#777',marginLeft:15,}}>{data.userName}</Text>
     </View>
     </TouchableOpacity>

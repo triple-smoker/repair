@@ -40,9 +40,11 @@ export default class HistoryDetail extends BaseComponent {
             repairId:props.navigation.state.params.repairId,
     }
   }
-
+  componentWillMount() {
+    this.loadDetail();
+  }
   componentDidMount() {
-      this.loadDetail();
+      
       this.loadEvaluateCause();
   }
 
@@ -230,7 +232,6 @@ loadEvaluateCause() {
                                     </View>
                             </View>
                           </View>
-                return
             } else {
                 var viewList = detaiData.itemPersonList.map((item, i)=>{
                     if(item.assistantId !=null){
