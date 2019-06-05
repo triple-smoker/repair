@@ -194,6 +194,8 @@ export default class Login extends BaseComponent {
      global.access_token = null;
      Request.requestGet(AuthToken, params, (result)=> {
         if (result && result.access_token) {
+            global.username = username;
+            global.password = encodeURIComponent(psw);
             Toast.show('登录成功');
             // global.storage.save({
             //         key:'token',

@@ -38,6 +38,8 @@ export default class MinePage extends Component {
       global.deptId = null;
       global.userId = null;
       global.permissions = null;
+      global.username = null;
+      global.password = null;
             AsyncStorage.setItem('token', '', function (error) {
                 if (error) {
                    console.log('error: save error');
