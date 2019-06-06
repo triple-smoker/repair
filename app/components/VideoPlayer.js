@@ -227,7 +227,9 @@ class VideoPlayer extends Component {
     }
 
     setVideoCurrentTime = (time) => {
-        this.videoPlay.seek(time);
+        if(this.videoPlay){
+            this.videoPlay.seek(time);
+        }
         this.setState({
             currentTime: time || 0,
             isPlaying: false,

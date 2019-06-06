@@ -20,6 +20,7 @@ import * as Dimens from '../../value/dimens';
 import Request, {GetRepairType} from '../../http/Request';
 import Permissions from 'react-native-permissions';
 import OrderType from "../../../pages/publicTool/OrderType";
+import RNFetchBlob from '../../../util/RNFetchBlob';
 
 import NfcManager, {Ndef} from 'react-native-nfc-manager';
 const bannerImgs=[
@@ -54,6 +55,16 @@ export default class HomePage extends Component {
             }
         })
 
+        //删除一条数据
+        AsyncStorage.removeItem('fileVideoCache', function (error) {
+            if (error) {
+                // alert('删除失败')
+            }else {
+                // alert('删除完成')
+            }
+        })
+
+        RNFetchBlob.clearCache();
     }
 
 

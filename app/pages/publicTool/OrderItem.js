@@ -11,6 +11,7 @@ import {
     TextInput,
     Linking,
     Text,
+    ActivityIndicator,
 } from 'react-native';
 import {  Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right,  List, ListItem, Thumbnail,Textarea} from 'native-base';
 import Swiper from 'react-native-swiper';
@@ -19,6 +20,8 @@ import Sound from "react-native-sound";
 import Video from 'react-native-video';
 import VideoPlayer from '../../components/VideoPlayer';
 import { toastShort } from '../../js/util/ToastUtil';
+import AsyncStorage from '@react-native-community/async-storage';
+import RNFetchBlob from '../../util/RNFetchBlob';
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
@@ -69,22 +72,32 @@ class Adds extends Component {//报修单共用组件
                 return <Image resizeMode='stretch' style={{width: 70, height: 70}} source={{uri:path}} />;
             }
         }
-        // else if(videosRequest != null && videosRequest.length>0){
-        //     var path = '';
-        //     var i=1;
-        //     videosRequest.forEach(function(videoItem){
-        //         if(i===1 && videoItem.filePath != ''){
-        //             path = videoItem.filePath;
-        //             i = i+1;
-        //         }
-        //     });
-        //     if(i === 1){
-        //         return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>;
-        //     }
-        //     else{
-        //         return <PreVideo uri={path}/> 
-        //     }
-        // }
+        else if(videosRequest != null && videosRequest.length>0){
+            var path = '';
+            var i=1;
+            videosRequest.forEach(function(videoItem){
+                if(i===1 && videoItem.filePath != ''){
+                    path = videoItem.filePath;
+                    i = i+1;
+                }
+            });
+            if(i === 1){
+                return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>;
+            }
+            else{
+                return <View style={{width: 70, height: 70, backgroundColor:'#000000'}}>
+                            <Image 
+                                style={{
+                                    position: 'absolute',
+                                    top: 18,
+                                    left: 18,
+                                    width: 36,
+                                    height: 36,
+                                }} 
+                            source={require('../../image/icon_video_play.png')}/>
+                       </View>
+            }
+        }
         else{
             return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>
         }
@@ -283,15 +296,15 @@ class PictureMd extends Component {
 
         if(imagesRequest!=null && imagesRequest.length > 0){
             listItems =(  imagesRequest === null ? null : imagesRequest.map((imageItem, index) =>
-                <ImageItem  setModalVisible={setModalVisible} num={index+1} sum={i}  imageurl={imageItem.filePath} key={index}/>
+                <ImageItem num={index+1} sum={i}  imageurl={imageItem.filePath} key={index}/>
             ))
         }
-        // if(videosRequest!=null && videosRequest.length > 0){
-        //      let videoItems =(  videosRequest === null ? null : videosRequest.map((videoItem, index) =>
-        //         <VideoItem  onRef={this.onRef} setModalVisible={setModalVisible} num={index+1+j} sum={i}  imageurl={videoItem.filePath} key={index}/>
-        //     ))
-        //     listItems = listItems.concat(videoItems);
-        // }
+        if(videosRequest!=null && videosRequest.length > 0){
+             let videoItems =(  videosRequest === null ? null : videosRequest.map((videoItem, index) =>
+                <VideoItem  onRef={this.onRef} setModalVisible={setModalVisible} num={index+1+j} sum={i}  imageurl={videoItem.filePath} fileName={videoItem.fileName} key={index}/>
+            ))
+            listItems = listItems.concat(videoItems);
+        }
 
         return listItems;
     }
@@ -342,13 +355,64 @@ class VideoItem extends Component{
     }
 
     setVideoCurrentTime = (e) =>{
-        this.videoPlayerRef.setVideoCurrentTime(0);
+      if(this.videoPlayerRef){
+          this.videoPlayerRef.setVideoCurrentTime(0);
+      }
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            videoPath: null,
+            animating: true
+        };
+        this.getVideoFilePath(this.props.imageurl,this.props.fileName);
+    }
+
+    getVideoFilePath(path,fileName){
+        AsyncStorage.getItem('fileVideoCache', function (error,result) {
+                if (error) {
+                    console.log('读取失败')
+                }else {
+                    console.log('读取完成')
+                    let fileVideo = JSON.parse(result) || {};
+                    if(fileVideo != null && fileVideo[fileName]){
+                        this.setState({
+                            videoPath : fileVideo[fileName],
+                            animating: false
+                        })
+                    }else{
+                        RNFetchBlob.fileVideoCache(path,fileName).then((res) => {
+                            fileVideo[fileName] = res.path()
+                            //json转成字符串
+                            let jsonStr = JSON.stringify(fileVideo);
+                            AsyncStorage.setItem('fileVideoCache', jsonStr, function (error) {
+                                if (error) {
+                                    console.log('存储失败')
+                                }else {
+                                    console.log('存储完成')
+                                }
+                            })
+                            this.setState({
+                                videoPath : res.path(),
+                                animating: false
+                            })
+                        }).catch((error) => {
+                            console.info("存储失败" + error)
+                        });
+                    }
+                }
+            }.bind(this)
+        )
     }
 
     render(){
         return (
             <View style={stylesImage.slide}>
-                <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.props.imageurl}></VideoPlayer> 
+                {
+                    this.state.videoPath == null ? <View style={stylesImage.image}><Loading animating={this.state.animating}/></View>
+                    : <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.state.videoPath}></VideoPlayer> 
+                }
                 <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
             </View>
         )
@@ -373,7 +437,7 @@ const PreVideo  = (video) => {
                resizeMode={'cover'}
                onError={e => console.log(e)}
                onLoad={load => console.log(load)}
-               repeat={true} />
+               repeat={false} />
     );
 }
 
@@ -479,6 +543,42 @@ class CancelMd extends Component {
             );
         }
 }
+
+
+const Loading = (loading) =>{
+
+    return(
+        <View style={loadStyles.wrapper}>
+          <View style={loadStyles.box}>
+            <ActivityIndicator 
+              animating={loading.animating}
+              color='white'
+              size='large'
+            />
+          </View>
+        </View>
+    )
+}
+
+  
+const loadStyles=StyleSheet.create({
+    wrapper:{
+      justifyContent:'center',
+      alignItems:'center',
+      position:'absolute',
+      height:Dimensions.get('window').height,
+      width:Dimensions.get('window').width,
+      zIndex:10,
+    },
+    box:{
+      paddingVertical:12,
+      paddingHorizontal:20,
+      flexDirection:'row',
+      justifyContent:'center',
+      alignItems:'center',
+      borderRadius:6
+    },
+})
 
 
 const stylesImage =StyleSheet.create({

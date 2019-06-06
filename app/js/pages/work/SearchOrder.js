@@ -15,7 +15,8 @@ import {
     ListView,
     Modal,
     DeviceEventEmitter,
-    Linking, Dimensions
+    Linking, Dimensions,
+    ActivityIndicator
 } from 'react-native';
 
 
@@ -33,6 +34,8 @@ import HistoryDetail from '../repair/HistoryDetail';
 import Swiper from 'react-native-swiper';
 import VideoPlayer from '../../../components/VideoPlayer';
 import Video from 'react-native-video';
+import AsyncStorage from '@react-native-community/async-storage';
+import RNFetchBlob from '../../../util/RNFetchBlob';
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -77,7 +80,8 @@ export default class SearchOrder extends BaseComponent {
         }
       }),
       isLoadingTail: false, // loading?
-      isRefreshing: false // refresh?
+      isRefreshing: false, // refresh?
+      videoItemRefMap: new Map(), //存储子组件模板节点
     }
   }
 
@@ -421,25 +425,19 @@ export default class SearchOrder extends BaseComponent {
                   uriImg = <Image source={{uri:data.fileMap.imagesRequest[0].filePath}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
               }
           }else if(data.fileMap.videosRequest && data.fileMap.videosRequest.length > 0){
-              //  if(data.fileMap.videosRequest[0].filePath!=null){
-              //      uriImg = <Video source={{uri: data.fileMap.videosRequest[0].filePath}}
-              //                      style={{
-              //                          top: 0,
-              //                          left: 0,
-              //                          bottom: 0,
-              //                          right: 0,
-              //                          width: 70,
-              //                          height: 70
-              //                      }}
-              //                      rate={1}
-              //                      paused={true}
-              //                      volume={1}
-              //                      muted={false}
-              //                      resizeMode={'cover'}
-              //                      onError={e => console.log(e)}
-              //                      onLoad={load => console.log(load)}
-              //                      repeat={true} />
-              //  }
+              if(data.fileMap.videosRequest[0].filePath!=null){
+                uriImg = <View style={{width: 70, height: 70, backgroundColor:'#000000'}}>
+                            <Image 
+                                style={{
+                                    position: 'absolute',
+                                    top: 18,
+                                    left: 18,
+                                    width: 36,
+                                    height: 36,
+                                }} 
+                            source={require('../../../image/icon_video_play.png')}/>
+                      </View>
+              }
           }
 
           if (data.fileMap.voicesRequest && data.fileMap.voicesRequest.length > 0) {
@@ -586,6 +584,28 @@ export default class SearchOrder extends BaseComponent {
     );
   }
 
+
+  //获取VideoPlayer组件模板元素
+  onRef = (ref) => {
+    this.videoItemRef = ref
+    this.appentRefMap(ref.props.num,ref);
+  }
+  
+  appentRefMap(index,ref){
+      let map = this.state.videoItemRefMap;
+      map.set(index,ref);
+      this.setState({
+          videoItemRefMap: map
+      });
+  }
+  
+  setVideoCurrentTime = (index) => {
+    let videoItemRef = this.state.videoItemRefMap.get(index + 1);
+    if(videoItemRef){
+        videoItemRef.setVideoCurrentTime();
+    }
+  }
+
   render() {
     var repDatas = null;
     if (this.state.modalVisible) {
@@ -614,15 +634,14 @@ export default class SearchOrder extends BaseComponent {
           ))
       }
 
-      // if(this.state.videosRequest && this.state.videosRequest.length > 0){
-      //   let videoItems =(  this.state.videosRequest === null ? null : this.state.videosRequest.map((videoItem, index) =>
-      //     <View style={stylesImage.slide} key={index}>
-      //         <VideoPlayer  onRef={this.onRef} num={index+1+j} closeVideoPlayer={()=> {this.setState({modalPictureVisible:false})}} uri={videoItem.filePath}></VideoPlayer>
-      //         <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1+j}/{i}</Text></View>
-      //     </View>
-      //   ))
-      //   listItems = listItems.concat(videoItems);
-      // }
+      if(this.state.videosRequest && this.state.videosRequest.length > 0){
+        let videoItems =(  this.state.videosRequest === null ? null : this.state.videosRequest.map((videoItem, index) =>
+          <View style={stylesImage.slide} key={index}>
+              <VideoItem onRef={this.onRef} setModalVisible={()=> {this.setState({modalPictureVisible:false})}} num={index+1+j} sum={i} url={videoItem.filePath} fileName={videoItem.fileName} />
+          </View>
+        ))
+        listItems = listItems.concat(videoItems);
+      }
 
       if((this.state.imagesRequest == null || this.state.imagesRequest.length == 0) && (this.state.videosRequest == null || this.state.videosRequest.length == 0)){
           listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
@@ -828,6 +847,119 @@ onChangeType(index) {
     }
 
 }
+
+
+class VideoItem extends Component{
+
+  //获取VideoPlayer组件模板元素
+  onRef = (ref) => {
+      this.videoPlayerRef = ref;
+  }
+
+  componentDidMount(){
+      this.props.onRef(this);
+  }
+
+  setVideoCurrentTime = (e) =>{
+    if(this.videoPlayerRef){
+      this.videoPlayerRef.setVideoCurrentTime(0);
+    }
+  }
+
+  constructor(props) {
+      super(props);
+      this.state = {
+          videoPath: null,
+          animating: true
+      };
+      this.getVideoFilePath(this.props.url,this.props.fileName);
+  }
+
+  getVideoFilePath(path,fileName){
+      AsyncStorage.getItem('fileVideoCache', function (error,result) {
+              if (error) {
+                  console.log('读取失败')
+              }else {
+                  console.log('读取完成')
+                  let fileVideo = JSON.parse(result) || {};
+                  if(fileVideo != null && fileVideo[fileName]){
+                      this.setState({
+                          videoPath : fileVideo[fileName],
+                          animating: false
+                      })
+                  }else{
+                      RNFetchBlob.fileVideoCache(path,fileName).then((res) => {
+                          fileVideo[fileName] = res.path()
+                          //json转成字符串
+                          let jsonStr = JSON.stringify(fileVideo);
+                          AsyncStorage.setItem('fileVideoCache', jsonStr, function (error) {
+                              if (error) {
+                                  console.log('存储失败')
+                              }else {
+                                  console.log('存储完成')
+                              }
+                          })
+                          this.setState({
+                              videoPath : res.path(),
+                              animating: false
+                          })
+                      }).catch((error) => {
+                          console.info("存储失败" + error)
+                      });
+                  }
+              }
+          }.bind(this)
+      )
+  }
+
+  render(){
+      return (
+          <View style={stylesImage.slide}>
+              {
+                  this.state.videoPath == null ? <View style={stylesImage.image}><Loading animating={this.state.animating}/></View>
+                  : <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.state.videoPath}></VideoPlayer> 
+              }
+              <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
+          </View>
+      )
+  }
+}
+
+
+const Loading = (loading) =>{
+
+    return(
+        <View style={loadStyles.wrapper}>
+          <View style={loadStyles.box}>
+            <ActivityIndicator 
+              animating={loading.animating}
+              color='white'
+              size='large'
+            />
+          </View>
+        </View>
+    )
+}
+
+
+const loadStyles=StyleSheet.create({
+    wrapper:{
+      justifyContent:'center',
+      alignItems:'center',
+      position:'absolute',
+      height:Dimensions.get('window').height,
+      width:Dimensions.get('window').width,
+      zIndex:10,
+    },
+    box:{
+      paddingVertical:12,
+      paddingHorizontal:20,
+      flexDirection:'row',
+      justifyContent:'center',
+      alignItems:'center',
+      borderRadius:6
+    },
+})
 
 const stylesImage =StyleSheet.create({
     container: {
