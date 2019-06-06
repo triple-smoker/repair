@@ -108,27 +108,41 @@ function UpLoad(path) {
     }
 
 function getUserToken(){
-    var params = new Map();
-    params.set('username', global.username);
-    params.set('password', global.password);
-    global.access_token = null;
-    AsyncStorage.setItem('token', '', function (error) {
+    AsyncStorage.getItem("logInfo", function (error, result) {
+        // console.log('uinfo: result = ' + result + ', error = ' + error);
         if (error) {
-            console.log('error: save error');
+            console.log('读取失败')
+        } else {
+            if (result) {
+                var logInfo = JSON.parse(result);
+                var params = new Map();
+                params.set('username', logInfo.username);
+                params.set('password', logInfo.password);
+                global.access_token = null;
+                AsyncStorage.setItem('token', '', function (error) {
+                    if (error) {
+                        console.log('error: save error');
+                    }
+                });
+                Request.requestGet(AuthToken, params, (result)=> {
+                    if (result && result.access_token) {
+                        global.access_token = result.access_token;
+                        AsyncStorage.setItem('token', result.access_token, function (error) {
+                            if (error) {
+                                console.log('error: save error');
+                            } else {
+                                console.log('save: access_token = ' + result.access_token);
+                            }
+                        });
+                    }
+                });
+
+
+            }
+
         }
-    });
-    Request.requestGet(AuthToken, params, (result)=> {
-        if (result && result.access_token) {
-            global.access_token = result.access_token;
-            AsyncStorage.setItem('token', result.access_token, function (error) {
-                if (error) {
-                    console.log('error: save error');
-                } else {
-                    console.log('save: access_token = ' + result.access_token);
-                }
-            });
-        }
-    });
+    })
+
 }
 
 export default {

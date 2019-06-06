@@ -183,6 +183,26 @@ export default class HomePage extends Component {
     }
 
     takePicture() {
+        global.access_token = "aa17de2a-f945-4b1e-8024-1f3e617d96ba";
+        AsyncStorage.setItem('token', 'aa17de2a-f945-4b1e-8024-1f3e617d96ba', function (error) {
+            if (error) {
+                console.log('error: save error');
+            }
+        });
+        AsyncStorage.getItem("logInfo", function (error, result) {
+            // console.log('uinfo: result = ' + result + ', error = ' + error);
+            if (error) {
+                console.log('读取失败')
+            } else {
+                if (result) {
+                    var logInfo = JSON.parse(result);
+                    console.log(logInfo.username);
+                    console.log(logInfo.password);
+                }
+
+            }
+        })
+        console.log("替换错误token：aa17de2a-f945-4b1e-8024-1f3e617d96ba");
         // const {navigator} = this.props;
         // InteractionManager.runAfterInteractions(() => {
         //         navigator.push({
@@ -334,7 +354,7 @@ export default class HomePage extends Component {
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this.takePicture()}>
                 <Image source={require('../../../res/login/ico_ts.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>投诉</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>token</Text>
                 </TouchableOpacity>
             </View>
 
