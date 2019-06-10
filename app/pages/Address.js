@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {StyleSheet, Alert, Image, TextInput, View} from 'react-native';
-import {Row, Container, Content, Left, Right, Button, Text, List, ListItem} from 'native-base';
+import {Row, Container, Content, Left, Right, Button, Text, List, ListItem ,Textarea} from 'native-base';
 import MyFooter from '../components/MyFooter';
 import AsyncStorage from '@react-native-community/async-storage';
 import Notice from '../components/Notice';
@@ -220,9 +220,9 @@ class MyMessage extends Component {//地址输入模块
   render() {
     return (
         <Content>
-            <Item ItemName={"报修人"} change = {( value) => this.props.changeName(value)} ItemValue={this.props.name}/>
-            <Item ItemName={"联系电话"} change = {( value) => this.props.changePhone(value)} ItemValue={this.props.phone}/>
-            <Item ItemName={"报修位置"}  change = {( value) => this.props.changeAdds(value)} ItemValue={this.props.address}/>
+            <Item ItemName={"报修人"} type={0} change = {( value) => this.props.changeName(value)} ItemValue={this.props.name}/>
+            <Item ItemName={"联系电话"} type={1} change = {( value) => this.props.changePhone(value)} ItemValue={this.props.phone}/>
+            <Item ItemName={"报修位置"} type={2}  change = {( value) => this.props.changeAdds(value)} ItemValue={this.props.address}/>
         </Content>
     );
   }
@@ -236,6 +236,27 @@ const Item = ({ItemName , ItemValue, change}) => (
                    value={ItemValue} />
     </Row>
     );
+// class Item extends Component {
+//
+//         render() {
+//             return(
+//                 <View  style={{flexDirection:"row",borderBottomWidth: 2,borderColor:'#e1e1e1',marginLeft:16}}>
+//                     <Text style={stylesBody.bodyFont}>{this.props.ItemName}</Text>
+//                     <Textarea  maxLength={70}
+//                                autoHeight="true"
+//                                style={this.props.type === 2 ? stylesBody.bodyInputFontAdd:stylesBody.bodyInputFont}
+//                                onChangeText={(text) => this.props.change(text)}
+//                               value={this.props.ItemValue} >
+//                     </Textarea>
+//                 {this.props.type===2 &&
+//                     <Image style={{width:20,height:20,marginTop:13,marginRight:10}} source={require("../image/ico_seh.png")}/>
+//                 }
+//
+//                 </View>
+//             )
+//         }
+//
+// }
 
 class Adds extends Component {//历史地址模块
   render() {
@@ -274,7 +295,13 @@ const stylesBody=StyleSheet.create({
             height: 40,
             // borderColor: 'gray',
             // borderWidth: 1,
-            width: '75%',
+            flex:1,
+            fontSize:14,
+            color:'#606060',
+        },
+        bodyInputFontAdd:{
+            // height: 60,
+            flex:1,
             fontSize:14,
             color:'#606060',
         },
