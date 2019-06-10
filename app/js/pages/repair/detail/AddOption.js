@@ -16,11 +16,13 @@ import {
     // Slider
 
 } from 'react-native';
-
+import { List, Radio, Flex, WhiteSpace } from '@ant-design/react-native';
+import {Toast} from '../../../component/Toast'
+const RadioItem = Radio.RadioItem;
 import TitleBar from '../../../component/TitleBar';
 import * as Dimens from '../../../value/dimens';
 import Request, {GetRepairType, RepairMatterList, RepairDetail ,GetDeptListByType, GetUserListByDeptId, SaveRepairMatter} from '../../../http/Request';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
 import Slider from "react-native-slider";
@@ -55,6 +57,7 @@ export default class AddOption extends BaseComponent {
             selectUserData:null,
             oldItemPersonList:null,
             type:1,
+            userId:null,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
@@ -85,12 +88,35 @@ export default class AddOption extends BaseComponent {
         }
 
     }
-
+    componentWillMount(){
+        this.loadMainPerson();
+    }
   componentDidMount() {
     this.loadRepairTypes();
     this.getRepairDetail();  
     this.getDeptListByType();
-      
+    
+  }
+  loadMainPerson(){
+    let that = this
+    var list = that.state.selUserList
+    let mainPerson = {};
+    AsyncStorage.getItem('uinfo', function (error, result) {
+        var userInfo =  JSON.parse(result);
+         that.setState({userId:userInfo.userId})
+        mainPerson = {
+            userName : userInfo.userName,
+            process : 100,
+            userId : userInfo.userId,
+            telNo : userInfo.telNo,
+            type : 1
+        };
+        
+      list.push(mainPerson)
+       that.setState({selUserList:list});
+    })
+   
+    
   }
   getRepairDetail(){
     var that = this;
@@ -118,15 +144,21 @@ export default class AddOption extends BaseComponent {
   getUserListByDeptId() {
     var that = this;
     if (this.state.dataMap.has(this.state.selectDeptData.deptId)) {
-        var list = this.state.dataMap.get(this.state.selectDeptData.deptId);
+        var list = this.state.dataMap.get(this.state.selectDeptData.deptId); 
         that.setState({userList:list, dataSource1:that.state.dataSource1.cloneWithRows(list), });
         return;
     }
 
     Request.requestGet(GetUserListByDeptId+this.state.selectDeptData.deptId, null, (result)=> {
+        let list = []    
         if (result && result.code === 200) {
-            that.state.dataMap.set(that.state.selectDeptData.deptId, result.data);
-            that.setState({userList:result.data, dataSource1:that.state.dataSource1.cloneWithRows(result.data), });
+            result.data.forEach((arr,i)=>{              
+            if(arr.userId != this.state.userId){             
+                    list.push(arr)
+                }
+            })
+            that.state.dataMap.set(that.state.selectDeptData.deptId, list);
+            that.setState({userList:list, dataSource1:that.state.dataSource1.cloneWithRows(list), });
 
         } else {
 
@@ -243,7 +275,8 @@ export default class AddOption extends BaseComponent {
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             if (item.userId === this.state.selectUserData.userId) {
-                toastShort('不能重复添加');
+                // toastShort('不能重复添加');
+                Toast.show('不能重复添加')
                 return;
             }
         }
@@ -282,40 +315,68 @@ export default class AddOption extends BaseComponent {
   _complete() {
     //this.setState({selUserList:this.state.selUserList});
   }
-
+  personCheck(id){
+    var selUserList = this.state.selUserList;
+    var list = [];
+    for (var i = 0; i < selUserList.length; i++) {
+        var item = selUserList[i];
+        var content = {
+            userId : item.userId,
+            userName : item.userName,
+            telNo : item.telNo,
+            process : item.process,
+            type : 2
+        }
+        item.userId == id ? content.type = 1 : content.type = 2;
+        list.push(content)
+    }
+    this.setState({selUserList:list})
+  }
   renderUserItem(data, i) {
     //console.log(data);
     //<TouchableOpacity onPress={()=>{that.onPressUserItem(data)}} style = {{marginTop:15,}}> </TouchableOpacity>
     var that = this;
     return (
+        <List key={i}>    
+          {/* <RadioItem key={i} checked={data.type === 1} 
+            onChange={() => that.personCheck(data.userId)}> */}    
+            <View key={i} style={{height:60, marginTop:15, flexDirection: 'row', justifyContent:'space-between', textAlignVertical:'center',marginLeft:0, marginRight:0, alignItems:'center',}}>
+                <Image source={require('../../../../res/repair/user_wx.png')} style={{width:30,height:30,marginLeft:15}}/>
+                <View style={{backgroundColor:'white', marginLeft:10, marginRight:10, textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
+                        borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, }}>
+                    <View style={{flexDirection:'row',marginLeft:10,marginTop:5, }}>
+                        <Text style={{color:'#000',fontSize:14, textAlignVertical:'center', }}>{data.userName}</Text>
+                        <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:20,}}>{data.telNo}</Text>
+                    </View>
 
-         <View key={i} style={{height:60, marginTop:15, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
-            <Image source={require('../../../../res/repair/user_wx.png')} style={{width:30,height:30,marginLeft:15}}/>
-            <View style={{backgroundColor:'white', marginLeft:10, marginRight:10, textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, }}>
-                 <View style={{flexDirection:'row',marginLeft:10,marginTop:5, }}>
-                    <Text style={{color:'#000',fontSize:14, textAlignVertical:'center', }}>{data.userName}</Text>
-                    <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:20,}}>{data.telNo}</Text>
-                 </View>
-
-                 <View style={{flexDirection:'row',marginLeft:10,height:25,textAlignVertical:'center',}}>
-                    <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
-                      <View>
-                        <Slider style={{marginLeft:10,marginTop:8,height:10, width: 150}}
-                        minimumValue={0}
-                        maximumValue={100}
-                        minimumTrackTintColor={'#3F9AED'}
-                        maximumTrackTintColor={'#bbb'}
-                        value={data.process}
-                        onSlidingComplete={this._complete}
-                        onValueChange={(value)=>{that._onChange(data, i, value)}}/>
-                        </View>
-                    <Text style={{color:'#3F9AED',fontSize:12, marginLeft:15,marginRight:15,}}>{Math.round(data.process)}%</Text>
-                 </View>
+                    <View style={{flexDirection:'row',marginLeft:10,height:25,textAlignVertical:'center',}}>
+                        <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
+                        <View>
+                            <Slider style={{marginLeft:10,marginTop:8,height:10, width: 150}}
+                            minimumValue={0}
+                            maximumValue={100}
+                            minimumTrackTintColor={'#3F9AED'}
+                            maximumTrackTintColor={'#bbb'}
+                            step={10}
+                            value={data.process}
+                            onSlidingComplete={this._complete}
+                            onValueChange={(value)=>{that._onChange(data, i, value)}}/>
+                            </View>
+                        <Text style={{color:'#3F9AED',fontSize:12, marginLeft:15,marginRight:15,}}>{Math.round(data.process)}%</Text>
+                    </View>
+                </View>
+                <View style={{flexDirection:'column' ,justifyContent:'space-between',marginRight:10, }}>
+                    <Text style={{color:'#000',fontSize:14, }}>{data.type && data.type === 1 ? '主修人' : ''}</Text> 
+                    <TouchableOpacity onPress={() => that.personCheck(data.userId)}>
+                        <Image source={data.type && data.type === 1 ? 
+                            require('../../../../res/login/checkbox_pre.png') : require('../../../../res/login/checkbox_nor.png')} 
+                            style={{width:19,height:19,marginLeft:14,marginRight:16}}/>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
-
-
+          {/* </RadioItem> */}
+        
+        </List>
     );
   }
 
@@ -371,14 +432,6 @@ export default class AddOption extends BaseComponent {
         </View>
         </TouchableOpacity>
         {selectUser}
-        <TouchableOpacity onPress={()=>this.addMan(1)} style={{marginTop:25,}}>
-        <View style={{height:40, backgroundColor:'white',justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:0, marginLeft:20, marginRight:20,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
-                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#6DC5C9'}}>
-                    <Image source={require('../../../../res/repair/btn_ico_tjxzr.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
-                    <Text style={{color:'#6DC5C9',fontSize:14,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加主修人</Text>
-
-        </View>
-        </TouchableOpacity>
         <TouchableOpacity onPress={()=>this.addMan(2)} style={{marginTop:25,}}>
         <View style={{height:40, backgroundColor:'white',justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:0, marginLeft:20, marginRight:20,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#6DC5C9'}}>
@@ -640,7 +693,9 @@ renderItem(data) {
     <View key={data.id}>
     <TouchableOpacity onPress={()=>{that.onPressItem(data)}} style={{height:45,flex:1}}>
     <View style={{flexDirection:'row',marginLeft:10,height:45,textAlignVertical:'center',alignItems: 'center',}} >
-    <Image source={this.state.selectUserData&&this.state.selectUserData.userId===data.userId ? require('../../../../res/login/checkbox_pre.png') : require('../../../../res/login/checkbox_nor.png')} style={{width:18,height:18}}/>
+    <Image source={this.state.selectUserData&&this.state.selectUserData.userId===data.userId ? 
+            require('../../../../res/login/checkbox_pre.png') : require('../../../../res/login/checkbox_nor.png')} 
+            style={{width:18,height:18}}/>
     <Text style={{fontSize:14,color:'#777',marginLeft:15,}}>{data.userName}</Text>
     </View>
     </TouchableOpacity>

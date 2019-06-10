@@ -2,6 +2,8 @@
 import React from 'react-native';
 
 import axios from 'axios'
+import {Toast} from "../component/Toast";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export const HOST = 'https://dev.jxing.com.cn/';
 export const XTenantKey = 'Uf2k7ooB77T16lMO4eEkRg==';
@@ -48,6 +50,42 @@ export default class Request {
 //  -H 'cache-control: no-cache' \
 //  -H 'x-tenant-key: Uf2k7ooB77T16lMO4eEkRg=='
 
+static getUserToken(){
+    AsyncStorage.getItem("logInfo", function (error, result) {
+        // console.log('uinfo: result = ' + result + ', error = ' + error);
+        if (error) {
+            console.log('读取失败')
+        } else {
+            if (result) {
+                var logInfo = JSON.parse(result);
+                var params = new Map();
+                params.set('username', logInfo.username);
+                params.set('password', logInfo.password);
+                global.access_token = null;
+                AsyncStorage.setItem('token', '', function (error) {
+                    if (error) {
+                        console.log('error: save error');
+                    }
+                });
+                Request.requestGet(AuthToken, params, (result)=> {
+                    if (result && result.access_token) {
+                        global.access_token = result.access_token;
+                        AsyncStorage.setItem('token', result.access_token, function (error) {
+                            if (error) {
+                                console.log('error: save error');
+                            } else {
+                                console.log('save: access_token = ' + result.access_token);
+                            }
+                        });
+                    }
+                });
+
+
+            }
+
+        }
+    })
+}
 static requestGet(action, params, callback) {
 	var url = HOST + action;
 	var strParams = '';
@@ -81,12 +119,14 @@ static requestGet(action, params, callback) {
 			method: 'GET',
 			headers: headers,
      	};
-
     fetch(url, fetchOptions)
      .then((response) => response.json())
      .then((responseText) => {
      	// console.log('responseText: ' + JSON.stringify(responseText));
      	callback(responseText);
+            if(responseText&&responseText.code===401){
+                Request.getUserToken();
+            }
      	//return JSON.parse(responseText);
      })
      .catch(error=>{
@@ -132,6 +172,9 @@ static requestGetWithKey(action, params, callback, key) {
      .then((responseText) => {
      	// console.log('responseText: ' + JSON.stringify(responseText));
      	callback(responseText, key);
+         if(responseText&&responseText.code===401){
+             Request.getUserToken();
+         }
      	//return JSON.parse(responseText);
      })
      .catch(error=>{
@@ -169,6 +212,9 @@ static requestPost(action, params, callback) {
      .then((responseText) => {
         // console.log('responseText: ' + JSON.stringify(responseText));
      	callback(responseText);
+         if(responseText&&responseText.code===401){
+             Request.getUserToken();
+         }
      })
      .catch(error=>{
  		callback(JSON.stringify(error));
@@ -189,6 +235,7 @@ static requestPost(action, params, callback) {
  	.then(response=>response.json())
  	.then(result=>{
  		callback(JSON.stringify(result));
+
  	})
  	.catch(error=>{
  		callback(JSON.stringify(error));
@@ -239,7 +286,7 @@ static uploadFile(path, callback) {
     }).then((response)=>{
         callback(response)
     }).then((responseText)=>{
-        callback(responseText)
+        callback(responseText);
     }).catch(
         error=>{
             callback(JSON.stringify(error))

@@ -194,6 +194,19 @@ export default class Login extends BaseComponent {
      global.access_token = null;
      Request.requestGet(AuthToken, params, (result)=> {
         if (result && result.access_token) {
+            var logInfo = {
+                username:username,
+                password:encodeURIComponent(psw)
+            }
+            var logInfoString = JSON.stringify(logInfo);
+            AsyncStorage.setItem('logInfo', logInfoString, function (error) {
+                if (error) {
+                    console.log('error: save error');
+                } else {
+                    console.log('save: logInfo = ' + logInfo);
+                }
+            });
+
             Toast.show('登录成功');
             // global.storage.save({
             //         key:'token',

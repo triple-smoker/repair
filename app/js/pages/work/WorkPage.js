@@ -16,7 +16,8 @@ import {
     Modal,
     DeviceEventEmitter,
     Linking,
-    Alert, Dimensions
+    Alert, Dimensions,
+    ActivityIndicator
 } from 'react-native';
 
 
@@ -36,6 +37,10 @@ import SearchOrder from './SearchOrder'
 import Sound from 'react-native-sound';
 import Axios from "../../../util/Axios";
 import Swiper from 'react-native-swiper';
+import VideoPlayer from '../../../components/VideoPlayer';
+import Video from 'react-native-video';
+import AsyncStorage from '@react-native-community/async-storage';
+import RNFetchBlob from '../../../util/RNFetchBlob';
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -59,6 +64,8 @@ export default class WorkPage extends BaseComponent {
       modalVisible:false,
       modalPictureVisible:false,
       imagesRequest:[],
+      videosRequest:[],
+      videoItemRefMap: new Map(), //存储子组件模板节点
       timeIndex: 0,
       tabIndex: 0,
       theme:this.props.theme,
@@ -360,6 +367,7 @@ export default class WorkPage extends BaseComponent {
         InteractionManager.runAfterInteractions(() => {
                 navigation.navigate('OrderDetail',{
                           repairId:data.repairId,
+                          status:data.status,
                           theme:this.theme,})
         });
   }
@@ -415,18 +423,19 @@ export default class WorkPage extends BaseComponent {
     }
   //  图片预览框
     _setModalPictureVisible(data) {
-        if(data.fileMap.imagesRequest && data.fileMap.imagesRequest.length > 0){
-           this.setState({modalPictureVisible: !this.state.modalPictureVisible,imagesRequest:data.fileMap.imagesRequest})
+        if((data.fileMap.imagesRequest && data.fileMap.imagesRequest.length > 0) || (data.fileMap.videosRequest && data.fileMap.videosRequest.length > 0 )){
+            this.setState({modalPictureVisible: !this.state.modalPictureVisible,imagesRequest:data.fileMap.imagesRequest,videosRequest:data.fileMap.videosRequest})
         }else{
-            this.setState({modalPictureVisible: !this.state.modalPictureVisible,imagesRequest:[]})
+            this.setState({modalPictureVisible: !this.state.modalPictureVisible})
         }
+
     }
 
   renderItem(data) {
     var that = this;
     let buttons = null;
     let statusDesc = null;
-    console.log(data)
+    // console.log(data)
     if (data.status === '1') {
 
         buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
@@ -501,10 +510,22 @@ export default class WorkPage extends BaseComponent {
     if (data.fileMap) {
        if (data.fileMap.imagesRequest && data.fileMap.imagesRequest.length > 0) {
            if(data.fileMap.imagesRequest[0].filePath!=null){
-               uriImg = data.fileMap.imagesRequest[0].filePath;
+               uriImg = <Image source={{uri:data.fileMap.imagesRequest[0].filePath}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
            }
-
-
+       }else if(data.fileMap.videosRequest && data.fileMap.videosRequest.length > 0){
+           if(data.fileMap.videosRequest[0].filePath!=null){
+                uriImg = <View style={{width: 70, height: 70, backgroundColor:'#000000'}}>
+                            <Image 
+                                style={{
+                                    position: 'absolute',
+                                    top: 18,
+                                    left: 18,
+                                    width: 36,
+                                    height: 36,
+                                }} 
+                            source={require('../../../image/icon_video_play.png')}/>
+                       </View>
+           }
        }
 
        if (data.fileMap.voicesRequest && data.fileMap.voicesRequest.length > 0) {
@@ -518,6 +539,7 @@ export default class WorkPage extends BaseComponent {
     }
 
 
+
     return (
       <TouchableOpacity onPress={()=>{this.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
@@ -529,7 +551,7 @@ export default class WorkPage extends BaseComponent {
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
                 <TouchableOpacity onPress={()=>{this._setModalPictureVisible(data)}} >
                    <View style={{marginLeft:15, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:70,}} >
-                      <Image source={{uri:uriImg}} style={{width:70,height:70,marginLeft:0, backgroundColor:'#eeeeee'}}/>
+                       {uriImg}
                       {statusDesc}
 
                    </View>
@@ -674,24 +696,70 @@ onPlayVoice(filePath) {
     );
   }
 
+  //获取VideoPlayer组件模板元素
+  onRef = (ref) => {
+    this.videoItemRef = ref
+    this.appentRefMap(ref.props.num,ref);
+  }
+  
+  appentRefMap(index,ref){
+      let map = this.state.videoItemRefMap;
+      map.set(index,ref);
+      this.setState({
+          videoItemRefMap: map
+      });
+  }
+  
+  setVideoCurrentTime = (index) => {
+    let videoItemRef = this.state.videoItemRefMap.get(index + 1);
+    if(videoItemRef){
+        videoItemRef.setVideoCurrentTime();
+    }
+  }
+
   render() {
     var repDatas = null;
     if (this.state.modalVisible) {
         repDatas = this.state.repList.map((item, i)=>this.renderRepItem(item,i));
     }
-      var i = 0;
-      var listItems = "";
-      if(this.state.imagesRequest && this.state.imagesRequest.length > 0){
-          i = this.state.imagesRequest.length;
-          listItems =(  this.state.imagesRequest === null ? null : this.state.imagesRequest.map((imageItem, index) =>
-              <View style={stylesImage.slide} key={index}>
-                  <Image resizeMode='contain' style={stylesImage.image} source={{uri:imageItem.filePath}} />
-                  <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1}/{i}</Text></View>
-              </View>
-          ))
-      }else{
-          listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
-      }
+
+
+    var i = 0;
+    var j = 0;
+    var listItems = [];
+
+    if(this.state.imagesRequest != null && this.state.imagesRequest.length > 0){
+      j = this.state.imagesRequest.length;
+      i += this.state.imagesRequest.length;
+    }
+    if(this.state.videosRequest != null && this.state.videosRequest.length > 0){
+        i += this.state.videosRequest.length;
+    }
+
+
+    if(this.state.imagesRequest && this.state.imagesRequest.length > 0){
+      listItems =(  this.state.imagesRequest === null ? null : this.state.imagesRequest.map((imageItem, index) =>
+          <View style={stylesImage.slide} key={index}>
+              <Image resizeMode='contain' style={stylesImage.image} num={index+1} source={{uri:imageItem.filePath}} />
+              <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1}/{i}</Text></View>
+          </View>
+      ))
+    }
+
+
+    if(this.state.videosRequest && this.state.videosRequest.length > 0){
+      let videoItems =(  this.state.videosRequest === null ? null : this.state.videosRequest.map((videoItem, index) =>
+        <View style={stylesImage.slide} key={index}>
+            <VideoItem onRef={this.onRef} setModalVisible={()=> {this.setState({modalPictureVisible:false})}} num={index+1+j} sum={i} url={videoItem.filePath} fileName={videoItem.fileName} />
+        </View>
+      ))
+      listItems = listItems.concat(videoItems);
+    }
+
+    if((this.state.imagesRequest == null || this.state.imagesRequest.length == 0) && (this.state.videosRequest == null || this.state.videosRequest.length == 0)){
+        listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
+    }
+
 
 
 
@@ -850,7 +918,7 @@ onPlayVoice(filePath) {
                   <View style={{width:ScreenWidth,height:ScreenHeight,alignItems:'center',backgroundColor:'rgba(0, 0, 0, 0.5)',justifyContent:'center'}}>
                       <Swiper
                           style={{width:ScreenWidth,height:ScreenHeight}}
-                          onMomentumScrollEnd={(e, state, context) => console.log('index:', state.index)}
+                          onMomentumScrollEnd={(e, state, context) => (console.log('index:', state.index),this.setVideoCurrentTime(state.index))}
                           dot={<View style={{backgroundColor: 'rgba(0,0,0,0.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                           activeDot={<View style={{backgroundColor: '#000', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                           paginationStyle={{
@@ -900,6 +968,120 @@ onPlayVoice(filePath) {
         this._listView.scrollTop();
     }
   }
+
+class VideoItem extends Component{
+
+    //获取VideoPlayer组件模板元素
+    onRef = (ref) => {
+        this.videoPlayerRef = ref;
+    }
+
+    componentDidMount(){
+        this.props.onRef(this);
+    }
+
+    setVideoCurrentTime = (e) =>{
+      if(this.videoPlayerRef){
+        this.videoPlayerRef.setVideoCurrentTime(0);
+      }
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            videoPath: null,
+            animating: true
+        };
+        this.getVideoFilePath(this.props.url,this.props.fileName);
+    }
+
+    getVideoFilePath(path,fileName){
+        AsyncStorage.getItem('fileVideoCache', function (error,result) {
+                if (error) {
+                    console.log('读取失败')
+                }else {
+                    console.log('读取完成')
+                    let fileVideo = JSON.parse(result) || {};
+                    if(fileVideo != null && fileVideo[fileName]){
+                        this.setState({
+                            videoPath : fileVideo[fileName],
+                            animating: false
+                        })
+                    }else{
+                        RNFetchBlob.fileVideoCache(path,fileName).then((res) => {
+                            fileVideo[fileName] = res.path()
+                            //json转成字符串
+                            let jsonStr = JSON.stringify(fileVideo);
+                            AsyncStorage.setItem('fileVideoCache', jsonStr, function (error) {
+                                if (error) {
+                                    console.log('存储失败')
+                                }else {
+                                    console.log('存储完成')
+                                }
+                            })
+                            this.setState({
+                                videoPath : res.path(),
+                                animating: false
+                            })
+                        }).catch((error) => {
+                            console.info("存储失败" + error)
+                        });
+                    }
+                }
+            }.bind(this)
+        )
+    }
+
+    render(){
+        return (
+            <View style={stylesImage.slide}>
+                {
+                    this.state.videoPath == null ? <View style={stylesImage.image}><Loading animating={this.state.animating}/></View>
+                    : <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.state.videoPath}></VideoPlayer> 
+                }
+                <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
+            </View>
+        )
+    }
+}
+
+
+const Loading = (loading) =>{
+
+  return(
+      <View style={loadStyles.wrapper}>
+        <View style={loadStyles.box}>
+          <ActivityIndicator 
+            animating={loading.animating}
+            color='white'
+            size='large'
+          />
+        </View>
+      </View>
+  )
+}
+
+
+const loadStyles=StyleSheet.create({
+  wrapper:{
+    justifyContent:'center',
+    alignItems:'center',
+    position:'absolute',
+    height:Dimensions.get('window').height,
+    width:Dimensions.get('window').width,
+    zIndex:10,
+  },
+  box:{
+    paddingVertical:12,
+    paddingHorizontal:20,
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:6
+  },
+})
+
+
 
 
 const stylesImage =StyleSheet.create({

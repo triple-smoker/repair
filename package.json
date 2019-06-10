@@ -41,6 +41,7 @@
     "react-native-video": "^4.4.1",
     "react-native-view-shot": "^2.5.0",
     "react-navigation": "^3.5.1",
+    "rn-fetch-blob": "^0.10.15",
     "rn-global-modal": "^1.0.3"
   },
   "devDependencies": {

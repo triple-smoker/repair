@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { Alert } from 'react-native'
+import AsyncStorage from "@react-native-community/async-storage";
+import Request, {AuthToken} from "../js/http/Request";
 //请求拦截器
 
 axios.interceptors.request.use(
@@ -13,6 +15,7 @@ axios.interceptors.request.use(
             'hospitalId': '1055390940066893827',
             'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
             'Authorization': `Bearer ${apiToken}`,
+            // 'Authorization': `Bearer 89db0128-fd66-47d5-be0a-b327a339bae8`,
         };
         if (config.headers) {
             config.headers = {
@@ -26,6 +29,7 @@ axios.interceptors.request.use(
         return Promise.reject(error) // 请求出错
     }
 )
+
 
 //返回拦截器
 axios.interceptors.response.use(
@@ -54,6 +58,10 @@ function PostAxios(url = '', data = defaultData,headers={} ) {
         url : postUrl + url,
         data,
         headers,
+    }).catch(function (error) {
+        if(error.toString().search("401")!=-1){
+            getUserToken();
+        };
     })
 }
 
@@ -64,6 +72,10 @@ function GetAxios(url = '', data = defaultData, ) {
         url : getUrl + url,
         data,
 
+    }).catch(function (error) {
+        if(error.toString().search("401")!=-1){
+            getUserToken();
+        };
     })
 }
 
@@ -78,6 +90,8 @@ console.log('http://10.144.4.44:8080/portal/synchronism?time='+sqLiteTimeTemp);
     })
 }
 
+
+
 function UpLoad(path) {
     let formData = new FormData();
     let file = {type: 'multipart/form-data', uri: path, name: 'image.png'};
@@ -86,8 +100,50 @@ function UpLoad(path) {
     axios(url,{
         method:'POST',
         data:formData,
-        })
+        }).catch(function (error) {
+        if(error.toString().search("401")!=-1){
+            getUserToken();
+        };
+    })
     }
+
+function getUserToken(){
+    AsyncStorage.getItem("logInfo", function (error, result) {
+        // console.log('uinfo: result = ' + result + ', error = ' + error);
+        if (error) {
+            console.log('读取失败')
+        } else {
+            if (result) {
+                var logInfo = JSON.parse(result);
+                var params = new Map();
+                params.set('username', logInfo.username);
+                params.set('password', logInfo.password);
+                global.access_token = null;
+                AsyncStorage.setItem('token', '', function (error) {
+                    if (error) {
+                        console.log('error: save error');
+                    }
+                });
+                Request.requestGet(AuthToken, params, (result)=> {
+                    if (result && result.access_token) {
+                        global.access_token = result.access_token;
+                        AsyncStorage.setItem('token', result.access_token, function (error) {
+                            if (error) {
+                                console.log('error: save error');
+                            } else {
+                                console.log('save: access_token = ' + result.access_token);
+                            }
+                        });
+                    }
+                });
+
+
+            }
+
+        }
+    })
+
+}
 
 export default {
     PostAxios,
