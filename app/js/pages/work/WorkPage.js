@@ -85,6 +85,9 @@ export default class WorkPage extends BaseComponent {
       console.log('OrderList  componentDidMount');
       this._fetchData(0);
       this.loadRep();
+
+      DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
+
       //DeviceEventEmitter.emit('ACTION_BASE_', "_onLogin_", null);
 
       //DeviceEventEmitter.emit('Event_Home', 'Event_Home');

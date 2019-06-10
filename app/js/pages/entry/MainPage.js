@@ -43,7 +43,7 @@ export default class MainPage extends BaseComponent {
 
         this.state = {
             selectedTab:selectedTab,
-
+            isShow: false,
         }
     }
 
@@ -51,7 +51,7 @@ export default class MainPage extends BaseComponent {
         console.log('MainPage  componentDidMount112');
         super.componentDidMount();
         this.listener = DeviceEventEmitter.addListener('ACTION_HOME',(action,params)=>this.onAction(action,params));
-
+        this.listener = DeviceEventEmitter.addListener('NAVIGATOR_ACTION',(isShow)=>this.setState({isShow : isShow}));
     }
 
     onAction(action,params){
@@ -137,11 +137,22 @@ export default class MainPage extends BaseComponent {
 
     }
 
+    show(isShow){
+        if(isShow){
+           return {
+                opacity: 1.0,
+                    bottom: (Dimens.isIphoneX()?scaleSize(20):0),
+            }
+        }else {
+            return {height: 0, overflow: 'hidden'}
+        }
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <TabNavigator
-                    tabBarStyle={styles.tabBarStyle}
+                    tabBarStyle={this.show(this.state.isShow)}
                     sceneStyle={{paddingBottom: 0}}
                 >
                     {this._renderTab(HomePage, FLAG_TAB.flag_popularTab, '首页', require('../../../res/home/ic_tab_home_nor.png'), require('../../../res/home/ic_tab_home_sel.png'))}
