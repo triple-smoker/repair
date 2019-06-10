@@ -260,7 +260,10 @@ fetchUserInfo() {
                 // that.naviGoBack(that.props.navigator)
 
                 const {navigation} = that.props;
-                navigation.goBack()
+                // navigation.goBack()
+                InteractionManager.runAfterInteractions(() => {
+                    navigation.navigate('MainPage',{theme:this.theme})
+                });
             });
         }
 
