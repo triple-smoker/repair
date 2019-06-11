@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     ScrollView,
     Modal, Linking,
-    Alert
+    Alert,
+    NativeModules
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -23,12 +24,13 @@ import OrderType from "../../../pages/publicTool/OrderType";
 import RNFetchBlob from '../../../util/RNFetchBlob';
 
 import NfcManager, {Ndef} from 'react-native-nfc-manager';
+
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
 require('../../../res/default/banner_02.jpg'),
 require('../../../res/default/banner_03.jpg')
 ]
-
+var mPush = NativeModules.MPush;
 export default class HomePage extends Component {
     static navigationOptions = {
         header: null,

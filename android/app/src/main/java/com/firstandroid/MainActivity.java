@@ -1,6 +1,6 @@
 package com.firstandroid;
 
-import com.imagepicker.ImagePickerPackage;
+
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;

@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import {
     DeviceEventEmitter,
     BackHandler,
-    Platform,
+    Platform, Alert,
 } from 'react-native';
 
 // import {ACTION_HOME} from '../pages/entry/MainPage'
+import NotifService from '../../components/NotifService';
+
 
 export default class BaseComponent extends Component {
 
@@ -22,6 +24,10 @@ export default class BaseComponent extends Component {
             BackHandler.addEventListener("back", this.onBackClicked);
         }
         this.baseListener = DeviceEventEmitter.addListener('ACTION_BASE', (action,parmas)=>this.changeThemeAction(action,parmas));
+        DeviceEventEmitter.addListener('onMessage', this.onMessage.bind(this));
+        DeviceEventEmitter.addListener('onInit', this.onInit.bind(this));
+        DeviceEventEmitter.addListener('onNotification', this.onNotification);
+        this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
     }
 
     //卸载前移除通知
@@ -61,7 +67,7 @@ export default class BaseComponent extends Component {
         })
     }
 
-    naviGoBack(navigation) {   
+    naviGoBack(navigation) {
         if (navigation) { // && navigator.getCurrentRoutes().length > 1
             //  navigator.pop();
             navigation.goBack();
@@ -69,6 +75,33 @@ export default class BaseComponent extends Component {
         }
 
         return false;
+    }
+
+    onRegister(token) {
+        Alert.alert("Registered !", JSON.stringify(token));
+        console.log(token);
+        this.setState({ registerToken: token.token, gcmRegistered: true });
+    }
+
+    onNotif(notif) {
+        console.log(notif);
+        Alert.alert(notif.title, notif.message);
+    }
+
+    onInit (e){
+        console.log('--------------');
+        console.log(e);
+        // alert("Message Init. Title:");
+    }
+    onMessage(e){
+        console.log(this.notif);
+        this.notif.localNotif();
+        console.log("Message Received. Title:" + e.title + ", Content:" + e.content);
+    }
+    onNotification(e){
+        console.log(this.notif);
+        this.notif.localNotif();
+        console.log("Notification Received.Title:" + e.title + ", Content:" + e.content);
     }
 
    routeToPage(navigation, page) {
