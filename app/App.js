@@ -20,10 +20,13 @@ import HomeScreen from './pages/HomeScreen';
 import ConfirmReport from './pages/ConfirmReport';
 import OrderSearch from './pages/OrderSearch';
 
-import LoginPage from './js/pages/login/Login'
-import MainPage from './js/pages/entry/MainPage'
-import AllOrderDemo from './test/AllOrderDemo'
-import OrderSearchDemo from './test/OrderSearchDemo'
+import LoginPage from './js/pages/login/Login';
+import MainPage from './js/pages/entry/MainPage';
+import AllOrderDemo from './test/AllOrderDemo';
+import OrderSearchDemo from './test/OrderSearchDemo';
+import CheckList from './js/pages/workTest/CheckList';
+import CheckDetail from './js/pages/workTest/CheckDetail';
+import WorkManager from './js/pages/workTest/WorkManager';
 // import SQLiteDemo from "./test/SQLiteDemo";
 
 
@@ -48,6 +51,9 @@ const AppNavigator = createStackNavigator(
         Login : LoginPage,
         AllOrderDemo : AllOrderDemo,
         OrderSearchDemo : OrderSearchDemo,
+        WorkManager : WorkManager,
+        CheckList : CheckList,
+        CheckDetail : CheckDetail,
         // SQLiteDemo : SQLiteDemo,
         ...store
 
