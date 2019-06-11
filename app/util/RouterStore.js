@@ -18,6 +18,10 @@ import FinishWork from '../js/pages/repair/detail/FinishWork'
 
 import MainPage from '../js/pages/entry/MainPage';
 // import RepositoryDetail from '../js/common/RepositoryDetailPage'
+
+import ScanResult from '../js/pages/repair/ScanResult';
+import MySet from '../js/pages/mine/mySet';
+import MyData from '../js/pages/mine/myData';
 export default {
     SearchOrder : SearchOrder,
     HistoryDetail : HistoryDetail,
@@ -36,7 +40,9 @@ export default {
     TakePicture : TakePicture,
     FinishWork : FinishWork,
     // RepositoryDetail : RepositoryDetail,
-    MainPage : MainPage
+    MainPage : MainPage,
 
-
+    ScanResult : ScanResult,
+    MySet : MySet,
+    MyData : MyData,
 }

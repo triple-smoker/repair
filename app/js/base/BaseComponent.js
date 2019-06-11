@@ -42,9 +42,15 @@ export default class BaseComponent extends Component {
 
     //BACK物理按键监听
     onBackClicked = () => {
-         const {navigator} = this.props;
+
+         const {navigation,navigator} = this.props;
+        if(navigation.state.routeName && navigation.state.routeName==="WorkManager"){
+            DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
+        }
          if (navigator && navigator.getCurrentRoutes().length > 1) {
+
              navigator.pop();
+
              return true;//true 表示返回上一页
          }
          return false; // 默认false  表示跳出RN

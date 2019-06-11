@@ -288,6 +288,15 @@ export default class HomePage extends Component {
                 console.warn('unregisterTagEvent fail', error)
             })
     }
+    _test(){
+
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('ScanResult',{
+                theme:this.theme,
+            })
+        });
+    }
 
     render() {
         return (
@@ -399,8 +408,10 @@ export default class HomePage extends Component {
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
+                <TouchableOpacity onPress={()=>this._test()} >
                 <Image source={require('../../../res/login/ico_more.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
                 <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>更多</Text>
+                </TouchableOpacity>
             </View>
         </View>
 
