@@ -93,7 +93,7 @@ export default class WorkPage extends BaseComponent {
       this._fetchData(0);
       this.loadRep();
 
-      DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
+      DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
 
       //DeviceEventEmitter.emit('ACTION_BASE_', "_onLogin_", null);
 

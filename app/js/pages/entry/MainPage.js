@@ -44,7 +44,7 @@ export default class MainPage extends BaseComponent {
 
         this.state = {
             selectedTab:selectedTab,
-            isShow: false,
+            isShow: true,
         }
     }
 

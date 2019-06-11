@@ -10,17 +10,21 @@ import {
     StyleSheet,
     InteractionManager,
     TextInput,
-    Platform,
-    ToastAndroid,
-    Switch
+    ScrollView,
+    Dimensions
 } from 'react-native';
 import RNFetchBlob from '../../../util/RNFetchBlob';
 import TitleBar from '../../component/TitleBar';
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
 import AsyncStorage from '@react-native-community/async-storage';
-
-export default class MyData extends BaseComponent {
+let ScreenWidth = Dimensions
+  .get('window')
+  .width;
+let ScreenHeight = Dimensions
+  .get('window')
+  .height;
+export default class PapersPage extends BaseComponent {
     static navigationOptions = {
         header: null,
     };
@@ -66,97 +70,94 @@ export default class MyData extends BaseComponent {
         return (
           <View style={styles.container}>
           <TitleBar
-          centerText={'个人资料'}
+          centerText={'操作证'}
           isShowLeftBackIcon={true}
           navigation={this.props.navigation}
           leftPress={() => this.naviGoBack(this.props.navigation)}
           
           />
-          
-            <View style={{...styles.input_center_bg,borderTopLeftRadius: 45,borderBottomLeftRadius: 45,}}>
-                <View style={{flexDirection: 'row',
-                                justifyContent: 'flex-start',
-                                alignItems: 'center',
-                                lineHeight:45,
-                                height:45,
-                                marginLeft:0,
-                                marginRight:0,
-                                paddingRight: 15,}}>
-                {headerImg ? <Image style={{height:45,width:45,borderRadius:45}} source={{uri:headerImg}}/> : <Image style={{height:45,width:45,borderRadius:45}} source={require('../../../res/repair/user_wx.png')}/>}
-                
-                    <Text style={{fontSize:16,marginLeft:20, textDecorationLine:'underline',}}>
-                        更换头像
-                    </Text>
-                </View>
-            </View>
+          <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64, 
+                    width:Dimens.screen_width,flex:1}}>
+            
 
             <View style={styles.input_center_bg}>
                 <View style={styles.case}>
-                    <Text style={{fontSize:16}}>
-                        姓名
+                    <Text style={{fontSize:16,color:'#404040'}}>
+                        操作证名称
                     </Text>
                     <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
-                    <Text  style={{color:'#737373'}}>{userName}</Text>
-                    <Image style={{height:20,width:19,marginLeft:5}} source={require('../../../res/login/edit.png')}/>
+                    <Image style={{height:5,width:7,marginLeft:5}} source={require('../../../res/login/dropdown_02.png')}/>
                     </View>
                     
                 </View>
-            </View>
+                <View style={styles.case}>
+                    <Text style={{fontSize:15,color:'#404040'}}>
+                       【维修类】
+                    </Text>
+                    <Text style={{fontSize:15,color:'#404040'}}>
+                        有效期： 2019-12-31
+                    </Text>
+                    <Text style={{fontSize:15,color:'#404040'}}>
+                        -使用中-
+                    </Text>
 
+                </View>
+                <View style={{ 
+                    flexDirection:'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft:0,
+                    marginRight:0,
+                    paddingLeft: 12,
+                    paddingRight: 12,
+                    paddingTop: 5,}}> 
+                     <Image style={styles.paperImg} source={require('../../../res/login/menu_ljbx.jpg')}/>
+                    <Text>(1)</Text>
+                </View>
+                <View style={{ 
+                    flexDirection:'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft:0,
+                    marginRight:0,
+                    paddingLeft: 12,
+                    paddingRight: 12,
+                    paddingTop: 5,}}> 
+                     <Image style={styles.paperImg} source={require('../../../res/login/menu_ljbx.jpg')}/>
+                    <Text>(2)</Text>
+                </View>
+            </View>
+            
             <View style={styles.input_center_bg}>
-                
                 <View style={styles.case}>
-                    <Text style={{fontSize:16}}>
-                        性别
+                    <Text style={{fontSize:16,color:'#404040'}}>
+                        操作证名称
                     </Text>
                     <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
-                    <Text  style={{color:'#737373'}}>{gender == 1 ? '男' : '女'}</Text>
-                    <Image style={{height:20,width:19,marginLeft:5}} source={require('../../../res/login/edit.png')}/>
+                    <Image style={{height:5,width:7,marginLeft:5}} source={require('../../../res/login/dropdown_01.png')}/>
                     </View>
+                    
                 </View>
-               
-            </View>
-            <View style={styles.input_center_bg}>
-                
                 <View style={styles.case}>
-                    <Text style={{fontSize:16}}>
-                        联系方式
+                    <Text style={{fontSize:15,color:'#404040'}}>
+                       【维修类】
                     </Text>
-                    <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
-                    <Text  style={{color:'#737373'}}>{telNo}</Text>
-                    <Image style={{height:20,width:19,marginLeft:5}} source={require('../../../res/login/edit.png')}/>
-                    </View>
+                    <Text style={{fontSize:15,color:'#404040'}}>
+                        有效期： 2019-12-31
+                    </Text>
+                    <Text style={{fontSize:15,color:'#404040'}}>
+                        -使用中-
+                    </Text>
+
                 </View>
-               
+              
             </View>
+           
+            </ScrollView>
        
-            <View style={styles.input_center_bg}>
-                
-                <View style={styles.case}>
-                    <Text style={{fontSize:16}}>
-                        工号
-                    </Text>
-                    <View>
-                    <Text style={{color:'#999',marginRight:24}}>{workNumber}</Text>
-                   
-                    </View>
-                </View>
-               
-            </View>
-            <View style={styles.input_center_bg}>
-                
-                <View style={styles.case}>
-                    <Text style={{fontSize:16}}>
-                        部门
-                    </Text>
-                    <View>
-                    <Text  style={{color:'#999',marginRight:24}}>{deptName}</Text>
-                   
-                    </View>
-                </View>
-               
-            </View>
+        
     </View>
+
     )
 }
 
@@ -167,30 +168,38 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#f8f8f8',
+        backgroundColor: '#f0f0f0',
         position: 'absolute',
         top: 0,
         bottom: 0,
         left: 0,
         right: 0
     },
+    paperImg:{
+        height:195,width: ScreenWidth - 48, 
+        marginLeft:0,marginRight:0, borderRadius:5,
+        borderColor: '#d0d0d0',
+        borderWidth: 1,
+    },
     case:{
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        lineHeight:45,
-        height:45,
         marginLeft:0,
         marginRight:0,
-        paddingLeft: 20,
-        paddingRight: 15,
+        paddingLeft: 12,
+        paddingRight: 12,
+        paddingTop: 5,
     },
     input_center_bg:{
         overflow:'hidden',
-        backgroundColor: '#f0f0f0',
-        marginTop:10,
-        marginLeft:14,
-        marginRight:14,
+        backgroundColor: '#fff',
+        marginTop:12,
+        marginLeft:12,
+        marginRight:12,
+        marginBottom: 15,
+        paddingTop: 10,
+        paddingBottom: 10,
         borderRadius:5,
         borderColor: '#d0d0d0',
         borderWidth: 1,
