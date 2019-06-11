@@ -22,6 +22,9 @@ import MainPage from '../js/pages/entry/MainPage';
 import ScanResult from '../js/pages/repair/ScanResult';
 import MySet from '../js/pages/mine/mySet';
 import MyData from '../js/pages/mine/myData';
+import PapersPage from '../js/pages/mine/PapersPage';
+import Inform from '../js/pages/mine/Inform';
+import SystemInform from '../js/pages/mine/SystemInform'
 export default {
     SearchOrder : SearchOrder,
     HistoryDetail : HistoryDetail,
@@ -45,4 +48,7 @@ export default {
     ScanResult : ScanResult,
     MySet : MySet,
     MyData : MyData,
+    PapersPage : PapersPage,
+    Inform : Inform,
+    SystemInform : SystemInform,
 }

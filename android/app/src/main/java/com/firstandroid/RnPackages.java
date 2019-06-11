@@ -14,6 +14,7 @@ public class RnPackages implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new ToastModule(reactContext));
+        modules.add(new PushModule(reactContext));
         return modules;
     }
 

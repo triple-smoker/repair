@@ -186,12 +186,14 @@ export default class MySet extends BaseComponent {
     </View>
     )
 }
+
 onChange(val) {
     this.setState({
         pushStatus : val
     })
     console.log(this.state.pushStatus)
   }
+  
 }
 
 
