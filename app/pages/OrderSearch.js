@@ -396,7 +396,7 @@ class OrderSearch extends BaseComponent {
 
                         <Image source={require('../image/ico_seh.png')}
                                style={{width:16,height:16}}/>
-                        <TextInput underlineColorAndroid="transparent" placeholder="请输入单号或内容" style={{width:'90%',height:40,fontSize:14,backgroundColor:'#f4f4f4'}} onChangeText={(searchContext) => this.setState({searchContext:searchContext})}>{this.state.searchContext}</TextInput>
+                        <TextInput underlineColorAndroid="transparent" placeholder="请输入单号或内容" style={{width:'86%',height:40,fontSize:14,backgroundColor:'#f0f0f0'}} onChangeText={(searchContext) => this.setState({searchContext:searchContext})}>{this.state.searchContext}</TextInput>
 
                     </View>
                     <TouchableOpacity onPress={()=>this._setSerachShow(this.state.searchContext)} style={{width:60,flexDirection:'row'}}>
