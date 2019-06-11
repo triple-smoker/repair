@@ -4,7 +4,7 @@ import {
     StyleSheet,
     View,
     Image,
-    DeviceEventEmitter
+    DeviceEventEmitter, InteractionManager
 } from 'react-native';
 
 import TabNavigator from 'react-native-tab-navigator';
@@ -16,6 +16,7 @@ import BaseComponent from '../../base/BaseComponent'
 import {DURATION} from 'react-native-easy-toast'
 import HomePage from '../home/HomePage'
 import WorkPage from '../work/WorkPage'
+import WorkManager from '../workTest/WorkManager'
 import MinePage from '../mine/MinePage'
 import ThemeDao from '../../dao/ThemeDao'
 
@@ -43,7 +44,7 @@ export default class MainPage extends BaseComponent {
 
         this.state = {
             selectedTab:selectedTab,
-            isShow: false,
+            isShow: true,
         }
     }
 
@@ -53,6 +54,12 @@ export default class MainPage extends BaseComponent {
         this.listener = DeviceEventEmitter.addListener('ACTION_HOME',(action,params)=>this.onAction(action,params));
         this.listener = DeviceEventEmitter.addListener('NAVIGATOR_ACTION',(isShow)=>this.setState({isShow : isShow}));
     }
+    // componentWillReceiveProps(){
+    //     DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
+    //     this.setState({
+    //         selectedTab: FLAG_TAB.flag_popularTab,
+    //     })
+    // }
 
     onAction(action,params){
         if (action === ACTION_HOME.A_RESTART ){
@@ -83,8 +90,17 @@ export default class MainPage extends BaseComponent {
             this.listener.remove();
         }
     }
+    setHome(){
+        DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
+        this.setState({
+            selectedTab: FLAG_TAB.flag_popularTab,
+        })
+    }
 
     onSelected(selectedTab) {
+        if(selectedTab === "flag_favoriteTab"){
+            DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
+        }
         this.setState({
             selectedTab: selectedTab,
         })
@@ -108,7 +124,16 @@ export default class MainPage extends BaseComponent {
         )
     }
 
-    _renderTab(Component, selectedTab, title, renderIcon, renderIconSel) {
+    _renderTab(Component, selectedTab, title, renderIcon, renderIconSel,setHome) {
+        // if(selectedTab === "flag_favoriteTab"){
+        //     const {navigation} = this.props;
+        //     InteractionManager.runAfterInteractions(() => {
+        //         navigation.navigate('WorkManager',{
+        //             theme:this.theme});
+        //     });
+        //     return null;
+        // }
+// console.log("2222");
         if (this.state.theme) {
         return (
             <TabNavigator.Item
@@ -118,21 +143,47 @@ export default class MainPage extends BaseComponent {
                 renderIcon={() => <Image style={styles.tabItemImageStyle} source={renderIcon}/>}
                 renderSelectedIcon={() => <Image style={styles.tabItemImageStyle} source={renderIconSel}/>}
                     onPress={() => this.onSelected(selectedTab)}>
-                <Component {...this.props} theme={this.state.theme} homeComponent={this}/>
+                <Component {...this.props} theme={this.state.theme} homeComponent={this} setHome={()=>setHome()}/>
             </TabNavigator.Item>
         )
         } else {
-          return (
-            <TabNavigator.Item
-                selected={this.state.selectedTab === selectedTab}
-                title={title}
-                selectedTitleStyle={styles.selectedTitleStyle}
-                renderIcon={() => <Image style={styles.tabItemImageStyle} source={renderIcon}/>}
-                renderSelectedIcon={() => <Image style={styles.tabItemImageStyle} source={renderIconSel}/>}
-                    onPress={() => this.onSelected(selectedTab)}>
-                <Component {...this.props} theme={this.state.theme} homeComponent={this}/>
-            </TabNavigator.Item>
-        )
+            if(selectedTab === "flag_favoriteTab"){
+               return ( <TabNavigator.Item
+                    selected={this.state.selectedTab === selectedTab}
+                    title={title}
+                    selectedTitleStyle={styles.selectedTitleStyle}
+                    renderIcon={() => <Image style={styles.tabItemImageStyle} source={renderIcon}/>}
+                    renderSelectedIcon={() => <Image style={styles.tabItemImageStyle} source={renderIconSel}/>}
+                    onPress={() =>{
+                        const {navigation} = this.props;
+                        InteractionManager.runAfterInteractions(() => {
+                            navigation.navigate('WorkManager',{
+                                theme:this.theme,
+                                callback: (
+                                    () => {
+                                        this.setHome();
+                                    })
+                            });
+                        });
+                        }
+                    }>
+                    <Component {...this.props} theme={this.state.theme} homeComponent={this} setHome={()=>setHome()}/>
+                </TabNavigator.Item>
+               )
+            }else{
+                return (
+                    <TabNavigator.Item
+                        selected={this.state.selectedTab === selectedTab}
+                        title={title}
+                        selectedTitleStyle={styles.selectedTitleStyle}
+                        renderIcon={() => <Image style={styles.tabItemImageStyle} source={renderIcon}/>}
+                        renderSelectedIcon={() => <Image style={styles.tabItemImageStyle} source={renderIconSel}/>}
+                        onPress={() => this.onSelected(selectedTab)}>
+                        <Component {...this.props} theme={this.state.theme} homeComponent={this} setHome={()=>setHome()}/>
+                    </TabNavigator.Item>
+                )
+            }
+
         }
 
     }
@@ -155,9 +206,10 @@ export default class MainPage extends BaseComponent {
                     tabBarStyle={this.show(this.state.isShow)}
                     sceneStyle={{paddingBottom: 0}}
                 >
-                    {this._renderTab(HomePage, FLAG_TAB.flag_popularTab, '首页', require('../../../res/home/ic_tab_home_nor.png'), require('../../../res/home/ic_tab_home_sel.png'))}
-                    {this._renderTab(WorkPage, FLAG_TAB.flag_favoriteTab, '工单', require('../../../res/home/ic_tab_gd_nor.png'), require('../../../res/home/ic_tab_gd_sel.png'))}
-                    {this._renderTab(MinePage, FLAG_TAB.flag_myTab, '我的', require('../../../res/home/ic_tab_mine_nor.png'), require('../../../res/home/ic_tab_mine_sel.png'))}
+                    {this._renderTab(HomePage, FLAG_TAB.flag_popularTab, '首页', require('../../../res/home/ic_tab_home_nor.png'), require('../../../res/home/ic_tab_home_sel.png'),()=>this.setHome())}
+                    {/*{this._renderTab(WorkPage, FLAG_TAB.flag_favoriteTab, '工单', require('../../../res/home/ic_tab_gd_nor.png'), require('../../../res/home/ic_tab_gd_sel.png'))}*/}
+                    {this._renderTab(WorkManager, FLAG_TAB.flag_favoriteTab, '工单', require('../../../res/home/ic_tab_gd_nor.png'), require('../../../res/home/ic_tab_gd_sel.png'),()=>this.setHome())}
+                    {this._renderTab(MinePage, FLAG_TAB.flag_myTab, '我的', require('../../../res/home/ic_tab_mine_nor.png'), require('../../../res/home/ic_tab_mine_sel.png'),()=>this.setHome())}
                 </TabNavigator>
             </View>
         )

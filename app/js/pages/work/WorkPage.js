@@ -92,9 +92,7 @@ export default class WorkPage extends BaseComponent {
       console.log('OrderList  componentDidMount');
       this._fetchData(0);
       this.loadRep();
-
       DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
-
       //DeviceEventEmitter.emit('ACTION_BASE_', "_onLogin_", null);
 
       //DeviceEventEmitter.emit('Event_Home', 'Event_Home');
@@ -317,9 +315,7 @@ export default class WorkPage extends BaseComponent {
     alert('确定');
   }
 
-  captrue() {
 
-  }
 
   _renderSeparatorView(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
     return (
@@ -764,7 +760,7 @@ onPlayVoice(filePath) {
 
 
     var actionBar = null;
-    var tabBar = <View style={{backgroundColor:'white', height:49, justifyContent:'center', flexDirection:'row', bottom:49}}>
+    var tabBar = <View style={{backgroundColor:'white', height:49, justifyContent:'center', flexDirection:'row', bottom:0}}>
             <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
             <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
             <Image source={this.state.tabIndex===0?require('../../../res/repair/tab_ico_bmrw_pre.png'):require('../../../res/repair/tab_ico_bmrw_nor.png')} style={{width:20,height:20}}/>
@@ -806,23 +802,24 @@ onPlayVoice(filePath) {
             </View>
             </TouchableOpacity>
       </View>
-    } else {
-        actionBar = <View style={{backgroundColor:'white', height:40, justifyContent:'flex-end', flexDirection:'row',}}>
-
-            <View style={{alignItems:'center',textAlignVertical:'center', height:40, justifyContent:'center', flexDirection:'row',marginLeft:10, marginRight:5}}>
-                <Image source={require('../../../res/repair/ico_sc.png')} style={{width:20,height:20,marginLeft:0}}/>
-                <Text style={{color:'#999',fontSize:11,marginLeft:5, marginRight:10}}>收藏</Text>
-            </View>
-            <View style={{alignItems:'center',textAlignVertical:'center', height:40, justifyContent:'center', flexDirection:'row',marginLeft:10, marginRight:5}}>
-                <Image source={require('../../../res/repair/ico_tx.png')} style={{width:20,height:20,marginLeft:0}}/>
-                <Text style={{color:'#999',fontSize:11,marginLeft:5, marginRight:10}}>提醒</Text>
-            </View>
-            <View style={{alignItems:'center',textAlignVertical:'center',height:40, justifyContent:'center', flexDirection:'row',marginLeft:10, marginRight:10}}>
-                <Image source={require('../../../res/repair/ico_kswc.png')} style={{width:20,height:20}}/>
-                <Text style={{color:'#999',fontSize:11,marginLeft:5}}>快速完工</Text>
-            </View>
-      </View>
     }
+    // else {
+    //     actionBar = <View style={{backgroundColor:'white', height:40, justifyContent:'flex-end', flexDirection:'row',}}>
+    //
+    //         <View style={{alignItems:'center',textAlignVertical:'center', height:40, justifyContent:'center', flexDirection:'row',marginLeft:10, marginRight:5}}>
+    //             <Image source={require('../../../res/repair/ico_sc.png')} style={{width:20,height:20,marginLeft:0}}/>
+    //             <Text style={{color:'#999',fontSize:11,marginLeft:5, marginRight:10}}>收藏</Text>
+    //         </View>
+    //         <View style={{alignItems:'center',textAlignVertical:'center', height:40, justifyContent:'center', flexDirection:'row',marginLeft:10, marginRight:5}}>
+    //             <Image source={require('../../../res/repair/ico_tx.png')} style={{width:20,height:20,marginLeft:0}}/>
+    //             <Text style={{color:'#999',fontSize:11,marginLeft:5, marginRight:10}}>提醒</Text>
+    //         </View>
+    //         <View style={{alignItems:'center',textAlignVertical:'center',height:40, justifyContent:'center', flexDirection:'row',marginLeft:10, marginRight:10}}>
+    //             <Image source={require('../../../res/repair/ico_kswc.png')} style={{width:20,height:20}}/>
+    //             <Text style={{color:'#999',fontSize:11,marginLeft:5}}>快速完工</Text>
+    //         </View>
+    //   </View>
+    // }
 
     return (
       <View style={styles.container}>
@@ -839,9 +836,7 @@ onPlayVoice(filePath) {
 
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={()=>this.captrue()}>
-            <Image style={{width:16,height:20,marginLeft:5,marginRight:10}} source={require('../../../res/repair/navbar_ico_sys.png')} />
-      </TouchableOpacity>
+
       </View>
 
       {actionBar}
