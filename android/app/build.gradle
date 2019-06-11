@@ -112,11 +112,15 @@ android {
         targetSdkVersion 27
         missingDimensionStrategy 'react-native-camera', 'general'
         ndk {
-            abiFilters 'armeabi', 'x86'
+            abiFilters 'armeabi-v7a', 'x86'
         }
         //64k
         multiDexEnabled true
+        packagingOptions {
+            exclude "lib/arm64-v8a/librealm-jni.so"
+        }
     }
+
 
     signingConfigs {
         release {
