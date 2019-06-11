@@ -16,9 +16,9 @@ import BaseComponent from '../../base/BaseComponent'
 import {DURATION} from 'react-native-easy-toast'
 import HomePage from '../home/HomePage'
 import WorkPage from '../work/WorkPage'
-import WorkManager from '../workTest/WorkManager'
-import MinePage from '../mine/MinePage'
+// import MinePage from '../mine/MinePage'
 import ThemeDao from '../../dao/ThemeDao'
+import MinePage from '../mine/myPage'
 
 //需要导出的常量
 export const ACTION_HOME = {A_SHOW_TOAST:'showToast',A_RESTART:'restart',A_THEME:'theme'};
@@ -54,12 +54,6 @@ export default class MainPage extends BaseComponent {
         this.listener = DeviceEventEmitter.addListener('ACTION_HOME',(action,params)=>this.onAction(action,params));
         this.listener = DeviceEventEmitter.addListener('NAVIGATOR_ACTION',(isShow)=>this.setState({isShow : isShow}));
     }
-    // componentWillReceiveProps(){
-    //     DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
-    //     this.setState({
-    //         selectedTab: FLAG_TAB.flag_popularTab,
-    //     })
-    // }
 
     onAction(action,params){
         if (action === ACTION_HOME.A_RESTART ){

@@ -107,7 +107,7 @@ export default class TitleBar extends Component {
                 <View style={{alignItems: 'center'}}>
                     <Image
                         style={styles.rightImage}
-                        source={{uri: rightImg}}/>
+                        source={rightImg}/>
 
                 </View>
             </TouchableOpacity>
@@ -186,8 +186,9 @@ const styles = StyleSheet.create({
         color: Dimens.color_text_33,
     },
     rightImage: {
-        width: 30,
-        height: 30,
+        width: 20,
+        height: 20,
+        marginRight: 20,
     },
 
 })
