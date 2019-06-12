@@ -38,6 +38,7 @@ export const RepairCommenced   =  "api/repair/service/commenced";//进入完工 
 export const RepairCompleted   =  "api/repair/service/completed";//完工提交
 export const ScanDetails  = "api/basic/baseEquipment/";//设备详情
 export const ScanMsg = "api/basic/baseEquipment/scan/";//扫码获得设备信息 
+export const baseUser = 'api/basic/baseUser';//修改用户信息
 //https://dev.jxing.com.cn/api/auth/oauth/token?username=10001&password=BlvxyJFFYLcg7n2OB4G5uA%3D%3D&grant_type=password&scope=server
 //'Content-Type': 'application/x-www-form-urlencoded'
 //123456
@@ -220,6 +221,42 @@ static requestPost(action, params, callback) {
      .catch(error=>{
  		callback(JSON.stringify(error));
  	});//.done();
+ }
+
+ static requestPut(action, params, callback) {
+	var url = HOST+action;
+    var token = global.access_token;
+    var headers = {
+                'Authorization': 'Basic anhjbG91ZDpqeGNsb3Vk',
+                'cache-control': 'no-cache',
+                'Accept': 'application/json',
+                'Content-Type':"application/json",
+                'x-tenant-key': XTenantKey,
+                'hospitalId'  : HospitalId,
+            };
+    if (token && token.length) {
+        headers['Authorization'] = 'Bearer ' + token;
+    }
+
+    console.log('url: ' + url + ', headers: ' + JSON.stringify(headers));
+    console.log(params);
+    var fetchOptions = {
+            method: 'PUT',
+            headers: headers,
+            body:JSON.stringify(params)
+        };
+    fetch(url, fetchOptions)
+    .then((response) => response.json())
+    .then((responseText) => {
+        // console.log('responseText: ' + JSON.stringify(responseText));
+        callback(responseText);
+        if(responseText&&responseText.code===401){
+            Request.getUserToken();
+        }
+    })
+    .catch(error=>{
+        callback(JSON.stringify(error));
+    });//.done();
  }
 
  static requestHttpEx(action, params, callback) {

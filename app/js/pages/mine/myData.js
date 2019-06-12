@@ -17,9 +17,11 @@ import {
 import RNFetchBlob from '../../../util/RNFetchBlob';
 import TitleBar from '../../component/TitleBar';
 import BaseComponent from '../../base/BaseComponent'
+import Request, {ScanDetails,baseUser,GetUserInfo} from '../../http/Request';
 import * as Dimens from '../../value/dimens';
 import AsyncStorage from '@react-native-community/async-storage';
-
+var newName = ''
+var newTel  = ''
 export default class MyData extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -29,6 +31,9 @@ export default class MyData extends BaseComponent {
         this.state={
             theme:this.props.theme,
             userData:null,
+            name:'',
+            nameShow:false,
+            telShow:false
         }
     }
     componentDidMount() {
@@ -40,7 +45,6 @@ export default class MyData extends BaseComponent {
     }
     loadDetail() {
         var that = this;
-    
         AsyncStorage.getItem('uinfo',function (error, result) {
             if(error){
                 console.log(error)
@@ -52,7 +56,76 @@ export default class MyData extends BaseComponent {
             }
         })
     }
+    _edit(type){
+        console.log(type)
+        var that = this;
+        if(type == 'username'){
+            that.setState({nameShow:!that.state.nameShow})
+        }else if(type == 'tel'){
+            that.setState({telShow:!that.state.telShow})
+        }
+    }
+    modification(type,Msg,oldMsg){
+        var that = this;
+        if(type == 'username'){
+            if(Msg == oldMsg || Msg== ''){
+                console.log('未修改')
+            }else{
+                console.log('修改')
+                Request.requestPut(baseUser,{
+                    userName:Msg,
+                    userId : this.state.userData.userId
+                }, (result)=> {
+                    if (result && result.code === 200 && result.data == true) {
+                        this.fetchUserInfo();
+                        this._edit(type)
+                    } else {
+                    
+                    }
+                })
+            }
+        }else if(type == 'tel'){
+            console.log(type)
+            if(Msg == oldMsg || Msg== ''){
+                console.log('未修改')
+            }else{
+                console.log('修改')
+                Request.requestPut(baseUser,{
+                    telNo:Msg,
+                    userId : this.state.userData.userId
+                }, (result)=> {
+                    if (result && result.code === 200 && result.data == true) {
+                        this.fetchUserInfo();
+                        this._edit(type)
+                    } else {
+                    
+                    }
+                })
+            }
+        }
+    }
 
+    TextInputModule(domType,txt,type){
+        console.log('txt:'+txt)
+        console.log('type:'+type) 
+       if(domType == 'input'){
+           return <TextInput
+                    style={{height: 40, minWidth: 50,borderColor: 'gray', padding: 0,}}
+                    numberOfLines={1}
+                    underlineColorAndroid="#aaaaaa"
+                    placeholderTextColor="#aaaaaa"
+                    placeholder={txt}
+                    onChangeText={(text) => {
+                        if(type == 'username'){
+                            newName = text;
+                        }else if(type == 'tel'){
+                            newTel = text
+                        }
+                    }}/>
+       }else if(domType == 'text'){
+           return <Text  style={{color:'#737373'}}>{txt}</Text>
+       }  
+    }
     render() {
         var  userData = this.state. userData;
         if (userData) {
@@ -63,14 +136,16 @@ export default class MyData extends BaseComponent {
             var gender = userData.gender;
             var telNo = userData.telNo;
         }
-        return (
+        
+        var editImg = require('../../../res/login/edit.png');
+        var successImg =  require('../../../res/login/success.png');
+        return (  
           <View style={styles.container}>
           <TitleBar
           centerText={'个人资料'}
           isShowLeftBackIcon={true}
           navigation={this.props.navigation}
-          leftPress={() => this.naviGoBack(this.props.navigation)}
-          
+          leftPress={() => this.naviGoBack(this.props.navigation)} 
           />
           
             <View style={{...styles.input_center_bg,borderTopLeftRadius: 45,borderBottomLeftRadius: 45,}}>
@@ -96,8 +171,23 @@ export default class MyData extends BaseComponent {
                         姓名
                     </Text>
                     <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
-                    <Text  style={{color:'#737373'}}>{userName}</Text>
-                    <Image style={{height:20,width:19,marginLeft:5}} source={require('../../../res/login/edit.png')}/>
+             
+                        {
+                            this.state.nameShow ? this.TextInputModule('input',userName,'username') : this.TextInputModule('text',userName)
+                        }
+
+                        {
+                            this.state.nameShow ? 
+                            <TouchableOpacity onPress={()=>{this.modification('username',newName,userName)}}>
+                                <Image style={{height:20,width:19,marginLeft:5}} source={successImg}/>
+                            </TouchableOpacity> :
+                            <TouchableOpacity onPress={()=>{this._edit('username')}}>
+                                <Image style={{height:20,width:19,marginLeft:5}} source={editImg}/>
+                            </TouchableOpacity> 
+                             
+                        }   
+                    
+                   
                     </View>
                     
                 </View>
@@ -123,8 +213,22 @@ export default class MyData extends BaseComponent {
                         联系方式
                     </Text>
                     <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
-                    <Text  style={{color:'#737373'}}>{telNo}</Text>
-                    <Image style={{height:20,width:19,marginLeft:5}} source={require('../../../res/login/edit.png')}/>
+                        {
+                            this.state.telShow ? this.TextInputModule('input',telNo,'tel') : this.TextInputModule('text',telNo)
+                        }
+
+                        {
+                            this.state.telShow ? 
+                            <TouchableOpacity onPress={()=>{this.modification('tel',newTel,telNo)}}>
+                                <Image style={{height:20,width:19,marginLeft:5}} source={successImg}/>
+                            </TouchableOpacity> :
+                            <TouchableOpacity onPress={()=>{this._edit('tel')}}>
+                                <Image style={{height:20,width:19,marginLeft:5}} source={editImg}/>
+                            </TouchableOpacity> 
+                             
+                        }  
+
+                        
                     </View>
                 </View>
                
@@ -158,6 +262,25 @@ export default class MyData extends BaseComponent {
             </View>
     </View>
     )
+}
+fetchUserInfo() {
+    var that = this;
+    Request.requestGet(GetUserInfo, null, (result)=> {
+        if (result && result.code === 200) {
+            global.uinfo = result.data;
+            AsyncStorage.setItem('uinfo', JSON.stringify(result.data), function (error) {
+                //console.log('uinfo: error' + error);
+                if (error) {
+                   console.log('error: save error' + JSON.stringify(error));
+                } else {
+                   //console.log('save: uinfo = ' + JSON.stringify(result.data));
+                }
+
+            });
+            this.loadDetail();
+        }
+
+    });
 }
 
 }
