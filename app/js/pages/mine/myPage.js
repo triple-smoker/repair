@@ -83,6 +83,44 @@ export default class MyPage extends BaseComponent {
     }
     gotoPage(num){
         console.log('qu'+num)
+        const {navigation} = this.props;
+        var page = 'MainPage'
+        switch (num) {
+            case 1:
+                page = ''
+                break;
+            case 2:
+                page = ''
+            break;
+            case 3:
+                page = ''
+            break;
+            case 4:
+                page = ''
+            break;
+            case 5:
+                page = 'Inform'
+            break;
+            case 6:
+                page = ''
+            break;
+            page = ''
+            default:
+                break;
+        }
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate(page,{
+                theme:this.theme,
+            })
+        });
+    }
+    loogPapers(){
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('PapersPage',{
+                theme:this.theme,
+            })
+        });
     }
     render() {
         var  userData = this.state. userData;
@@ -115,8 +153,8 @@ export default class MyPage extends BaseComponent {
                             paddingRight: 8,}}>
                             {headerImg ? <Image style={styles.images} source={{uri:headerImg}}/> : <Image style={styles.images} source={require('../../../res/repair/user_wx.png')}/> }
                             
-                            <Text style={{marginLeft:20}}>{userName}</Text>
-                            { gender == 1 ? <Image style={{width:15,height:15}} source={require('../../../res/login/m.png')}/> : <Image style={{width:15,height:15}} source={require('../../../res/login/f.png')}/> }
+                            <Text style={{marginLeft:20,fontSize:15,color:'#333'}}>{userName}</Text>
+                            { gender == 1 ? <Image style={{width:15,height:15,marginLeft:5}} source={require('../../../res/login/m.png')}/> : <Image style={{width:15,height:15,marginLeft:5}} source={require('../../../res/login/f.png')}/> }
                             
                         </View>
                         <View style={{flexDirection: 'row', justifyContent:'space-around',alignItems: 'center',paddingLeft: 8,
@@ -130,10 +168,12 @@ export default class MyPage extends BaseComponent {
                         </View>
                         <View style={{backgroundColor:'#61c0c5',paddingLeft: 8,height:30,marginTop:15,
                                 paddingRight: 8,}}>
-                            <Text style={{lineHeight:30,}}>操作证</Text>
+                            <TouchableOpacity onPress={()=>this.loogPapers()}>      
+                            <Text style={{lineHeight:30,color:'white'}}>操作证</Text>
+                            </TouchableOpacity> 
                         </View>
                     </View>
-                    <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:40,paddingLeft:0,paddingRight:0,}}>
+                    <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:60,paddingLeft:0,paddingRight:0,}}>
                         <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                         <TouchableOpacity onPress={()=>this.gotoPage(1)}>
                             <Image source={require('../../../res/login/jf.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>

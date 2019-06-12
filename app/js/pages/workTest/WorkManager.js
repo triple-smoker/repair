@@ -60,7 +60,7 @@ export default class CheckDetail extends BaseComponent {
                         <Image style={{width:12,height:25,margin:10}} source={require("../../../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
                     <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
-                        <Text style={{color:'#666',fontSize:18,marginLeft:5, flex:1}}>我的工单</Text>
+                        <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>我的工单</Text>
                     </View>
                     <TouchableOpacity onPress={()=>this.captrue()}>
                         <Image style={{width:16,height:20,marginLeft:5,marginRight:10}} source={require('../../../res/repair/navbar_ico_sys.png')} />
