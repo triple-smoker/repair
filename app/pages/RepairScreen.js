@@ -7,7 +7,6 @@ import SoundRecoding from '../components/SoundRecoding';
 import MyFooter from '../components/MyFooter';
 import {TextInput, Image, View, DeviceEventEmitter} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
-import Record from '../components/Record'
 import Recorde from "../components/Recorde";
 
 export default class RepairScreen extends React.Component {
@@ -103,7 +102,6 @@ export default class RepairScreen extends React.Component {
      * */
         judgeContent(obj){
             let content =  obj;
-            // console.log(content)
             if(this.isEmpty(content.desc) && this.isEmpty(content.voices.filePath)){
                 this.setState({
                     showNotice: true,
@@ -134,13 +132,7 @@ export default class RepairScreen extends React.Component {
 	    }
 
     submit(){
-        // let images = this.state.images;
-        // if(images.length === 0){
-        //     this.setState({
-        //         showNotice: true,
-        //     });
-        //     return;
-        // }
+
         const repairInfo = {
             repairTypeId : this.state.repairTypeId,
             repairMatterId : this.state.repairMatterId,
@@ -203,16 +195,6 @@ export default class RepairScreen extends React.Component {
         })
     }
 
-    getNew(){
-        if(this.state.showVoice){
-            return <Recorde recordCallBack = {(record)=>this.recordCallBack(record)} />
-        }else {
-            return null
-        }
-
-    }
-
-
     render() {
         return (
             <Container style={{backgroundColor: "#EEEEEE"}}>
@@ -228,7 +210,9 @@ export default class RepairScreen extends React.Component {
                                value={this.state.desc}
                                placeholder={"我的报修内容..."}
                     />
-                    <SoundRecoding show={() => this.setState({showVoice : true})} record={this.state.record}/>
+                    <SoundRecoding show={() => this.setState({showVoice : true})}
+                                   recordCallBack = {(record)=>this.recordCallBack(record)}
+                                   record={this.state.record}/>
                     <MultipleImagePicker
                         navigation={this.props.navigation}
                         imageCallback = {(images)=> this.imageCallback(images)}
@@ -237,11 +221,7 @@ export default class RepairScreen extends React.Component {
                     />
                     <View style={{borderColor: '#000', width: '100%',height: 1, border: 0.5, marginLeft: '1.5%', marginRight: '1.5%',}}/>
                     <Reporter name={this.state.reporter} phone={this.state.phone} adds={this.state.address} changAdds={()=>this.changeReporter()}/>
-                    {/*<Record recordCallBack = {(record)=>this.recordCallBack(record)}></Record>*/}
-
-                    {/*{this.state.showVoice ? <Recorde recordCallBack = {(record)=>this.recordCallBack(record)} />: null}*/}
                     <Recorde show = {this.state.showVoice} recordCallBack = {(record)=>this.recordCallBack(record)} />
-                    {/*{this.getNew()}*/}
 
                 </Content>
                 <MyFooter submit={() => this.submit()} value='提交'/>

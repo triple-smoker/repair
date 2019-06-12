@@ -28,6 +28,7 @@ export default class BaseComponent extends Component {
         DeviceEventEmitter.addListener('onInit', this.onInit.bind(this));
         DeviceEventEmitter.addListener('onNotification', this.onNotification);
         this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
+        console.log(this.notif)
     }
 
     //卸载前移除通知
@@ -84,7 +85,7 @@ export default class BaseComponent extends Component {
     }
 
     onRegister(token) {
-        Alert.alert("Registered !", JSON.stringify(token));
+        // Alert.alert("Registered !", JSON.stringify(token));
         console.log(token);
         this.setState({ registerToken: token.token, gcmRegistered: true });
     }
