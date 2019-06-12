@@ -59,16 +59,6 @@ export default class TodayTask extends BaseComponent {
 
   componentDidMount() {
       this._fetchData(0);
-
-    //     this.timer = setTimeout(() => {
-    //        cachedResults.items = [];
-    // cachedResults.items.push({});
-    // cachedResults.items.push({});
-    // cachedResults.items.push({});
-    //
-    // this.setState({tabIndex:0, dataSource:this.state.dataSource.cloneWithRows(cachedResults.items)});
-    //     }, 500);
-
   }
     componentWillReceiveProps(){
         this._fetchData(0);
@@ -87,7 +77,12 @@ export default class TodayTask extends BaseComponent {
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('CheckList',{
-                theme:this.theme});
+                theme:this.theme,
+                callback: (
+                    () => {
+                        this._fetchData(0);
+                    })
+            });
         });
 
   }
@@ -109,21 +104,6 @@ export default class TodayTask extends BaseComponent {
     }
     //请求数据
     _fetchData(page) {
-
-        // if (page !== 0) { // 加载更多操作
-        //     this.setState({
-        //         isLoadingTail: true
-        //     });
-        //
-        //     cachedResults.nextPage = page;
-        // } else { // 刷新操作
-        //     this.setState({
-        //         isRefreshing: true
-        //     });
-        //     // 初始哈 nextPage
-        //     cachedResults.nextPage = 1;
-        // }
-
         var params = new Map();
         params.set('page', cachedResults.nextPage);
         params.set('limit', '20');
