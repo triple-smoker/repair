@@ -199,7 +199,7 @@ class Adds extends Component {//报修单共用组件
                                 <Button
                                 bordered
                                 style={{borderColor:'#fcb155',height:30,width:60,marginRight:10,justifyContent:'center',alignItems:'center'}}
-                                onPress= {()=>this.props.ShowModal(this.props.record.repairId,this.props.record.sendDeptId,this.props.record.sendUserId)}
+                                onPress= {()=>this.props.ShowModal(this.props.record.repairId)}
                                 >
                                   <Text style={{color:'#fcb155',fontSize:12}}>催单</Text>
                                 </Button>
