@@ -22,6 +22,7 @@ import VideoPlayer from '../../components/VideoPlayer';
 import { toastShort } from '../../js/util/ToastUtil';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from '../../util/RNFetchBlob';
+import VoicePlayer from '../../components/VoicePlayer'
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
@@ -29,10 +30,13 @@ let dialogWidth = ScreenWidth-80;
 class Adds extends Component {//报修单共用组件
     constructor(props) {
        super(props);
-       this.state = { modalVisible: false,
-              showText: false,
-              cancelVisible: false,
-              };
+       this.state = {
+           modalVisible: false,
+           showText: false,
+           cancelVisible: false,
+           isPlaying: false
+       };
+        this.voicePlayer = new VoicePlayer();
     }
     onClose() {
        this.setState({modalVisible: false});
@@ -86,14 +90,14 @@ class Adds extends Component {//报修单共用组件
             }
             else{
                 return <View style={{width: 70, height: 70, backgroundColor:'#000000'}}>
-                            <Image 
+                            <Image
                                 style={{
                                     position: 'absolute',
                                     top: 18,
                                     left: 18,
                                     width: 36,
                                     height: 36,
-                                }} 
+                                }}
                             source={require('../../image/icon_video_play.png')}/>
                        </View>
             }
@@ -109,14 +113,9 @@ class Adds extends Component {//报修单共用组件
         if(voicesRequest!=null){
             voicesRequest.forEach(function(voice){
                 if(voice.filePath!=null&&voice.filePath!=''){
-                    setTimeout(() => {
-                        var sound = new Sound(voice.filePath, null, (error) => {
-                            if (error) {
-                                console.log('failed to load the sound', error);
-                            }
-                            sound.play(() => sound.release());
-                        });
-                    }, 100);
+                    this.setState({isPlaying: true});
+                    this.voicePlayer.sound(voice.filePath)
+
                 }
             })
 
@@ -131,7 +130,7 @@ class Adds extends Component {//报修单共用组件
                     <Row>
                         {(this.props.record.fileMap.voicesRequest !=null && this.props.record.fileMap.voicesRequest.length>0 && this.props.record.fileMap.voicesRequest[0].filePath!=null) &&
                         <TouchableOpacity style={{width:30}} onPress={()=>this._showYy(this.props.record.fileMap)}>
-                            <Image style={{marginTop:10,width:25,height:25,paddingRight:5}} source={require("../../image/btn_yy.png")}/>
+                            <Image style={{marginTop:10,width:25,height:25,paddingRight:5}} source={require("../../image/voice_bf.png")}/>
                         </TouchableOpacity>
                         }
                         <TouchableOpacity style={{width:ScreenWidth-55}} onPress={()=>this._showText()}>
@@ -260,7 +259,7 @@ class PictureMd extends Component {
         this.videoItemRef = ref
         this.appentRefMap(ref.props.num,ref);
       }
-    
+
       appentRefMap(index,ref){
         let map = this.state.videoItemRefMap;
         map.set(index,ref);
@@ -268,7 +267,7 @@ class PictureMd extends Component {
             videoItemRefMap: map
         });
       }
-    
+
       setVideoCurrentTime = (index) => {
         let videoItemRef = this.state.videoItemRefMap.get(index + 1);
         if(videoItemRef){
@@ -411,7 +410,7 @@ class VideoItem extends Component{
             <View style={stylesImage.slide}>
                 {
                     this.state.videoPath == null ? <View style={stylesImage.image}><Loading animating={this.state.animating}/></View>
-                    : <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.state.videoPath}></VideoPlayer> 
+                    : <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.state.videoPath}></VideoPlayer>
                 }
                 <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
             </View>
@@ -427,7 +426,7 @@ const PreVideo  = (video) => {
                    left: 0,
                    bottom: 0,
                    right: 0,
-                   width: 70, 
+                   width: 70,
                    height: 70
                }}
                rate={1}
@@ -550,7 +549,7 @@ const Loading = (loading) =>{
     return(
         <View style={loadStyles.wrapper}>
           <View style={loadStyles.box}>
-            <ActivityIndicator 
+            <ActivityIndicator
               animating={loading.animating}
               color='white'
               size='large'
@@ -560,7 +559,7 @@ const Loading = (loading) =>{
     )
 }
 
-  
+
 const loadStyles=StyleSheet.create({
     wrapper:{
       justifyContent:'center',
