@@ -79,7 +79,6 @@ export default class MainPage extends BaseComponent {
     }
 
     componentWillUnmount() {
-        console.log('MainPage  componentWillUnmount');
         super.componentWillUnmount();
         if(this.listener){
             this.listener.remove();

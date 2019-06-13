@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View,Text, Image,TouchableNativeFeedback} from 'react-native';
-import VoicePlayer from './VoicePlayer'
+import {VoicePlayer}from './VoicePlayer'
 
 class SoundRecoding extends Component {
 

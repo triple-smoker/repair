@@ -115,6 +115,7 @@ export default class HomePage extends Component {
         console.log('onAction : ' + action);
     }
     componentDidMount() {
+        console.log('又回到主页！')
         this.eventListener = DeviceEventEmitter.addListener('Event_Home', (param) => {
             console.log('componentDidMount Home : ' + param);
         });
