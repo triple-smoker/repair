@@ -10,18 +10,23 @@ import {
     StyleSheet,
     InteractionManager,
     TextInput,
-    Platform,
-    ToastAndroid,
-    Switch
+    Dimensions,
+    DeviceEventEmitter,
+    Modal
 } from 'react-native';
-import RNFetchBlob from '../../../util/RNFetchBlob';
+import {Loading} from '../../component/Loading'
+import { Radio ,List,ListItem } from 'native-base';
 import TitleBar from '../../component/TitleBar';
 import BaseComponent from '../../base/BaseComponent'
 import Request, {ScanDetails,baseUser,GetUserInfo} from '../../http/Request';
 import * as Dimens from '../../value/dimens';
+import { toastShort } from '../../util/ToastUtil';
 import AsyncStorage from '@react-native-community/async-storage';
+import ImagePicker from 'react-native-image-crop-picker';
 var newName = ''
 var newTel  = ''
+let ScreenWidth = Dimensions.get('window').width;
+let ScreenHeight = Dimensions.get('window').height;
 export default class MyData extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -33,12 +38,24 @@ export default class MyData extends BaseComponent {
             userData:null,
             name:'',
             nameShow:false,
-            telShow:false
+            telShow:false,
+            sexShow:false,
+            images: [],
+            visibleModal:false,
+            imagePath0:null,
+            imageUrl0:null,
         }
     }
     componentDidMount() {
         var that = this;
         this.loadDetail();
+        this.eventListener = DeviceEventEmitter.addListener('Event_Take_Photo', (param) => {
+            console.log('componentDidMount Event_Take_Photo : ' + param + ", imagePos : " );
+            that.setState({imagePath0:param,});
+            
+
+            that.uploadFile(param);
+        });
     }
     componentWillReceiveProps(nextProps) {
         this.loadDetail();
@@ -56,6 +73,34 @@ export default class MyData extends BaseComponent {
             }
         })
     }
+    uploadFile(path) {
+        // Loading.show();
+        var that = this;
+        console.log(path)
+        Request.uploadFile(path, (result)=> {
+            console.log('path')
+            console.log(path)
+            console.log('result')
+            console.log(JSON.stringify(result))
+            if (result && result.code === 200) {
+                that.setState({imageUrl0:JSON.stringify(result.data), });
+                // Loading.hidden();
+                this.updatePortrait(result.data.fileDownloadUri)
+            } 
+      });
+    }
+    updatePortrait(Msg){
+        Request.requestPut(baseUser,{
+            headImgId:Msg,
+            userId : this.state.userData.userId
+        }, (result)=> {
+            if (result && result.code === 200 && result.data == true) {
+                this.fetchUserInfo();
+            } else {
+            
+            }
+        })
+    }
     _edit(type){
         console.log(type)
         var that = this;
@@ -63,6 +108,8 @@ export default class MyData extends BaseComponent {
             that.setState({nameShow:!that.state.nameShow})
         }else if(type == 'tel'){
             that.setState({telShow:!that.state.telShow})
+        }else if(type == 'sex'){
+            that.setState({sexShow:!that.state.sexShow})
         }
     }
     modification(type,Msg,oldMsg){
@@ -70,6 +117,8 @@ export default class MyData extends BaseComponent {
         if(type == 'username'){
             if(Msg == oldMsg || Msg== ''){
                 console.log('未修改')
+                toastShort('请修改名称');
+                this._edit(type);
             }else{
                 console.log('修改')
                 Request.requestPut(baseUser,{
@@ -88,6 +137,8 @@ export default class MyData extends BaseComponent {
             console.log(type)
             if(Msg == oldMsg || Msg== ''){
                 console.log('未修改')
+                toastShort('请修改手机号');
+                this._edit(type)
             }else{
                 console.log('修改')
                 Request.requestPut(baseUser,{
@@ -106,8 +157,6 @@ export default class MyData extends BaseComponent {
     }
 
     TextInputModule(domType,txt,type){
-        console.log('txt:'+txt)
-        console.log('type:'+type) 
        if(domType == 'input'){
            return <TextInput
                     style={{height: 40, minWidth: 50,borderColor: 'gray', padding: 0,}}
@@ -126,6 +175,49 @@ export default class MyData extends BaseComponent {
            return <Text  style={{color:'#737373'}}>{txt}</Text>
        }  
     }
+
+    checkSex(type,oldType){
+        console.log(type+':'+oldType)
+        if(type != oldType){
+            Request.requestPut(baseUser,{
+                gender : type,
+                userId : this.state.userData.userId
+            }, (result)=> {
+                console.log(result)
+                if (result && result.code === 200 && result.data == true) {
+                    this.fetchUserInfo();
+                    this._edit('sex')
+                } else {
+                
+                }
+            })
+        }
+        
+    }
+    onTake() {
+        //this.routeToPage(this.props.navigator, 'OrderDetail');
+        this.toggleModal()
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+                        navigation.navigate('TakePicture',{
+                        theme:this.theme
+                    })
+        });
+      }
+    pickMultiple() {
+    ImagePicker.openPicker({
+        multiple: true,
+        waitAnimationEnd: false,
+        includeExif: true,
+        forceJpg: true,
+        mediaType: 'photo',
+    }).then(images => {
+        //将选择的图片加入到列表
+
+        console.log('pickimage : ' +  images);
+        this.updatePortrait(images)
+    }).catch();
+    } 
     render() {
         var  userData = this.state. userData;
         if (userData) {
@@ -158,10 +250,11 @@ export default class MyData extends BaseComponent {
                                 marginRight:0,
                                 paddingRight: 15,}}>
                 {headerImg ? <Image style={{height:45,width:45,borderRadius:45}} source={{uri:headerImg}}/> : <Image style={{height:45,width:45,borderRadius:45}} source={require('../../../res/repair/user_wx.png')}/>}
-                
+                    <TouchableOpacity onPress={()=>this.toggleModal()}>
                     <Text style={{fontSize:16,marginLeft:20, textDecorationLine:'underline',}}>
                         更换头像
                     </Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -200,9 +293,28 @@ export default class MyData extends BaseComponent {
                         性别
                     </Text>
                     <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
-                    <Text  style={{color:'#737373'}}>{gender == 1 ? '男' : '女'}</Text>
-                    <Image style={{height:20,width:19,marginLeft:5}} source={require('../../../res/login/edit.png')}/>
+                    
+                    {
+                        this.state.sexShow   ?  <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
+                                                    <Radio onPress={()=>this.checkSex(1,gender)}  color={"#737373"}
+                                                            selectedColor={"#737373"} selected={gender == 1}></Radio><Text>男</Text>
+                                                    <Radio onPress={()=>this.checkSex(0,gender)}  color={"#737373"}
+                                                            selectedColor={"#737373"} selected={gender == 0}></Radio><Text>女</Text>
+                                                </View> : 
+                                                <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
+                                                    <Text  style={{color:'#737373'}}>{gender == 1 ? '男' : '女'}</Text>
+                                                    <TouchableOpacity onPress={()=>{this._edit('sex')}}>
+                                                        <Image style={{height:20,width:19,marginLeft:5}} source={require('../../../res/login/edit.png')}/>
+                                                    </TouchableOpacity>
+                                                </View>
+                        }
+                    
+                    
+                 
+                    
+                    
                     </View>
+                    
                 </View>
                
             </View>
@@ -260,9 +372,46 @@ export default class MyData extends BaseComponent {
                 </View>
                
             </View>
-    </View>
+            <Modal 
+                onRequestClose={()=>this.toggleModal()}
+                transparent={true}
+                animationType={'slide'}
+                visible={this.state.visibleModal}
+                >
+                    <TouchableOpacity style={{flex:1}} onPress={()=>this.toggleModal()}>
+
+                    
+                        <View style={{position:'relative',flex:1,backgroundColor:'rgba(0,0,0,0.5)'}}>
+                            <View style={{position:'absolute',bottom:0,backgroundColor:'999'}}>
+                                <TouchableOpacity onPress={()=>this.pickMultiple()} >
+                                <View style={styles.box}>
+                                    <Text style={{color:'black',fontSize:15}}>从相册中选择照片</Text>
+                                </View>
+                                </TouchableOpacity>
+                                <View style={styles.line} />
+                                <TouchableOpacity onPress={()=>this.onTake()}>
+                                <View style={styles.box}>
+                                    <Text style={{color:'black',fontSize:15}}>拍照</Text>
+                                </View>
+                                </TouchableOpacity>
+                                <View style={styles.line} />
+                                <TouchableOpacity onPress={()=>this.toggleModal()}>
+                                <View style={{...styles.box,marginTop:5}}>
+                                    <Text style={{color:'black',fontSize:15}}>取消</Text>
+                                </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    
+                    </TouchableOpacity>
+            </Modal>
+            </View>
     )
 }
+toggleModal = () =>
+        this.setState({ visibleModal: !this.state.visibleModal });
+
+       
 fetchUserInfo() {
     var that = this;
     Request.requestGet(GetUserInfo, null, (result)=> {
@@ -308,6 +457,13 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 15,
     },
+    box:{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        backgroundColor:'white',
+        alignItems: 'center',marginLeft:0,marginRight:0,marginTop:0,marginBottom: 0,
+        height:50
+    },
     input_center_bg:{
         overflow:'hidden',
         backgroundColor: '#f0f0f0',
@@ -325,6 +481,6 @@ const styles = StyleSheet.create({
         fontSize: 15,height:40,textAlign: 'left',textAlignVertical:'center',flex:1,marginLeft:0
     },
     line:{
-        backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-20),marginTop:0,
+        backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width),marginTop:0,
     },
 });
