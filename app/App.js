@@ -27,7 +27,7 @@ import OrderSearchDemo from './test/OrderSearchDemo';
 import CheckList from './js/pages/workTest/CheckList';
 import CheckDetail from './js/pages/workTest/CheckDetail';
 import WorkManager from './js/pages/workTest/WorkManager';
-// import SQLiteDemo from "./test/SQLiteDemo";
+import SQLiteDemo from "./test/SQLiteDemo";
 
 
 
@@ -54,7 +54,7 @@ const AppNavigator = createStackNavigator(
         WorkManager : WorkManager,
         CheckList : CheckList,
         CheckDetail : CheckDetail,
-        // SQLiteDemo : SQLiteDemo,
+        SQLiteDemo : SQLiteDemo,
         ...store
 
     },

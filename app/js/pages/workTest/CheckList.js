@@ -84,7 +84,12 @@ export default class CheckList extends BaseComponent {
                 //     }
                 // });
             navigation.navigate('CheckDetail',{
-                theme:this.theme});
+                theme:this.theme,
+                callback: (
+                    () => {
+                        this._fetchData(0);
+                    })
+            });
         });
 
   }
@@ -104,6 +109,8 @@ export default class CheckList extends BaseComponent {
             cachedResults.items.push({});
         }else if(cachedResults.tabIndex === 1){
             cachedResults.items.push({});
+            cachedResults.items.push({});
+        }else if(cachedResults.tabIndex === 2){
             cachedResults.items.push({});
             cachedResults.items.push({});
             cachedResults.items.push({});
@@ -157,8 +164,35 @@ export default class CheckList extends BaseComponent {
     captrue() {
 
     }
+    //未完成、紧急、全部数据切换
+    onPressTabItem(index){
+        cachedResults.items = [];
+        cachedResults.tabIndex = index;
+        cachedResults.total = 0;
+        cachedResults.pages = 0;
+        cachedResults.nextPage = 1;
+        this.setState({tabIndex:index, dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)});
+        this._fetchData(0);
+    }
 
   render() {
+      var tabBar = <View style={{backgroundColor:'white', height:49, justifyContent:'center', flexDirection:'row', bottom:0}}>
+          <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+              <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                  <Text style={{color:this.state.tabIndex===0 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>未完成</Text>
+              </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this.onPressTabItem(1)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+              <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                  <Text style={{color:this.state.tabIndex===1 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>紧急</Text>
+              </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this.onPressTabItem(2)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+              <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                  <Text style={{color:this.state.tabIndex===2 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>全部</Text>
+              </View>
+          </TouchableOpacity>
+      </View>
     // var itemView = cachedResults.items.map((item, i)=>this.renderItem(item, i));
     return (
       <View style={styles.container}>
@@ -195,6 +229,7 @@ export default class CheckList extends BaseComponent {
               cachedResults={cachedResults}
               ref={component => this._listView = component}
           />
+          {tabBar}
       </View>
       )
     }
@@ -223,7 +258,7 @@ class CheckItem extends Component {
                                 borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>特例</Text>
                         </View>
                         <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3, }}>位置：上海市</Text>
-                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3,}}>上次检查：2019-01-01</Text>
+                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3,}}>08:00-12:00</Text>
 
                     </View>
                     <View style={{flex:1, justifyContent:'flex-end',paddingRight:10}}>

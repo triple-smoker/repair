@@ -297,6 +297,14 @@ export default class HomePage extends Component {
             })
         });
     }
+    _sqlite(){
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('SQLiteDemo',{
+                theme:this.theme,
+            })
+        });
+    }
 
     render() {
         return (
@@ -403,8 +411,10 @@ export default class HomePage extends Component {
                 </TouchableOpacity>
             </View>
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
+                <TouchableOpacity onPress={()=>this._sqlite()} >
                 <Image source={require('../../../res/login/ico_ys.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>运送</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>sqlite</Text>
+                </TouchableOpacity>
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
