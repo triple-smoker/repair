@@ -6,20 +6,18 @@ import React, {Component} from 'react';
 import {
     StyleSheet,
     View,
-    Text,
     InteractionManager,
-    Platform,
     Image,
 } from 'react-native'
-// import MainPage from './MainPage'
 import ThemeDao from '../../dao/ThemeDao'
+import AsyncStorage from "@react-native-community/async-storage";
 
 
 export default class WelcomePage extends Component {
 
     componentDidMount() {
 
-        const {navigation} = this.props;
+        // const {navigation} = this.props;
 
         new ThemeDao().getTheme().then((data)=>{
             this.theme=data;
@@ -27,16 +25,55 @@ export default class WelcomePage extends Component {
 
         this.timer = setTimeout(() => {
             InteractionManager.runAfterInteractions(() => {
-                // navigator.resetTo({
-                //     component: MainPage,
-                //     name: 'MainPage',
-                //     params:{
-                //         theme:this.theme
-                //     }
-                // });
-                navigation.navigate('MainPage',{theme:this.theme})
+                // navigation.navigate('MainPage',{theme:this.theme})
+                this.loadUserInfo()
+
+
             });
         }, 2000);
+    }
+
+    loadUserInfo() {
+        console.log('loadUserInfo');
+        var that = this;
+        const {navigation} = that.props;
+        AsyncStorage.getItem('token', function (error, result) {
+            if (error) {
+                console.log('读取失败')
+            } else {
+                if (result && result.length) {
+                    global.access_token = result;
+                    console.log('access_token: result = ' + result);
+                    InteractionManager.runAfterInteractions(() => {
+                        navigation.navigate('App',{theme:that.theme})
+
+                    });
+                } else {
+                    InteractionManager.runAfterInteractions(() => {
+                        navigation.navigate('Auth',{theme:that.theme})
+
+                    });
+                }
+            }
+        });
+
+        AsyncStorage.getItem('uinfo', function (error, result) {
+            // console.log('uinfo: result = ' + result + ', error = ' + error);
+            if (error) {
+                console.log('读取失败')
+            } else {
+                if (result && result.length) {
+
+                    global.uinfo = JSON.parse(result);
+
+                    global.userId=global.uinfo.userId;
+                    global.deptId=global.uinfo.deptAddresses[0].deptId;
+                    var permissions = global.uinfo.permissions.indexOf("biz_repair_mgr")===-1? false:true;
+                    global.permissions = permissions;
+                }
+
+            }
+        });
     }
 
     componentWillUnmount() {
