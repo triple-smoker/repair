@@ -250,16 +250,21 @@ class CheckItem extends Component {
                         left:0
                     }}
                     />
-                    <View style={{flex:1,}}>
+                    <View style={{flex:2,}}>
                         <View style={{flexDirection:'row',}}>
                             <Text style={{fontSize:16, color:'#FF0000', marginLeft:15,marginTop:0, textDecorationLine:'underline'}}>NO.00001</Text>
                             {/*<Text style={{flexWrap:'nowrap', marginLeft:10, height:16,*/}
                                 {/*color:'#949494',fontSize:9, marginTop:2,textAlignVertical:'center', textAlign:'center',borderWidth:1, borderColor:'#949494',*/}
                                 {/*borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>特例</Text>*/}
                         </View>
-                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3, }}>位置：上海市</Text>
+                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3, }}>上海市</Text>
                         <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3,}}>08:00-12:00</Text>
 
+                    </View>
+                    <View style={{flex:1,height:80,  textAlignVertical:'center',justifyContent:"center"}}>
+                        <Text style={{fontSize:16,textAlign:"center"}}>
+                            Tiffany
+                        </Text>
                     </View>
                     <View style={{flex:1, justifyContent:'flex-end',paddingRight:10}}>
                         <View style={{flex:1, justifyContent:'flex-end', flexDirection:'row',alignItems:"center"}}>

@@ -200,7 +200,9 @@ class CheckItem extends Component {
                     <Text style={{fontSize:14, color:'#737373', marginLeft:10, marginTop:10,}}>8:00-10:00</Text>
                 </View>
                 <View style={{flex:1,height:80,  textAlignVertical:'center',justifyContent:"center"}}>
-                        <Text style={{fontSize:16}}>[设备]</Text>
+                        <Text style={{fontSize:16,borderWidth:1,borderColor:"#aaa",width:36,height:20,textAlign:"center",
+                            borderBottomRightRadius: 2,borderBottomLeftRadius: 2,borderTopLeftRadius: 2,borderTopRightRadius: 2}}
+                        >设备</Text>
                 </View>
                 {cachedResults.tabIndex === 0 &&
                     <View style={{flex:2, flexDirection:'column',justifyContent:'flex-end',alignItems:'flex-end',  textAlignVertical:'center',paddingRight:10}}>
