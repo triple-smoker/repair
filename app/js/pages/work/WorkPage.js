@@ -35,6 +35,7 @@ import HistoryDetail from '../repair/HistoryDetail';
 import SearchOrder from './SearchOrder'
 
 import Sound from 'react-native-sound';
+import {getVoicePlayer} from '../../components/VoicePlayer'
 import Axios from "../../../util/Axios";
 import Swiper from 'react-native-swiper';
 import VideoPlayer from '../../../components/VideoPlayer';
@@ -592,16 +593,15 @@ export default class WorkPage extends BaseComponent {
 
 
 onPlayVoice(filePath) {
-  console.log('bofang')
-    const s = new Sound(filePath, null, (e) => {
-                if (e) {
-                     toastShort('播放失败');
-                    return;
-                }
 
-                toastShort('开始播放');
-                s.play(() => s.release());
-      });
+    let voicePlayer = getVoicePlayer();
+    voicePlayer.voice(filePath,(result)=>{
+        if(result){
+            toastShort('开始播放');
+        }else {
+            toastShort('播放失败');
+        }
+    })
 
 }
 

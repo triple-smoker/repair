@@ -38,9 +38,10 @@ export class VoicePlayer{
                 this.sound.play((success) => {
                     if (success) {
                         console.log('successfully finished playing');
-                        callback();
+                        callback(true);
                         this.isPlaying=false
                     } else {
+                        callback(false);
                         console.log('playback failed due to audio decoding errors');
                     }
                 });

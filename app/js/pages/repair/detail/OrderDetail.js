@@ -23,6 +23,7 @@ import Request, {GetRepairList, RepairDetail, RepPause, DoPause, RepairCommenced
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
 import Sound from "react-native-sound";
+import {getVoicePlayer} from '../../components/VoicePlayer'
 import Swiper from 'react-native-swiper';
 import VideoPlayer from '../../../../components/VideoPlayer';
 import Video from 'react-native-video';
@@ -198,15 +199,25 @@ export default class OrderDetail extends BaseComponent {
     }
 
     onPlayVoice(filePath) {
-        const s = new Sound(filePath, null, (e) => {
-            if (e) {
-                toastShort('播放失败');
-                return;
-            }
 
-            toastShort('开始播放');
-            s.play(() => s.release());
-        });
+        let voicePlayer = getVoicePlayer();
+        voicePlayer.voice(filePath,(result)=>{
+            if(result){
+                toastShort('开始播放');
+            }else {
+                toastShort('播放失败');
+            }
+        })
+
+        // const s = new Sound(filePath, null, (e) => {
+        //     if (e) {
+        //         toastShort('播放失败');
+        //         return;
+        //     }
+        //
+        //     toastShort('开始播放');
+        //     s.play(() => s.release());
+        // });
 
     }
 

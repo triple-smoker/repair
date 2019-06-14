@@ -115,7 +115,6 @@ class Adds extends Component {//报修单共用组件
             voicesRequest.forEach(function(voice){
                 if(voice.filePath!=null&&voice.filePath!=''){
                     let voicePlayer = getVoicePlayer();
-                    console.log(voicePlayer)
                     voicePlayer.voice(voice.filePath,()=>console.log('播放完成'))
                     // setTimeout(() => {
                     //     var sound = new Sound(voice.filePath, null, (error) => {
