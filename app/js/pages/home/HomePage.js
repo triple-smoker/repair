@@ -23,6 +23,7 @@ import OrderType from "../../../pages/publicTool/OrderType";
 import RNFetchBlob from '../../../util/RNFetchBlob';
 
 import NfcManager, {Ndef} from 'react-native-nfc-manager';
+import {FLAG_TAB} from "../entry/MainPage";
 
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
@@ -247,10 +248,20 @@ export default class HomePage extends Component {
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('WorkManager',{
                 theme:this.theme,
-                scanId : tag.id
+                scanId : tag.id,
+                callback: (
+                    () => {
+                        this.setHome();
+                    })
             })
         });
 
+    }
+    setHome(){
+        DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
+        this.setState({
+            selectedTab: FLAG_TAB.flag_popularTab,
+        })
     }
 
     _startDetection = () => {
@@ -282,7 +293,11 @@ export default class HomePage extends Component {
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('WorkManager',{
                 theme:this.theme,
-                scanId : qrCode
+                scanId : qrCode,
+                callback: (
+                    () => {
+                        this.setHome();
+                    })
             })
         });
     }
