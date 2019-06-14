@@ -193,6 +193,9 @@ export default class Login extends BaseComponent {
      params.set('password', encodeURIComponent(psw));
      global.access_token = null;
      Request.requestGet(AuthToken, params, (result)=> {
+
+         console.log(result)
+
         if (result && result.access_token) {
             var logInfo = {
                 username:username,

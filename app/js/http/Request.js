@@ -37,7 +37,7 @@ export const SaveMaterial   =  "api/repair/service/material/save";//提交物料
 export const RepairCommenced   =  "api/repair/service/commenced";//进入完工 开始任务
 export const RepairCompleted   =  "api/repair/service/completed";//完工提交
 export const ScanDetails  = "api/basic/baseEquipment/";//设备详情
-export const ScanMsg = "api/basic/baseEquipment/scan/";//扫码获得设备信息 
+export const ScanMsg = "api/basic/baseEquipment/scan/";//扫码获得设备信息
 export const baseUser = 'api/basic/baseUser';//修改用户信息
 //https://dev.jxing.com.cn/api/auth/oauth/token?username=10001&password=BlvxyJFFYLcg7n2OB4G5uA%3D%3D&grant_type=password&scope=server
 //'Content-Type': 'application/x-www-form-urlencoded'
@@ -124,7 +124,7 @@ static requestGet(action, params, callback) {
     fetch(url, fetchOptions)
      .then((response) => response.json())
      .then((responseText) => {
-     	// console.log('responseText: ' + JSON.stringify(responseText));
+     	console.log('responseText: ' + JSON.stringify(responseText));
      	callback(responseText);
             if(responseText&&responseText.code===401){
                 Request.getUserToken();
@@ -132,7 +132,9 @@ static requestGet(action, params, callback) {
      	//return JSON.parse(responseText);
      })
      .catch(error=>{
- 		callback(JSON.stringify(error));
+         console.log('error: ' + JSON.stringify(error));
+
+         callback(JSON.stringify(error));
  	});//.done()
 }
 static requestGetWithKey(action, params, callback, key) {
@@ -307,7 +309,7 @@ static uploadFile(path, callback) {
     axios(url,{
         method:'POST',
         headers:headers,
-        data:formData   
+        data:formData
     }).then((response)=>{
         callback(response)
     }).then((responseText)=>{
