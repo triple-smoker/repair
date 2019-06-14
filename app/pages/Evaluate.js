@@ -26,7 +26,7 @@ class OrderEvaluate extends Component {//主页面
     static navigationOptions = {
         // header: null,
         headerTitle: '报修单详情',
-        headerBackImage: (<Image resizeMode={'contain'} style={{width: 12, height: 25}} source={require('../image/navbar_ico_back.png')} />),
+        headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../image/navbar_ico_back.png')} />),
         headerStyle: {
             elevation: 0,
         },

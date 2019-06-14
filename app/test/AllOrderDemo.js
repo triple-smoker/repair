@@ -408,7 +408,7 @@ class AllOrder extends BaseComponent {
         <View style={styles.container}>
             <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
                 <TouchableHighlight style={{width:20,height:50}} onPress={()=>this.goBack()}>
-                    <Image style={{width:12,height:25,margin:10}} source={require("../image/navbar_ico_back.png")}/>
+                    <Image style={{width:12,height:25,margin:10}} source={require("../image/navbar_ico_back2.png")}/>
                 </TouchableHighlight>
                 <TouchableOpacity onPress={()=>this.goSearch(()=>this._fetchData(0))} style={{flex:1,height:30, marginRight:0,}}>
                     <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:5,

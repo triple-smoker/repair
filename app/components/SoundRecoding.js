@@ -61,7 +61,7 @@ class SoundRecoding extends Component {
 				height: 40,
                 flexDirection: 'row',
                 backgroundColor: "#ffffff",
-                paddingLeft:3
+                paddingLeft:8
 			}}>
                 {this.props.readOnly ? null : this.recordButtom()}
 				<TouchableNativeFeedback style={{left: 1}} onPress={() => {this.play()}}>
