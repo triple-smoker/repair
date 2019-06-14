@@ -38,7 +38,9 @@ export const RepairCommenced   =  "api/repair/service/commenced";//进入完工 
 export const RepairCompleted   =  "api/repair/service/completed";//完工提交
 export const ScanDetails  = "api/basic/baseEquipment/";//设备详情
 export const ScanMsg = "api/basic/baseEquipment/scan/";//扫码获得设备信息 
+                     
 export const baseUser = 'api/basic/baseUser';//修改用户信息
+export const Attr =  'api/basic/eqp/attr/';//设备属性
 //https://dev.jxing.com.cn/api/auth/oauth/token?username=10001&password=BlvxyJFFYLcg7n2OB4G5uA%3D%3D&grant_type=password&scope=server
 //'Content-Type': 'application/x-www-form-urlencoded'
 //123456

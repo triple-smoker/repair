@@ -25,7 +25,7 @@ import * as Dimens from '../value/dimens';
  * rightPress---------------标题栏右边文字点击事件
  * rightImg----------------标题栏右边图片
  * rightImgPress---------标题栏右边图片点击事件
- *
+ * rightStyle
  * isShowLeftBackIcon  ----是否显示左边图片
  * leftPress------------标题栏左边点击事件(为空,点击返回上个页面,否则点击执行传过来的事件)
  *
@@ -40,7 +40,7 @@ export default class TitleBar extends Component {
         super(props);
         this.state = {
             centerText: getPropsData(this.props.centerText, ''),
-            rightText: getPropsData(this.props.rightText, ''),
+            rightText: this.props.rightText,
             rightPress: this.props.rightPress,
             rightImg: this.props.rightImg,
             rightImgPress: this.props.rightImgPress,
@@ -49,6 +49,7 @@ export default class TitleBar extends Component {
             backgroundColor: getPropsData(this.props.backgroundColor, Dimens.color_bg_f9),
             centerTextStyle: this.props.centerTextStyle,
             lineHeight: getPropsData(this.props.lineHeight, Dimens.ruleSize),
+            rightStyle : getPropsData(this.props.rightStyle, ''),
         }
     }
 
@@ -68,7 +69,7 @@ export default class TitleBar extends Component {
     render() {
 
         const {centerText, backgroundColor, isShowLeftBackIcon, leftPress
-            ,rightText, rightPress, rightImg, rightImgPress, centerTextStyle, lineHeight} = this.state;
+            ,rightText, rightPress, rightImg, rightImgPress, rightStyle,centerTextStyle, lineHeight,} = this.state;
 
         /** 左边图片*/
         let touchableOpacity = null;
@@ -106,7 +107,7 @@ export default class TitleBar extends Component {
             } }>
                 <View style={{alignItems: 'center'}}>
                     <Image
-                        style={styles.rightImage}
+                        style={{...styles.rightImage,...rightStyle}}
                         source={rightImg}/>
 
                 </View>

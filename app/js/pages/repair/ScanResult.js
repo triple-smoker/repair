@@ -19,7 +19,7 @@ import {
 
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
-import Request, {ScanMsg,ScanDetails} from '../../http/Request';
+import Request, {ScanMsg,ScanDetails,Attr} from '../../http/Request';
 import { toastShort } from '../../util/ToastUtil';
 import { toDate } from '../../util/DensityUtils';
 import BaseComponent from '../../base/BaseComponent'
@@ -29,17 +29,18 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
-let orderStatus = "";
 export default class ScanResult extends BaseComponent {
     static navigationOptions = {
         header: null,
     };
     constructor(props){
         super(props);
-        orderStatus = props.navigation.state.params.status;
+        const { navigation } = this.props;
+        const equipmentId = navigation.getParam('equipmentId', '');
         this.state={
             detaiData:null,
             repairId:props.navigation.state.params.repairId,
+            equipmentId : equipmentId
         }
     }
     componentWillUnmount(){
@@ -53,49 +54,28 @@ export default class ScanResult extends BaseComponent {
         var that = this;
         // 040A8A3A325E81
         // 1083394199443472386
-        var scanCode = "040A8A3A325E81"
+        //var scanCode = "040A8A3A325E81"
         // var scanId = "1083394199443472386"
         
-        Request.requestGet(ScanMsg+scanCode,null,(result) => {
-            if(result && result.code === 200){
-                console.log('------')
-                console.log(result)
-                if(result.data.equipmentId){
-                    Request.requestGet(ScanDetails + result.data.equipmentId, null, (result)=> {
-                        if (result && result.code === 200) {
-                            console.log('+++++++')
-                            console.log(result.data)
-                            that.setState({
-                                detaiData:result.data,
-                            });
-                        } else {
-                
-                        }
-                    });
-                }
+        
+        console.log('---设备详情---')
+        console.log(this.props)
+        Request.requestGet(ScanDetails + this.props.equipmentId, null, (result)=> {
+            if (result && result.code === 200) {
+                console.log('+++++++')
+                console.log(result.data)
+                that.setState({
+                    detaiData:result.data,
+                });
+            } else {
+    
             }
-        })
+        });
+        
+                
+    }
         
     
-       
-    }
-    getDetail(scanId){
-        // console.log('1')
-        // if(scanId){
-        //     Request.requestGet(ScanDetails+scanId, null, (result)=> {
-        //         if (result && result.code === 200) {
-        //             console.log('+++++++')
-        //             console.log(result.data)
-        //             that.setState({
-        //                 detaiData:result.data,
-        //             });
-        //         } else {
-        
-        //         }
-        //     });
-        // }
-       
-    }
 
     materielList() {
         // const {navigation} = this.props;
@@ -142,6 +122,8 @@ export default class ScanResult extends BaseComponent {
         var time3 = null;
         var time4 = null;
         var model = null;
+        var brandImg = null;
+        var ratedCapacity = null;
         if (detaiData) {
               vardetailAddress = detaiData.detailAddress;
               brand = detaiData.brand;
@@ -157,28 +139,37 @@ export default class ScanResult extends BaseComponent {
               time2 = detaiData.startUseDate;
               time3 = detaiData.startGuarantDate;
               time4 = detaiData.endGuarantDate;
+              if(detaiData.fileList[0].fileDomain && detaiData.fileList[0].filePath){
+                brandImg = detaiData.fileList[0].fileDomain + detaiData.fileList[0].filePath
+              }
+              ratedCapacity = detaiData.ratedCapacity
         }
         return (
             <View style={styles.container}>
-                <TitleBar
+                {/* <TitleBar
                     centerText={'扫描结果'}
                     isShowLeftBackIcon={true}
                     navigation={this.props.navigation}
-                />
+                /> */}
                 <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64, 
                     width:Dimens.screen_width,flex:1}}>
                    <View style={styles.header}>
-                        <Image style={styles.images} source={require('../../../res/repair/user_wx.png')}/>
-                        <View>
-                            <Text>{equipmentName+'（' + model +'）'}</Text>
-                            <Text>{brand+' | ' +brandId + ' | ' + this.statusTxt(status) }</Text>
+                       {
+                            brandImg ?  
+                            <Image style={styles.images} source={{uri:brandImg}} /> : 
+                            <Image style={styles.images} source={require('../../../res/repair/noImg.png')}/>
+                       }
+                                               
+                        <View style={{flexDirection: 'column',justifyContent:'space-between'}}>
+                            <Text style={{color:'white'}}>{equipmentName+'（' + model +'）'}</Text>
+                            <Text style={{color:'white'}}>{brand+' | ' +brandId + ' | ' + this.statusTxt(status) }</Text>
                         </View>
                    </View>
                     <View style={styles.main}>
                         <View><Text styles={{color:'#737373',fontSize:12}}>- 基本属性 -</Text></View>
                         <View style={styles.title}>
                             <Text>额定容量：</Text>
-                            <Text>额定容量</Text>
+                            <Text>{ratedCapacity}</Text>
                         </View>
                         <View style={styles.title}>
                             <Text>电压等级：</Text>
@@ -197,6 +188,7 @@ export default class ScanResult extends BaseComponent {
                             <Text>重量</Text>
                             <Text>{weight}</Text>
                         </View>
+                        <View style={styles.line} />
                         <View style={styles.title}>
                             <Text>安装日期：</Text>
                             <Text>{toDate(time1,'yyyy-MM-dd')}</Text>
@@ -251,16 +243,14 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         paddingBottom:10,
-        elevation: 5,
-        shadowOffset: {width: 0, height: 0},
-        shadowColor: '#c4c6d2',
-        shadowOpacity: 0.5,
-        shadowRadius: 1
     },
     title:{
         paddingLeft:30,
         marginTop:5,
         flexDirection: 'row',
         justifyContent:'space-between',
-    }
+    },
+    line:{
+        backgroundColor:'#eeeeee',height:1,marginTop:5,width:(Dimens.screen_width),marginTop:0,marginLeft:20,
+    },
 });

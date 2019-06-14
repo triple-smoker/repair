@@ -24,7 +24,8 @@ import MySet from '../js/pages/mine/mySet';
 import MyData from '../js/pages/mine/myData';
 import PapersPage from '../js/pages/mine/PapersPage';
 import Inform from '../js/pages/mine/Inform';
-import SystemInform from '../js/pages/mine/SystemInform'
+import SystemInform from '../js/pages/mine/SystemInform';
+import WorkManager from '../js/pages/workTest/WorkManager'
 export default {
     SearchOrder : SearchOrder,
     HistoryDetail : HistoryDetail,
@@ -51,4 +52,5 @@ export default {
     PapersPage : PapersPage,
     Inform : Inform,
     SystemInform : SystemInform,
+    WorkManager : WorkManager
 }

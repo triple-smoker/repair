@@ -265,7 +265,14 @@ export default class HomePage extends Component {
         // let text = this._parseText(tag);
         // this.setState({parsedText: text});
 
-        Alert.alert(tag.id);
+        // Alert.alert(tag.id);
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('WorkManager',{
+                theme:this.theme,
+                scanId : tag.id
+            })
+        });
 
     }
 
@@ -289,11 +296,16 @@ export default class HomePage extends Component {
             })
     }
     _test(){
-
+        //1113722002746687489
+        //rfid_cod : 040A8A3A325E81
+        //qr_code : bf27a82f-85b2-4000-8dac-bec8257c6d3a
+        var rfid = '040A8A3A325E81';
+        var qrCode = 'bf27a82f-85b2-4000-8dac-bec8257c6d3a'
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('ScanResult',{
+            navigation.navigate('WorkManager',{
                 theme:this.theme,
+                scanId : qrCode
             })
         });
     }

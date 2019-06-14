@@ -14,12 +14,13 @@ import {
     ScrollView, DeviceEventEmitter, BackHandler, TouchableHighlight
 } from 'react-native';
 
-
+import Request, {ScanMsg,ScanDetails} from '../../http/Request';
 import BaseComponent from '../../base/BaseComponent'
 import { Container, Header, Content, Tab, Tabs , TabHeading  } from 'native-base';
 import TodayTask from './TodayTask';
+import ScanResult from '../repair/ScanResult'
 import WorkPage from '../work/WorkPage';
-
+import TitleBar from '../../component/TitleBar';
 
 
 export default class CheckDetail extends BaseComponent {
@@ -28,20 +29,40 @@ export default class CheckDetail extends BaseComponent {
     };
     constructor(props){
         super(props);
+        const { navigation } = this.props;
+        const scanId = navigation.getParam('scanId', '');
         this.state={
+            scanId : scanId,
+            detail:null,
         }
     }
-    // componentDidMount() {
-    //     DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
-    //     if (Platform.OS === 'android' && this.props.setHome != null) {
-    //         BackHandler.addEventListener("back", this.onBackClicked);
-    //     }
-    // }
+    componentDidMount() {
+        // DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
+        // if (Platform.OS === 'android' && this.props.setHome != null) {
+        //     BackHandler.addEventListener("back", this.onBackClicked);
+        // }
+        this.loadDetail()
+    }
     // onBackClicked = () => {
     //     this.props.setHome();
     //
     //     return true; // 默认false  表示跳出RN
     // }
+    loadDetail(){
+        var id = this.state.scanId;
+        if(id){
+            Request.requestGet(ScanMsg+id,null,(result) => {
+                console.log('++++++++')
+                console.log(result)
+                if(result && result.code === 200){
+                    console.log('------')
+                    console.log(result)
+                    this.setState({detail:result.data})
+                }
+            })
+        }
+        
+    }
     goBack(){
         const { navigate } = this.props.navigation;
         this.props.navigation.goBack();
@@ -52,20 +73,41 @@ export default class CheckDetail extends BaseComponent {
     }
 
     render() {
+        var detail = this.state.detail;
+        var pageName = '我的工单';
+        var detailShow = false;
+        var equipmentId = null;
+        if(detail){
+            pageName =  detail.equipmentName;
+            detailShow = true;
+            equipmentId = detail.equipmentId;
+            
+        }
+        
 
         return (
             <Container>
                 <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-                    <TouchableHighlight style={{width:25,height:50}} onPress={()=>this.goBack()}>
+                    <TouchableHighlight style={{width:25,height:50}} onPress={()=>this.naviGoBack(this.props.navigation)}>
                         <Image style={{width:12,height:25,margin:10}} source={require("../../../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
                     <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
-                        <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>我的工单</Text>
+                        <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>{pageName}</Text>
                     </View>
                     <TouchableOpacity onPress={()=>this.captrue()}>
                         <Image style={{width:16,height:20,marginLeft:5,marginRight:10}} source={require('../../../res/repair/navbar_ico_sys.png')} />
                     </TouchableOpacity>
                 </View>
+                {/* <TitleBar
+                    backgroundColor={'white'}
+                    centerText={TitleName}
+                    navigation={this.props.navigation}
+                    rightImg={require('../../../res/repair/navbar_ico_sys.png')}
+                    rightImgPress={this.captrue.bind(this)} 
+                    isShowLeftBackIcon={true}
+                    leftPress={() => this.naviGoBack(this.props.navigation)}
+                    rightStyle={{width:16,height:20}}
+                /> */}
                 <Tabs>
                     <Tab heading='巡检' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
                         <TodayTask  navigation = {this.props.navigation}/>
@@ -76,6 +118,11 @@ export default class CheckDetail extends BaseComponent {
                     <Tab heading='保养' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
                         <TodayTask  navigation = {this.props.navigation}/>
                     </Tab>
+                    {
+                        detailShow ? <Tab heading={'详情'} tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
+                                    <ScanResult equipmentId={equipmentId} navigation = {this.props.navigation}/> 
+                                    </Tab>: null
+                    }
                 </Tabs>
             </Container>
         )
