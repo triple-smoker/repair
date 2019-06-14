@@ -35,7 +35,7 @@ import HistoryDetail from '../repair/HistoryDetail';
 import SearchOrder from './SearchOrder'
 
 import Sound from 'react-native-sound';
-import {getVoicePlayer} from '../../components/VoicePlayer'
+import {getVoicePlayer} from '../../../components/VoicePlayer'
 import Axios from "../../../util/Axios";
 import Swiper from 'react-native-swiper';
 import VideoPlayer from '../../../components/VideoPlayer';

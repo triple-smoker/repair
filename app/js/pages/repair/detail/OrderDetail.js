@@ -23,7 +23,7 @@ import Request, {GetRepairList, RepairDetail, RepPause, DoPause, RepairCommenced
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
 import Sound from "react-native-sound";
-import {getVoicePlayer} from '../../components/VoicePlayer'
+import {getVoicePlayer} from '../../../../components/VoicePlayer'
 import Swiper from 'react-native-swiper';
 import VideoPlayer from '../../../../components/VideoPlayer';
 import Video from 'react-native-video';
