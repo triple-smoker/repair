@@ -88,8 +88,8 @@ export default class CheckDetail extends BaseComponent {
         return (
             <Container>
                 <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-                    <TouchableHighlight style={{width:25,height:50}} onPress={()=>this.naviGoBack(this.props.navigation)}>
-                        <Image style={{width:12,height:25,margin:10}} source={require("../../../image/navbar_ico_back.png")}/>
+                    <TouchableHighlight style={{width:40,height:44,justifyContent:"center",alignItems:"center"}} onPress={()=>this.goBack()}>
+                        <Image style={{width:21,height:37}} source={require("../../../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
                     <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
                         <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>{pageName}</Text>

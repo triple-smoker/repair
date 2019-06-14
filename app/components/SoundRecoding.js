@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View,Text, Image,TouchableNativeFeedback} from 'react-native';
-import VoicePlayer from './VoicePlayer'
+import {VoicePlayer}from './VoicePlayer'
 
 class SoundRecoding extends Component {
 
@@ -61,7 +61,7 @@ class SoundRecoding extends Component {
 				height: 40,
                 flexDirection: 'row',
                 backgroundColor: "#ffffff",
-                paddingLeft:3
+                paddingLeft:8
 			}}>
                 {this.props.readOnly ? null : this.recordButtom()}
 				<TouchableNativeFeedback style={{left: 1}} onPress={() => {this.play()}}>

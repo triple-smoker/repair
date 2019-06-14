@@ -164,6 +164,7 @@ loadEvaluateCause() {
     var likedDeptName = null;
     var causeViews = null;
     var advViews = null;
+    var satisfactionLevel = null;
     if (detaiData) {
         console.log(detaiData)
         var evaluateInfo = detaiData.evaluateInfo;
@@ -171,6 +172,7 @@ loadEvaluateCause() {
             likedUser = evaluateInfo.likedUser;
             remark = evaluateInfo.remark;
             satisfactionDesc = evaluateInfo.satisfactionDesc;
+            satisfactionLevel = evaluateInfo.satisfactionLevel;
             likedDeptName = evaluateInfo.likedDeptName;
             var causeList = evaluateInfo.causeList;
             if (causeList && causeList.length) {
@@ -309,15 +311,22 @@ loadEvaluateCause() {
           <Accordion
               dataArray={[{ title: "评价", content:
                   <View>
-                      {advViews}
                       <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
                           <Image source={require('../../../res/repair/user_wx.png')} style={{width:25,height:25,marginLeft:15}}/>
                           <Text style={{color:'#333',fontSize:16, height:40, textAlignVertical:'center', marginLeft:10,}}>{likedUser}</Text>
                           <Text style={{color:'#999',fontSize:13, height:40, marginLeft:10,textAlignVertical:'center'}}>{likedDeptName}</Text>
                           <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                              <Image source={require('../../../res/repair/ico_bmy_xq.png')} style={{width:17,height:17,marginLeft:10, marginRight:10,}}/>
-                              <Text style={{color:'#F88F0A',fontSize:13, height:40, marginLeft:0,marginRight:10,textAlignVertical:'center'}}>{satisfactionDesc}</Text>
+                              {satisfactionLevel==="1" &&
+                                <Image source={require('../../../res/repair/ico_bmy_xq.png')} style={{width:17,height:17,marginLeft:10, marginRight:10,}}/>
+                              }
+                              {satisfactionLevel==="2" &&
+                                <Image source={require('../../../res/repair/ico_yb_xq.png')} style={{width:17,height:17,marginLeft:10, marginRight:10,}}/>
+                              }
+                              {satisfactionLevel==="3" &&
+                                <Image source={require('../../../res/repair/ico_my_xq.png')} style={{width:17,height:17,marginLeft:10, marginRight:10,}}/>
+                              }
 
+                              <Text style={{color:'#F88F0A',fontSize:13, height:40, marginLeft:0,marginRight:10,textAlignVertical:'center'}}>{satisfactionDesc}</Text>
                           </View>
                       </View>
                       <View style={styles.line} />
@@ -328,6 +337,7 @@ loadEvaluateCause() {
                               {causeViews}
                           </View>
                       </View>
+                      {advViews}
                   </View>
               }]}
               animation={true}

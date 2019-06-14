@@ -8,37 +8,29 @@
 
 
 import React from 'react';
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 
 import AllOrder from './pages/AllOrder';
 import MyAddress from './pages/Address';
 import DetailsScreen from './pages/DetailsScreen';
 import OrderEvaluate from './pages/Evaluate';
-
 import RepairScreen from './pages/RepairScreen';
 import HomeScreen from './pages/HomeScreen';
 import ConfirmReport from './pages/ConfirmReport';
 import OrderSearch from './pages/OrderSearch';
 
+
 import LoginPage from './js/pages/login/Login';
 import MainPage from './js/pages/entry/MainPage';
-import AllOrderDemo from './test/AllOrderDemo';
-import OrderSearchDemo from './test/OrderSearchDemo';
-import CheckList from './js/pages/workTest/CheckList';
-import CheckDetail from './js/pages/workTest/CheckDetail';
-import WorkManager from './js/pages/workTest/WorkManager';
+import CheckList from './js/pages/workcheck/CheckList';
+import CheckDetail from './js/pages/workcheck/CheckDetail';
+import WorkManager from './js/pages/workcheck/WorkManager';
+import store from './util/RouterStore.js'
 import SQLiteDemo from "./test/SQLiteDemo";
 
+import WelcomePage from './js/pages/entry/WelcomePage'
 
-
-
-import store from './util/RouterStore.js'
-import {Linking} from "react-native";
-
-
-
-const AppNavigator = createStackNavigator(
-    {
+const AppStack = createStackNavigator({
         MainPage: MainPage,
         Home: HomeScreen,
         Details: DetailsScreen,
@@ -48,24 +40,29 @@ const AppNavigator = createStackNavigator(
         AllOrder: AllOrder,
         Evaluate: OrderEvaluate,
         OrderSearch : OrderSearch,
-        Login : LoginPage,
-        AllOrderDemo : AllOrderDemo,
-        OrderSearchDemo : OrderSearchDemo,
         WorkManager : WorkManager,
         CheckList : CheckList,
         CheckDetail : CheckDetail,
         SQLiteDemo : SQLiteDemo,
         ...store
-
     },
     {
         initialRouteName: "MainPage"
+    });
+const AuthStack = createStackNavigator({ Login : LoginPage });
+
+const AppSwitchNavigator = createSwitchNavigator(
+    {
+        Welcome: WelcomePage,
+        App: AppStack,
+        Auth: AuthStack,
+    },
+    {
+        initialRouteName: 'Welcome',
     }
 );
 
-
-
-const AppContainer = createAppContainer(AppNavigator);
+const AppContainer = createAppContainer(AppSwitchNavigator);
 
 export default class App extends React.Component {
     render() {

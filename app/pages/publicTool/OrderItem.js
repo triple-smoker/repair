@@ -22,8 +22,9 @@ import VideoPlayer from '../../components/VideoPlayer';
 import { toastShort } from '../../js/util/ToastUtil';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from '../../util/RNFetchBlob';
-import VoicePlayer from '../../components/VoicePlayer'
+import {getVoicePlayer} from '../../components/VoicePlayer'
 
+import moment from "moment";
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
 let dialogWidth = ScreenWidth-80;
@@ -36,7 +37,6 @@ class Adds extends Component {//报修单共用组件
            cancelVisible: false,
            isPlaying: false
        };
-        this.voicePlayer = new VoicePlayer();
     }
     onClose() {
        this.setState({modalVisible: false});
@@ -107,15 +107,20 @@ class Adds extends Component {//报修单共用组件
         }
     }
     _showYy(fileMap){
-        console.log("语音内容");
-        console.log(fileMap);
         var voicesRequest = fileMap.voicesRequest;
         if(voicesRequest!=null){
             voicesRequest.forEach(function(voice){
                 if(voice.filePath!=null&&voice.filePath!=''){
-                    this.setState({isPlaying: true});
-                    this.voicePlayer.sound(voice.filePath)
-
+                    let voicePlayer = getVoicePlayer();
+                    voicePlayer.voice(voice.filePath,()=>console.log('播放完成'))
+                    // setTimeout(() => {
+                    //     var sound = new Sound(voice.filePath, null, (error) => {
+                    //         if (error) {
+                    //             console.log('failed to load the sound', error);
+                    //         }
+                    //         sound.play(() => sound.release());
+                    //     });
+                    // }, 100);
                 }
             })
 
@@ -172,7 +177,7 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>报修单号:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.repairNo}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>报修时间:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.createTime}</Text>
+                            <Text style={stylesBody.orderContextTip}>报修时间:</Text><Text style={stylesBody.orderContextAut}>{moment(this.props.record.createTime).format("YYYY-MM-DD HH:mm:ss")}</Text>
                             </Row>
                             <Row>
                             <Text style={stylesBody.orderContextTip}>已耗时长:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.hours+'小时'}</Text>

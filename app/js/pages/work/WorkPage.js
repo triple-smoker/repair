@@ -35,6 +35,7 @@ import HistoryDetail from '../repair/HistoryDetail';
 import SearchOrder from './SearchOrder'
 
 import Sound from 'react-native-sound';
+import {getVoicePlayer} from '../../../components/VoicePlayer'
 import Axios from "../../../util/Axios";
 import Swiper from 'react-native-swiper';
 import VideoPlayer from '../../../components/VideoPlayer';
@@ -220,8 +221,8 @@ export default class WorkPage extends BaseComponent {
         var today = '' + year + strMonth + strDay;
         if (cachedResults.timeIndex === 0) {
           //params = {page:cachedResults.nextPage, limit:'20', repairDeptId: global.uinfo.deptAddresses[0].deptId, beginCreate:today, endCreate:today, };
-           params.set('begincreate', today);
-           params.set('endcreate', today);
+           params.set('beginCreate', today);
+           params.set('endCreate', today);
         } else if (cachedResults.timeIndex === 1) {
           var weekStartDate = new Date(year, month, day - nowDayOfWeek);
           //var beginDay = this.formatDate(weekStartDate);
@@ -240,17 +241,17 @@ export default class WorkPage extends BaseComponent {
           var beginDay = ''+myyear + mymonth + myweekday;
           //params = {page:cachedResults.nextPage, limit:'20', repairDeptId: global.uinfo.deptAddresses[0].deptId, beginCreate:beginDay, endCreate:today, };
 
-           params.set('begincreate', beginDay);
-           params.set('endcreate', today);
+           params.set('beginCreate', beginDay);
+           params.set('endCreate', today);
         } else if (cachedResults.timeIndex === 2) {
           var beginDay = '' + year + strMonth + '01';
 
           //params = {page:cachedResults.nextPage, limit:'20', repairDeptId: global.uinfo.deptAddresses[0].deptId, beginCreate:beginDay, endCreate:today, };
-          params.set('begincreate', beginDay);
-           params.set('endcreate', today);
+          params.set('beginCreate', beginDay);
+           params.set('endCreate', today);
         }
     }
-
+console.log(params);
     Request.requestGetWithKey(GetRepairList, params, (result, key)=> {
         if (key !== cachedResults.tabIndex)return;
         if (result && result.code === 200) {
@@ -511,14 +512,14 @@ export default class WorkPage extends BaseComponent {
        }else if(data.fileMap.videosRequest && data.fileMap.videosRequest.length > 0){
            if(data.fileMap.videosRequest[0].filePath!=null){
                 uriImg = <View style={{width: 70, height: 70, backgroundColor:'#000000'}}>
-                            <Image 
+                            <Image
                                 style={{
                                     position: 'absolute',
                                     top: 18,
                                     left: 18,
                                     width: 36,
                                     height: 36,
-                                }} 
+                                }}
                             source={require('../../../image/icon_video_play.png')}/>
                        </View>
            }
@@ -528,7 +529,7 @@ export default class WorkPage extends BaseComponent {
            if(data.fileMap.voicesRequest[0].filePath!=null){
                var filePath = data.fileMap.voicesRequest[0].filePath;
                voiceView = <TouchableOpacity onPress={()=>{that.onPlayVoice(filePath)}} style={{backgroundColor:'white'}}>
-                   <Image source={require('../../../res/repair/btn_voice.png')} style={{width:25,height:25,marginRight:5, }}/>
+                   <Image source={require('../../../image/voice_bf.png')} style={{width:25,height:25,marginRight:5, }}/>
                </TouchableOpacity>
            }
        }
@@ -592,16 +593,15 @@ export default class WorkPage extends BaseComponent {
 
 
 onPlayVoice(filePath) {
-  console.log('bofang')
-    const s = new Sound(filePath, null, (e) => {
-                if (e) {
-                     toastShort('播放失败');
-                    return;
-                }
 
-                toastShort('开始播放');
-                s.play(() => s.release());
-      });
+    let voicePlayer = getVoicePlayer();
+    voicePlayer.voice(filePath,(result)=>{
+        if(result){
+            toastShort('开始播放');
+        }else {
+            toastShort('播放失败');
+        }
+    })
 
 }
 
@@ -697,7 +697,7 @@ onPlayVoice(filePath) {
     this.videoItemRef = ref
     this.appentRefMap(ref.props.num,ref);
   }
-  
+
   appentRefMap(index,ref){
       let map = this.state.videoItemRefMap;
       map.set(index,ref);
@@ -705,7 +705,7 @@ onPlayVoice(filePath) {
           videoItemRefMap: map
       });
   }
-  
+
   setVideoCurrentTime = (index) => {
     let videoItemRef = this.state.videoItemRefMap.get(index + 1);
     if(videoItemRef){
@@ -1032,7 +1032,7 @@ class VideoItem extends Component{
             <View style={stylesImage.slide}>
                 {
                     this.state.videoPath == null ? <View style={stylesImage.image}><Loading animating={this.state.animating}/></View>
-                    : <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.state.videoPath}></VideoPlayer> 
+                    : <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.state.videoPath}></VideoPlayer>
                 }
                 <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
             </View>
@@ -1046,7 +1046,7 @@ const Loading = (loading) =>{
   return(
       <View style={loadStyles.wrapper}>
         <View style={loadStyles.box}>
-          <ActivityIndicator 
+          <ActivityIndicator
             animating={loading.animating}
             color='white'
             size='large'

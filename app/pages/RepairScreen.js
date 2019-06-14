@@ -17,7 +17,7 @@ export default class RepairScreen extends React.Component {
      */
     static navigationOptions = {
         headerTitle: '新增报修',
-        headerBackImage: (<Image resizeMode={'contain'} style={{width: 12, height: 25}} source={require('../image/navbar_ico_back.png')} />),
+        headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../image/navbar_ico_back.png')} />),
         headerStyle: {
             elevation: 0,
         },
@@ -200,10 +200,13 @@ export default class RepairScreen extends React.Component {
             <Container style={{backgroundColor: "#EEEEEE"}}>
                 <Content >
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
-                    <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:3,marginTop : '1.5%',marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
-                        {this.state.repairParentCn}/{this.state.repairChildCn}
-                    </Text>
-                    <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', paddingLeft:3, marginRight: '1.5%',}}
+                    <View style={{height:"1.5%"}}/>
+                    {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
+                        <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:10,marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
+                            {this.state.repairParentCn}/{this.state.repairChildCn}
+                        </Text>
+                    }
+                    <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', paddingLeft:10, marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}
                                onChangeText={(text) => this.setState({desc : text})}

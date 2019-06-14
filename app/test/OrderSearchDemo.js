@@ -388,8 +388,8 @@ class OrderSearch extends BaseComponent {
         return (
             <View style={styles.container}>
                 <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-                    <TouchableHighlight style={{width:20,height:50}} onPress={()=>{this.props.navigation.goBack(),this.props.navigation.state.params.callback()}}>
-                        <Image style={{width:12,height:25,margin:10}} source={require("../image/navbar_ico_back.png")}/>
+                    <TouchableHighlight style={{width:50,height:44,justifyContent:"center",alignItems:"center"}} onPress={()=>{this.props.navigation.goBack(),this.props.navigation.state.params.callback()}}>
+                        <Image style={{width:21,height:37}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
                     <View style={{flex:1, height:40,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:5,
                         borderBottomRightRadius: 20,borderBottomLeftRadius: 20,borderTopLeftRadius: 20,borderTopRightRadius: 20,}}>
