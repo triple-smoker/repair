@@ -16,6 +16,8 @@ import MaterielList from  '../js/pages/repair/detail/MaterielList'
 import TakePicture from '../js/pages/repair/detail/TakePicture';
 import FinishWork from '../js/pages/repair/detail/FinishWork'
 
+
+
 import MainPage from '../js/pages/entry/MainPage';
 // import RepositoryDetail from '../js/common/RepositoryDetailPage'
 
@@ -25,7 +27,7 @@ import MyData from '../js/pages/mine/myData';
 import PapersPage from '../js/pages/mine/PapersPage';
 import Inform from '../js/pages/mine/Inform';
 import SystemInform from '../js/pages/mine/SystemInform';
-import WorkManager from '../js/pages/workTest/WorkManager'
+import WorkManager from '../js/pages/workcheck/WorkManager';
 export default {
     SearchOrder : SearchOrder,
     HistoryDetail : HistoryDetail,
