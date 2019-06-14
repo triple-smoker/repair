@@ -24,9 +24,9 @@ import LoginPage from './js/pages/login/Login';
 import MainPage from './js/pages/entry/MainPage';
 import AllOrderDemo from './test/AllOrderDemo';
 import OrderSearchDemo from './test/OrderSearchDemo';
-import CheckList from './js/pages/workTest/CheckList';
-import CheckDetail from './js/pages/workTest/CheckDetail';
-import WorkManager from './js/pages/workTest/WorkManager';
+import CheckList from './js/pages/workcheck/CheckList';
+import CheckDetail from './js/pages/workcheck/CheckDetail';
+import WorkManager from './js/pages/workcheck/WorkManager';
 import SQLiteDemo from "./test/SQLiteDemo";
 
 

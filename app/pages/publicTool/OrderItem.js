@@ -23,6 +23,7 @@ import { toastShort } from '../../js/util/ToastUtil';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from '../../util/RNFetchBlob';
 import VoicePlayer from '../../components/VoicePlayer'
+import moment from "moment";
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
@@ -172,7 +173,7 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>报修单号:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.repairNo}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>报修时间:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.createTime}</Text>
+                            <Text style={stylesBody.orderContextTip}>报修时间:</Text><Text style={stylesBody.orderContextAut}>{moment(this.props.record.createTime).format("YYYY-MM-DD HH:mm:ss")}</Text>
                             </Row>
                             <Row>
                             <Text style={stylesBody.orderContextTip}>已耗时长:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.hours+'小时'}</Text>
