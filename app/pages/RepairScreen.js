@@ -200,9 +200,12 @@ export default class RepairScreen extends React.Component {
             <Container style={{backgroundColor: "#EEEEEE"}}>
                 <Content >
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
-                    <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:10,marginTop : '1.5%',marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
-                        {this.state.repairParentCn}/{this.state.repairChildCn}
-                    </Text>
+                    <View style={{height:"1.5%"}}/>
+                    {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
+                        <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:10,marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
+                            {this.state.repairParentCn}/{this.state.repairChildCn}
+                        </Text>
+                    }
                     <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', paddingLeft:10, marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}

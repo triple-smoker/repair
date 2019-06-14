@@ -270,9 +270,11 @@ class ConfirmReport extends Component {
             <Container  style={{backgroundColor: "#EEEEEE"}}>
                 <Content>
                     <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15,marginLeft:"1.5%",}}>请确认您的报修单</Text>
-                    <Text style={{backgroundColor:"#fff",flex:1,color:"#666",marginLeft:'1.5%',paddingLeft:10,fontSize:16,alignItems:"center",height:18,marginTop:15}}>
-                        {this.state.repairParentCn}/{this.state.repairChildCn}
-                    </Text>
+                    {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
+                        <Text style={{backgroundColor:"#fff",flex:1,color:"#666",marginLeft:'1.5%',paddingLeft:10,fontSize:16,alignItems:"center",height:18,marginTop:15}}>
+                            {this.state.repairParentCn}/{this.state.repairChildCn}
+                        </Text>
+                    }
                     <TextInput style={{color: '#000', textAlignVertical: 'top',paddingLeft:10, backgroundColor: "#ffffff" , marginLeft: '1.5%', marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}

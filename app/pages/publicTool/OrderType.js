@@ -112,7 +112,14 @@ class TypeMd extends Component {
                     <View style={modalStyles.innerContainer}>
                         <Content style={{paddingLeft:"8%",width:"100%"}}>
                             <Col style={{width:'100%',alignItems:'center',paddingRight:'8%',marginTop:10}}>
-                                <Text style={{fontSize:18}}>报修类别</Text>
+                                <View style={{flexDirection:"row",width:"100%",justifyContent:"center"}}>
+                                    <View style={{flex:1,justifyContent:"center",alignItems:"center",paddingLeft:15,}}>
+                                        <Text style={{fontSize:18}}>报修类别</Text>
+                                    </View>
+                                    <TouchableOpacity onPress={()=>{this.props.goToRepair("","","","")}}>
+                                        <Text style={{fontSize:14,width:30,color:"red"}}>跳过</Text>
+                                    </TouchableOpacity>
+                                </View>
                                 {this.state.repairParentCn !='' &&
                                 <Button transparent block
                                 onPress={()=>this.setState({repairParent:'',repairParentCn:'',repairChild:'',repairChildCn:''})}>
