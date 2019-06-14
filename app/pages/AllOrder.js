@@ -210,7 +210,7 @@ class AllOrder extends BaseComponent {
         this.setState({modalVisible: false});
     }
 //催单
-    _setModalVisible(repairId,sendDeptId,sendUserId) {
+    _setModalVisible(repairId) {
 
         if(!this.state.modalVisible){
             var cdTimeList =[];
@@ -222,13 +222,13 @@ class AllOrder extends BaseComponent {
                         var cdInfo = "";
                         if(cdTimeList!=null && cdTimeList.length>0){
                             cdTimeList.forEach(function(item){
-                                if(item.repairId==repairId&&item.sendDeptId==sendDeptId&&item.sendUserId==sendUserId){
+                                if(item.repairId==repairId&&item.userId==global.userId){
                                     cdInfo = item;
                                 }
                             })
                         }
                         if(cdInfo==""){
-                            this.gotoCuiDan(cdTimeList,repairId,sendDeptId,sendUserId);
+                            this.gotoCuiDan(cdTimeList,repairId);
                         }else{
                             var oldTime = moment(cdInfo.currentTime);
                             var nowDate = moment();
@@ -236,12 +236,12 @@ class AllOrder extends BaseComponent {
                             if(timeDiff>30){
                                 var cdTimeListNew = [];
                                 cdTimeList.forEach(function(item){
-                                    if(item.repairId==repairId&&item.sendDeptId==sendDeptId&&item.sendUserId==sendUserId){
+                                    if(item.repairId==repairId&&item.userId==global.userId){
                                     }else{
                                         cdTimeListNew.push(item);
                                     }
                                 })
-                                this.gotoCuiDan(cdTimeListNew,repairId,sendDeptId,sendUserId);
+                                this.gotoCuiDan(cdTimeListNew,repairId);
                             }else{
                                 Alert.alert("过"+(30-timeDiff)+"分钟后再次催单");
                             }
@@ -254,16 +254,15 @@ class AllOrder extends BaseComponent {
         }
     }
 //催单接口调用
-    gotoCuiDan(cdTimeList,repairId,sendDeptId,sendUserId){
+    gotoCuiDan(cdTimeList,repairId){
         var cdTimeListNew = [];
         var currentTime = moment();
         var newCuiDanInfo = {
             currentTime: currentTime,
             repairId:repairId,
-            sendDeptId:sendDeptId,
-            sendUserId:sendUserId,
+            userId:global.userId
         }
-        if(cdTimeList!=null && cdTimeList.length>1){
+        if(cdTimeList!=null && cdTimeList.length>0){
             cdTimeListNew = cdTimeList;
         }
         cdTimeListNew.push(newCuiDanInfo);
@@ -272,8 +271,7 @@ class AllOrder extends BaseComponent {
         var url= '/api/repair/request/remind';
         var data = {
             repairId: repairId,
-            sendDeptId: sendDeptId,
-            sendUserId: sendUserId
+            userId: global.userId
         }
         var headers={
             'Content-type': 'application/json',
@@ -323,7 +321,7 @@ class AllOrder extends BaseComponent {
     _setOrderItemNew(record){
         var ty = cachedResults.tabIndex+1;
         return (
-            <OrderItem  getRepairList={()=>this._fetchData(0)}  type={ty} getEvaluate={()=>this.getEvaluate(record,()=>this._fetchData(0))} record={record} ShowModal = {(repairId,sendDeptId,sendUserId) => this._setModalVisible(repairId,sendDeptId,sendUserId)}/>
+            <OrderItem  getRepairList={()=>this._fetchData(0)}  type={ty} getEvaluate={()=>this.getEvaluate(record,()=>this._fetchData(0))} record={record} ShowModal = {(repairId) => this._setModalVisible(repairId)}/>
         );
     }
 
@@ -384,8 +382,8 @@ class AllOrder extends BaseComponent {
         return (
             <View style={styles.container}>
                 <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-                    <TouchableHighlight style={{width:25,height:50}} onPress={()=>this.goBack()}>
-                        <Image style={{width:12,height:25,margin:10}} source={require("../image/navbar_ico_back.png")}/>
+                    <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
+                        <Image style={{width:21,height:37}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
                     <TouchableOpacity onPress={()=>this.goSearch(()=>this._fetchData(0))} style={{flex:1,height:30, marginRight:0,}}>
                         <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:5,

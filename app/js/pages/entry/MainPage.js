@@ -19,7 +19,7 @@ import WorkPage from '../work/WorkPage'
 // import MinePage from '../mine/MinePage'
 import ThemeDao from '../../dao/ThemeDao'
 import MinePage from '../mine/myPage'
-import WorkManager from '../workTest/WorkManager'
+import WorkManager from '../workcheck/WorkManager'
 
 //需要导出的常量
 export const ACTION_HOME = {A_SHOW_TOAST:'showToast',A_RESTART:'restart',A_THEME:'theme'};

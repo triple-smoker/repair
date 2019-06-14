@@ -9,7 +9,7 @@ class MyAddress extends Component {
 
     static navigationOptions = {
         headerTitle: '我的地址',
-        headerBackImage: (<Image resizeMode={'contain'} style={{width: 12, height: 25}} source={require('../image/navbar_ico_back.png')} />),
+        headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../image/navbar_ico_back.png')} />),
         headerStyle: {
             elevation: 0,
         },

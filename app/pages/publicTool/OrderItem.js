@@ -37,10 +37,6 @@ class Adds extends Component {//报修单共用组件
            isPlaying: false
        };
     }
-    // componentDidMount() {
-    //     this.voicePlayer = new VoicePlayer();
-    //     console.log(this.voicePlayer)
-    // }
     onClose() {
        this.setState({modalVisible: false});
     }
@@ -180,7 +176,7 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>报修单号:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.repairNo}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>报修时间:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.createTime}</Text>
+                            <Text style={stylesBody.orderContextTip}>报修时间:</Text><Text style={stylesBody.orderContextAut}>{moment(this.props.record.createTime).format("YYYY-MM-DD HH:mm:ss")}</Text>
                             </Row>
                             <Row>
                             <Text style={stylesBody.orderContextTip}>已耗时长:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.hours+'小时'}</Text>
@@ -207,7 +203,7 @@ class Adds extends Component {//报修单共用组件
                                 <Button
                                 bordered
                                 style={{borderColor:'#fcb155',height:30,width:60,marginRight:10,justifyContent:'center',alignItems:'center'}}
-                                onPress= {()=>this.props.ShowModal(this.props.record.repairId,this.props.record.sendDeptId,this.props.record.sendUserId)}
+                                onPress= {()=>this.props.ShowModal(this.props.record.repairId)}
                                 >
                                   <Text style={{color:'#fcb155',fontSize:12}}>催单</Text>
                                 </Button>

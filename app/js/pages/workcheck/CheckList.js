@@ -84,7 +84,12 @@ export default class CheckList extends BaseComponent {
                 //     }
                 // });
             navigation.navigate('CheckDetail',{
-                theme:this.theme});
+                theme:this.theme,
+                callback: (
+                    () => {
+                        this._fetchData(0);
+                    })
+            });
         });
 
   }
@@ -104,6 +109,8 @@ export default class CheckList extends BaseComponent {
             cachedResults.items.push({});
         }else if(cachedResults.tabIndex === 1){
             cachedResults.items.push({});
+            cachedResults.items.push({});
+        }else if(cachedResults.tabIndex === 2){
             cachedResults.items.push({});
             cachedResults.items.push({});
             cachedResults.items.push({});
@@ -157,14 +164,41 @@ export default class CheckList extends BaseComponent {
     captrue() {
 
     }
+    //未完成、紧急、全部数据切换
+    onPressTabItem(index){
+        cachedResults.items = [];
+        cachedResults.tabIndex = index;
+        cachedResults.total = 0;
+        cachedResults.pages = 0;
+        cachedResults.nextPage = 1;
+        this.setState({tabIndex:index, dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)});
+        this._fetchData(0);
+    }
 
   render() {
+      var tabBar = <View style={{backgroundColor:'white', height:49, justifyContent:'center', flexDirection:'row', bottom:0}}>
+          <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+              <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                  <Text style={{color:this.state.tabIndex===0 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>未完成</Text>
+              </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this.onPressTabItem(1)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+              <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                  <Text style={{color:this.state.tabIndex===1 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>紧急</Text>
+              </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this.onPressTabItem(2)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+              <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+                  <Text style={{color:this.state.tabIndex===2 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>全部</Text>
+              </View>
+          </TouchableOpacity>
+      </View>
     // var itemView = cachedResults.items.map((item, i)=>this.renderItem(item, i));
     return (
       <View style={styles.container}>
       <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginBottom:5}}>
-          <TouchableHighlight style={{width:25,height:50}} onPress={()=>this.goBack()}>
-              <Image style={{width:12,height:25,margin:10}} source={require("../../../image/navbar_ico_back.png")}/>
+          <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
+              <Image style={{width:21,height:37}} source={require("../../../image/navbar_ico_back.png")}/>
           </TouchableHighlight>
           <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
               <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>巡检</Text>
@@ -195,6 +229,7 @@ export default class CheckList extends BaseComponent {
               cachedResults={cachedResults}
               ref={component => this._listView = component}
           />
+          {tabBar}
       </View>
       )
     }
@@ -218,12 +253,12 @@ class CheckItem extends Component {
                     <View style={{flex:1,}}>
                         <View style={{flexDirection:'row',}}>
                             <Text style={{fontSize:16, color:'#FF0000', marginLeft:15,marginTop:0, textDecorationLine:'underline'}}>NO.00001</Text>
-                            <Text style={{flexWrap:'nowrap', marginLeft:10, height:16,
-                                color:'#949494',fontSize:9, marginTop:2,textAlignVertical:'center', textAlign:'center',borderWidth:1, borderColor:'#949494',
-                                borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>特例</Text>
+                            {/*<Text style={{flexWrap:'nowrap', marginLeft:10, height:16,*/}
+                                {/*color:'#949494',fontSize:9, marginTop:2,textAlignVertical:'center', textAlign:'center',borderWidth:1, borderColor:'#949494',*/}
+                                {/*borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>特例</Text>*/}
                         </View>
                         <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3, }}>位置：上海市</Text>
-                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3,}}>上次检查：2019-01-01</Text>
+                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3,}}>08:00-12:00</Text>
 
                     </View>
                     <View style={{flex:1, justifyContent:'flex-end',paddingRight:10}}>

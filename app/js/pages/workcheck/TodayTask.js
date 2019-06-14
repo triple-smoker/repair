@@ -196,11 +196,11 @@ class CheckItem extends Component {
                     }}
                 />}
                 <View style={{flex:2,}}>
-                    <Text style={{fontSize:16, color:'#404040', marginLeft:10, }}>日常电梯巡检少时诵诗书所所所</Text>
+                    <Text style={{fontSize:16, color:'#404040', marginLeft:10, }}>日常电梯巡检</Text>
                     <Text style={{fontSize:14, color:'#737373', marginLeft:10, marginTop:10,}}>8:00-10:00</Text>
                 </View>
-                <View style={{flex:1,height:80,  textAlignVertical:'center',paddingTop:5}}>
-                        <Text style={{fontSize:16}}>【设备】</Text>
+                <View style={{flex:1,height:80,  textAlignVertical:'center',justifyContent:"center"}}>
+                        <Text style={{fontSize:16}}>[设备]</Text>
                 </View>
                 {cachedResults.tabIndex === 0 &&
                     <View style={{flex:2, flexDirection:'column',justifyContent:'flex-end',alignItems:'flex-end',  textAlignVertical:'center',paddingRight:10}}>

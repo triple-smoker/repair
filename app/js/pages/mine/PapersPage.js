@@ -70,7 +70,7 @@ export default class PapersPage extends BaseComponent {
         return (
           <View style={styles.container}>
           <TitleBar
-          centerText={'操作证'}
+          centerText={'证照'}
           isShowLeftBackIcon={true}
           navigation={this.props.navigation}
           leftPress={() => this.naviGoBack(this.props.navigation)}
@@ -83,7 +83,7 @@ export default class PapersPage extends BaseComponent {
             <View style={styles.input_center_bg}>
                 <View style={styles.case}>
                     <Text style={{fontSize:16,color:'#404040'}}>
-                        操作证名称
+                        证照名称
                     </Text>
                     <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
                     <Image style={{height:5,width:7,marginLeft:5}} source={require('../../../res/login/dropdown_02.png')}/>
@@ -131,7 +131,7 @@ export default class PapersPage extends BaseComponent {
             <View style={styles.input_center_bg}>
                 <View style={styles.case}>
                     <Text style={{fontSize:16,color:'#404040'}}>
-                        操作证名称
+                        证照名称
                     </Text>
                     <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
                     <Image style={{height:5,width:7,marginLeft:5}} source={require('../../../res/login/dropdown_01.png')}/>

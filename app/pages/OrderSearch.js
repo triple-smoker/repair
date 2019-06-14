@@ -388,21 +388,25 @@ class OrderSearch extends BaseComponent {
         return (
             <View style={styles.container}>
                 <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-                    <TouchableHighlight style={{width:20,height:50}} onPress={()=>{this.props.navigation.goBack(),this.props.navigation.state.params.callback()}}>
-                        <Image style={{width:12,height:25,margin:10}} source={require("../image/navbar_ico_back.png")}/>
+                    <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>{this.props.navigation.goBack(),this.props.navigation.state.params.callback()}}>
+                        <Image style={{width:21,height:37}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
-                    <View style={{flex:1, height:40,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:10, marginRight:5,
-                        borderBottomRightRadius: 20,borderBottomLeftRadius: 20,borderTopLeftRadius: 20,borderTopRightRadius: 20,}}>
+                    <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginRight:5,
+                        borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}>
 
                         <Image source={require('../image/ico_seh.png')}
-                               style={{width:16,height:16}}/>
-                        <TextInput underlineColorAndroid="transparent" placeholder="请输入单号或内容" style={{width:'86%',height:40,fontSize:14,backgroundColor:'#f0f0f0'}} onChangeText={(searchContext) => this.setState({searchContext:searchContext})}>{this.state.searchContext}</TextInput>
-
+                               style={{width:16,height:16,marginLeft:5}}/>
+                        {/*<TextInput placeholder="请输入单号或内容" style={{height:30,fontSize:14,backgroundColor:'red',flex:1,textAlignVertical:'center'}} onChangeText={(searchContext) => this.setState({searchContext:searchContext})}>{this.state.searchContext}</TextInput>*/}
+                        <TextInput style={{color:'#333',fontSize:14,marginLeft:5, flex:1, height:40, textAlignVertical:'center'}}
+                                   placeholder="请输入单号或内容" placeholderTextColor="#aaaaaa" underlineColorAndroid="transparent" numberOfLines={1}
+                                   onChangeText={(searchContext) => this.setState({searchContext:searchContext})}
+                        />
                     </View>
                     <TouchableOpacity onPress={()=>this._setSerachShow(this.state.searchContext)} style={{width:60,flexDirection:'row'}}>
                         <Text style={{color:"#252525"}}>搜索</Text>
                     </TouchableOpacity>
                 </View>
+
                 <Row style={{height:50,paddingTop:20,paddingLeft:20}}>
                     <Text style={{color:'#919191',fontSize:14}}>
                         最近搜索

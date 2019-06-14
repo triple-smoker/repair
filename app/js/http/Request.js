@@ -4,7 +4,7 @@ import React from 'react-native';
 import axios from 'axios'
 import {Toast} from "../component/Toast";
 import AsyncStorage from "@react-native-community/async-storage";
-
+// https://dev.jxing.com.cn/ http://10.144.4.2:9999/
 export const HOST = 'https://dev.jxing.com.cn/';
 export const XTenantKey = 'Uf2k7ooB77T16lMO4eEkRg==';
 export const HospitalId = '1055390940066893827';
@@ -306,19 +306,6 @@ static uploadFile(path, callback) {
             body:formData
         };
 
-    //  fetch(url, fetchOptions)
-    //  .then((response) =>
-    //  {
-    //     console.log(response)
-    //     return response.json()
-    //  })
-    //  .then((responseText) => {
-    //     console.log('responseText: ' + JSON.stringify(responseText));
-    //     callback(responseText);
-    //  })
-    //  .catch(error=>{
-    //     callback(JSON.stringify(error));
-    // });
     axios(url,{
         method:'POST',
         headers:headers,

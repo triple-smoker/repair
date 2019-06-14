@@ -169,7 +169,7 @@ export default class MyPage extends BaseComponent {
                         <View style={{backgroundColor:'#61c0c5',paddingLeft: 8,height:30,marginTop:15,
                                 paddingRight: 8,}}>
                             <TouchableOpacity onPress={()=>this.loogPapers()}>      
-                            <Text style={{lineHeight:30,color:'white'}}>操作证</Text>
+                            <Text style={{lineHeight:30,color:'white'}}>证照</Text>
                             </TouchableOpacity> 
                         </View>
                     </View>

@@ -19,7 +19,7 @@ class ConfirmReport extends Component {
     static navigationOptions = {
         // header: null,
         headerTitle: '报修单确认',
-        headerBackImage: (<Image resizeMode={'contain'} style={{width: 12, height: 25}} source={require('../image/navbar_ico_back.png')} />),
+        headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../image/navbar_ico_back.png')} />),
         headerStyle: {
             elevation: 0,
         },
@@ -269,11 +269,11 @@ class ConfirmReport extends Component {
         return (
             <Container  style={{backgroundColor: "#EEEEEE"}}>
                 <Content>
-                    <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15}}>请确认您的报修单</Text>
-                    <Text style={{backgroundColor:"#fff",flex:1,color:"#666",marginLeft:'1.5%',fontSize:16,alignItems:"center",height:18,marginTop:15}}>
+                    <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15,marginLeft:"1.5%",}}>请确认您的报修单</Text>
+                    <Text style={{backgroundColor:"#fff",flex:1,color:"#666",marginLeft:'1.5%',paddingLeft:10,fontSize:16,alignItems:"center",height:18,marginTop:15}}>
                         {this.state.repairParentCn}/{this.state.repairChildCn}
                     </Text>
-                    <TextInput style={{color: '#000', textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', marginRight: '1.5%',}}
+                    <TextInput style={{color: '#000', textAlignVertical: 'top',paddingLeft:10, backgroundColor: "#ffffff" , marginLeft: '1.5%', marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}
                                value={this.state.desc}
