@@ -24,6 +24,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from '../../util/RNFetchBlob';
 import {getVoicePlayer} from '../../components/VoicePlayer'
 
+import moment from "moment";
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
 let dialogWidth = ScreenWidth-80;

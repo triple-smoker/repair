@@ -17,7 +17,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Swiper from 'react-native-swiper';
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
-// import Login from '../login/Login';
 import Request, {GetRepairType} from '../../http/Request';
 import Permissions from 'react-native-permissions';
 import OrderType from "../../../pages/publicTool/OrderType";
@@ -30,7 +29,7 @@ require('../../../res/default/banner_01.jpg'),
 require('../../../res/default/banner_02.jpg'),
 require('../../../res/default/banner_03.jpg')
 ]
-var mPush = NativeModules.MPush;
+
 export default class HomePage extends Component {
     static navigationOptions = {
         header: null,
@@ -68,59 +67,58 @@ export default class HomePage extends Component {
 
         RNFetchBlob.clearCache();
     }
-
-
-    loadUserInfo() {
-        console.log('loadUserInfo');
-        var that = this;
-        AsyncStorage.getItem('token', function (error, result) {
-            if (error) {
-                console.log('读取失败')
-            } else {
-               if (result && result.length) {
-                    global.access_token = result;
-                    console.log('access_token: result = ' + result);
-               } else {
-                const {navigation} = that.props;
-                InteractionManager.runAfterInteractions(() => {
-                    console.log('HP : loadUserInfo');
-                    navigation.navigate('Login',{theme:that.theme})
-
-                    });
-               }
-            }
-        });
-
-        AsyncStorage.getItem('uinfo', function (error, result) {
-            // console.log('uinfo: result = ' + result + ', error = ' + error);
-            if (error) {
-                console.log('读取失败')
-            } else {
-               if (result && result.length) {
-
-                    global.uinfo = JSON.parse(result);
-                    // console.log('global.uinfo.deptId: ' + result)
-               //     userId deptId单独存储
-                   global.userId=global.uinfo.userId;
-                   global.deptId=global.uinfo.deptAddresses[0].deptId;
-                   var permissions = global.uinfo.permissions.indexOf("biz_repair_mgr")===-1? false:true;
-                   global.permissions = permissions;
-               }
-
-            }
-        });
-    }
+    //
+    //
+    // loadUserInfo() {
+    //     console.log('loadUserInfo');
+    //     var that = this;
+    //     AsyncStorage.getItem('token', function (error, result) {
+    //         if (error) {
+    //             console.log('读取失败')
+    //         } else {
+    //            if (result && result.length) {
+    //                 global.access_token = result;
+    //                 console.log('access_token: result = ' + result);
+    //            } else {
+    //             const {navigation} = that.props;
+    //             InteractionManager.runAfterInteractions(() => {
+    //                 console.log('HP : loadUserInfo');
+    //                 navigation.navigate('Login',{theme:that.theme})
+    //
+    //                 });
+    //            }
+    //         }
+    //     });
+    //
+    //     AsyncStorage.getItem('uinfo', function (error, result) {
+    //         // console.log('uinfo: result = ' + result + ', error = ' + error);
+    //         if (error) {
+    //             console.log('读取失败')
+    //         } else {
+    //            if (result && result.length) {
+    //
+    //                 global.uinfo = JSON.parse(result);
+    //                 // console.log('global.uinfo.deptId: ' + result)
+    //            //     userId deptId单独存储
+    //                global.userId=global.uinfo.userId;
+    //                global.deptId=global.uinfo.deptAddresses[0].deptId;
+    //                var permissions = global.uinfo.permissions.indexOf("biz_repair_mgr")===-1? false:true;
+    //                global.permissions = permissions;
+    //            }
+    //
+    //         }
+    //     });
+    // }
 
     onAction(action, params) {
         console.log('onAction : ' + action);
     }
     componentDidMount() {
-        console.log('又回到主页！')
         this.eventListener = DeviceEventEmitter.addListener('Event_Home', (param) => {
             console.log('componentDidMount Home : ' + param);
         });
-        this.loadUserInfo();
-        this.loadRepairTypes();
+        // this.loadUserInfo();
+        // this.loadRepairTypes();
         Permissions.request('storage', { type: 'always' }).then(response => {
 
         })
@@ -135,65 +133,52 @@ export default class HomePage extends Component {
         }
     }
 
-    loadRepairTypes() {
-        var that = this;
-        Request.requestGet(GetRepairType, null, (result)=> {
-            if (result && result.code === 200) {
-                console.log('loadRepairTypes : ' + result)
-            } else if (result && result.code === 401) {
-                global.access_token = '';
-                AsyncStorage.setItem('token', '', function (error) {
-                    if (error) {
-                        console.log('error: save error');
-                    } else {
-
-                    }
-                });
-                global.uinfo = null;
-                AsyncStorage.setItem('uinfo', null, function (error) {
-                    if (error) {
-                        console.log('error: save error');
-                    } else {
-
-                    }
-                });
-                that.login();
-            }
-      });
-    }
-
-    login() {
-        // const {navigator} = this.props;
-        const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            console.log('hp : login')
-                // navigator.push({
-                //     component: Login,
-                //     name: 'Login',
-                //     params:{
-                //         theme:this.theme
-                //     }
-                // });
-                navigation.navigate('Login', {theme:this.theme})
-            });
-    }
+    // loadRepairTypes() {
+    //     var that = this;
+    //     Request.requestGet(GetRepairType, null, (result)=> {
+    //         if (result && result.code === 200) {
+    //             console.log('loadRepairTypes : ' + result)
+    //         } else if (result && result.code === 401) {
+    //             global.access_token = '';
+    //             AsyncStorage.setItem('token', '', function (error) {
+    //                 if (error) {
+    //                     console.log('error: save error');
+    //                 } else {
+    //
+    //                 }
+    //             });
+    //             global.uinfo = null;
+    //             AsyncStorage.setItem('uinfo', null, function (error) {
+    //                 if (error) {
+    //                     console.log('error: save error');
+    //                 } else {
+    //
+    //                 }
+    //             });
+    //             that.login();
+    //         }
+    //   });
+    // }
+    //
+    // login() {
+    //     // const {navigator} = this.props;
+    //     const {navigation} = this.props;
+    //     InteractionManager.runAfterInteractions(() => {
+    //         console.log('hp : login')
+    //             // navigator.push({
+    //             //     component: Login,
+    //             //     name: 'Login',
+    //             //     params:{
+    //             //         theme:this.theme
+    //             //     }
+    //             // });
+    //             navigation.navigate('Login', {theme:this.theme})
+    //         });
+    // }
 
     repair() {
         const { navigate } = this.props.navigation;
         navigate('AllOrder');
-    }
-
-    historyDetail() {
-        // const {navigator} = this.props;
-        // InteractionManager.runAfterInteractions(() => {
-        //         navigator.push({
-        //             component: HistoryDetail,
-        //             name: 'HistoryDetail',
-        //             params:{
-        //                 theme:this.theme
-        //             }
-        //         });
-        // });
     }
 
     takePicture() {
@@ -217,16 +202,7 @@ export default class HomePage extends Component {
             }
         })
         console.log("替换错误token：aa17de2a-f945-4b1e-8024-1f3e617d96ba");
-        // const {navigator} = this.props;
-        // InteractionManager.runAfterInteractions(() => {
-        //         navigator.push({
-        //             component: FinishWork,
-        //             name: 'FinishWork',
-        //             params:{
-        //                 theme:this.theme
-        //             }
-        //         });
-        // });
+
     }
 
     //报修导航
