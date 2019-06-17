@@ -8,11 +8,11 @@ class SoundRecoding extends Component {
         super(props);
         this.state={
             play : false,
-            filepath : ''
+            filepath : this.props.record.filePath
         }
 
     }
-    新建通知的监听
+    // 新建通知的监听
     componentDidMount() {
 
         this.eventListener = DeviceEventEmitter.addListener('Add_Voice', (voice) => {
@@ -80,9 +80,7 @@ class SoundRecoding extends Component {
                 {this.state.filepath==='' ? null :
                     <TouchableNativeFeedback style={{left: 1}} onPress={() => {this.play()}}>
                         <View style={{ marginLeft: '1.5%'}}>
-                            <Image
-                                style={{left: 15,top: 7,position: 'absolute',width: 20, height: 20, zIndex: 1}}
-                                source={require('../image/os.png')}/>
+                            <VoiceImage play = {this.state.play}/>
                             <Text
                                 style={{left: 160,top: 7,position: 'absolute',zIndex: 1}}
                             >{this.props.record.duration ? this.props.record.duration : 0}"</Text>
@@ -91,7 +89,7 @@ class SoundRecoding extends Component {
                                 source={require('../image/df1.png')}/>
                         </View>
                     </TouchableNativeFeedback>}
-                {this.state.filepath==='' ? null :
+                {this.props.readOnly || this.state.filepath===''  ? null :
                     <TouchableNativeFeedback style={{
                         marginLeft: 13, flexDirection: 'row',
                         justifyContent: 'center'
@@ -105,11 +103,93 @@ class SoundRecoding extends Component {
                             source={require('../image/delete-voice.png')}/>
                     </TouchableNativeFeedback>}
 
-
-
 			</View>
 		);
 	}
+}
+
+class VoiceImage extends Component {
+
+    constructor(props){
+        super(props);
+
+        if(this.props.play){
+            this.state={
+                show2: true,
+                show3: true
+            }
+        }else{
+            this.state={
+                show2: false,
+                show3: false
+            }
+        }
+
+
+
+    }
+
+    se(){
+
+        if(this.timer){
+            return;
+        }
+
+        this.timer = setInterval(
+            ()=>{
+                if(this.state.show2){
+                    if(this.state.show3){
+                        this.setState({
+                            show2: false,
+                            show3: false
+                        })
+                        return;
+                    }else {
+                        this.setState({
+                            show3: true
+                        })
+                        return;
+                    }
+                }else {
+                    this.setState({
+                        show2: true
+                    })
+                    return;
+                }
+            }, 500
+        )
+    }
+
+    render(){
+
+        if(this.props.play){
+            this.se();
+            return (
+                <View>
+                    <Image style={{left: 12,top: 13,position: 'absolute',width: 10, height: 10, zIndex: 1,}}
+                           source={require('../image/voice-1.png')}/>
+                    {!this.state.show2 ? null  : <Image style={{left: 18,top: 8,position: 'absolute',width: 10, height: 20, zIndex: 1,}}
+                                                       source={require('../image/voice-2.png')}/>}
+                    {!this.state.show3 ? null  : <Image style={{left: 25,top: 3,position: 'absolute',width: 10, height: 30, zIndex: 1,}}
+                           source={require('../image/voice-3.png')}/> }
+                </View>
+            );
+        }else {
+            return(
+                <View>
+                    <Image style={{left: 12,top: 13,position: 'absolute',width: 10, height: 10, zIndex: 1,}}
+                           source={require('../image/voice-1.png')}/>
+                    <Image style={{left: 18,top: 8,position: 'absolute',width: 10, height: 20, zIndex: 1,}}
+                                                        source={require('../image/voice-2.png')}/>
+                    <Image style={{left: 25,top: 3,position: 'absolute',width: 10, height: 30, zIndex: 1,}}
+                                                        source={require('../image/voice-3.png')}/>
+                </View>
+            )
+        }
+
+    }
+
+
 }
 
 export default SoundRecoding;

@@ -23,14 +23,15 @@ export default class WelcomePage extends Component {
             this.theme=data;
         });
 
-        this.timer = setTimeout(() => {
-            InteractionManager.runAfterInteractions(() => {
-                // navigation.navigate('MainPage',{theme:this.theme})
-                this.loadUserInfo()
-
-
-            });
-        }, 2000);
+        this.loadUserInfo()
+        // this.timer = setTimeout(() => {
+        //     InteractionManager.runAfterInteractions(() => {
+        //         // navigation.navigate('MainPage',{theme:this.theme})
+        //         this.loadUserInfo()
+        //
+        //
+        //     });
+        // }, 100);
     }
 
     loadUserInfo() {
