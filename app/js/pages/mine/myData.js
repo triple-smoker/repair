@@ -117,7 +117,7 @@ export default class MyData extends BaseComponent {
         if(type == 'username'){
             if(Msg == oldMsg || Msg== ''){
                 console.log('未修改')
-                toastShort('请修改名称');
+                toastShort('姓名不能为空');
                 this._edit(type);
             }else{
                 console.log('修改')
@@ -137,10 +137,14 @@ export default class MyData extends BaseComponent {
             console.log(type)
             if(Msg == oldMsg || Msg== ''){
                 console.log('未修改')
-                toastShort('请修改手机号');
+                toastShort('联系方式不能为空');
                 this._edit(type)
             }else{
                 console.log('修改')
+                if(!this.isPhoneNumber(Msg)){
+                    toastShort('请填写正确的联系方式');
+                    return
+                }
                 Request.requestPut(baseUser,{
                     telNo:Msg,
                     userId : this.state.userData.userId
@@ -205,19 +209,24 @@ export default class MyData extends BaseComponent {
         });
       }
     pickMultiple() {
-    ImagePicker.openPicker({
-        multiple: true,
-        waitAnimationEnd: false,
-        includeExif: true,
-        forceJpg: true,
-        mediaType: 'photo',
-    }).then(images => {
-        //将选择的图片加入到列表
+        ImagePicker.openPicker({
+            multiple: true,
+            waitAnimationEnd: false,
+            includeExif: true,
+            forceJpg: true,
+            mediaType: 'photo',
+        }).then(images => {
+            //将选择的图片加入到列表
 
-        console.log('pickimage : ' +  images);
-        this.updatePortrait(images)
-    }).catch();
+            console.log('pickimage : ' +  images);
+            this.updatePortrait(images)
+        }).catch();
     } 
+    // 是否电话号码
+    isPhoneNumber(phoneNumber){
+        const reg = /^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$/;
+        return reg.test(phoneNumber);
+    };
     render() {
         var  userData = this.state. userData;
         if (userData) {

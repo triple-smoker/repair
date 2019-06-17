@@ -9,8 +9,12 @@ const Toast = {
 
   show: msg => {
     this.toast = RootToast.show(msg, {
-      position: RootToast.positions.CENTER,
-      duration: 1500
+      position: RootToast.positions.BOTTOM,
+      duration: RootToast.durations.SHORT,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0
     })
   },
 

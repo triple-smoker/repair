@@ -205,12 +205,12 @@ export default class AddOption extends BaseComponent {
   _onSure() {
     var that = this;
     if (this.state.selectMatterPos === -1) {
-        toastShort('您还未选择维修事项');
+        toastShort('维修事项不能为空');
         return;
     }
 
     if (this.state.selUserList.length === 0) {
-        toastShort('您还未选协助人');
+        toastShort('协助人不能为空');
         return;
     }
 
@@ -250,7 +250,7 @@ export default class AddOption extends BaseComponent {
             if (result && result.data && result.data.error){
                 toastShort(result.data.message);
             } else {
-                    toastShort('提交失败，请重试');
+                    toastShort('提交失败，请重新尝试');
             }
         }
      });
@@ -276,7 +276,7 @@ export default class AddOption extends BaseComponent {
             var item = list[i];
             if (item.userId === this.state.selectUserData.userId) {
                 // toastShort('不能重复添加');
-                Toast.show('不能重复添加')
+                Toast.show('请勿重复添加')
                 return;
             }
         }
@@ -525,7 +525,7 @@ export default class AddOption extends BaseComponent {
 
   selectOption() {
      if (this.state.selectTypePos === -1) {
-        toastShort('请先选择维修类型');
+        toastShort('请优先选择维修类型');
         return;
      }
 

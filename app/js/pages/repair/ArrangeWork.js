@@ -146,7 +146,7 @@ export default class ArrangeWork extends BaseComponent {
             if (result && result.data && result.data.error){
                 toastShort(result.data.message);
             } else {
-                    toastShort('派工失败，请重试');
+                    toastShort('派工失败，请重新尝试');
             }
         }
      });

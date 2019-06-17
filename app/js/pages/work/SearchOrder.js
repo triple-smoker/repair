@@ -110,10 +110,10 @@ export default class SearchOrder extends BaseComponent {
         console.log(params);
         Request.requestPost(DoPause, params, (result)=> {
             if (result && result.code === 200) {
-              toastShort('暂停成功');
+              toastShort('工单暂停成功');
               that._fetchData(0);
             } else {
-                toastShort('失败，请重试');
+                toastShort('暂停失败，请重新重试');
             }
       });
     }
@@ -311,7 +311,7 @@ export default class SearchOrder extends BaseComponent {
     var that = this;
     Request.requestGet(CancelPause+data.repairId, null, (result)=> {
         if (result && result.code === 200) {
-            toastShort('恢复成功');
+            toastShort('工单恢复成功');
             that._fetchData(0);
         } else {
 
@@ -518,11 +518,11 @@ export default class SearchOrder extends BaseComponent {
   onPlayVoice(filePath) {
     const s = new Sound(filePath, null, (e) => {
                 if (e) {
-                     toastShort('播放失败');
+                     toastShort('语音/视频播放失败');
                     return;
                 }
 
-                toastShort('开始播放');
+                // toastShort('开始播放');
                 s.play(() => s.release());
       });
 

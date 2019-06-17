@@ -72,7 +72,7 @@ export default class MaterielList extends BaseComponent {
 		var that = this;
 		var list = this.state.carList;
 		if (list.length === 0) {
-			toastShort('请先选择物料');
+			toastShort('请优先选择物料');
 			return;
 		}
 
