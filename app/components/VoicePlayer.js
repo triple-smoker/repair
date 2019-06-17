@@ -2,10 +2,11 @@ import Sound from 'react-native-sound';
 
 let voicePlayer;
 export function getVoicePlayer(){
-    console.log(voicePlayer);
+
     if(!voicePlayer){
         voicePlayer = new VoicePlayer()
     }
+    console.log(voicePlayer);
     return voicePlayer;
 }
 

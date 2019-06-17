@@ -1,22 +1,19 @@
 import React, { Component } from 'react';
 import {
     Image,
-    Alert,
     Dimensions,
     StyleSheet,
     Modal,
     TouchableHighlight,
     TouchableOpacity,
     View,
-    TextInput,
     Linking,
     Text,
     ActivityIndicator,
 } from 'react-native';
-import {  Item,Input,Button,Icon,ScrollableTab, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right,  List, ListItem, Thumbnail,Textarea} from 'native-base';
+import {Button, Col, Row, Content, Textarea} from 'native-base';
 import Swiper from 'react-native-swiper';
 import Axios from '../../util/Axios';
-import Sound from "react-native-sound";
 import Video from 'react-native-video';
 import VideoPlayer from '../../components/VideoPlayer';
 import { toastShort } from '../../js/util/ToastUtil';
@@ -27,7 +24,6 @@ import {getVoicePlayer} from '../../components/VoicePlayer'
 import moment from "moment";
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
-let dialogWidth = ScreenWidth-80;
 class Adds extends Component {//报修单共用组件
     constructor(props) {
        super(props);
@@ -38,9 +34,7 @@ class Adds extends Component {//报修单共用组件
            isPlaying: false
        };
     }
-    onClose() {
-       this.setState({modalVisible: false});
-    }
+
     _setModalVisible() {
       this.setState({modalVisible: !this.state.modalVisible});
     }
@@ -112,15 +106,8 @@ class Adds extends Component {//报修单共用组件
             voicesRequest.forEach(function(voice){
                 if(voice.filePath!=null&&voice.filePath!=''){
                     let voicePlayer = getVoicePlayer();
+                    console.log(voice.filePath);
                     voicePlayer.voice(voice.filePath,()=>console.log('播放完成'))
-                    // setTimeout(() => {
-                    //     var sound = new Sound(voice.filePath, null, (error) => {
-                    //         if (error) {
-                    //             console.log('failed to load the sound', error);
-                    //         }
-                    //         sound.play(() => sound.release());
-                    //     });
-                    // }, 100);
                 }
             })
 

@@ -5,7 +5,7 @@ import {
     Text,
     View,
     TouchableHighlight,
-    Platform, Image, TouchableNativeFeedback,
+    Platform, Image, TouchableNativeFeedback, DeviceEventEmitter,
 } from 'react-native';
 
 import Sound from 'react-native-sound';
@@ -78,32 +78,6 @@ class Recorde extends Component {
         }
     }
 
-    async _play() {
-        if (this.state.recording) {
-            await this._stop();
-        }
-
-        // These timeouts are a hacky workaround for some issues with react-native-sound.
-        // See https://github.com/zmxv/react-native-sound/issues/89.
-        setTimeout(() => {
-            var sound = new Sound(this.state.audioPath, '', (error) => {
-                if (error) {
-                    console.log('failed to load the sound', error);
-                }
-            });
-
-            setTimeout(() => {
-                sound.play((success) => {
-                    if (success) {
-                        console.log('successfully finished playing');
-                    } else {
-                        console.log('playback failed due to audio decoding errors');
-                    }
-                });
-            }, 100);
-        }, 100);
-    }
-
     async _record() {
         this.showImagetimer = setInterval(() => {
             this.setState(
@@ -145,6 +119,7 @@ class Recorde extends Component {
             duration : this.state.currentTime
         }
         this.props.recordCallBack(record);
+        DeviceEventEmitter.emit('Add_Voice', filePath);
         console.log(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath} and size of ${fileSize || 0} bytes`);
     }
 
@@ -171,6 +146,9 @@ class Recorde extends Component {
                             style={{marginLeft: 10, marginRight: 10}}
                             source={require('../image/duan.png')}/> }
                     </View>
+
+
+
                 </Modal>
 
 
