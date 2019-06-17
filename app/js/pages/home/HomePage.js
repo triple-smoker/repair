@@ -46,27 +46,27 @@ export default class HomePage extends Component {
     }
     //删除
     _deleteData(){
-        console.log('删除')
-
-        //删除一条数据
-        AsyncStorage.removeItem('token', function (error) {
-            if (error) {
-                alert('删除失败')
-            }else {
-                alert('删除完成')
-            }
-        })
-
-        //删除一条数据
-        AsyncStorage.removeItem('fileVideoCache', function (error) {
-            if (error) {
-                // alert('删除失败')
-            }else {
-                // alert('删除完成')
-            }
-        })
-
-        RNFetchBlob.clearCache();
+        // console.log('删除')
+        //
+        // //删除一条数据
+        // AsyncStorage.removeItem('token', function (error) {
+        //     if (error) {
+        //         alert('删除失败')
+        //     }else {
+        //         alert('删除完成')
+        //     }
+        // })
+        //
+        // //删除一条数据
+        // AsyncStorage.removeItem('fileVideoCache', function (error) {
+        //     if (error) {
+        //         // alert('删除失败')
+        //     }else {
+        //         // alert('删除完成')
+        //     }
+        // })
+        //
+        // RNFetchBlob.clearCache();
     }
     //
     //
@@ -395,7 +395,7 @@ export default class HomePage extends Component {
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this._deleteData()} >
                 <Image source={require('../../../res/login/ico_dc.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>清缓存</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>送餐</Text>
                 </TouchableOpacity>
             </View>
         </View>

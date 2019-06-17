@@ -45,8 +45,10 @@ class Person extends Component {
   render() {
     return (
         <Content style={{padding:15}}>
-            <Col style={{height:55,borderBottomWidth:1,borderBottomColor:'#dedede'}}>
-                <Text style={{color:'#2b2b2b',fontSize:14}}>维修类别：<Text style={{color:'#4b4b4b',fontSize:13}}>{this.props.repair.parentTypeName+"/"+this.props.repair.repairTypeName}</Text></Text>
+            <Col style={{borderBottomWidth:1,borderBottomColor:'#dedede',paddingBottom:10}}>
+                {this.props.repair.parentTypeName !=null && this.props.repair.repairTypeName!=null &&
+                    <Text style={{color:'#2b2b2b',fontSize:14}}>维修类别：<Text style={{color:'#4b4b4b',fontSize:13}}>{this.props.repair.parentTypeName+"/"+this.props.repair.repairTypeName}</Text></Text>
+                }
                 <Text style={{color:'#2b2b2b',fontSize:14}}>维修事项：<Text style={{color:'#4b4b4b',fontSize:13}}>{this.props.repair.matterName}</Text></Text>
             </Col>
             <Row>
