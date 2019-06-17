@@ -42,6 +42,9 @@ class ConfirmReport extends Component {
         const images = navigation.getParam('images');
         const voices = navigation.getParam('voices', '');
         const desc = navigation.getParam('desc');
+        const isScan = navigation.getParam('isScan', '');
+        const equipmentId = navigation.getParam('equipmentId', '');
+        const equipmentName = navigation.getParam('equipmentName', '');
         this.state = {
             repairTypeId : repairTypeId,
             repairMatterId : repairMatterId,
@@ -55,6 +58,9 @@ class ConfirmReport extends Component {
             voicesRequest :[],
             videosRequest : [],
             isUpLoad: false,
+            isScan : isScan,
+            equipmentId : equipmentId,
+            equipmentName : equipmentName,
         }
 
 
@@ -250,6 +256,12 @@ class ConfirmReport extends Component {
             videosRequest : this.state.videosRequest,
         };
 
+        if(this.state.isScan == true){
+            repRepairInfo['isScan'] = this.state.isScan;
+            repRepairInfo['equipmentId'] = this.state.equipmentId;
+            repRepairInfo['equipmentName'] = this.state.equipmentName;
+        }
+
         console.log(repRepairInfo)
 
         Axios.PostAxios(
@@ -272,7 +284,7 @@ class ConfirmReport extends Component {
                     <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15,marginLeft:"1.5%",}}>请确认您的报修单</Text>
                     {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
                         <Text style={{backgroundColor:"#fff",flex:1,color:"#666",marginLeft:'1.5%',paddingLeft:10,fontSize:16,alignItems:"center",height:18,marginTop:15}}>
-                            {this.state.repairParentCn}/{this.state.repairChildCn}
+                            {this.state.isScan == true ? <Text>{this.state.equipmentName}</Text> : <Text>{this.state.repairParentCn}/{this.state.repairChildCn}</Text>}
                         </Text>
                     }
                     <TextInput style={{color: '#000', textAlignVertical: 'top',paddingLeft:10, backgroundColor: "#ffffff" , marginLeft: '1.5%', marginRight: '1.5%',}}

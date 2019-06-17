@@ -50,6 +50,7 @@ export default class OrderDetail extends BaseComponent {
             modalPictureVisible:false,
             status:null,
             videoItemRefMap: new Map(), //存储子组件模板节点
+            isScan: props.navigation.state.params.isScan,
         }
     }
 
@@ -372,6 +373,7 @@ export default class OrderDetail extends BaseComponent {
         var repairHours = null;
         var repairUserName = null;
         var parentTypeName = null;
+        var equipmentName = null;
         var telNo = null;
         var statusDesc = null;
         //语音和图片
@@ -400,7 +402,7 @@ export default class OrderDetail extends BaseComponent {
             repairUserName = detaiData.ownerName;
             telNo = detaiData.telNo;
             parentTypeName = detaiData.parentTypeName;
-
+            equipmentName = detaiData.equipmentName;
 
             if(detaiData.fileMap.imagesRequest && detaiData.fileMap.imagesRequest.length > 0){
                 j = detaiData.fileMap.imagesRequest.length;
@@ -571,6 +573,13 @@ export default class OrderDetail extends BaseComponent {
                                             <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
                                             <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{detailAddress}</Text>
                                         </View>
+                                        {
+                                            this.state.isScan == true && 
+                                            <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                                                <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>设备名称：</Text>
+                                                <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{equipmentName}</Text>
+                                            </View>
+                                        }
                                         <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                                             <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
                                             <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairUserName}</Text>

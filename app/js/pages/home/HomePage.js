@@ -180,7 +180,15 @@ export default class HomePage extends Component {
     repair() {
         const { navigate } = this.props.navigation;
         navigate('AllOrder');
+        
     }
+    scan(){
+        const { navigate } = this.props.navigation;
+        navigate('Scan',{
+            targetRouteName : 'Repair'
+        });
+    }
+
 
     takePicture() {
         global.access_token = "aa17de2a-f945-4b1e-8024-1f3e617d96ba";
@@ -361,7 +369,9 @@ export default class HomePage extends Component {
         <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:10,paddingLeft:10,paddingRight:10,}}>
             <Image source={require('../../../res/login/menu_ljyc.jpg')} style={{width:172,height:185,borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}/>
             <View style={{justifyContent:'center',alignItems:'center',marginLeft:10, }}>
+                <TouchableOpacity  onPress={()=>this.scan()}>
                 <Image source={require('../../../res/login/menu_ljbx.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,}}/>
+                </TouchableOpacity>
                 <TouchableOpacity  onPress={()=>this._setTypeVisible()}>
                     <Image source={require('../../../res/login/menu_ljdc.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,marginTop:10,}}/>
                 </TouchableOpacity>

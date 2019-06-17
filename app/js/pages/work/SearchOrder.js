@@ -82,6 +82,8 @@ export default class SearchOrder extends BaseComponent {
       isLoadingTail: false, // loading?
       isRefreshing: false, // refresh?
       videoItemRefMap: new Map(), //存储子组件模板节点
+      isScan: props.navigation.state.params.isScan,
+      equipmentId: props.navigation.state.params.equipmentId,
     }
   }
 
@@ -157,6 +159,10 @@ export default class SearchOrder extends BaseComponent {
      } else if (cachedResults.typeIndex === 2) {
         params.set('matterName', this.state.searchKey);
      }
+
+    if(this.state.isScan == true){
+      params.set('equipmentId', this.state.equipmentId);
+    }
 
     Request.requestGetWithKey(GetRepairList, params, (result, key)=> {
         if (key !== cachedResults.tabIndex)return;
@@ -295,6 +301,7 @@ export default class SearchOrder extends BaseComponent {
                 navigation.navigate('OrderDetail',{
                         repairId:data.repairId,
                         theme:this.theme,
+                        isScan: this.state.isScan,
                 })
         });
   }
@@ -482,6 +489,13 @@ export default class SearchOrder extends BaseComponent {
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
                         <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.detailAddress}</Text>
                     </View>
+                    {
+                      this.state.isScan == true && 
+                      <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                          <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>设备名称：</Text>
+                          <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.equipmentName}</Text>
+                      </View>
+                    }
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
                         <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.ownerName}   {data.telNo}</Text>

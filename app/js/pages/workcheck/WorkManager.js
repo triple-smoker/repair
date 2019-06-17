@@ -34,6 +34,9 @@ export default class CheckDetail extends BaseComponent {
         this.state={
             scanId : scanId,
             detail:null,
+            isScan : false,
+            equipmentId : '',
+            equipmentName : '',
         }
     }
     componentDidMount() {
@@ -69,7 +72,19 @@ export default class CheckDetail extends BaseComponent {
         this.props.navigation.state.params.callback()
     }
     captrue() {
-
+        const { navigate } = this.props.navigation;
+        navigate('Scan',{
+            targetRouteName : 'WorkManager',
+            callback:((data)=>{
+                
+                this.setState({
+                    isScan : data.isScan,
+                    equipmentId : data.equipmentId,
+                    equipmentName : data.equipmentName
+                })
+                
+            })
+        });
     }
 
     render() {
@@ -82,6 +97,8 @@ export default class CheckDetail extends BaseComponent {
             detailShow = true;
             equipmentId = detail.equipmentId;
             
+        }else if(this.state.isScan == true){
+            pageName =  this.state.equipmentName;
         }
         
 
@@ -113,7 +130,7 @@ export default class CheckDetail extends BaseComponent {
                         <TodayTask  navigation = {this.props.navigation}/>
                     </Tab>
                     <Tab heading='维修' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
-                        <WorkPage  navigation = {this.props.navigation}/>
+                        <WorkPage isScan={this.state.isScan} equipmentId={this.state.equipmentId} navigation = {this.props.navigation}/>
                     </Tab>
                     <Tab heading='保养' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
                         <TodayTask  navigation = {this.props.navigation}/>
