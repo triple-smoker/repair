@@ -251,7 +251,12 @@ export default class WorkPage extends BaseComponent {
            params.set('endCreate', today);
         }
     }
-console.log(params);
+
+    if(this.props.isScan == true){
+      params.set('equipmentId', this.props.equipmentId);
+    }
+    console.log(params);
+
     Request.requestGetWithKey(GetRepairList, params, (result, key)=> {
         if (key !== cachedResults.tabIndex)return;
         if (result && result.code === 200) {
@@ -365,7 +370,9 @@ console.log(params);
                 navigation.navigate('OrderDetail',{
                           repairId:data.repairId,
                           status:data.status,
-                          theme:this.theme,})
+                          theme:this.theme,
+                          isScan: this.props.isScan,
+                        })
         });
   }
 
@@ -571,6 +578,13 @@ console.log(params);
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
                         <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.detailAddress}</Text>
                     </View>
+                    {
+                      this.props.isScan == true && 
+                      <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
+                        <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>设备名称：</Text>
+                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.equipmentName}</Text>
+                      </View>
+                    }
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
                         <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.ownerName}</Text>
@@ -628,7 +642,11 @@ onPlayVoice(filePath) {
 
             //     }
             // });
-            navigation.navigate('SearchOrder',{theme:this.theme,})
+            navigation.navigate('SearchOrder',{
+              theme:this.theme,
+              isScan: this.props.isScan,
+              equipmentId: this.props.equipmentId,
+            })
         });
   }
 

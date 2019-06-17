@@ -107,6 +107,7 @@ export default class TodayTask extends BaseComponent {
         var params = new Map();
         params.set('page', cachedResults.nextPage);
         params.set('limit', '20');
+        cachedResults.items = [];
        if(cachedResults.tabIndex === 0){
            cachedResults.items.push({});
            cachedResults.items.push({});
@@ -200,8 +201,8 @@ class CheckItem extends Component {
                     <Text style={{fontSize:14, color:'#737373', marginLeft:10, marginTop:10,}}>8:00-10:00</Text>
                 </View>
                 <View style={{flex:1,height:80,  textAlignVertical:'center',justifyContent:"center"}}>
-                        <Text style={{fontSize:16,borderWidth:1,borderColor:"#aaa",width:36,height:20,textAlign:"center",
-                            borderBottomRightRadius: 2,borderBottomLeftRadius: 2,borderTopLeftRadius: 2,borderTopRightRadius: 2}}
+                        <Text style={{fontSize:16,borderWidth:1,borderColor:"#aaa",width:40,height:22,textAlign:"center",
+                            borderBottomRightRadius: 4,borderBottomLeftRadius: 4,borderTopLeftRadius: 4,borderTopRightRadius: 4}}
                         >设备</Text>
                 </View>
                 {cachedResults.tabIndex === 0 &&

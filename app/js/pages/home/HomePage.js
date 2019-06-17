@@ -23,6 +23,7 @@ import OrderType from "../../../pages/publicTool/OrderType";
 import RNFetchBlob from '../../../util/RNFetchBlob';
 
 import NfcManager, {Ndef} from 'react-native-nfc-manager';
+import {FLAG_TAB} from "../entry/MainPage";
 
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
@@ -45,27 +46,27 @@ export default class HomePage extends Component {
     }
     //删除
     _deleteData(){
-        console.log('删除')
-
-        //删除一条数据
-        AsyncStorage.removeItem('token', function (error) {
-            if (error) {
-                alert('删除失败')
-            }else {
-                alert('删除完成')
-            }
-        })
-
-        //删除一条数据
-        AsyncStorage.removeItem('fileVideoCache', function (error) {
-            if (error) {
-                // alert('删除失败')
-            }else {
-                // alert('删除完成')
-            }
-        })
-
-        RNFetchBlob.clearCache();
+        // console.log('删除')
+        //
+        // //删除一条数据
+        // AsyncStorage.removeItem('token', function (error) {
+        //     if (error) {
+        //         alert('删除失败')
+        //     }else {
+        //         alert('删除完成')
+        //     }
+        // })
+        //
+        // //删除一条数据
+        // AsyncStorage.removeItem('fileVideoCache', function (error) {
+        //     if (error) {
+        //         // alert('删除失败')
+        //     }else {
+        //         // alert('删除完成')
+        //     }
+        // })
+        //
+        // RNFetchBlob.clearCache();
     }
     //
     //
@@ -179,7 +180,15 @@ export default class HomePage extends Component {
     repair() {
         const { navigate } = this.props.navigation;
         navigate('AllOrder');
+        
     }
+    scan(){
+        const { navigate } = this.props.navigation;
+        navigate('Scan',{
+            targetRouteName : 'Repair'
+        });
+    }
+
 
     takePicture() {
         global.access_token = "aa17de2a-f945-4b1e-8024-1f3e617d96ba";
@@ -247,10 +256,20 @@ export default class HomePage extends Component {
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('WorkManager',{
                 theme:this.theme,
-                scanId : tag.id
+                scanId : tag.id,
+                callback: (
+                    () => {
+                        this.setHome();
+                    })
             })
         });
 
+    }
+    setHome(){
+        DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
+        this.setState({
+            selectedTab: FLAG_TAB.flag_popularTab,
+        })
     }
 
     _startDetection = () => {
@@ -282,7 +301,11 @@ export default class HomePage extends Component {
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('WorkManager',{
                 theme:this.theme,
-                scanId : qrCode
+                scanId : qrCode,
+                callback: (
+                    () => {
+                        this.setHome();
+                    })
             })
         });
     }
@@ -346,7 +369,9 @@ export default class HomePage extends Component {
         <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:10,paddingLeft:10,paddingRight:10,}}>
             <Image source={require('../../../res/login/menu_ljyc.jpg')} style={{width:172,height:185,borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}/>
             <View style={{justifyContent:'center',alignItems:'center',marginLeft:10, }}>
+                <TouchableOpacity  onPress={()=>this.scan()}>
                 <Image source={require('../../../res/login/menu_ljbx.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,}}/>
+                </TouchableOpacity>
                 <TouchableOpacity  onPress={()=>this._setTypeVisible()}>
                     <Image source={require('../../../res/login/menu_ljdc.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,marginTop:10,}}/>
                 </TouchableOpacity>
@@ -380,7 +405,7 @@ export default class HomePage extends Component {
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this._deleteData()} >
                 <Image source={require('../../../res/login/ico_dc.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>清缓存</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>送餐</Text>
                 </TouchableOpacity>
             </View>
         </View>

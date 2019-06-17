@@ -103,6 +103,7 @@ export default class CheckList extends BaseComponent {
         var params = new Map();
         params.set('page', cachedResults.nextPage);
         params.set('limit', '20');
+        cachedResults.items = [];
         if(cachedResults.tabIndex === 0){
             cachedResults.items.push({});
             cachedResults.items.push({});

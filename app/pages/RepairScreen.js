@@ -5,7 +5,7 @@ import Reporter from '../components/Reporter';
 import Notice from '../components/Notice';
 import SoundRecoding from '../components/SoundRecoding';
 import MyFooter from '../components/MyFooter';
-import {TextInput, Image, View, DeviceEventEmitter} from "react-native";
+import {TextInput, Image, View, DeviceEventEmitter,TouchableOpacity} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import Recorde from "../components/Recorde";
 
@@ -15,16 +15,28 @@ export default class RepairScreen extends React.Component {
      * 页面顶部导航栏配置
      * @type
      */
-    static navigationOptions = {
-        headerTitle: '新增报修',
-        headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../image/navbar_ico_back.png')} />),
-        headerStyle: {
-            elevation: 0,
-        },
-        headerRight: (<View />),
-        headerTitleStyle: {
-            flex:1,
-            textAlign: 'center'
+    static navigationOptions = ({ navigation, navigationOptions }) =>{
+        return {
+            headerTitle: '新增报修',
+            //headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../image/navbar_ico_back.png')} />),
+            headerStyle: {
+                elevation: 0,
+            },
+            headerRight: (<View/>),
+            headerTitleStyle: {
+                flex:1,
+                textAlign: 'center'
+            },
+            headerLeft:(<TouchableOpacity 
+                onPress= {()=>{
+                    if(navigation.state.params.isScan && navigation.state.params.isScan == true){
+                        navigation.navigate("MainPage");
+                    }else{
+                        navigation.goBack();
+                    }
+                }}>
+                <Image resizeMode={'contain'} style={{width: 38, height: 60,marginLeft:5}} source={require('../image/navbar_ico_back.png')} />
+            </TouchableOpacity>)
         }
     };
 
@@ -34,15 +46,22 @@ export default class RepairScreen extends React.Component {
 
         super(props);
         const { navigation } = this.props;
+        
         const repairTypeId = navigation.getParam('repairTypeId', '');
         const repairMatterId = navigation.getParam('repairMatterId', '');
         const repairParentCn = navigation.getParam('repairParentCn', '');
         const repairChildCn = navigation.getParam('repairChildCn', '');
+        const isScan = navigation.getParam('isScan', '');
+        const equipmentId = navigation.getParam('equipmentId', '');
+        const equipmentName = navigation.getParam('equipmentName', '');
         this.state = {
             repairTypeId : repairTypeId,
             repairMatterId : repairMatterId,
             repairParentCn : repairParentCn,
             repairChildCn : repairChildCn,
+            isScan : isScan,
+            equipmentId : equipmentId,
+            equipmentName : equipmentName,
             images: [],
             visibleModal: false,
             showNotice: false,
@@ -133,7 +152,7 @@ export default class RepairScreen extends React.Component {
 
     submit(){
 
-        const repairInfo = {
+        let repairInfo = {
             repairTypeId : this.state.repairTypeId,
             repairMatterId : this.state.repairMatterId,
             repairParentCn : this.state.repairParentCn,
@@ -147,6 +166,13 @@ export default class RepairScreen extends React.Component {
                 address: this.state.address
             }
         };
+
+        if(this.state.isScan == true){
+            repairInfo['isScan'] = this.state.isScan;
+            repairInfo['equipmentId'] = this.state.equipmentId;
+            repairInfo['equipmentName'] = this.state.equipmentName;
+        }
+
         if(this.judgeContent(repairInfo) == false){
             return;
         }
@@ -204,6 +230,12 @@ export default class RepairScreen extends React.Component {
                     {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
                         <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:10,marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
                             {this.state.repairParentCn}/{this.state.repairChildCn}
+                        </Text>
+                    }
+                    {
+                        this.state.isScan == true && 
+                        <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:10,marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
+                            <Text>{this.state.equipmentName}</Text>
                         </Text>
                     }
                     <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', paddingLeft:10, marginRight: '1.5%',}}
