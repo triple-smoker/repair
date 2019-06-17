@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, Text, Animated,Easing,InteractionManager, View, Alert } from 'react-native';
+import {StyleSheet, Text,Image, Animated,Easing,InteractionManager, View, Alert } from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import Axios from '../../../util/Axios';
 
@@ -7,6 +7,7 @@ class Scan extends Component {
 
     static navigationOptions = {
         headerTitle: "二维码扫描",
+        headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../../../image/navbar_ico_back.png')} />),
     };
 
     constructor(props) {
@@ -146,17 +147,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#rgba(255,255,255,0.1)'
-        // backgroundColor: 'rgba(0,0,0,0.5)'
-        // backgroundColor: 'transparent'
+        backgroundColor:'rgba(0,0,0,0.5)',
     },
     rectangle: {
         width: 260,
         height: 260,
         borderWidth: 1,
         borderColor: 'skyblue',
-        // backgroundColor: 'rgba(0,0,0,0.5)'
-        backgroundColor: 'transparent'
+        backgroundColor: 'rgba(255,255,255,0.1)',
     },
     info: {
         width: 80,
