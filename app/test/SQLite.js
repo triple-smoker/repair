@@ -47,6 +47,12 @@ export default class SQLite extends Component {
             this.open();
         }
         var sql = "";
+        if(tableName==="daily_report"){
+            sql = sqlManager.createDailyReport();
+        }
+        if(tableName==="daily_task"){
+            sql = sqlManager.createDailyTask();
+        }
         if(tableName==="inspect_job"){
             sql = sqlManager.createInspectJob();
         }
@@ -73,6 +79,24 @@ export default class SQLite extends Component {
         }
         if(tableName==="t_base_equipment"){
             sql = sqlManager.createTBaseEquipment();
+        }
+        if(tableName==="r_building_floor"){
+            sql = sqlManager.createRBuildingFloor();
+        }
+        if(tableName==="r_floor_room"){
+            sql = sqlManager.createRFloorRoom();
+        }
+        if(tableName==="t_base_building"){
+            sql = sqlManager.createTBaseBuilding();
+        }
+        if(tableName==="t_base_place"){
+            sql = sqlManager.createTBasePlace();
+        }
+        if(tableName==="t_base_room"){
+            sql = sqlManager.createTBaseRoom();
+        }
+        if(tableName==="t_base_floor"){
+            sql = sqlManager.createTBaseFloor();
         }
 
         console.log(sql)

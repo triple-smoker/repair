@@ -12,6 +12,28 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 var sqLite = new SQLite();
 var db;
+const tabs = [
+    "inspect_job",
+    "equipment_ref_item",
+    "inspect_equipment_type_conf",
+    "inspect_item_conf",
+    "inspect_job_manager",
+    "job_exec_time",
+    "man_ref_item",
+    "t_base_equipment_type",
+    "t_base_equipment",
+    "daily_report",
+    "daily_task",
+    "r_building_floor",
+    "r_floor_room",
+    "t_base_building",
+    "t_base_place",
+    "t_base_room",
+    "t_base_floor",
+    "t_base_equipment",
+    "t_base_equipment",
+    "t_base_equipment",
+]
 export default class SQLiteDemo extends Component{
     constructor(props) {
         super(props);
@@ -58,37 +80,38 @@ export default class SQLiteDemo extends Component{
                     console.log(">>>>>>>>>>>>")
                     console.log(sqLiteTimeTemp)
                     //数据同步接口条用
-                    Axios.GetAxiosSQLite(sqLiteTimeTemp).then(
+                    var url = "/api/generaloperation/portal/batchSynchronization/ModulesName?time="+sqLiteTimeTemp+"&modulesName=xunjian";
+                    Axios.GetAxios(url).then(
                         (response)=>{
-                            if(Array.isArray(response)&&response.length>1){
-                                let key = 'sqLiteTimeTemp';
-                                //json转成字符串
-                                let jsonStr = JSON.stringify(response[0]);
-                                //存储
-                                AsyncStorage.setItem(key, jsonStr, function (error) {
-
-                                    if (error) {
-                                        console.log('存储失败')
-                                    }else {
-                                        console.log('存储完成')
-                                    }
-                                })
-                                var dates = response[1];
-                                for(var tableName in dates){
-                                    //删除数据
-                                    // sqLite.dropTable(tableName);
-                                    if(dates[tableName]!=null&&dates[tableName].length>0){
-                                        sqLite.insertData(dates[tableName],tableName);
-                                    }
-
-                                }
-
-                            }
-                            console.log(response);
+                            // if(Array.isArray(response)&&response.length>1){
+                            //     let key = 'sqLiteTimeTemp';
+                            //     //json转成字符串
+                            //     let jsonStr = JSON.stringify(response[0]);
+                            //     //存储
+                            //     AsyncStorage.setItem(key, jsonStr, function (error) {
+                            //
+                            //         if (error) {
+                            //             console.log('存储失败')
+                            //         }else {
+                            //             console.log('存储完成')
+                            //         }
+                            //     })
+                            //     var dates = response[1];
+                            //     for(var tableName in dates){
+                            //         //删除数据
+                            //         // sqLite.dropTable(tableName);
+                            //         if(dates[tableName]!=null&&dates[tableName].length>0){
+                            //             sqLite.insertData(dates[tableName],tableName);
+                            //         }
+                            //
+                            //     }
+                            //
+                            // }
+                            console.log("++"+response);
 
                         }
                     );
-                    // alert('读取完成')
+                    alert('读取完成')
                 }
             }.bind(this)
         )
@@ -104,16 +127,29 @@ export default class SQLiteDemo extends Component{
 
 
     dropTable(){
-
-        sqLite.dropTable("inspect_job");
-        sqLite.dropTable("equipment_ref_item");
-        sqLite.dropTable("inspect_equipment_type_conf");
-        sqLite.dropTable("inspect_item_conf");
-        sqLite.dropTable("inspect_job_manager");
-        sqLite.dropTable("job_exec_time");
-        sqLite.dropTable("man_ref_item");
-        sqLite.dropTable("t_base_equipment_type");
-        sqLite.dropTable("t_base_equipment");
+        tabs.forEach((tabName)=>{
+            sqLite.dropTable(tabName);
+        })
+        // sqLite.dropTable("inspect_job");
+        // sqLite.dropTable("equipment_ref_item");
+        // sqLite.dropTable("inspect_equipment_type_conf");
+        // sqLite.dropTable("inspect_item_conf");
+        // sqLite.dropTable("inspect_job_manager");
+        // sqLite.dropTable("job_exec_time");
+        // sqLite.dropTable("man_ref_item");
+        // sqLite.dropTable("t_base_equipment_type");
+        // sqLite.dropTable("t_base_equipment");
+        // sqLite.dropTable("daily_report");
+        // sqLite.dropTable("daily_task");
+        // sqLite.dropTable("r_building_floor");
+        // sqLite.dropTable("r_floor_room");
+        // sqLite.dropTable("t_base_building");
+        // sqLite.dropTable("t_base_place");
+        // sqLite.dropTable("t_base_room");
+        // sqLite.dropTable("t_base_floor");
+        // sqLite.dropTable("t_base_equipment");
+        // sqLite.dropTable("t_base_equipment");
+        // sqLite.dropTable("t_base_equipment");
         console.log("//////")
     };
     getTable(tableName){
@@ -146,6 +182,15 @@ export default class SQLiteDemo extends Component{
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查man_ref_item" onPress={()=>this.getTable("man_ref_item")}/>
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_equipment_typeb" onPress={()=>this.getTable("t_base_equipment_type")}/>
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_equipment" onPress={()=>this.getTable("t_base_equipment")}/>
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查daily_report" onPress={()=>this.getTable("daily_report")}/>
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查daily_task" onPress={()=>this.getTable("daily_task")}/>
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查r_building_floor" onPress={()=>this.getTable("r_building_floor")}/>
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查r_floor_room" onPress={()=>this.getTable("r_floor_room")}/>
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_building" onPress={()=>this.getTable("t_base_building")}/>
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_place" onPress={()=>this.getTable("t_base_place")}/>
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_room" onPress={()=>this.getTable("t_base_room")}/>
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_floor" onPress={()=>this.getTable("t_base_floor")}/>
+
                 <Text>
                     {this.state.ID}
                 </Text>
