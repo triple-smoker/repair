@@ -35,7 +35,7 @@ import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+//import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
 public class MainApplication extends Application implements ReactApplication {
   private static final String TAG = "Init";
@@ -63,7 +63,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNGestureHandlerPackage(),
             new RnPackages(),  //add
             new RNCameraPackage(),
-            new ReactNativePushNotificationPackage(),
+//            new ReactNativePushNotificationPackage(),
             new RNFetchBlobPackage()
       );
     }

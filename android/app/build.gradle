@@ -180,7 +180,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation project(':react-native-sqlite-storage')
     implementation project(':rn-fetch-blob')
-    implementation project(':react-native-push-notification')
+//    implementation project(':react-native-push-notification')
     implementation 'com.aliyun.ams:alicloud-android-push:3.1.4'
     //64k
     implementation 'com.android.support:multidex:1.0.1'

@@ -30,7 +30,6 @@
     "react-native-nfc-manager": "^1.2.2",
     "react-native-permissions": "^1.1.1",
     "react-native-progress": "^3.6.0",
-    "react-native-push-notification": "^3.1.3",
     "react-native-root-siblings": "^3.2.0",
     "react-native-root-toast": "^3.0.2",
     "react-native-slider": "^0.11.0",
