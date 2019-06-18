@@ -45,7 +45,9 @@ export default class BaseComponent extends Component {
     onBackClicked = () => {
 
          const {navigation,navigator} = this.props;
-        if(navigation.state.routeName && navigation.state.routeName==="WorkManager"){
+         // console.log("------"+JSON.stringify(navigation.state));
+        if(navigation.state.routeName && navigation.state.routeName==="MainPage"){
+            // console.log("-----");
             DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
         }
          if (navigator && navigator.getCurrentRoutes().length > 1) {

@@ -81,10 +81,10 @@ function GetAxios(url = '', data = defaultData, ) {
 
 function GetAxiosSQLite(sqLiteTimeTemp, data = defaultData, ) {
 console.log(">>>>>>");
-console.log('http://10.144.4.44:8080/portal/synchronism?time='+sqLiteTimeTemp);
+console.log('http://47.102.197.221:4008/portal/batchSynchronization/ModulesName?time='+sqLiteTimeTemp+"&modulesName=xunjian");
     return axios({
         method: 'GET',
-        url : 'http://10.144.4.44:8080/portal/synchronism?time='+sqLiteTimeTemp,
+        url : 'http://47.102.197.221:4008/portal/batchSynchronization/ModulesName?time='+sqLiteTimeTemp+"&modulesName=xunjian",
         data,
 
     })

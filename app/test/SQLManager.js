@@ -197,7 +197,7 @@ class SQLManager extends Component {
             + 'BUILDING_ID bigint(20) DEFAULT NULL ,'
             + 'FLOOR_ID bigint(20) DEFAULT NULL ,'
             + 'CREATE_TIME datetime DEFAULT CURRENT_TIMESTAMP ,'
-            + 'UPDATE_TIME datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP )';
+            + 'UPDATE_TIME datetime DEFAULT CURRENT_TIMESTAMP )';
         return createRBuildingFloorSql;
     }
 //创建表sql（r_floor_room）
@@ -208,7 +208,7 @@ class SQLManager extends Component {
             + 'FLOOR_ID bigint(20) DEFAULT NULL ,'
             + 'ROOM_ID bigint(20) DEFAULT NULL ,'
             + 'CREATE_TIME datetime DEFAULT CURRENT_TIMESTAMP ,'
-            + 'UPDATE_TIME datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP )';
+            + 'UPDATE_TIME datetime DEFAULT CURRENT_TIMESTAMP )';
         return createRFloorRoomSql;
     }
 //创建表sql（t_base_building）

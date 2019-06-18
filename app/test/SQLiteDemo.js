@@ -80,34 +80,35 @@ export default class SQLiteDemo extends Component{
                     console.log(">>>>>>>>>>>>")
                     console.log(sqLiteTimeTemp)
                     //数据同步接口条用
-                    var url = "/api/generaloperation/portal/batchSynchronization/ModulesName?time="+sqLiteTimeTemp+"&modulesName=xunjian";
-                    Axios.GetAxios(url).then(
+                    // var url = "/api/generaloperation/portal/batchSynchronization/ModulesName?time="+sqLiteTimeTemp+"&modulesName=xunjian";
+                    Axios.GetAxiosSQLite(sqLiteTimeTemp).then(
                         (response)=>{
-                            // if(Array.isArray(response)&&response.length>1){
-                            //     let key = 'sqLiteTimeTemp';
-                            //     //json转成字符串
-                            //     let jsonStr = JSON.stringify(response[0]);
-                            //     //存储
-                            //     AsyncStorage.setItem(key, jsonStr, function (error) {
-                            //
-                            //         if (error) {
-                            //             console.log('存储失败')
-                            //         }else {
-                            //             console.log('存储完成')
-                            //         }
-                            //     })
-                            //     var dates = response[1];
-                            //     for(var tableName in dates){
-                            //         //删除数据
-                            //         // sqLite.dropTable(tableName);
-                            //         if(dates[tableName]!=null&&dates[tableName].length>0){
-                            //             sqLite.insertData(dates[tableName],tableName);
-                            //         }
-                            //
-                            //     }
-                            //
-                            // }
-                            console.log("++"+response);
+                            if(Array.isArray(response.data)&&response.data.length>1){
+                                let key = 'sqLiteTimeTemp';
+                                //json转成字符串
+                                let jsonStr = JSON.stringify(response.data[0]);
+                                //存储
+                                AsyncStorage.setItem(key, jsonStr, function (error) {
+
+                                    if (error) {
+                                        console.log('存储失败')
+                                    }else {
+                                        console.log('存储完成')
+                                    }
+                                })
+                                var dates = response.data[1];
+                                console.log("++"+dates);
+                                for(var tableName in dates){
+                                    //删除数据
+                                    // sqLite.dropTable(tableName);
+                                    if(dates[tableName]!=null&&dates[tableName].length>0){
+                                        sqLite.insertData(dates[tableName],tableName);
+                                    }
+
+                                }
+
+                            }
+                            console.log("++"+JSON.stringify(response));
 
                         }
                     );
@@ -129,6 +130,15 @@ export default class SQLiteDemo extends Component{
     dropTable(){
         tabs.forEach((tabName)=>{
             sqLite.dropTable(tabName);
+        })
+        //存储
+        AsyncStorage.setItem("sqLiteTimeTemp", "", function (error) {
+
+            if (error) {
+                console.log('存储失败')
+            }else {
+                console.log('存储完成')
+            }
         })
         // sqLite.dropTable("inspect_job");
         // sqLite.dropTable("equipment_ref_item");
