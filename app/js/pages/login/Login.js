@@ -206,6 +206,7 @@ export default class Login extends BaseComponent {
 
                 that.fetchUserInfo();
             } else {
+                
                 Toast.show('登录失败，请重试');
             }
 

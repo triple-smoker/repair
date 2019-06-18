@@ -156,7 +156,7 @@ loadDetail() {
                 code : result.code
             })
         } else {
-            Toast.show('操作失败，请重试');
+            Toast.show('操作失败，请重新尝试');
         }
     });
   }
@@ -388,7 +388,7 @@ renderMaterialItem(data, i) {
     submit() {
         if (!this.refs.palette.isWrite()) {
             this.setState({modalVisible:false});
-            Toast.show('请先签名');
+            Toast.show('请签署姓名');
             return;
         }
 

@@ -19,7 +19,7 @@ import TitleBar from '../../component/TitleBar';
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import { toastShort } from '../../util/ToastUtil';
 export default class MySet extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -69,9 +69,9 @@ export default class MySet extends BaseComponent {
         //删除一条数据
         AsyncStorage.removeItem('token', function (error) {
             if (error) {
-                alert('删除失败')
+                toastShort('删除失败')
             }else {
-                alert('删除完成')
+                toastShort('删除完成')
             }
         })
 

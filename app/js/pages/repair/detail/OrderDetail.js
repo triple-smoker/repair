@@ -34,6 +34,7 @@ import RNFetchBlob from '../../../../util/RNFetchBlob';
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
 let orderStatus = "";
+var otherDesc = '';
 export default class OrderDetail extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -204,9 +205,9 @@ export default class OrderDetail extends BaseComponent {
         let voicePlayer = getVoicePlayer();
         voicePlayer.voice(filePath,(result)=>{
             if(result){
-                toastShort('开始播放');
+                // toastShort('开始播放');
             }else {
-                toastShort('播放失败');
+                toastShort('语音/视频播放失败');
             }
         })
 
@@ -713,6 +714,7 @@ export default class OrderDetail extends BaseComponent {
     }
 
     submit() {
+        this.setState({modalVisible:false});
         if (this.state.selectIndex === -1) {
             toastShort('请选择暂停原因');
             return;
@@ -728,18 +730,19 @@ export default class OrderDetail extends BaseComponent {
         // }
 
         causeIds.push(items[this.state.selectIndex].causeId);
-        this.setState({modalVisible:false});
+       
         // var params = new Map();
         // params.set('repairId', this.state.repairId);
         // params.set('remark', otherDesc);
         // params.set('causeIds', causeIds);
-        let params = {repairId:this.state.repairId, remark:otherDesc ? otherDesc : '', causeIds:causeIds};
+        let params = {repairId:this.state.repairId, remark:otherDesc, causeIds:causeIds};
         console.log(params);
         Request.requestPost(DoPause, params, (result)=> {
             if (result && result.code === 200) {
                 toastShort('暂停成功');
+                this.naviGoBack(this.props.navigation)
             } else {
-                toastShort('失败，请重试');
+                toastShort('工单暂停失败，请重新尝试');
             }
         });
     }

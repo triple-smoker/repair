@@ -81,7 +81,7 @@ class MyAddress extends Component {
         if(this.state.AddName===undefined){
             this.setState({
                 showNotice : true,
-                noticeText: '姓名不允许为空！',
+                noticeText: '姓名不允许为空',
             })
             return;
         }
@@ -89,7 +89,7 @@ class MyAddress extends Component {
         if(!this.isPhoneNumber(this.state.AddPhone)){
             this.setState({
                 showNotice : true,
-                noticeText: '请填写正确的手机号！',
+                noticeText: '请填写正确的手机号',
             })
             return;
         }
@@ -97,7 +97,7 @@ class MyAddress extends Component {
         if(this.state.AddAdds===undefined){
             this.setState({
                 showNotice : true,
-                noticeText: '地址不允许为空！',
+                noticeText: '地址不允许为空',
             })
             return;
         }
