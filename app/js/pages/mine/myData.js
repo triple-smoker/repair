@@ -115,10 +115,14 @@ export default class MyData extends BaseComponent {
     modification(type,Msg,oldMsg){
         var that = this;
         if(type == 'username'){
-            if(Msg == oldMsg || Msg== ''){
-                console.log('未修改')
+            if(Msg == oldMsg){
+                toastShort('请修改名称');
+                this._edit(type);
+                return;
+            }else if(this.isEmpty(Msg)){
                 toastShort('姓名不能为空');
                 this._edit(type);
+                return;
             }else{
                 console.log('修改')
                 Request.requestPut(baseUser,{
@@ -135,10 +139,15 @@ export default class MyData extends BaseComponent {
             }
         }else if(type == 'tel'){
             console.log(type)
-            if(Msg == oldMsg || Msg== ''){
+            if(Msg == oldMsg){
+                toastShort('请修改手机号');
+                this._edit(type)
+                return;
+            }else if(this.isEmpty(Msg)){
                 console.log('未修改')
                 toastShort('联系方式不能为空');
                 this._edit(type)
+                return;
             }else{
                 console.log('修改')
                 if(!this.isPhoneNumber(Msg)){
@@ -159,7 +168,13 @@ export default class MyData extends BaseComponent {
             }
         }
     }
-
+    isEmpty(obj){
+        if(typeof obj == "undefined" || obj == null || obj == ""){
+                return true;
+        }else{
+                return false;
+        }
+    }
     TextInputModule(domType,txt,type){
        if(domType == 'input'){
            return <TextInput

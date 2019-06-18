@@ -70,6 +70,7 @@ export default class WorkPage extends BaseComponent {
       timeIndex: 0,
       tabIndex: 0,
       theme:this.props.theme,
+      showPause:false,
       dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
             if (r1 !== r2) {
@@ -108,7 +109,8 @@ export default class WorkPage extends BaseComponent {
     submit() {
       var that = this;
         if (this.state.selectIndex === -1) {
-            toastShort('请选择暂停原因');
+          this.setState({showPause:true});
+            // toastShort('请选择暂停原因');
             return;
         }
 
@@ -896,6 +898,9 @@ onPlayVoice(filePath) {
                 <View style={{backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-80),}} />
                 <View style={{width:Dimens.screen_width-80, height:300}} >
                 <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:10,}}>请选择暂停原因</Text>
+                {
+                    this.state.showPause ? <Text style={{color:'red',fontSize:12, height:20, textAlignVertical:'center',paddingLeft:10,}}>暂停原因不能为空</Text> : <Text style={{height:20}}></Text>
+                }
                 <View style={styles.listViewStyle}>
                   {repDatas}
 
@@ -949,7 +954,7 @@ onPlayVoice(filePath) {
     }
 
   cancel() {
-        this.setState({modalVisible:false});
+      this.setState({modalVisible:false,showPause:false});
     }
 
 
