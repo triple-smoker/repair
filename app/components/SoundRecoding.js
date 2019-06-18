@@ -10,7 +10,6 @@ class SoundRecoding extends Component {
             play : false,
             filepath : this.props.record.filePath
         }
-
     }
     // 新建通知的监听
     componentDidMount() {
@@ -142,18 +141,18 @@ class VoiceImage extends Component {
                         this.setState({
                             show2: false,
                             show3: false
-                        })
+                        });
                         return;
                     }else {
                         this.setState({
                             show3: true
-                        })
+                        });
                         return;
                     }
                 }else {
                     this.setState({
                         show2: true
-                    })
+                    });
                     return;
                 }
             }, 500
@@ -188,7 +187,6 @@ class VoiceImage extends Component {
         }
 
     }
-
 
 }
 
