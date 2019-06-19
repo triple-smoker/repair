@@ -182,8 +182,14 @@ dependencies {
     implementation project(':rn-fetch-blob')
 //    implementation project(':react-native-push-notification')
     implementation 'com.aliyun.ams:alicloud-android-push:3.1.4'
+    implementation (project(':react-native-push-notification')) {
+        exclude group: "com.google.android.gms", module: "play-services-gcm"
+        exclude group: "com.google.firebase", module: "firebase-messaging"
+    }
     //64k
     implementation 'com.android.support:multidex:1.0.1'
+    implementation "com.google.android.gms:play-services-gcm:16.0.0"
+    implementation "com.google.firebase:firebase-messaging:17.6.0"
 }
 
 // Run this once to be able to run the application with BUCK
