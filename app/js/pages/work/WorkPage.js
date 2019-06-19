@@ -92,6 +92,7 @@ export default class WorkPage extends BaseComponent {
 
   componentDidMount() {
       console.log('OrderList  componentDidMount');
+      cachedResults.tabIndex = 0;
       this._fetchData(0);
       this.loadRep();
       DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
@@ -102,6 +103,7 @@ export default class WorkPage extends BaseComponent {
   componentWillReceiveProps(){
     // console.log(nextProps)
     // if(nextProps.navigation.state != this.props.navigation.state){
+      cachedResults.tabIndex = 0;
         this._fetchData(0);
     // }
   }
