@@ -40,6 +40,7 @@ class Scan extends Component {
 
     componentWillUnmount(){
         this.state.show = false;
+        console.info("-----componentWillUnmount-----")
     }
 
     barcodeReceived(result){
@@ -70,26 +71,25 @@ class Scan extends Component {
                         Alert.alert('提示', response.data.message,[{text:'确定'}])
                         setTimeout(() => {
                             this.state.show = true;
-                            this.startAnimation();                 
+                            this.startAnimation();
                         }, 2000);
                     }else{
                         const { navigate } = this.props.navigation;
-                        
+
                         if(this.props.navigation.state.params.callback){
                             this.props.navigation.state.params.callback({
                                 isScan : true,
                                 equipmentId : response.data.detail.equipmentId,
                                 equipmentName: response.data.detail.equipmentName
                             });
-                        }
-
-                        // InteractionManager.runAfterInteractions(() => {
-                            navigate( this.state.targetRouteName ,{
+                            navigate(this.state.targetRouteName);
+                        }else{
+                            this.props.navigation.replace(this.state.targetRouteName,{
                                 isScan : true,
                                 equipmentId : response.data.detail.equipmentId,
                                 equipmentName: response.data.detail.equipmentName
                             });
-                        // });
+                        }
                     }
                 }
             }
