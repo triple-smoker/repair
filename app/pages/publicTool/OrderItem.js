@@ -19,7 +19,8 @@ import VideoPlayer from '../../components/VideoPlayer';
 import { toastShort } from '../../js/util/ToastUtil';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from '../../util/RNFetchBlob';
-import {getVoicePlayer} from '../../components/VoicePlayer'
+import {getVoicePlayer} from '../../components/VoicePlayer';
+
 
 import moment from "moment";
 let ScreenWidth = Dimensions.get('window').width;
@@ -483,7 +484,7 @@ class CancelMd extends Component {
     _setRemark(remark){
         this.setState({reMark:remark});
     }
-    pushCancel(record,getRepairList){
+    pushCancel(record,getRepairList,closer){
        var   url="/api/repair/request/misinform";
        var causeList = this.state.causeList;
        var causeIds = [];
@@ -492,9 +493,9 @@ class CancelMd extends Component {
             causeIds.push(cause.causeId);
             }
         })
-        if(causeIds.length=0){
+        if(causeIds.length===0){
             toastShort('请选择取消原因');
-            return;
+            return null;
         }
         console.log("取消ID：");
         console.log(record.repairId);
@@ -511,6 +512,7 @@ class CancelMd extends Component {
             (response) => {
                         setTimeout(function(){
                             toastShort('取消成功');
+                            closer();
                             getRepairList();
                         },200)
                     }
@@ -533,7 +535,7 @@ class CancelMd extends Component {
                                 {this.state.reMark}
                             </Textarea>
                             <Button style={{width:60,marginLeft:ScreenWidth-140,alignItems:'center',justifyContent:"center",backgroundColor:'#fff',marginTop:12}}
-                                onPress={()=>{this.props.Closer(),this.pushCancel(this.props.record,()=>this.props.getRepairList())}}>
+                                onPress={()=>{this.pushCancel(this.props.record,()=>this.props.getRepairList(),()=>this.props.Closer())}}>
                                 <Text>确认</Text>
                             </Button>
                          </Col>
