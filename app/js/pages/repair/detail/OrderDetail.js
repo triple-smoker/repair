@@ -270,12 +270,17 @@ export default class OrderDetail extends BaseComponent {
     _renderHeaderShiXiang(item, expanded) {
         var that = this;
         var buttons = null;
+        var add = '添加';
+        var detaiData = that.state.detaiData;
+        if (detaiData && detaiData.itemPersonList && detaiData.itemPersonList.length > 0) {
+            add = '重设'
+        }
         if(orderStatus === '5'){
             buttons = <TouchableOpacity onPress={()=>this.addOption()}>
                 <View style={{backgroundColor:'white',alignItems:'center', flexDirection:"row", marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius:15, borderWidth:1, borderColor:'#eee'}}>
                     <Image source={require('../../../../res/repair/btn_ico_tj.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
-                    <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加</Text>
+                    <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>{add}</Text>
                 </View>
             </TouchableOpacity>
         }
@@ -306,12 +311,17 @@ export default class OrderDetail extends BaseComponent {
     _renderHeaderWuLiao(item, expanded) {
         var that = this;
         var buttons = null;
+        var detaiData = that.state.detaiData;
+        var add = '添加';
+        if (detaiData && detaiData.materialList && detaiData.materialList.length > 0) {
+            add = '重设'
+        }
         if(orderStatus === '5'){
             buttons = <TouchableOpacity onPress={()=>this.materielList()}>
                 <View style={{backgroundColor:'white',alignItems:'center', flexDirection:"row", marginRight:10,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius:15, borderWidth:1, borderColor:'#eee'}}>
                     <Image source={require('../../../../res/repair/btn_ico_tj.png')} style={{width:12,height:12,marginLeft:10, marginRight:10,}}/>
-                    <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>添加</Text>
+                    <Text style={{color:'#666',fontSize:12,  marginLeft:0,marginRight:10,textAlignVertical:'center'}}>{add}</Text>
                 </View>
             </TouchableOpacity>
         }
@@ -466,8 +476,9 @@ export default class OrderDetail extends BaseComponent {
                     </View>
                 </View>;
             }
-
+           
             if (detaiData.itemPersonList && detaiData.itemPersonList.length > 0) {
+               
                 var viewList = detaiData.itemPersonList.map((item, i)=>{
                     if(item.assistantId != null){}
                     return this.renderPersonItem(item, i)
@@ -478,6 +489,7 @@ export default class OrderDetail extends BaseComponent {
                     return this.renderIconItem(item, i)
 
                 });
+                
                 processList = <View style={{backgroundColor:'white', paddingTop:10, paddingBottom:10,}}>
                     <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>维修类别：{detaiData.parentTypeName}</Text>
                     <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', marginBottom:10, }}>维修事项：{detaiData.matterName}</Text>

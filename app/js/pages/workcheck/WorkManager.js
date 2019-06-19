@@ -46,11 +46,7 @@ export default class CheckDetail extends BaseComponent {
         // }
         this.loadDetail()
     }
-    // onBackClicked = () => {
-    //     this.props.setHome();
-    //
-    //     return true; // 默认false  表示跳出RN
-    // }
+    
     loadDetail(){
         var id = this.state.scanId;
         if(id){

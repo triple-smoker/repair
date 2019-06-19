@@ -342,17 +342,17 @@ export default class AddOption extends BaseComponent {
             onChange={() => that.personCheck(data.userId)}> */}    
             <View key={i} style={{height:60, marginTop:15, flexDirection: 'row', justifyContent:'space-between', textAlignVertical:'center',marginLeft:0, marginRight:0, alignItems:'center',}}>
                 <Image source={require('../../../../res/repair/user_wx.png')} style={{width:30,height:30,marginLeft:15}}/>
-                <View style={{backgroundColor:'white', marginLeft:10, marginRight:10, textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
-                        borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, }}>
-                    <View style={{flexDirection:'row',marginLeft:10,marginTop:5, }}>
+                <View style={{backgroundColor:'white', marginLeft:5, marginRight:5, textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
+                    flex:1}}>
+                    <View style={{flexDirection:'row',marginLeft:5,marginTop:5, }}>
                         <Text style={{color:'#000',fontSize:14, textAlignVertical:'center', }}>{data.userName}</Text>
                         <Text style={{color:'#000',fontSize:13, textAlignVertical:'center', marginLeft:20,}}>{data.telNo}</Text>
                     </View>
 
-                    <View style={{flexDirection:'row',marginLeft:10,height:25,textAlignVertical:'center',}}>
+                    <View style={{flexDirection:'row',height:25,textAlignVertical:'center',flex:1}}>
                         <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
-                        <View>
-                            <Slider style={{marginLeft:10,marginTop:8,height:10, width: 150}}
+                        <View style={{flexDirection:'row',justifyContent:'space-between', textAlignVertical:'center'}}>
+                            <Slider style={{marginLeft:10,marginTop:8,height:10,minWidth: 150,width:80,flex:1}}
                             minimumValue={0}
                             maximumValue={100}
                             minimumTrackTintColor={'#3F9AED'}
@@ -361,16 +361,17 @@ export default class AddOption extends BaseComponent {
                             value={data.process}
                             onSlidingComplete={this._complete}
                             onValueChange={(value)=>{that._onChange(data, i, value)}}/>
-                            </View>
-                        <Text style={{color:'#3F9AED',fontSize:12, marginLeft:15,marginRight:15,}}>{Math.round(data.process)}%</Text>
+                            <Text style={{color:'#3F9AED',fontSize:12, marginLeft:5,marginRight:15,}}>{Math.round(data.process)}%</Text>
+                        </View>
+                        
                     </View>
                 </View>
-                <View style={{flexDirection:'column' ,justifyContent:'space-between',marginRight:10, }}>
-                    <Text style={{color:'#000',fontSize:14, }}>{data.type && data.type === 1 ? '主修人' : ''}</Text> 
+                <View style={{flexDirection:'column' ,justifyContent:'center',alignItems:'flex-end', marginRight:10,width:50 }}>
+                    <Text style={{color:'#000',fontSize:13, }}>{data.type && data.type === 1 ? '主修人' : ''}</Text> 
                     <TouchableOpacity onPress={() => that.personCheck(data.userId)}>
                         <Image source={data.type && data.type === 1 ? 
                             require('../../../../res/login/checkbox_pre.png') : require('../../../../res/login/checkbox_nor.png')} 
-                            style={{width:19,height:19,marginLeft:14,marginRight:16}}/>
+                            style={{width:18,height:18,}}/>
                     </TouchableOpacity>
                 </View>
             </View>
