@@ -5,14 +5,14 @@ import {
     Button
 } from 'react-native';
 import SQLite from './SQLite';
-import CheckSqLite from './CheckSqLite';
+import {CheckSqLite,SelectFirstCheck} from './CheckSqLite';
 import Axios from '../util/Axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
 
 var sqLite = new SQLite();
-var checkSqLite = new CheckSqLite();
+// var checkSqLite = new CheckSqLite();
 var db;
 const tabs = [
     "inspect_job",
@@ -180,17 +180,17 @@ export default class SQLiteDemo extends Component{
         });
     }
     selectFirstCheck(){
-        var a = checkSqLite.selectFirstCheck;
-        console.log("++"+a);
+        // var a = SelectFirstCheck;
+        // console.log("++"+a);
         //查询
         db.transaction((tx)=>{
             // var a = CheckSqLite.selectFirstCheck;
             console.log("++++++++++");
-            tx.executeSql("select * from t_base_equipment", [],(tx,results)=>{
+            tx.executeSql(SelectFirstCheck, [],(tx,results)=>{
                 var len = results.rows.length;
                 for(let i=0; i<len; i++){
                     var user = results.rows.item(i);
-                    // console.log("<<<<<<<<<<<<<<<"+tableName);
+                    console.log("<<<<<<<<<<<<<<<"+tableName);
                     console.log(user);
                 }
             });
