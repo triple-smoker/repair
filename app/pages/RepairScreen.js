@@ -285,7 +285,7 @@ export default class RepairScreen extends React.Component {
                     <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
                         <Image style={{width:21,height:37}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
-                    <TouchableOpacity onPress={()=>this.goSearch(()=>this._fetchData(0))} style={{flex:1,height:30, marginRight:0,}}>
+                    <TouchableOpacity style={{flex:1,height:30, marginRight:0,}}>
                         <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
                             <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>新增报修</Text>
                         </View>
