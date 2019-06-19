@@ -11,6 +11,7 @@ export const HospitalId = '1055390940066893827';
 
 export const AuthToken     = 'api/auth/oauth/token';
 export const GetUserInfo   = 'api/admin/user/login';
+export const GetUserAddress  = 'api/basic/user/address/'
 
 export const GetRepairType = 'api/repair/repRepairType/list';//维修类型
 export const GetRepairList = 'api/repair/service/list';//维修单列表

@@ -82,7 +82,7 @@ class Scan extends Component {
                                 equipmentId : response.data.detail.equipmentId,
                                 equipmentName: response.data.detail.equipmentName
                             });
-                            navigate(this.state.targetRouteName);
+                            navigate(this.state.targetRouteName,{});
                         }else{
                             this.props.navigation.replace(this.state.targetRouteName,{
                                 isScan : true,

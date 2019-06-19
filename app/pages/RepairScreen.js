@@ -9,6 +9,7 @@ import {TextInput, Image, View, DeviceEventEmitter, TouchableOpacity, TouchableH
 import AsyncStorage from "@react-native-community/async-storage";
 import Recorde from "../components/Recorde";
 import OrderType from "./publicTool/OrderType";
+import Request, { GetUserAddress } from "../js/http/Request";
 
 export default class RepairScreen extends React.Component {
 
@@ -86,20 +87,36 @@ export default class RepairScreen extends React.Component {
         }
 
 
-        AsyncStorage.getItem('reporterInfoHistory',function (error, result) {
+        AsyncStorage.getItem('uinfo',function (error, result) {
                 if (error) {
 
                 }else {
-                    let porterList = JSON.parse(result);
+                    let loginUserInfo = JSON.parse(result);
 
-                    if( porterList!=null && porterList.length>0 ){
-                        let reporter = porterList[0]
-                        this.setState({
-                            reporter: reporter.name,
-                            phone: reporter.phone,
-                            address: reporter.address,
+                    if(loginUserInfo != null){
+
+                        Request.requestGet(GetUserAddress + loginUserInfo.userId, null, (result) => {
+                            if (result && result.code === 200) {
+                                let info = result.data[0]
+                                this.setState({
+                                    reporter: info.userName,
+                                    phone: loginUserInfo.telNo,
+                                    address: info.buildingName + info.floorName + info.roomName
+                                });
+                            }
                         });
+
+                        
                     }
+
+                    // if( porterList!=null && porterList.length>0 ){
+                    //     let reporter = porterList[0]
+                    //     this.setState({
+                    //         reporter: reporter.name,
+                    //         phone: reporter.phone,
+                    //         address: reporter.address,
+                    //     });
+                    // }
 
                 }
             }.bind(this)
