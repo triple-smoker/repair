@@ -372,11 +372,10 @@ export default class HomePage extends Component {
                 <TouchableOpacity  onPress={()=>this.scan()}>
                 <Image source={require('../../../res/login/menu_ljbx.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,}}/>
                 </TouchableOpacity>
-                <TouchableOpacity  onPress={()=>this._setTypeVisible()}>
+                <TouchableOpacity  onPress={()=>this.showModel()}>
                     <Image source={require('../../../res/login/menu_ljdc.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,marginTop:10,}}/>
                 </TouchableOpacity>
             </View>
-            <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
         </View>
 
         <View style={{backgroundColor:'#f6f6f6',height:10,width:Dimens.screen_width,marginTop:10,}}/>
@@ -390,10 +389,11 @@ export default class HomePage extends Component {
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                <TouchableOpacity onPress={()=>this.showModel()}>
+                <TouchableOpacity onPress={()=>this._setTypeVisible()}>
                 <Image source={require('../../../res/login/ico_pj.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>评价</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>快修</Text>
                 </TouchableOpacity>
+                <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
             </View>
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this.takePicture()}>

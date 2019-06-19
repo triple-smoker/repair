@@ -331,7 +331,7 @@ export default class WorkPage extends BaseComponent {
     );
   }
 
-  onPressItem(data){
+  onPressItem(data,_fetchData){
     //ok
       if (this.state.tabIndex === 2) {
         const {navigation} = this.props;
@@ -350,9 +350,9 @@ export default class WorkPage extends BaseComponent {
         });
 
       } else if (this.state.tabIndex === 1) {
-        this.gotoDetail(data,(page)=>this._fetchData(page));
+        this.gotoDetail(data,(page)=>_fetchData(page));
       } else if (this.state.tabIndex === 0) {
-        this.gotoDetail(data);
+        this.gotoDetail(data,(page)=>_fetchData(page));
       }
   }
   gotoCommenced(data){
@@ -478,7 +478,7 @@ export default class WorkPage extends BaseComponent {
     } else if (data.status === '5') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text onPress={()=>this.onPressItem(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.onPressItem(data,(page)=>this._fetchData(page))} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>完工</Text>
                     <Text onPress={()=>this.pauseOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>暂停</Text>
@@ -554,7 +554,7 @@ export default class WorkPage extends BaseComponent {
 
 
     return (
-      <TouchableOpacity onPress={()=>{this.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
+      <TouchableOpacity onPress={()=>{this.onPressItem(data,(page)=>this._fetchData(page))}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
               <View style={{flexDirection:'row',paddingLeft:15}} >
                 {voiceView}
