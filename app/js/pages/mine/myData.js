@@ -50,7 +50,7 @@ export default class MyData extends BaseComponent {
         var that = this;
         this.loadDetail();
         this.eventListener = DeviceEventEmitter.addListener('Event_Take_Photo', (param) => {
-            console.log('componentDidMount Event_Take_Photo : ' + param + ", imagePos : " );
+            // console.log('componentDidMount Event_Take_Photo : ' + param + ", imagePos : " );
             that.setState({imagePath0:param,});
             
 
@@ -64,10 +64,11 @@ export default class MyData extends BaseComponent {
         var that = this;
         AsyncStorage.getItem('uinfo',function (error, result) {
             if(error){
-                console.log(error)
+                // console.log(error)
                 return
             }else{
                 var userInfo =  JSON.parse(result);
+                console.log(userInfo)
                 that.setState({userData:userInfo});
                 console.log(userInfo)
             }
@@ -76,7 +77,7 @@ export default class MyData extends BaseComponent {
     uploadFile(path) {
         // Loading.show();
         var that = this;
-        console.log(path)
+        // console.log(path)
         Request.uploadFile(path, (result)=> {
             console.log('path')
             console.log(path)
@@ -90,6 +91,7 @@ export default class MyData extends BaseComponent {
       });
     }
     updatePortrait(Msg){
+        console.log('MSG:'+Msg)
         Request.requestPut(baseUser,{
             headImgId:Msg,
             userId : this.state.userData.userId
@@ -102,7 +104,7 @@ export default class MyData extends BaseComponent {
         })
     }
     _edit(type){
-        console.log(type)
+        // console.log(type)
         var that = this;
         if(type == 'username'){
             that.setState({nameShow:!that.state.nameShow})
@@ -138,7 +140,7 @@ export default class MyData extends BaseComponent {
                 })
             }
         }else if(type == 'tel'){
-            console.log(type)
+            // console.log(type)
             if(Msg == oldMsg){
                 toastShort('请修改手机号');
                 this._edit(type)
@@ -232,9 +234,12 @@ export default class MyData extends BaseComponent {
             mediaType: 'photo',
         }).then(images => {
             //将选择的图片加入到列表
-
-            console.log('pickimage : ' +  images);
-            this.updatePortrait(images)
+            console.log('pickimage : ')
+            console.log(images);
+            this.toggleModal()
+            //uploadFile
+            this.uploadFile(images[0].path)
+            // this.updatePortrait(images)
         }).catch();
     } 
     // 是否电话号码
@@ -432,8 +437,10 @@ export default class MyData extends BaseComponent {
             </View>
     )
 }
-toggleModal = () =>
-        this.setState({ visibleModal: !this.state.visibleModal });
+toggleModal(){
+    this.setState({ visibleModal: !this.state.visibleModal });
+}
+        
 
        
 fetchUserInfo() {

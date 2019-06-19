@@ -140,21 +140,24 @@ loadDetail() {
         imagesCompleted:imagesCompleted,
         imagesSignature:imagesSignature,
     };
-    console.log('params')
-    console.log(params)
+    
     Loading.show();
     Request.requestPost(RepairCompleted, params, (result)=> {
         Loading.hidden();
         if (result && result.code === 200) {
             DeviceEventEmitter.emit('Event_Refresh_Detail', 'Event_Refresh_Detail');
 
-            console.log('global')
-            console.log(global)
-           
-            // that.props.navigation.popToTop(result.code)
-            that.props.navigation.navigate('MainPage',{
+            // console.log('global')
+            // console.log(global)
+        //    console.log('goTop')
+            //that.props.navigation.popToTop(result.code)
+            that.props.navigation.navigate('WorkManager',{
                 code : result.code
             })
+            
+            // that.props.navigation.navigate('WorkPage',{
+            //     code : result.code
+            // })
         } else {
             Toast.show('操作失败，请重新尝试');
         }

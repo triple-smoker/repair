@@ -362,7 +362,11 @@ export default class WorkPage extends BaseComponent {
                           repairId:data.repairId,
                           title:'维修开始拍照',
                           step:1,
-                          theme:this.theme,})
+                          theme:this.theme,
+                          callback:(()=>{
+                            this._fetchData(0)
+                          })
+                        })
         });
   }
 

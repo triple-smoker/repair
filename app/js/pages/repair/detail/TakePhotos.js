@@ -176,9 +176,11 @@ export default class TakePhotos extends BaseComponent {
             Request.requestPost(RepairCommenced, params, (result)=> {
                 console.log(result)
                 if (result && result.code === 200) {
-                    this.props.navigation.navigate('MainPage',{
-                        code : result.code
-                    })
+                    this.props.navigation.state.params.callback();
+                    this.props.navigation.goBack();
+                    // this.props.navigation.navigate('MainPage',{
+                    //     code : result.code
+                    // })
                 } else {
                 
                 }
