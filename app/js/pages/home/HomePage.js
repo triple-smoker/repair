@@ -310,12 +310,12 @@ export default class HomePage extends Component {
         });
     }
     _sqlite(){
-        // const {navigation} = this.props;
-        // InteractionManager.runAfterInteractions(() => {
-        //     navigation.navigate('SQLiteDemo',{
-        //         theme:this.theme,
-        //     })
-        // });
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('SQLiteDemo',{
+                theme:this.theme,
+            })
+        });
     }
 
     render() {
@@ -398,7 +398,7 @@ export default class HomePage extends Component {
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this.takePicture()}>
                 <Image source={require('../../../res/login/ico_ts.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>token</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>一卡通</Text>
                 </TouchableOpacity>
             </View>
 
@@ -414,20 +414,20 @@ export default class HomePage extends Component {
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this. _startDetection()} >
                 <Image source={require('../../../res/login/ico_bj.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>读标签</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>清洁</Text>
                 </TouchableOpacity>
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this. _stopDetection()} >
                 <Image source={require('../../../res/login/ico_yf.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>关闭</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>医疗</Text>
                 </TouchableOpacity>
             </View>
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this._sqlite()} >
                 <Image source={require('../../../res/login/ico_ys.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>sqlite</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>运输</Text>
                 </TouchableOpacity>
             </View>
 
