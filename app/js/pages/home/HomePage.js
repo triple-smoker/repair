@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Swiper from 'react-native-swiper';
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
-import Request, {GetRepairType} from '../../http/Request';
+import Request, {GetRepairType,ScanMsg} from '../../http/Request';
 import Permissions from 'react-native-permissions';
 import OrderType from "../../../pages/publicTool/OrderType";
 import RNFetchBlob from '../../../util/RNFetchBlob';
@@ -253,17 +253,25 @@ export default class HomePage extends Component {
 
         // Alert.alert(tag.id);
         const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('WorkManager',{
-                theme:this.theme,
-                scanId : tag.id,
-                callback: (
-                    () => {
-                        this.setHome();
-                    })
-            })
-        });
 
+        Request.requestGet(ScanMsg + tag.id,null,(result) => {
+            if(result && result.code === 200){
+
+                InteractionManager.runAfterInteractions(() => {
+                    navigation.navigate('WorkManager',{
+                        theme:this.theme,
+                        scanId : tag.id,
+                        equipmentId : result.data.equipmentId,
+                        equipmentName: result.data.equipmentName,
+                        isScan : true,
+                        callback: (
+                            () => {
+                                this.setHome();
+                            })
+                    })
+                });
+            }
+        }) 
     }
     setHome(){
         DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
@@ -298,16 +306,26 @@ export default class HomePage extends Component {
         var rfid = '040A8A3A325E81';
         var qrCode = 'bf27a82f-85b2-4000-8dac-bec8257c6d3a'
         const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('WorkManager',{
-                theme:this.theme,
-                scanId : qrCode,
-                callback: (
-                    () => {
-                        this.setHome();
+
+        Request.requestGet(ScanMsg+qrCode,null,(result) => {
+            if(result && result.code === 200){
+
+                InteractionManager.runAfterInteractions(() => {
+                    navigation.navigate('WorkManager',{
+                        theme:this.theme,
+                        scanId : qrCode,
+                        equipmentId : result.data.equipmentId,
+                        equipmentName: result.data.equipmentName,
+                        isScan : true,
+                        callback: (
+                            () => {
+                                this.setHome();
+                            })
                     })
-            })
-        });
+                });
+            }
+        })
+        
     }
     _sqlite(){
         const {navigation} = this.props;

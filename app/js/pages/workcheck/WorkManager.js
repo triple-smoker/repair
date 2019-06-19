@@ -30,13 +30,15 @@ export default class CheckDetail extends BaseComponent {
     constructor(props){
         super(props);
         const { navigation } = this.props;
+        const isScan = navigation.getParam('isScan', '');
         const scanId = navigation.getParam('scanId', '');
-        this.state={
+        const equipmentId = navigation.getParam('equipmentId', '');
+        const equipmentName = navigation.getParam('equipmentName', '');
+        this.state = {
+            isScan : isScan,
             scanId : scanId,
-            detail:null,
-            isScan : false,
-            equipmentId : '',
-            equipmentName : '',
+            equipmentId : equipmentId,
+            equipmentName : equipmentName,
         }
     }
     componentDidMount() {
@@ -44,24 +46,8 @@ export default class CheckDetail extends BaseComponent {
         // if (Platform.OS === 'android' && this.props.setHome != null) {
         //     BackHandler.addEventListener("back", this.onBackClicked);
         // }
-        this.loadDetail()
     }
     
-    loadDetail(){
-        var id = this.state.scanId;
-        if(id){
-            Request.requestGet(ScanMsg+id,null,(result) => {
-                console.log('++++++++')
-                console.log(result)
-                if(result && result.code === 200){
-                    console.log('------')
-                    console.log(result)
-                    this.setState({detail:result.data})
-                }
-            })
-        }
-        
-    }
     goBack(){
         const { navigate } = this.props.navigation;
         this.props.navigation.goBack();
@@ -72,31 +58,26 @@ export default class CheckDetail extends BaseComponent {
         navigate('Scan',{
             targetRouteName : 'WorkManager',
             callback:((data)=>{
-                
                 this.setState({
                     isScan : data.isScan,
                     equipmentId : data.equipmentId,
-                    equipmentName : data.equipmentName
+                    equipmentName : data.equipmentName,
+                    scanId : null
                 })
-                
             })
         });
     }
 
     render() {
-        var detail = this.state.detail;
+        var scanId = this.state.scanId;
         var pageName = '我的工单';
         var detailShow = false;
-        var equipmentId = null;
-        if(detail){
-            pageName =  detail.equipmentName;
+        if(scanId){
             detailShow = true;
-            equipmentId = detail.equipmentId;
-            
+            pageName = this.state.equipmentName;
         }else if(this.state.isScan == true){
-            pageName =  this.state.equipmentName;
+            pageName = this.state.equipmentName;
         }
-        
 
         return (
             <Container>
@@ -133,7 +114,7 @@ export default class CheckDetail extends BaseComponent {
                     </Tab>
                     {
                         detailShow ? <Tab heading={'详情'} tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
-                                    <ScanResult equipmentId={equipmentId} navigation = {this.props.navigation}/> 
+                                    <ScanResult equipmentId={this.state.equipmentId} navigation = {this.props.navigation}/> 
                                     </Tab>: null
                     }
                 </Tabs>
