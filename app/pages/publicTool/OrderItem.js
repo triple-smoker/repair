@@ -492,6 +492,10 @@ class CancelMd extends Component {
             causeIds.push(cause.causeId);
             }
         })
+        if(causeIds.length=0){
+            toastShort('请选择取消原因');
+            return;
+        }
         console.log("取消ID：");
         console.log(record.repairId);
        var data ={

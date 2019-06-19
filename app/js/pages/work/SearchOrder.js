@@ -250,7 +250,7 @@ export default class SearchOrder extends BaseComponent {
     this.setState({wordList:[], });
   }
 
-  onPressItem(data){
+  onPressItem(data,_fetchData){
     if (data.status === '8') {
         this.gotoHistory(data);
     } else if (data.status === '9') {
@@ -262,7 +262,7 @@ export default class SearchOrder extends BaseComponent {
     }  else if (data.status === '20') {
         this.gotoHistory(data);
     } else {
-      this.gotoDetail(data);
+      this.gotoDetail(data,(page)=>_fetchData(page));
     }
   }
 
@@ -289,7 +289,7 @@ export default class SearchOrder extends BaseComponent {
     this.setState({modalVisible:true,repairId:data.repairId});
  }
 
-  gotoDetail(data) {
+  gotoDetail(data,_fetchData) {
     const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
                 // navigator.push({
@@ -304,6 +304,13 @@ export default class SearchOrder extends BaseComponent {
                         repairId:data.repairId,
                         theme:this.theme,
                         isScan: this.state.isScan,
+                        callback: (
+                            () => {
+                                setTimeout(function(){
+                                    _fetchData(0);
+                                },100)
+                            }
+                        ),
                 })
         });
   }
@@ -460,7 +467,7 @@ export default class SearchOrder extends BaseComponent {
       }
 
     return (
-      <TouchableOpacity onPress={()=>{that.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
+      <TouchableOpacity onPress={()=>{that.onPressItem(data,(page)=>this._fetchData(page))}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
               <View style={{flexDirection:'row',}} >
                 <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:3,}}>报修内容：{data.matterName}</Text>

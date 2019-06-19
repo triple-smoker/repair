@@ -331,7 +331,7 @@ export default class WorkPage extends BaseComponent {
     );
   }
 
-  onPressItem(data){
+  onPressItem(data,_fetchData){
     //ok
       if (this.state.tabIndex === 2) {
         const {navigation} = this.props;
@@ -350,9 +350,9 @@ export default class WorkPage extends BaseComponent {
         });
 
       } else if (this.state.tabIndex === 1) {
-        this.gotoDetail(data);
+        this.gotoDetail(data,(page)=>_fetchData(page));
       } else if (this.state.tabIndex === 0) {
-        this.gotoDetail(data);
+        this.gotoDetail(data,(page)=>_fetchData(page));
       }
   }
   gotoCommenced(data){
@@ -370,7 +370,7 @@ export default class WorkPage extends BaseComponent {
         });
   }
 
-  gotoDetail(data) {
+  gotoDetail(data,_fetchData) {
     const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
                 navigation.navigate('OrderDetail',{
@@ -378,6 +378,13 @@ export default class WorkPage extends BaseComponent {
                           status:data.status,
                           theme:this.theme,
                           isScan: this.props.isScan,
+                            callback: (
+                                () => {
+                                    setTimeout(function(){
+                                        _fetchData(0);
+                                    },100)
+                                }
+                            ),
                         })
         });
   }
@@ -475,7 +482,7 @@ export default class WorkPage extends BaseComponent {
     } else if (data.status === '5') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text onPress={()=>this.onPressItem(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.onPressItem(data,(page)=>this._fetchData(page))} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>完工</Text>
                     <Text onPress={()=>this.pauseOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>暂停</Text>
@@ -551,7 +558,7 @@ export default class WorkPage extends BaseComponent {
 
 
     return (
-      <TouchableOpacity onPress={()=>{this.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
+      <TouchableOpacity onPress={()=>{this.onPressItem(data,(page)=>this._fetchData(page))}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
               <View style={{flexDirection:'row',paddingLeft:15}} >
                 {voiceView}
@@ -901,10 +908,12 @@ onPlayVoice(filePath) {
                 <Text style={{fontSize:16,color:'#333',marginLeft:0,marginTop:10,textAlign:'center',width:Dimens.screen_width-80, height:40}}>暂停</Text>
                 <View style={{backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-80),}} />
                 <View style={{width:Dimens.screen_width-80, height:300}} >
-                <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:10,}}>请选择暂停原因</Text>
-                {
-                    this.state.showPause ? <Text style={{color:'red',fontSize:12, height:20, textAlignVertical:'center',paddingLeft:10,}}>暂停原因不能为空</Text> : <Text style={{height:20}}></Text>
-                }
+                <View  style={{height:35,marginTop:5}}>
+                    <Text style={{color:'#999',fontSize:14, height:17, textAlignVertical:'center',marginLeft:10,}}>请选择暂停原因</Text>
+                    {
+                        this.state.showPause ? <Text style={{color:'red',fontSize:12, height:17, textAlignVertical:'center',paddingLeft:10,}}>暂停原因不能为空</Text> : null
+                    }
+                </View>
                 <View style={styles.listViewStyle}>
                   {repDatas}
 

@@ -5,12 +5,14 @@ import {
     Button
 } from 'react-native';
 import SQLite from './SQLite';
+import CheckSqLite from './CheckSqLite';
 import Axios from '../util/Axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
 
 var sqLite = new SQLite();
+var checkSqLite = new CheckSqLite();
 var db;
 const tabs = [
     "inspect_job",
@@ -177,11 +179,31 @@ export default class SQLiteDemo extends Component{
             console.log(error);
         });
     }
+    selectFirstCheck(){
+        var a = checkSqLite.selectFirstCheck;
+        console.log("++"+a);
+        //查询
+        db.transaction((tx)=>{
+            // var a = CheckSqLite.selectFirstCheck;
+            console.log("++++++++++");
+            tx.executeSql("select * from t_base_equipment", [],(tx,results)=>{
+                var len = results.rows.length;
+                for(let i=0; i<len; i++){
+                    var user = results.rows.item(i);
+                    // console.log("<<<<<<<<<<<<<<<"+tableName);
+                    console.log(user);
+                }
+            });
+        },(error)=>{
+            console.log(error);
+        });
+    }
 
 
     render(){
         return (
             <View>
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="selectFirstCheck" onPress={()=>this.selectFirstCheck()}/>
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="删表" onPress={()=>this.dropTable()}/>
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查inspect_job" onPress={()=>this.getTable("inspect_job")}/>
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查equipment_ref_item" onPress={()=>this.getTable("equipment_ref_item")}/>
@@ -199,7 +221,7 @@ export default class SQLiteDemo extends Component{
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_building" onPress={()=>this.getTable("t_base_building")}/>
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_place" onPress={()=>this.getTable("t_base_place")}/>
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_room" onPress={()=>this.getTable("t_base_room")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_floor" onPress={()=>this.getTable("t_base_floor")}/>
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_room" onPress={()=>this.getTable("t_base_room")}/>
 
                 <Text>
                     {this.state.ID}
