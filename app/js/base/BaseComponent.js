@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 // import {ACTION_HOME} from '../pages/entry/MainPage'
-// import NotifService from '../../components/NotifService';
+import NotifService from '../../components/NotifService';
 
 
 export default class BaseComponent extends Component {
@@ -27,8 +27,9 @@ export default class BaseComponent extends Component {
         DeviceEventEmitter.addListener('onMessage', this.onMessage.bind(this));
         DeviceEventEmitter.addListener('onInit', this.onInit.bind(this));
         DeviceEventEmitter.addListener('onNotification', this.onNotification);
-        // this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
-        // console.log(this.notif)
+        this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
+        console.log('new notif')
+        console.log(this.notif)
     }
 
     //卸载前移除通知
