@@ -41,7 +41,7 @@ export default class HomePage extends Component {
             customThemeVisible:false,
             theme:this.props.theme,
             modalVisible:false,
-            typeVisible:false,
+            // typeVisible:false,
         }
     }
     //删除
@@ -111,9 +111,9 @@ export default class HomePage extends Component {
     //     });
     // }
 
-    onAction(action, params) {
-        console.log('onAction : ' + action);
-    }
+    // onAction(action, params) {
+    //     console.log('onAction : ' + action);
+    // }
     componentDidMount() {
         this.eventListener = DeviceEventEmitter.addListener('Event_Home', (param) => {
             console.log('componentDidMount Home : ' + param);
@@ -216,33 +216,33 @@ export default class HomePage extends Component {
 
     //报修导航
     newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn){
-        this.setState({typeVisible: !this.state.typeVisible});
+        // this.setState({typeVisible: !this.state.typeVisible});
         const { navigate } = this.props.navigation;
         navigate('Repair',{
-            repairTypeId:repairTypeId,
-            repairMatterId:repairMatterId,
-            repairParentCn:repairParentCn,
-            repairChildCn:repairChildCn,
+            // repairTypeId:repairTypeId,
+            // repairMatterId:repairMatterId,
+            // repairParentCn:repairParentCn,
+            // repairChildCn:repairChildCn,
             callback: (
                 () => {
 
                 })
         })
     }
-    _setTypeVisible() {
-        this.setState({typeVisible: !this.state.typeVisible});
-    }
+    // _setTypeVisible() {
+    //     this.setState({typeVisible: !this.state.typeVisible});
+    // }
 
-    _parseText = (tag) => {
-        try {
-            if (Ndef.isType(tag.ndefMessage[0], Ndef.TNF_WELL_KNOWN, Ndef.RTD_TEXT)) {
-                return Ndef.text.decodePayload(tag.ndefMessage[0].payload);
-            }
-        } catch (e) {
-            console.log(e);
-        }
-        return null;
-    }
+    // _parseText = (tag) => {
+    //     try {
+    //         if (Ndef.isType(tag.ndefMessage[0], Ndef.TNF_WELL_KNOWN, Ndef.RTD_TEXT)) {
+    //             return Ndef.text.decodePayload(tag.ndefMessage[0].payload);
+    //         }
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    //     return null;
+    // }
 
     _onTagDiscovered = tag => {
         console.log('Tag Discovered', tag);
@@ -389,11 +389,11 @@ export default class HomePage extends Component {
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                <TouchableOpacity onPress={()=>this._setTypeVisible()}>
+                <TouchableOpacity onPress={()=>this.newRepair()}>
                 <Image source={require('../../../res/login/ico_pj.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
                 <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>快修</Text>
                 </TouchableOpacity>
-                <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
+                {/*<OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>*/}
             </View>
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this.takePicture()}>

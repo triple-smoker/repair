@@ -5,9 +5,10 @@ import Reporter from '../components/Reporter';
 import Notice from '../components/Notice';
 import SoundRecoding from '../components/SoundRecoding';
 import MyFooter from '../components/MyFooter';
-import {TextInput, Image, View, DeviceEventEmitter,TouchableOpacity} from "react-native";
+import {TextInput, Image, View, DeviceEventEmitter, TouchableOpacity, TouchableHighlight} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import Recorde from "../components/Recorde";
+import OrderType from "./publicTool/OrderType";
 
 export default class RepairScreen extends React.Component {
 
@@ -15,30 +16,40 @@ export default class RepairScreen extends React.Component {
      * 页面顶部导航栏配置
      * @type
      */
-    static navigationOptions = ({ navigation, navigationOptions }) =>{
-        return {
-            headerTitle: '新增报修',
-            //headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../image/navbar_ico_back.png')} />),
-            headerStyle: {
-                elevation: 0,
-            },
-            headerRight: (<View/>),
-            headerTitleStyle: {
-                flex:1,
-                textAlign: 'center'
-            },
-            headerLeft:(<TouchableOpacity 
-                onPress= {()=>{
-                    if(navigation.state.params.isScan && navigation.state.params.isScan == true){
-                        navigation.navigate("MainPage");
-                    }else{
-                        navigation.goBack();
-                    }
-                }}>
-                <Image resizeMode={'contain'} style={{width: 38, height: 60,marginLeft:5}} source={require('../image/navbar_ico_back.png')} />
-            </TouchableOpacity>)
-        }
+    static navigationOptions = {
+        header : null
     };
+    // static navigationOptions = ({ navigation, navigationOptions }) =>{
+    //     return {
+    //         headerTitle: '新增报修',
+    //         //headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../image/navbar_ico_back.png')} />),
+    //         headerStyle: {
+    //             elevation: 0,
+    //         },
+    //         headerRight: (<TouchableOpacity
+    //             onPress= {()=>{
+    //                 alert("123");
+    //             }}>
+    //             <Text style={{fontSize:12,color:"#666",width:50}}>类型</Text>
+    //             <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
+    //         </TouchableOpacity>),
+    //         headerTitleStyle: {
+    //             flex:1,
+    //             textAlign: 'center'
+    //         },
+    //         headerLeft:(<TouchableOpacity
+    //             onPress= {()=>{
+    //                 if(navigation.state.params.isScan && navigation.state.params.isScan == true){
+    //                     navigation.navigate("MainPage");
+    //                 }else{
+    //                     navigation.goBack();
+    //                 }
+    //             }}>
+    //             <Image resizeMode={'contain'} style={{width: 38, height: 60,marginLeft:5}} source={require('../image/navbar_ico_back.png')} />
+    //         </TouchableOpacity>)
+    //
+    //     }
+    // };
 
     constructor(props){
 
@@ -47,18 +58,18 @@ export default class RepairScreen extends React.Component {
         super(props);
         const { navigation } = this.props;
         
-        const repairTypeId = navigation.getParam('repairTypeId', '');
-        const repairMatterId = navigation.getParam('repairMatterId', '');
-        const repairParentCn = navigation.getParam('repairParentCn', '');
-        const repairChildCn = navigation.getParam('repairChildCn', '');
+        // const repairTypeId = navigation.getParam('repairTypeId', '');
+        // const repairMatterId = navigation.getParam('repairMatterId', '');
+        // const repairParentCn = navigation.getParam('repairParentCn', '');
+        // const repairChildCn = navigation.getParam('repairChildCn', '');
         const isScan = navigation.getParam('isScan', '');
         const equipmentId = navigation.getParam('equipmentId', '');
         const equipmentName = navigation.getParam('equipmentName', '');
         this.state = {
-            repairTypeId : repairTypeId,
-            repairMatterId : repairMatterId,
-            repairParentCn : repairParentCn,
-            repairChildCn : repairChildCn,
+            repairTypeId : "",
+            repairMatterId : "",
+            repairParentCn : "",
+            repairChildCn : "",
             isScan : isScan,
             equipmentId : equipmentId,
             equipmentName : equipmentName,
@@ -70,7 +81,8 @@ export default class RepairScreen extends React.Component {
             desc : '',
             record : {
                 filePath : '',
-            }
+            },
+            typeVisible:false,
         }
 
 
@@ -103,7 +115,31 @@ export default class RepairScreen extends React.Component {
             // that.uploadFile(param);
         });
     }
+    //报修类型
+    _setTypeVisible() {
+        this.setState({typeVisible: !this.state.typeVisible});
+    }
+    //报修导航
+    newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn){
+        this.setState({typeVisible: !this.state.typeVisible,
+            repairTypeId : repairTypeId,
+            repairMatterId : repairMatterId,
+            repairParentCn : repairParentCn,
+            repairChildCn : repairChildCn,
+        });
+        // const { navigate } = this.props.navigation;
+        // navigate('Repair',{
+        //     repairTypeId:repairTypeId,
+        //     repairMatterId:repairMatterId,
+        //     repairParentCn:repairParentCn,
+        //     repairChildCn:repairChildCn,
+        //     callback: (
+        //         () => {
+        //
+        //         })
+        // })
 
+    }
 
     /**
      * 判断字符是否为空的方法
@@ -220,10 +256,28 @@ export default class RepairScreen extends React.Component {
             images : images
         })
     }
+    goBack(){
+        const { navigate } = this.props.navigation;
+        this.props.navigation.goBack();
+    }
 
     render() {
         return (
             <Container style={{backgroundColor: "#EEEEEE"}}>
+                <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
+                    <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
+                        <Image style={{width:21,height:37}} source={require("../image/navbar_ico_back.png")}/>
+                    </TouchableHighlight>
+                    <TouchableOpacity onPress={()=>this.goSearch(()=>this._fetchData(0))} style={{flex:1,height:30, marginRight:0,}}>
+                        <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
+                            <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>新增报修</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>this._setTypeVisible()} style={{width:60,flexDirection:'row'}}>
+                        <Text style={{color:"#666",fontSize:12}}>类型</Text>
+                    </TouchableOpacity>
+                    <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
+                </View>
                 <Content >
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
                     <View style={{height:"1.5%"}}/>
