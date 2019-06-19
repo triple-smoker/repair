@@ -639,10 +639,12 @@ export default class OrderDetail extends BaseComponent {
                             <Text style={{fontSize:16,color:'#333',marginLeft:0,marginTop:10,textAlign:'center',width:Dimens.screen_width-80, height:40}}>暂停</Text>
                             <View style={{backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-80),}} />
                             <View style={{width:Dimens.screen_width-80, height:300}} >
-                                <Text style={{color:'#999',fontSize:14, height:30, textAlignVertical:'center',paddingLeft:10,}}>请选择暂停原因</Text>
-                                {
-                                    this.state.showPause ? <Text style={{color:'red',fontSize:12, height:20, textAlignVertical:'center',paddingLeft:10,}}>暂停原因不能为空</Text> : <Text style={{height:20}}></Text>
-                                }
+                                <View  style={{height:35,marginTop:5}}>
+                                    <Text style={{color:'#999',fontSize:14, height:17, textAlignVertical:'center',marginLeft:10,}}>请选择暂停原因</Text>
+                                    {
+                                        this.state.showPause ? <Text style={{color:'red',fontSize:12, height:17, textAlignVertical:'center',paddingLeft:10,}}>暂停原因不能为空</Text> : null
+                                    }
+                                </View>
                                 
                                 <View style={styles.listViewStyle}>
                                     {repDatas}
@@ -746,6 +748,7 @@ export default class OrderDetail extends BaseComponent {
         Request.requestPost(DoPause, params, (result)=> {
             if (result && result.code === 200) {
                 toastShort('暂停成功');
+                this.props.navigation.state.params.callback();
                 this.naviGoBack(this.props.navigation)
             } else {
                 toastShort('工单暂停失败，请重新尝试');

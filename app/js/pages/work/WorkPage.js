@@ -350,7 +350,7 @@ export default class WorkPage extends BaseComponent {
         });
 
       } else if (this.state.tabIndex === 1) {
-        this.gotoDetail(data);
+        this.gotoDetail(data,(page)=>this._fetchData(page));
       } else if (this.state.tabIndex === 0) {
         this.gotoDetail(data);
       }
@@ -366,7 +366,7 @@ export default class WorkPage extends BaseComponent {
         });
   }
 
-  gotoDetail(data) {
+  gotoDetail(data,_fetchData) {
     const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
                 navigation.navigate('OrderDetail',{
@@ -374,6 +374,13 @@ export default class WorkPage extends BaseComponent {
                           status:data.status,
                           theme:this.theme,
                           isScan: this.props.isScan,
+                            callback: (
+                                () => {
+                                    setTimeout(function(){
+                                        _fetchData(0);
+                                    },100)
+                                }
+                            ),
                         })
         });
   }

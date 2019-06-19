@@ -73,9 +73,11 @@ class AllOrder extends BaseComponent {
         };
     }
     componentDidMount() {
+        cachedResults.tabIndex=0;
         this._fetchData(0);
     }
     componentWillReceiveProps(){
+        cachedResults.tabIndex=0;
         this._fetchData(0);
     }
     _fetchData(page) {
