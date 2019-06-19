@@ -189,7 +189,7 @@ class AllOrder extends BaseComponent {
 
     goBack(){
         const { navigate } = this.props.navigation;
-        this.props.navigation.goBack();
+        navigate('MainPage');
     }
     // _setTypeVisible() {
     //     this.setState({typeVisible: !this.state.typeVisible});
