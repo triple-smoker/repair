@@ -99,12 +99,15 @@ export default class SQLiteDemo extends Component{
                                     }
                                 })
                                 var dates = response.data[1];
-                                console.log("++"+dates);
+                                console.log("++"+response.data[1]);
                                 for(var tableName in dates){
                                     //删除数据
                                     // sqLite.dropTable(tableName);
                                     if(dates[tableName]!=null&&dates[tableName].length>0){
+
+                                        // console.log("=="+dataJson);
                                         sqLite.insertData(dates[tableName],tableName);
+                                        // console.log(dates[tableName]);
                                     }
 
                                 }
