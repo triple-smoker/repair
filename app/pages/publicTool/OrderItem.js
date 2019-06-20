@@ -174,7 +174,7 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.detailAddress}</Text>
                             </Row>
                             {
-                                this.props.record.isEquipment == 1 && 
+                                this.props.record.isEquipment === 1 && 
                                 <Row>
                                     <Text style={stylesBody.orderContextTip}>设备名称:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.equipmentName}</Text>
                                 </Row>

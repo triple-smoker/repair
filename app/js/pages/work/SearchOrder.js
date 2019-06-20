@@ -305,7 +305,6 @@ export default class SearchOrder extends BaseComponent {
                 navigation.navigate('OrderDetail',{
                         repairId:data.repairId,
                         theme:this.theme,
-                        isScan: this.state.isScan,
                         callback: (
                             () => {
                                 setTimeout(function(){
@@ -501,7 +500,7 @@ export default class SearchOrder extends BaseComponent {
                         <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.detailAddress}</Text>
                     </View>
                     {
-                      this.state.isScan == true && 
+                      data.isEquipment === 1 && 
                       <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                           <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>设备名称：</Text>
                           <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.equipmentName}</Text>
