@@ -72,10 +72,8 @@ export default class CheckDetail extends BaseComponent {
         var scanId = this.state.scanId;
         var pageName = '我的工单';
         var detailShow = false;
-        if(scanId){
+        if(scanId || this.state.isScan == true){
             detailShow = true;
-            pageName = this.state.equipmentName;
-        }else if(this.state.isScan == true){
             pageName = this.state.equipmentName;
         }
 

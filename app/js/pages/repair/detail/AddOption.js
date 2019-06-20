@@ -26,7 +26,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
 import Slider from "react-native-slider";
-import {Loading} from '../../../component/Loading'
+import {Loading} from '../../../component/Loading';
+import RepairType from '../../../../pages/publicTool/RepairType'
 
 
 export default class AddOption extends BaseComponent {
@@ -59,6 +60,9 @@ export default class AddOption extends BaseComponent {
             type:1,
             userId:null,
             modalTypeVisible2:false,
+            repairParentCn : null,
+            repairChildCn : null,
+            repairMatterId : null,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
@@ -216,7 +220,7 @@ export default class AddOption extends BaseComponent {
 
   _onSure() {
     var that = this;
-    if (this.state.selectMatterPos === -1) {
+    if (this.state.repairMatterId == null) {
         toastShort('维修事项不能为空');
         return;
     }
@@ -226,7 +230,7 @@ export default class AddOption extends BaseComponent {
         return;
     }
 
-    var matterItem = this.state.repairMatterList[this.state.selectMatterPos];
+    // var matterItem = this.state.repairMatterList[this.state.selectMatterPos];
                      
     var deleteIds = [];
 
@@ -239,7 +243,7 @@ export default class AddOption extends BaseComponent {
         var item = this.state.selUserList[i];
         itemPersonList.push({
                 assistantId:''+item.userId, 
-                repairItemId:''+matterItem.repairMatterId,
+                repairItemId: ''+this.state.repairMatterId,
                 itemPercentage:''+Math.round(item.process), 
                 personType:item.type});
     }
@@ -405,14 +409,18 @@ export default class AddOption extends BaseComponent {
     }
 
     var repairTypeName = '请选择';
-    if (this.state.selectTypePos !== -1) {
-            repairTypeName = this.state.repairTypeList[this.state.selectTypePos].repairTypeCtn;
+    //if (this.state.selectTypePos !== -1) {
+    //    repairTypeName = this.state.repairTypeList[this.state.selectTypePos].repairTypeCtn;
+    //}
+
+    if(this.state.repairParentCn != null){
+        repairTypeName = this.state.repairParentCn;
     }
 
     var matterName = '';
-        if (this.state.selectMatterPos !== -1) {
-            matterName = '/' + this.state.repairMatterList[this.state.selectMatterPos].matterName;
-        }
+    if(this.state.repairChildCn != null){
+        matterName = '/' + this.state.repairChildCn;
+    }
 
     return (
       <View style={styles.container}>
@@ -514,7 +522,7 @@ export default class AddOption extends BaseComponent {
 
         </Modal>
 
-        <Modal
+        {/* <Modal
             animationType={"none"}
             transparent={true}
             visible={this.state.modalTypeVisible2}
@@ -549,7 +557,7 @@ export default class AddOption extends BaseComponent {
                 </View>
             </View>
 
-        </Modal>
+        </Modal> */}
 
       <Modal
             animationType={"none"}
@@ -578,7 +586,13 @@ export default class AddOption extends BaseComponent {
             </View>
         </View>
     </Modal>
+
+    <RepairType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} 
+                                isShowModal={()=>this.closePrairType()} 
+                                modalVisible = {this.state.modalTypeVisible2}/>
     </View>
+
+
     )
 }
   selectItem(){
@@ -683,8 +697,6 @@ export default class AddOption extends BaseComponent {
   }
   renderTypeItem(data) {
     var that = this;
-    console.log('-------------------------------------------------')
-    console.log(data)
     if (this.state.selectMatterState) {
         var repairMatterId = null;
         if (this.state.selectMatterPos !== -1) {
@@ -726,6 +738,12 @@ export default class AddOption extends BaseComponent {
         this.setState({modalTypeVisible:false, selectMatterPos:-1});
         this.setState({modalTypeVisible2:false, selectMatterPos:-1});
     }
+  }
+
+  closePrairType(){
+      this.setState({
+        modalTypeVisible2 : false
+      })
   }
 
   submitType() {
@@ -860,6 +878,18 @@ renderItem(data) {
     </View>
     );
 }
+     //报修导航
+    newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn){
+        // this.submitType();
+        this.setState({modalTypeVisible2:false});
+        if(repairTypeId != null && repairTypeId != ''){
+            this.setState({ 
+                repairParentCn: repairParentCn,
+                repairChildCn: repairChildCn,
+                repairMatterId: repairTypeId,
+            });
+        }
+    }
 
 }
 
