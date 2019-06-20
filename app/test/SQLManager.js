@@ -45,7 +45,7 @@ class SQLManager extends Component {
             + 'IS_GEN_REPORT tinyint(2) DEFAULT NULL ,'
             + 'GENERATE_DATE datetime DEFAULT CURRENT_TIMESTAMP ,'
             + 'FLAG tinyint(3) DEFAULT NULL ,'
-            + 'ORIGN_ACTION tinyint(3) DEFAULT NULL ,'
+            + 'ORIGIN_ACTION tinyint(3) DEFAULT NULL ,'
             + 'VERSION varchar(64) DEFAULT NULL )';
         return createDailyTaskSql;
     }
@@ -379,7 +379,13 @@ class SQLManager extends Component {
         for(var sx in job){
             if(job[sx]!=null&&job[sx]!=''){
                 key = key+"'"+sx+"'"+",";
-                val = val+"'"+job[sx]+"'"+",";
+                if(job[sx].toString().indexOf("'")>0){
+                    var valTemp = job[sx].toString().replace(/'/g,"");
+                    val = val+"'"+valTemp+"'"+",";
+                }else{
+                    val = val+"'"+job[sx]+"'"+",";
+                }
+
             }
         }
         var sql = "REPLACE INTO "+tablename;
