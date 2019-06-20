@@ -9,6 +9,7 @@ import {TextInput, Image, View, DeviceEventEmitter, TouchableOpacity, TouchableH
 import AsyncStorage from "@react-native-community/async-storage";
 import Recorde from "../components/Recorde";
 import OrderType from "./publicTool/OrderType";
+import RepairType from "./publicTool/RepairType"
 import Request, { GetUserAddress } from "../js/http/Request";
 
 export default class RepairScreen extends React.Component {
@@ -293,7 +294,14 @@ export default class RepairScreen extends React.Component {
                     <TouchableOpacity onPress={()=>this._setTypeVisible()} style={{width:60,flexDirection:'row'}}>
                         <Text style={{color:"#666",fontSize:12}}>类型</Text>
                     </TouchableOpacity>
-                    <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
+                    {/* <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} 
+                                isShowModal={()=>this._setTypeVisible()} 
+                                modalVisible = {this.state.typeVisible}/> */}
+
+
+                     <RepairType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} 
+                                isShowModal={()=>this._setTypeVisible()} 
+                                modalVisible = {this.state.typeVisible}/>
                 </View>
                 <Content >
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
