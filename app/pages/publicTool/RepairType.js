@@ -189,14 +189,24 @@ class TypeMd extends Component {
       submit(){
           console.log('确认');
           console.log(this.state.selectChildrenData)
-          var data = this.state.selectChildrenData
-          this.props.goToRepair(
-                data.repairTypeId,
-                data.repairMatterId,
+          var data = this.state.selectChildrenData;
+          var repairTypeId = ''
+           var  repairMatterId = ''
+            var  repairTypeCtn = ''
+          if(data){
+                repairTypeId =data.repairTypeId
+              repairMatterId =data.repairMatterId
+              repairTypeCtn = data.repairTypeCtn
+          }
+            this.props.goToRepair(
+                repairTypeId,
+                repairMatterId,
                 this.state.repairParentCn,
-                data.repairTypeCtn,
-                data
-            )  
+                repairTypeCtn
+                )  
+       
+          
+          
       }
         render(){
             var repairParentCn = this.state.repairParentCn;
