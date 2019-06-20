@@ -172,27 +172,30 @@ export default class SQLite extends Component {
         jobData = JSON.parse(jobData);
         console.log("++++++++"+jobData);
         let len = jobData.length;
-        if (!db) {
-            this.open();
-        }
-        // this.dropTable();
-        this.createTable(tableName);
-        // this.dropTable();
-        db.transaction((tx)=>{
-            for(let i=0; i<len; i++){
-                var job = jobData[i];
-                var sql = sqlManager.insertData(job,tableName);
-                tx.executeSql(sql,()=>{
-                    },(err)=>{
-                        console.log(err);
-                    }
-                );
+        if(len>0){
+            if (!db) {
+                this.open();
             }
-        },(error)=>{
-            this._errorCB('transaction', error);
-        },()=>{
-            this._successCB('transaction insert data');
-        });
+            // this.dropTable();
+            this.createTable(tableName);
+            // this.dropTable();
+            db.transaction((tx)=>{
+                for(let i=0; i<len; i++){
+                    var job = jobData[i];
+                    var sql = sqlManager.insertData(job,tableName);
+                    tx.executeSql(sql,()=>{
+                        },(err)=>{
+                            console.log(err);
+                        }
+                    );
+                }
+            },(error)=>{
+                this._errorCB('transaction', error);
+            },()=>{
+                this._successCB('transaction insert data');
+            });
+        }
+
     }
 
 
