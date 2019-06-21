@@ -376,11 +376,13 @@ class SQLManager extends Component {
     insertData(job,tablename){
         var key = "";
         var val = "";
+        if(tablename==="daily_task"){
+        }
         for(var sx in job){
             if(job[sx]!=null&&job[sx]!=''){
                 key = key+"'"+sx+"'"+",";
                 if(job[sx].toString().indexOf("'")>0){
-                    var valTemp = job[sx].toString().replace(/'/g,"");
+                    var valTemp = job[sx].toString().replace(/'/g,"''");
                     val = val+"'"+valTemp+"'"+",";
                 }else{
                     val = val+"'"+job[sx]+"'"+",";
