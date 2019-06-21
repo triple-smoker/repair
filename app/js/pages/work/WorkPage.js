@@ -983,6 +983,7 @@ onPlayVoice(filePath) {
       cachedResults.total = 0;
       cachedResults.pages = 0;
       cachedResults.nextPage = 1;
+      cachedResults.timeIndex = 0;
       this.setState({tabIndex:index, dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)});
       this._fetchData(0);
     }

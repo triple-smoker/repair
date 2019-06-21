@@ -169,8 +169,8 @@ export default class SQLite extends Component {
     //新增数据
     insertData(jobData,tableName){
         // jobData = JSON.stringify(jobData);
-        jobData = JSON.parse(jobData);
-        console.log("++++++++"+jobData);
+        // jobData = JSON.parse(jobData);
+        // console.log("++++++++"+jobData);
         let len = jobData.length;
         if(len>0){
             if (!db) {
