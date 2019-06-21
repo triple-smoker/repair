@@ -123,7 +123,7 @@ class TypeMd extends Component {
                 img = <Image source={require('../../res/login/ic_arrow.png')} 
                 style={{width:6,height:11,marginLeft:15,marginRight:15,}}/>
             }
-            console.log(this.state.selectTypeData)
+            
             return (
             <View key={data.repairTypeId}>
                 <TouchableOpacity onPress={()=>{this.onPressItemLeft(data)}} style={{height:45,flex:1,backgroundColor: '#f6f6f6',}}>
