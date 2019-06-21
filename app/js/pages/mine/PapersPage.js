@@ -83,7 +83,7 @@ export default class PapersPage extends BaseComponent {
                         paddingRight: 12,
                         paddingTop: 5,}}> 
                         <Image style={styles.paperImg} source={{uri:item.filePath}}/>
-                        <Text>({item.archivesNo})</Text>
+                        {/* <Text>({item.archivesNo})</Text> */}
                     </View>
                 </View>
         return( 
@@ -108,13 +108,18 @@ export default class PapersPage extends BaseComponent {
         var item = data.item;
         var expireTime = item.expireTime;
         console.log(item)
-        console.log(expanded)
         var headerStyle = expanded ? styles.header_bg :styles.header_bg1;
+        var optType = '';
+        if(item.optType == 1){
+            optType = '操作证'
+        }else if(item.optType== 2){
+            optType = '上岗证'
+        }
         return(
             <View key={data.content.key} style={{...headerStyle,...styles.headerRepeat}}>
                 <View style={styles.case}>
                     <Text style={{fontSize:16,color:'#404040'}}>
-                        证照名称
+                        {item.code}
                     </Text>
                     <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
                      {
@@ -128,13 +133,14 @@ export default class PapersPage extends BaseComponent {
                 </View>
                 <View style={styles.case}>
                     <Text style={{fontSize:15,color:'#404040'}}>
-                       【维修类】
+                       【{optType}】
                     </Text>
                     <Text style={{fontSize:15,color:'#404040'}}>
-                        有效期： {toDate(expireTime,'yyyy-MM-dd')}
+                        有效期:{toDate(expireTime,'yyyy-MM-dd')}
                     </Text>
                     <Text style={{fontSize:15,color:'#404040'}}>
-                    {item.expireDays > 0 ? '-使用中-' : '已过期'} 
+                    {/* Math.abs() */}
+                    {item.expireDays > 0 ? '剩'+item.expireDays+'天过期' : '过期'+Math.abs(item.expireDays)+'天'} 
                     </Text>
 
                 </View>
