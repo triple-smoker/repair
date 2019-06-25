@@ -21,8 +21,8 @@ import * as Dimens from '../../value/dimens';
 import TitleBar from '../../component/TitleBar';
 import RefreshListView from '../../component/RefreshListView'
 import Request, {GetRepairList} from "../../http/Request";
-import SQLite from '../../../test/SQLite';
-import CheckSqLite from "../../../test/CheckSqLite";
+import SQLite from '../../polling/SQLite';
+import CheckSqLite from "../../polling/CheckSqLite";
 import moment from "moment";
 
 
@@ -87,6 +87,8 @@ export default class TodayTask extends BaseComponent {
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('CheckList',{
                 theme:this.theme,
+                beginTime:data.EXEC_START_TIME,
+                endTime:data.EXEC_END_TIME,
                 callback: (
                     () => {
                         this._fetchData(0);

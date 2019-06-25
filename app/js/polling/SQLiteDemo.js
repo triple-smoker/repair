@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import SQLite from './SQLite';
 import {CheckSqLite,SelectFirstCheck} from './CheckSqLite';
-import Axios from '../util/Axios';
+import Axios from '../../util/Axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
