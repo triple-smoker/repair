@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 
 
-var sqLite = new SQLite();
+// var sqLite = new SQLite();
 // var checkSqLite = new CheckSqLite();
 var db;
 const tabs = [
@@ -66,7 +66,7 @@ export default class SQLiteDemo extends Component{
         var sqLiteTimeTemp = "0"
         //开启数据库
         if(!db){
-            db = sqLite.open();
+            db = SQLite.open();
         }
         //建表
         // sqLite.createTable();
@@ -108,7 +108,7 @@ export default class SQLiteDemo extends Component{
                                     if(dates[tableName]!=null&&dates[tableName].length>0){
 
                                         // console.log("=="+dataJson);
-                                        sqLite.insertData(dates[tableName],tableName);
+                                        SQLite.insertData(dates[tableName],tableName);
                                         // console.log(dates[tableName]);
                                     }
 
@@ -136,7 +136,7 @@ export default class SQLiteDemo extends Component{
 
     dropTable(){
         tabs.forEach((tabName)=>{
-            sqLite.dropTable(tabName);
+            SQLite.dropTable(tabName);
         })
         //存储
         AsyncStorage.setItem("sqLiteTimeTemp", "", function (error) {

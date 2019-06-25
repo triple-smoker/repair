@@ -376,10 +376,11 @@ class SQLManager extends Component {
     insertData(job,tablename){
         var key = "";
         var val = "";
-        if(tablename==="daily_task"){
-        }
+        // if(tablename==="daily_task"){
+        //     console.log(job);
+        // }
         for(var sx in job){
-            if(job[sx]!=null&&job[sx]!=''){
+            if(job[sx]!=null){
                 key = key+"'"+sx+"'"+",";
                 if(job[sx].toString().indexOf("'")>0){
                     var valTemp = job[sx].toString().replace(/'/g,"''");
@@ -394,7 +395,9 @@ class SQLManager extends Component {
         var key = '(' + key.substr(0,key.length-1) +')';
         var val = '(' + val.substr(0,val.length-1) +')';
         var insertInspectJobSql = sql + key + " values" + val;
-
+        // if(tablename==="daily_task"){
+        //     console.log(insertInspectJobSql);
+        // }
         return insertInspectJobSql;
     }
     //删除sql

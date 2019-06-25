@@ -1,64 +1,39 @@
 //SQLite.js
 import React, { Component } from 'react';
 
-export const SelectFirstCheck = "SELECT DISTINCT"
-    +" (dt.id),"
-    +" dt.exec_start_time,"
-    +" dt.exec_end_time,"
-    +" dt.JOB_EXEC_TEAM_ID"
-    +" FROM"
-    +" daily_task as dt"
-    +" WHERE   dt.exec_start_time >= '2019-05-21' AND dt.exec_end_time <= '2019-06-21'"
-    +" AND dt.JOB_EXEC_TEAM_ID LIKE '%1078553090117558273%' and"
-    +" dt.job_code IN ("
-    +" SELECT"
-    +" ijm.JOB_CODE"
-    +" FROM"
-    +" inspect_job_manager as ijm"
-    +" WHERE"
-    +" ijm.MAN_CODE IN ("
-    +" SELECT"
-    +" mri.MAN_CODE"
-    +" FROM"
-    +" man_ref_item as mri"
-    +" WHERE"
-    +" mri.TABLE_TYPE IN (0, 1, 2)"
-    +" )"
-    +" ) order by dt.exec_start_time asc";
-// export const SelectFirstCheck = "SELECT "+
-//     "distinct(daily_task.id),daily_task.JOB_CODE "+
-//     "FROM "+
-//     "daily_task ";
-// export const SelectFirstCheck = "select "
-//     +" * from "
-//     +" daily_task";
-    // +" WHERE   dt.exec_start_time >= '2019-05-21' AND dt.exec_end_time <= '2019-06-21'"
-    // +" AND dt.JOB_EXEC_TEAM_ID LIKE '%1078553090117558273%' and"
-    // +" dt.job_code IN ("
-    // +" SELECT"
-    // +" ijm.JOB_CODE"
-    // +" FROM"
-    // +" inspect_job_manager as ijm"
-    // +" WHERE"
-    // +" ijm.MAN_CODE IN ("
-    // +" SELECT"
-    // +" mri.MAN_CODE"
-    // +" FROM"
-    // +" man_ref_item as mri"
-    // +" WHERE"
-    // +" mri.TABLE_TYPE IN (0, 1, 2)"
-    // +" )"
-    // +" )";
+//巡检首页
+const newDate = new Date().format("YYYY-MM-dd 00:00:00");
+const newDateString = new Date(newDate).getTime();
+// export const SelectFirstCheck = "SELECT"
+// +" distinct(dt.id),dt.JOB_CODE,dt.exec_start_time,dt.exec_end_time,"
+// +" dt.JOB_EXEC_TEAM_ID,ij.JOB_NAME,mri.TABLE_TYPE"
+// +" FROM"
+// +" daily_task as dt LEFT outer JOIN inspect_job as ij ON dt.job_code=ij.job_code"
+// +" LEFT outer JOIN inspect_job_manager as ijm ON ij.job_code=ijm.job_code"
+// +" LEFT outer JOIN man_ref_item as mri ON ijm.MAN_CODE= mri.MAN_CODE"
+// +" WHERE"
+// +" dt.exec_end_time >= '"+newDateString+"'"
+// +" AND dt.JOB_EXEC_TEAM_ID LIKE '%"+deptId+"%' AND mri.TABLE_TYPE in(0,1,2)";
 
 
 
 export default class CheckSqLite extends Component {
 
 
-
-
-
-    render(){
-        return null;
+    selectFirstCheck(deptId){
+        return "SELECT"
+            +" distinct(dt.id),dt.JOB_CODE,dt.exec_start_time,dt.exec_end_time,dt.exec_code_type,"
+            +" dt.JOB_EXEC_TEAM_ID,ij.JOB_NAME,mri.TABLE_TYPE"
+            +" FROM"
+            +" daily_task as dt LEFT outer JOIN inspect_job as ij ON dt.job_code=ij.job_code"
+            +" LEFT outer JOIN inspect_job_manager as ijm ON ij.job_code=ijm.job_code"
+            +" LEFT outer JOIN man_ref_item as mri ON ijm.MAN_CODE= mri.MAN_CODE"
+            +" WHERE"
+            +" dt.exec_end_time >= '"+newDateString+"'"
+            +" AND dt.JOB_EXEC_TEAM_ID LIKE '%"+deptId+"%' AND mri.TABLE_TYPE in(0,1,2)";
     }
+
+
+
+
 }
