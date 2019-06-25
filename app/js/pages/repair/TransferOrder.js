@@ -118,8 +118,8 @@ export default class TransferOrder extends BaseComponent {
 
     var that = this;
 
-    if (this.state.typeCode === 0&&(this.state.selectDeptData===null||this.state.selectUserData===null)) {
-        toastShort('请选择维修人员');
+    if (this.state.typeCode === 0&&(this.state.selectDeptData===null)) {
+        toastShort('请选择班组');
         return;
     }
 
@@ -130,14 +130,17 @@ export default class TransferOrder extends BaseComponent {
 
       var causeIds = [];
       var items = this.state.repList;
-
+      var repairUserId = null;
+      if(this.state.selectUserData && this.state.selectUserData.userId){
+          repairUserId = this.state.selectUserData.userId 
+      }
       causeIds.push(items[this.state.selectIndex].causeId);
 
     var params = "";
     if(this.state.typeCode === 0){
         params = {
             repairDeptId:this.state.selectDeptData.deptId,
-            repairUserId:this.state.selectUserData.userId,
+            repairUserId:repairUserId,
             causeIds:causeIds,
             remark:username,
             repairId:that.state.repairId,
@@ -153,7 +156,9 @@ export default class TransferOrder extends BaseComponent {
             userId:global.uinfo.userId
         };
     }
+    console.log(params)
     Loading.show();
+    console.log(params)
     Request.requestPost(DoTransfer, params, (result)=> {
         Loading.hidden();
         if (result && result.code === 200) {
@@ -163,8 +168,6 @@ export default class TransferOrder extends BaseComponent {
         } else {
 
         }
-
-
     });
 
   }
@@ -248,7 +251,8 @@ export default class TransferOrder extends BaseComponent {
         var that = this;
         var items = this.state.deptList;
         console.log(JSON.stringify(data))
-        this.setState({dataSourceDept:this.state.dataSourceDept.cloneWithRows(items), selectDeptData:data,selectDeptName:data.deptName});
+        this.setState({dataSourceDept:this.state.dataSourceDept.cloneWithRows(items), 
+            selectDeptData:data,selectDeptName:data.deptName});
         // this.timer = setTimeout(() => {
             that.getUserListByDeptId(data);
         // }, 200);
@@ -270,7 +274,8 @@ export default class TransferOrder extends BaseComponent {
     }
     onPressItemRight(data){
         var items = this.state.userList;
-        this.setState({dataSourcePerson:this.state.dataSourcePerson.cloneWithRows(items), selectUserData:data,selectUserName:data.userName});
+        this.setState({dataSourcePerson:this.state.dataSourcePerson.cloneWithRows(items), 
+                        selectUserData:data,selectUserName:data.userName});
     }
 
     submit() {
@@ -324,11 +329,11 @@ export default class TransferOrder extends BaseComponent {
           }
           {this.state.typeCode === 0 &&
               <View>
-                  <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择维修人员</Text>
+                  <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择维修对象</Text>
                   <TouchableOpacity onPress={()=>{this.addMan()}} style={{height:40}}>
                       <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
-                          <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组人员</Text>
-                          <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectUserName}</Text>
+                          <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组对象</Text>
+                          <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectDeptName } {this.state.selectUserName}</Text>
                           <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
                               <Image source={require('../../../res/login/ic_arrow.png')}
                                      style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
