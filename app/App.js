@@ -26,7 +26,7 @@ import CheckList from './js/pages/workcheck/CheckList';
 import CheckDetail from './js/pages/workcheck/CheckDetail';
 import WorkManager from './js/pages/workcheck/WorkManager';
 import store from './util/RouterStore.js'
-import SQLiteDemo from "./test/SQLiteDemo";
+import SQLiteDemo from "./js/polling/SQLiteDemo";
 import Scan from './js/pages/scan/Scan';
 
 import WelcomePage from './js/pages/entry/WelcomePage'

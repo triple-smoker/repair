@@ -21,6 +21,9 @@ import * as Dimens from '../../value/dimens';
 import TitleBar from '../../component/TitleBar';
 import RefreshListView from '../../component/RefreshListView'
 import Request, {GetRepairList} from "../../http/Request";
+import SQLite from '../../polling/SQLite';
+import CheckSqLite from "../../polling/CheckSqLite";
+import moment from "moment";
 
 
 let cachedResults = {
@@ -31,6 +34,8 @@ let cachedResults = {
     tabIndex:0,
 };
 let ScreenWidth = Dimensions.get('window').width;
+var db;
+var checkSqLite = new CheckSqLite();
 export default class TodayTask extends BaseComponent {
   constructor(props){
     super(props);
@@ -53,7 +58,11 @@ export default class TodayTask extends BaseComponent {
         }
       }),
 
-    }
+    };
+      // 每1000毫秒对showText状态做一次取反操作
+      setInterval(() => {
+          this._fetchData(0);
+      }, 60000);
   }
 
 
@@ -78,6 +87,8 @@ export default class TodayTask extends BaseComponent {
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('CheckList',{
                 theme:this.theme,
+                beginTime:data.EXEC_START_TIME,
+                endTime:data.EXEC_END_TIME,
                 callback: (
                     () => {
                         this._fetchData(0);
@@ -104,27 +115,60 @@ export default class TodayTask extends BaseComponent {
     }
     //请求数据
     _fetchData(page) {
-        var params = new Map();
-        params.set('page', cachedResults.nextPage);
-        params.set('limit', '20');
+        if(!db){
+            db = SQLite.open();
+        }
+        // var params = new Map();
+        // params.set('page', cachedResults.nextPage);
+        // params.set('limit', '20');
         cachedResults.items = [];
        if(cachedResults.tabIndex === 0){
-           cachedResults.items.push({});
-           cachedResults.items.push({});
-           cachedResults.items.push({});
+           // var sql = "";
+           var sql = checkSqLite.selectFirstCheck(global.deptId);
+           db.transaction((tx)=>{
+               tx.executeSql(sql, [],(tx,results)=>{
+                   var len = results.rows.length;
+                   // console.log(len)
+                   for(let i=0; i<len; i++){
+                       var checkIm = results.rows.item(i);
+                       console.log(checkIm);
+                       cachedResults.items.push(checkIm);
+                   }
+                   this.setState({
+                       isLoadingTail: false,
+                       isRefreshing: false,
+                       dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
+                   });
+               });
+           },(error)=>{
+               console.log(error);
+           });
        }else if(cachedResults.tabIndex === 1){
-           cachedResults.items.push({});
-           cachedResults.items.push({});
-           cachedResults.items.push({});
-           cachedResults.items.push({});
-           cachedResults.items.push({});
-           cachedResults.items.push({});
+           db.transaction((tx)=>{
+               tx.executeSql(SelectFirstCheck, [],(tx,results)=>{
+                   var len = results.rows.length;
+                   // console.log(len)
+                   for(let i=0; i<len; i++){
+                       var checkIm = results.rows.item(i);
+                       // console.log(checkIm);
+                       cachedResults.items.push(checkIm);
+                   }
+                   this.setState({
+                       isLoadingTail: false,
+                       isRefreshing: false,
+                       dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
+                   });
+               });
+           },(error)=>{
+               console.log(error);
+           });
        }
-        this.setState({
-            isLoadingTail: false,
-            isRefreshing: false,
-            dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
-        });
+       // console.log("------------------")
+        // this.setState({
+        //     isLoadingTail: false,
+        //     isRefreshing: false,
+        //     dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
+        // });
     }
 
   render() {
@@ -180,9 +224,49 @@ export default class TodayTask extends BaseComponent {
       )
     }
   }
+const newDate = new Date().format("YYYY-MM-dd 00:00:00");
+const newDateString = new Date(newDate).getTime();
 class CheckItem extends Component {
 
     render(){
+        var processTypeText = "";
+        var processType = "0";
+
+        var currentDate = new Date().getTime();
+        if(currentDate < this.props.data.EXEC_START_TIME){
+            processTypeText = "距离开始还剩";
+            processType = "0";
+            var dateTemp = this.props.data.EXEC_START_TIME - currentDate;
+            var timeLengthHours = Math.floor(dateTemp/(1000*60*60))+"小时";
+            var timeLengthMinutes = Math.floor((dateTemp%(1000*60*60))/(60*1000))+"分钟";
+            processTypeText = processTypeText + timeLengthHours + timeLengthMinutes;
+        }else if(this.props.data.EXEC_START_TIME <= currentDate && currentDate <= this.props.data.EXEC_END_TIME){
+            processTypeText = "距离结束还剩";
+            processType = "1";
+            var dateTemp = currentDate - this.props.data.EXEC_END_TIME;
+            var timeLengthHours = Math.floor(dateTemp/(1000*60*60))+"小时";
+            var timeLengthMinutes = Math.floor((dateTemp%(1000*60*60))/(60*1000))+"分钟";
+            processTypeText = processTypeText + timeLengthHours + timeLengthMinutes;
+        }else if(currentDate > this.props.data.EXEC_END_TIME){
+            processTypeText = "已超时";
+            processType = "2";
+            var dateTemp = currentDate - this.props.data.EXEC_END_TIME;
+            var timeLengthHours = Math.floor(dateTemp/(1000*60*60));
+            var timeLengthMinutes = Math.floor((dateTemp%(1000*60*60))/(60*1000));
+            processTypeText = processTypeText + timeLengthHours + "小时" + timeLengthMinutes + "分钟";
+        }
+        // var oldTime = moment(this.props.data.EXEC_END_TIME);
+        // var nowDate = moment();
+        // var timeDiffHour = moment(currentDate.diff(nowDate)).hour();
+        // var timeDiffMinutes = moment(oldTime.diff(nowDate)).minute();
+        // var timeDiffSeconds = moment(oldTime.diff(nowDate)).seconds();
+        // var oldDate = new Date(this.props.data.EXEC_END_TIME).getTime();
+        // var nowDate = new Date().getTime();
+        // var timeDiffHour = ((nowDate-oldDate)/1000/60);
+        // var timeDiffMinutes = 0;
+        // console.log("++++++++");
+        // console.log(nowDate);
+        // console.log(oldTime);
         return (
             <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data)}} >
                 <View style={{flex:1, backgroundColor:'white',flexDirection:'row',height:80,
@@ -196,19 +280,44 @@ class CheckItem extends Component {
                     left:0
                     }}
                 />}
-                <View style={{flex:2,}}>
-                    <Text style={{fontSize:16, color:'#404040', marginLeft:10, }}>日常电梯巡检</Text>
-                    <Text style={{fontSize:14, color:'#737373', marginLeft:10, marginTop:10,}}>8:00-10:00</Text>
+                <View style={{flex:3,}}>
+                    <Text style={{fontSize:16, color:'#404040', marginLeft:10, }}>{this.props.data.JOB_NAME}</Text>
+                    <Text style={{fontSize:14, color:'#737373', marginLeft:10, marginTop:10,}}>{moment(this.props.data.EXEC_START_TIME).format("MM\/DD HH:mm")+"—"+moment(this.props.data.EXEC_END_TIME).format("MM\/DD HH:mm")}</Text>
                 </View>
                 <View style={{flex:1,height:80,  textAlignVertical:'center',justifyContent:"center"}}>
-                        <Text style={{fontSize:16,borderWidth:1,borderColor:"#aaa",width:40,height:22,textAlign:"center",
-                            borderBottomRightRadius: 4,borderBottomLeftRadius: 4,borderTopLeftRadius: 4,borderTopRightRadius: 4}}
-                        >设备</Text>
+                        {this.props.data.TABLE_TYPE === "0" &&
+                            <Text style={{fontSize:16,borderWidth:1,borderColor:"#aaa",width:40,height:22,textAlign:"center",
+                                borderBottomRightRadius: 4,borderBottomLeftRadius: 4,borderTopLeftRadius: 4,borderTopRightRadius: 4}}
+                            >设备
+                            </Text>
+                        }
+                        {this.props.data.TABLE_TYPE === "1" &&
+                            <Text style={{fontSize:16,borderWidth:1,borderColor:"#aaa",width:40,height:22,textAlign:"center",
+                                borderBottomRightRadius: 4,borderBottomLeftRadius: 4,borderTopLeftRadius: 4,borderTopRightRadius: 4}}
+                            >制度
+                            </Text>
+                        }
+                        {this.props.data.TABLE_TYPE === "2" &&
+                            <Text style={{fontSize:16,borderWidth:1,borderColor:"#aaa",width:40,height:22,textAlign:"center",
+                                borderBottomRightRadius: 4,borderBottomLeftRadius: 4,borderTopLeftRadius: 4,borderTopRightRadius: 4}}
+                            >场所
+                            </Text>
+                        }
+
+
                 </View>
                 {cachedResults.tabIndex === 0 &&
                     <View style={{flex:2, flexDirection:'column',justifyContent:'flex-end',alignItems:'flex-end',  textAlignVertical:'center',paddingRight:10}}>
-                        <Text style={{fontSize:16, color:'#62c0c5', marginLeft:0, marginRight:8,textAlign:'center',}}>进行中</Text>
-                        <Text style={{fontSize:13, color:'#999', marginLeft:0, marginRight:8,textAlign:'center',}}>距离结束还剩18分12秒</Text>
+                        {processType==="0" &&
+                            <Text style={{fontSize:16, color:'#FE8900', marginLeft:0, marginRight:5,textAlign:'center',}}>未开始</Text>
+                        }
+                        {processType==="1" &&
+                            <Text style={{fontSize:16, color:'#61C0C5', marginLeft:0, marginRight:5,textAlign:'center',}}>进行中</Text>
+                        }
+                        {processType==="2" &&
+                            <Text style={{fontSize:16, color:'#FE0000', marginLeft:0, marginRight:5,textAlign:'center',}}>已超时</Text>
+                        }
+                        <Text style={{fontSize:13, color:'#999', marginLeft:0, marginRight:5,textAlign:'center',}}>{processTypeText}</Text>
                     </View>
                 }
                 {cachedResults.tabIndex === 1 &&

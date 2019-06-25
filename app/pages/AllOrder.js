@@ -232,9 +232,13 @@ class AllOrder extends BaseComponent {
                         if(cdInfo==""){
                             this.gotoCuiDan(cdTimeList,repairId);
                         }else{
-                            var oldTime = moment(cdInfo.currentTime);
-                            var nowDate = moment();
-                            var timeDiff = moment(nowDate.diff(oldTime)).minute();
+                            // var oldTime = moment(cdInfo.currentTime);
+                            // var nowDate = moment();
+                            // var timeDiff = moment(nowDate.diff(oldTime)).minute();
+
+                            var dateNow = new Date().getTime();
+                            var dateOld= new Date(cdInfo.currentTime).getTime();
+                            var timeDiff = (dateNow-dateOld)/1000/60;
                             if(timeDiff>30){
                                 var cdTimeListNew = [];
                                 cdTimeList.forEach(function(item){
@@ -245,7 +249,7 @@ class AllOrder extends BaseComponent {
                                 })
                                 this.gotoCuiDan(cdTimeListNew,repairId);
                             }else{
-                                Alert.alert("过"+(30-timeDiff)+"分钟后再次催单");
+                                Alert.alert("过"+Math.ceil(30-timeDiff)+"分钟后再次催单");
                             }
                         }
                     }
