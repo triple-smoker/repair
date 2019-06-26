@@ -137,12 +137,12 @@ export default class CheckList extends BaseComponent {
                             var checkIm = results.rows.item(i);
                             console.log(checkIm);
                             var equipmentIdList = checkIm.OBJ_ID.split(",");
-
                             var lenE = equipmentIdList.length;
                             for (let j=1;j<lenE;j++){
                                 var tempSql = checkSqLite.selectSecondCheckEquipment(equipmentIdList[j]);
                                 tx.executeSql(tempSql, [],(tx,results)=>{
                                     var lenTemp = results.rows.length;
+                                    console.log(lenTemp);
                                     for(let z=0; z<lenTemp; z++){
                                         var checkIm = results.rows.item(z);
                                         console.log(checkIm);
@@ -152,20 +152,6 @@ export default class CheckList extends BaseComponent {
                                         if(i===len-1 && j===lenE-1 && z===lenTemp-1){
                                             var listTemp = [];
 
-                                            // for(let a=0 ; a<itemSpecial.length ; a++){
-                                            //     var flag = 0
-                                            //     for(let b=0; b<itemTemp.length ; b++){
-                                            //         if(itemTemp[b].equipment_id === itmN.equipment_id){
-                                            //             itm.showSpecial = 1;
-                                            //             flag = 1;
-                                            //         }
-                                            //     }
-                                            //     if(flag===0){
-                                            //         listTemp.push(itemSpecial[a]);
-                                            //     }
-                                            // }
-                                            //
-                                            //
                                             itemSpecial.forEach((itmN)=>{
                                                 var flag = 0
                                                 itemTemp.forEach((itm)=>{
