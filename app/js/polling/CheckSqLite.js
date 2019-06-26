@@ -59,14 +59,15 @@ export default class CheckSqLite extends Component {
             " b.equipment_id," +
             " b.equipment_name," +
             " b.equipment_type_id FROM " +
-            " t_base_equipment b where  b.equipment_id="+equipmentId;
+            " t_base_equipment as b , inspect_job_manager as a where b.equipment_type_id = a.OBJ_ID " +
+            " and b.equipment_id="+equipmentId+" and a.status_cd=1 and a.OBJ_TYPE=0";
     }
     //巡检三级页面
-    selectThirdCheck(jobCode){
-        return "SELECT b.ITEM_NAME,b.ITEM_FORMAT,b.ITEM_RESULT_SET " +
-            "from inspect_item_conf b WHERE b.ITEM_CODE in " +
-            "(SELECT a.ITEM_CODE from equipment_ref_item a " +
-            "where a.EQUIPMENT_OBJ_CODE='"+jobCode+"');";
+    selectThirdCheck(manCode){
+        return "select b.ITEM_NAME,b.ITEM_FORMAT,b.ITEM_RESULT_SET " +
+            "from inspect_item_conf b, man_ref_item mri where mri.STATUS_CD=1 and " +
+            "b.STATUS_CD=1 and mri.ITEM_CODE=b.ITEM_CODE " +
+            "and mri.MAN_CODE="+manCode+"";
     }
 
 
