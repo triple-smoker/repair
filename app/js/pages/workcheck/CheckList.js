@@ -142,7 +142,7 @@ export default class CheckList extends BaseComponent {
                                 var tempSql = checkSqLite.selectSecondCheckEquipment(equipmentIdList[j]);
                                 tx.executeSql(tempSql, [],(tx,results)=>{
                                     var lenTemp = results.rows.length;
-                                    console.log(lenTemp);
+                                    // console.log(lenTemp);
                                     for(let z=0; z<lenTemp; z++){
                                         var checkIm = results.rows.item(z);
                                         console.log(checkIm);

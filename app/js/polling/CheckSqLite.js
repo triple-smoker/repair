@@ -55,12 +55,10 @@ export default class CheckSqLite extends Component {
     }
     //巡检二级页面 设备详情
     selectSecondCheckEquipment(equipmentId){
-        return "select b.install_location," +
-            " b.equipment_id," +
-            " b.equipment_name," +
-            " b.equipment_type_id FROM " +
-            " t_base_equipment as b , inspect_job_manager as a where b.equipment_type_id = a.OBJ_ID " +
-            " and b.equipment_id="+equipmentId+" and a.status_cd=1 and a.OBJ_TYPE=0";
+        return "select a.MAN_CODE,b.install_location, b.equipment_id, b.equipment_name, " +
+            "b.equipment_type_id FROM t_base_equipment as b , " +
+            "inspect_job_manager as a where b.equipment_id="+equipmentId+" " +
+            "and a.OBJ_ID like '%"+equipmentId+"%'  and a.status_cd=1 and a.OBJ_TYPE=1";
     }
     //巡检三级页面
     selectThirdCheck(manCode){
