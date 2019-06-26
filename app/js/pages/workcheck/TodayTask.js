@@ -70,10 +70,10 @@ export default class TodayTask extends BaseComponent {
       cachedResults.tabIndex = 0;
       this._fetchData(0);
   }
-    componentWillReceiveProps(){
-        cachedResults.tabIndex = 0;
-        this._fetchData(0);
-    }
+    // componentWillReceiveProps(){
+    //     cachedResults.tabIndex = 0;
+    //     this._fetchData(0);
+    // }
 
 
 
@@ -246,7 +246,7 @@ class CheckItem extends Component {
         }else if(this.props.data.EXEC_START_TIME <= currentDate && currentDate <= this.props.data.EXEC_END_TIME){
             processTypeText = "距离结束还剩";
             processType = "1";
-            var dateTemp = currentDate - this.props.data.EXEC_END_TIME;
+            var dateTemp = this.props.data.EXEC_END_TIME - currentDate ;
             var timeLengthHours = Math.floor(dateTemp/(1000*60*60))+"小时";
             var timeLengthMinutes = Math.floor((dateTemp%(1000*60*60))/(60*1000))+"分钟";
             processTypeText = processTypeText + timeLengthHours + timeLengthMinutes;
