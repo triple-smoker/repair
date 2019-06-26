@@ -81,6 +81,7 @@ var data3= {
           <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
               <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>NO.00002</Text>
           </View>
+          <View style={{width:20}}/>
       </View>
 
       <View style={styles.line} />

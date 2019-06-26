@@ -287,7 +287,7 @@ class SQLManager extends Component {
             + 'dept_id bigint(20) DEFAULT NULL,'
             + 'vendor_id bigint(20) DEFAULT NULL,'
             + 'vendor_name varchar(30) DEFAULT NULL, '
-            + 'equipment_type_id bigint(20) NOT NULL, '
+            + 'equipment_type_id varchar(255) NOT NULL, '
             + 'equipment_type varchar(20) DEFAULT NULL, '
             + 'building_id bigint(20) DEFAULT NULL, '
             + 'floor_id varchar(20) DEFAULT NULL, '

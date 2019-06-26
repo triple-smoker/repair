@@ -67,9 +67,11 @@ export default class TodayTask extends BaseComponent {
 
 
   componentDidMount() {
+      cachedResults.tabIndex = 0;
       this._fetchData(0);
   }
     componentWillReceiveProps(){
+        cachedResults.tabIndex = 0;
         this._fetchData(0);
     }
 
@@ -82,13 +84,13 @@ export default class TodayTask extends BaseComponent {
   }
 
   onPressItem(data){
-
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('CheckList',{
                 theme:this.theme,
                 beginTime:data.EXEC_START_TIME,
                 endTime:data.EXEC_END_TIME,
+                jobCode:data.JOB_CODE,
                 callback: (
                     () => {
                         this._fetchData(0);
@@ -131,7 +133,7 @@ export default class TodayTask extends BaseComponent {
                    // console.log(len)
                    for(let i=0; i<len; i++){
                        var checkIm = results.rows.item(i);
-                       console.log(checkIm);
+                       // console.log(checkIm);
                        cachedResults.items.push(checkIm);
                    }
                    this.setState({
@@ -144,8 +146,9 @@ export default class TodayTask extends BaseComponent {
                console.log(error);
            });
        }else if(cachedResults.tabIndex === 1){
+           var sql = checkSqLite.selectFirstCheck(global.deptId);
            db.transaction((tx)=>{
-               tx.executeSql(SelectFirstCheck, [],(tx,results)=>{
+               tx.executeSql(sql, [],(tx,results)=>{
                    var len = results.rows.length;
                    // console.log(len)
                    for(let i=0; i<len; i++){
@@ -309,7 +312,7 @@ class CheckItem extends Component {
                 {cachedResults.tabIndex === 0 &&
                     <View style={{flex:2, flexDirection:'column',justifyContent:'flex-end',alignItems:'flex-end',  textAlignVertical:'center',paddingRight:10}}>
                         {processType==="0" &&
-                            <Text style={{fontSize:16, color:'#FE8900', marginLeft:0, marginRight:5,textAlign:'center',}}>未开始</Text>
+                            <Text style={{fontSize:16, color:'#FE8900', marginLeft:0, marginRight:5,textAlign:'center',}}>待开始</Text>
                         }
                         {processType==="1" &&
                             <Text style={{fontSize:16, color:'#61C0C5', marginLeft:0, marginRight:5,textAlign:'center',}}>进行中</Text>

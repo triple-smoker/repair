@@ -19,8 +19,10 @@ import {
 
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
-import TitleBar from '../../component/TitleBar';
 import RefreshListView from '../../component/RefreshListView'
+import SQLite from "../../polling/SQLite";
+import CheckSqLite from "../../polling/CheckSqLite";
+import moment from "moment";
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -30,16 +32,22 @@ let cachedResults = {
   tabIndex:0,
 };
 let ScreenWidth = Dimensions.get('window').width;
-
+var db;
+var checkSqLite = new CheckSqLite();
 export default class CheckList extends BaseComponent {
     static navigationOptions = {
         header: null,
     };
   constructor(props){
     super(props);
+    const { navigation } = this.props;
+
     this.state={
         tabIndex:0,
         theme:this.props.theme,
+        beginTime:navigation.getParam('beginTime', ''),
+        endTime:navigation.getParam('endTime', ''),
+        jobCode:navigation.getParam('jobCode', ''),
         isLoadingTail: false, // loading?
         isRefreshing: false, // refresh?
         dataSource: new ListView.DataSource({
@@ -60,9 +68,11 @@ export default class CheckList extends BaseComponent {
 
 
     componentDidMount() {
+        cachedResults.tabIndex = 0;
         this._fetchData(0);
     }
     componentWillReceiveProps(){
+        cachedResults.tabIndex = 0;
         this._fetchData(0);
     }
 
@@ -76,13 +86,6 @@ export default class CheckList extends BaseComponent {
 
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-                // navigator.push({
-                //     component:CheckDetail,
-                //     name: 'CheckDetail',
-                //     params:{
-                //         theme:this.theme
-                //     }
-                // });
             navigation.navigate('CheckDetail',{
                 theme:this.theme,
                 callback: (
@@ -95,34 +98,163 @@ export default class CheckList extends BaseComponent {
   }
 
   renderItem(data, i) {
-    return <CheckItem data={data} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
+    return <CheckItem data={data} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
 
   }
     //请求数据
     _fetchData(page) {
-        var params = new Map();
-        params.set('page', cachedResults.nextPage);
-        params.set('limit', '20');
+        if(!db){
+            db = SQLite.open();
+        }
         cachedResults.items = [];
         if(cachedResults.tabIndex === 0){
-            cachedResults.items.push({});
-            cachedResults.items.push({});
-            cachedResults.items.push({});
+            var itemTemp = [];
+            var itemSpecial = [];
+            //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
+            var sql = checkSqLite.selectSecondCheckZero(this.state.jobCode);
+            db.transaction((tx)=>{
+                tx.executeSql(sql, [],(tx,results)=>{
+                    var len = results.rows.length;
+                    // console.log(len)
+                    for(let i=0; i<len; i++){
+                        var checkIm = results.rows.item(i);
+                        console.log(checkIm);
+                        itemTemp.push(checkIm);
+                        // cachedResults.items.push(checkIm);
+                    }
+                    // this.setState({
+                    //     isLoadingTail: false,
+                    //     isRefreshing: false,
+                    //     dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
+                    // });
+                });
+                sql = checkSqLite.selectSecondCheckOne(this.state.jobCode);
+                tx.executeSql(sql, [],(tx,results)=>{
+                    var len = results.rows.length;
+                    // console.log(len)
+                    if(len>0){
+                        for(let i=0; i<len; i++){
+                            var checkIm = results.rows.item(i);
+                            console.log(checkIm);
+                            var equipmentIdList = checkIm.OBJ_ID.split(",");
+
+                            var lenE = equipmentIdList.length;
+                            for (let j=1;j<lenE;j++){
+                                var tempSql = checkSqLite.selectSecondCheckEquipment(equipmentIdList[j]);
+                                tx.executeSql(tempSql, [],(tx,results)=>{
+                                    var lenTemp = results.rows.length;
+                                    for(let z=0; z<lenTemp; z++){
+                                        var checkIm = results.rows.item(z);
+                                        console.log(checkIm);
+                                        checkIm.showSpecial = 1;
+                                        itemSpecial.push(checkIm);
+                                        // cachedResults.items.push(checkIm);
+                                        if(i===len-1 && j===lenE-1 && z===lenTemp-1){
+                                            var listTemp = [];
+
+                                            // for(let a=0 ; a<itemSpecial.length ; a++){
+                                            //     var flag = 0
+                                            //     for(let b=0; b<itemTemp.length ; b++){
+                                            //         if(itemTemp[b].equipment_id === itmN.equipment_id){
+                                            //             itm.showSpecial = 1;
+                                            //             flag = 1;
+                                            //         }
+                                            //     }
+                                            //     if(flag===0){
+                                            //         listTemp.push(itemSpecial[a]);
+                                            //     }
+                                            // }
+                                            //
+                                            //
+                                            itemSpecial.forEach((itmN)=>{
+                                                var flag = 0
+                                                itemTemp.forEach((itm)=>{
+                                                    if(itm.equipment_id === itmN.equipment_id){
+                                                        itm.showSpecial = 1;
+                                                        flag = 1;
+                                                    }
+                                                })
+                                                if(flag===0){
+                                                    listTemp.push(itmN);
+                                                }
+                                            })
+
+                                            listTemp.forEach((im)=>{
+                                                itemTemp.push(im);
+                                            })
+                                            itemTemp.forEach((itm)=>{
+                                                cachedResults.items.push(itm);
+                                            })
+                                            this.setState({
+                                                isLoadingTail: false,
+                                                isRefreshing: false,
+                                                dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
+                                            });
+
+                                        }
+                                    }
+
+                                })
+                            }
+                        }
+                    }else{
+                        itemTemp.forEach((itm)=>{
+                            cachedResults.items.push(itm);
+                        })
+                        this.setState({
+                            isLoadingTail: false,
+                            isRefreshing: false,
+                            dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
+                        });
+
+                    }
+                });
+            },(error)=>{
+                console.log(error);
+            });
+            //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
         }else if(cachedResults.tabIndex === 1){
-            cachedResults.items.push({});
-            cachedResults.items.push({});
+            var sql = checkSqLite.selectSecondCheck(this.state.jobCode);
+            db.transaction((tx)=>{
+                tx.executeSql(sql, [],(tx,results)=>{
+                    var len = results.rows.length;
+                    // console.log(len)
+                    for(let i=0; i<len; i++){
+                        var checkIm = results.rows.item(i);
+                        // console.log(checkIm);
+                        cachedResults.items.push(checkIm);
+                    }
+                    this.setState({
+                        isLoadingTail: false,
+                        isRefreshing: false,
+                        dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
+                    });
+                });
+            },(error)=>{
+                console.log(error);
+            });
         }else if(cachedResults.tabIndex === 2){
-            cachedResults.items.push({});
-            cachedResults.items.push({});
-            cachedResults.items.push({});
-            cachedResults.items.push({});
-            cachedResults.items.push({});
+            var sql = checkSqLite.selectSecondCheck(this.state.jobCode);
+            db.transaction((tx)=>{
+                tx.executeSql(sql, [],(tx,results)=>{
+                    var len = results.rows.length;
+                    // console.log(len)
+                    for(let i=0; i<len; i++){
+                        var checkIm = results.rows.item(i);
+                        // console.log(checkIm);
+                        cachedResults.items.push(checkIm);
+                    }
+                    this.setState({
+                        isLoadingTail: false,
+                        isRefreshing: false,
+                        dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
+                    });
+                });
+            },(error)=>{
+                console.log(error);
+            });
         }
-        this.setState({
-            isLoadingTail: false,
-            isRefreshing: false,
-            dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
-        });
     }
 
   // onPressTabItem(data, i) {
@@ -239,6 +371,16 @@ export default class CheckList extends BaseComponent {
 class CheckItem extends Component {
 
     render(){
+        var processType = "0";
+        var currentDate = new Date().getTime();
+
+        if(currentDate < this.props.beginTime){
+            processType = "0";
+        }else if(this.props.beginTime <= currentDate && currentDate <= this.props.endTime){
+            processType = "1";
+        }else if(currentDate > this.props.endTime){
+            processType = "2";
+        }
         return (
             <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data)}} style={{flex:1, backgroundColor:'#f6f6f6',width:Dimens.screen_width,}}>
                 <View style={{flex:1, flexDirection:'row',height:80, width:Dimens.screen_width,
@@ -252,14 +394,16 @@ class CheckItem extends Component {
                     }}
                     />
                     <View style={{flex:2,}}>
-                        <View style={{flexDirection:'row',}}>
-                            <Text style={{fontSize:16, color:'#FF0000', marginLeft:15,marginTop:0, textDecorationLine:'underline'}}>NO.00001</Text>
-                            {/*<Text style={{flexWrap:'nowrap', marginLeft:10, height:16,*/}
-                                {/*color:'#949494',fontSize:9, marginTop:2,textAlignVertical:'center', textAlign:'center',borderWidth:1, borderColor:'#949494',*/}
-                                {/*borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>特例</Text>*/}
+                        <View style={{flexDirection:'row',alignItems:"center"}}>
+                            <Text style={{fontSize:16, color:'#FF0000', marginLeft:15,marginTop:0, textDecorationLine:'underline'}}>{this.props.data.equipment_name}</Text>
+                            {this.props.data.showSpecial && this.props.data.showSpecial===1 &&
+                            <Text style={{marginLeft:4,fontSize:12,textAlign:"center",color:"#666",borderRadius:4,borderWidth:1,borderColor:"#bbb",width:28,height:16}}>
+                                特例
+                            </Text>
+                            }
                         </View>
-                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3, }}>上海市</Text>
-                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3,}}>08:00-12:00</Text>
+                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3, }}>{this.props.data.install_location}</Text>
+                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3,}}>{moment(this.props.beginTime).format("MM\/DD HH:mm")+"—"+moment(this.props.endTime).format("MM\/DD HH:mm")}</Text>
 
                     </View>
                     <View style={{flex:1,height:80,  textAlignVertical:'center',justifyContent:"center"}}>
@@ -268,11 +412,23 @@ class CheckItem extends Component {
                         </Text>
                     </View>
                     <View style={{flex:1, justifyContent:'flex-end',paddingRight:10}}>
-                        <View style={{flex:1, justifyContent:'flex-end', flexDirection:'row',alignItems:"center"}}>
-                            <Text style={{fontSize:16, color:'#737373', marginLeft:0, marginRight:12,}}>已完成</Text>
-                        </View>
+                        {processType === "0" &&
+                            <View style={{flex:1, justifyContent:'flex-end', flexDirection:'row',alignItems:"center"}}>
+                                <Text style={{fontSize:16, color:'#FE8900', marginLeft:0, marginRight:12,}}>待开始</Text>
+                            </View>
+                        }
+                        {processType === "1" &&
+                            <View style={{flex:1, justifyContent:'flex-end', flexDirection:'row',alignItems:"center"}}>
+                                <Text style={{fontSize:16, color:'#61C0C5', marginLeft:0, marginRight:12,}}>进行中</Text>
+                            </View>
+                        }
+                        {processType === "2" &&
+                            <View style={{flex:1, justifyContent:'flex-end', flexDirection:'row',alignItems:"center"}}>
+                                <Text style={{fontSize:16, color:'#FE0000', marginLeft:0, marginRight:12,}}>已超时</Text>
+                            </View>
+                        }
 
-                        {/*<Text style={{fontSize:10, marginLeft:15, marginTop:3, flex:1}}></Text>*/}
+
                     </View>
                 </View>
                 {/*<View style={{backgroundColor: '#f2f2f2', height:5, width:Dimens.screen_width, marginTop:5, }}/>*/}
