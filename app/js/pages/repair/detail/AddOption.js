@@ -370,7 +370,7 @@ export default class AddOption extends BaseComponent {
                     <View style={{flexDirection:'row',height:25,textAlignVertical:'center',flex:1}}>
                         <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
                         <View style={{flexDirection:'row',justifyContent:'space-between', textAlignVertical:'center'}}>
-                            <Slider style={{marginLeft:10,marginTop:8,height:10,minWidth: 150,width:80,flex:1}}
+                            <Slider style={{marginLeft:10,marginTop:8,height:10,minWidth: 150}}
                             minimumValue={0}
                             maximumValue={100}
                             minimumTrackTintColor={'#3F9AED'}
@@ -379,8 +379,9 @@ export default class AddOption extends BaseComponent {
                             value={data.process}
                             onSlidingComplete={this._complete}
                             onValueChange={(value)=>{that._onChange(data, i, value)}}/>
-                            <Text style={{color:'#3F9AED',fontSize:12, marginLeft:5,marginRight:15,}}>{Math.round(data.process)}%</Text>
+                            
                         </View>
+                        <Text style={{color:'#3F9AED',fontSize:12, marginLeft:5,marginRight:15,}}>{Math.round(data.process)}%</Text>
                         
                     </View>
                 </View>
