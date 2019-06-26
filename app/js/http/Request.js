@@ -129,7 +129,7 @@ static requestGet(action, params, callback) {
     fetch(url, fetchOptions)
      .then((response) => response.json())
      .then((responseText) => {
-     	console.log('responseText: ' + JSON.stringify(responseText));
+     	// console.log('responseText: ' + JSON.stringify(responseText));
      	callback(responseText);
             if(responseText&&responseText.code===401){
                 Request.getUserToken();

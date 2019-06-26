@@ -14,7 +14,8 @@ import {
     Modal,
     TextInput,
     Linking,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 
 import TitleBar from '../../component/TitleBar';
@@ -44,25 +45,25 @@ export default class ScanResult extends BaseComponent {
         }
     }
     componentWillUnmount(){
-        // this.loadDetail();
+        //  this.loadDetail();
     }
     componentDidMount() {
         this.loadDetail();
     }
-
+    componentWillReceiveProps(){
+        setTimeout(
+            () => { 
+                this.loadDetail()
+            }, 1000)
+    }
     loadDetail() {
         var that = this;
         // 040A8A3A325E81
         // 1083394199443472386
         //var scanCode = "040A8A3A325E81"
         // var scanId = "1083394199443472386"
-        
-        
-        console.log('---设备详情---')
-        console.log(this.props)
         Request.requestGet(ScanDetails + this.props.equipmentId, null, (result)=> {
             if (result && result.code === 200) {
-                console.log('+++++++')
                 console.log(result.data)
                 that.setState({
                     detaiData:result.data,
@@ -139,8 +140,8 @@ export default class ScanResult extends BaseComponent {
               time2 = detaiData.startUseDate;
               time3 = detaiData.startGuarantDate;
               time4 = detaiData.endGuarantDate;
-              if(detaiData.fileList[0].fileDomain && detaiData.fileList[0].filePath){
-                brandImg = detaiData.fileList[0].fileDomain + detaiData.fileList[0].filePath
+              if(detaiData.fileList[0].filePath){
+                brandImg = detaiData.fileList[0].filePath
               }
               ratedCapacity = detaiData.ratedCapacity
         }

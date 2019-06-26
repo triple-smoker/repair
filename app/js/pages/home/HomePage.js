@@ -123,6 +123,7 @@ export default class HomePage extends Component {
         Permissions.request('storage', { type: 'always' }).then(response => {
 
         })
+        this._startDetection()
     }
 
 
@@ -252,26 +253,30 @@ export default class HomePage extends Component {
         // this.setState({parsedText: text});
 
         // Alert.alert(tag.id);
+        // console.log(tag.id)
         const {navigation} = this.props;
 
-        Request.requestGet(ScanMsg + tag.id,null,(result) => {
-            if(result && result.code === 200){
-
-                InteractionManager.runAfterInteractions(() => {
-                    navigation.navigate('WorkManager',{
-                        theme:this.theme,
-                        scanId : tag.id,
-                        equipmentId : result.data.equipmentId,
-                        equipmentName: result.data.equipmentName,
-                        isScan : true,
-                        callback: (
-                            () => {
-                                this.setHome();
-                            })
-                    })
-                });
-            }
-        }) 
+                navigation.navigate('WorkManager',{
+                    theme:this.theme,
+                    scanId : tag.id,
+                    // equipmentId : result.data.equipmentId,
+                    // equipmentName: result.data.equipmentName,
+                    isScan : true,
+                    callback: (
+                        () => {
+                            this.setHome();
+                        })
+                })    
+           
+        // Request.requestGet(ScanMsg + tag.id,null,(result) => {
+        //     if(result && result.code === 200){
+                
+        //         InteractionManager.runAfterInteractions(() => {
+                    
+                    
+        //         });
+        //     }
+        // }) 
     }
     setHome(){
         DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
@@ -303,7 +308,7 @@ export default class HomePage extends Component {
         //1113722002746687489
         //rfid_cod : 040A8A3A325E81
         //qr_code : bf27a82f-85b2-4000-8dac-bec8257c6d3a
-        var rfid = '040A8A3A325E81';
+        var rfid = '04C28A3A325E80';
         var qrCode = 'bf27a82f-85b2-4000-8dac-bec8257c6d3a'
         const {navigation} = this.props;
 
@@ -313,9 +318,7 @@ export default class HomePage extends Component {
                 InteractionManager.runAfterInteractions(() => {
                     navigation.navigate('WorkManager',{
                         theme:this.theme,
-                        scanId : qrCode,
-                        equipmentId : result.data.equipmentId,
-                        equipmentName: result.data.equipmentName,
+                        scanId : rfid,
                         isScan : true,
                         callback: (
                             () => {
@@ -437,10 +440,10 @@ export default class HomePage extends Component {
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                <TouchableOpacity onPress={()=>this. _stopDetection()} >
+                {/* <TouchableOpacity onPress={()=>this. _stopDetection()} > */}
                 <Image source={require('../../../res/login/ico_yf.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
                 <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>医疗</Text>
-                </TouchableOpacity>
+                {/* </TouchableOpacity> */}
             </View>
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this._sqlite()} >

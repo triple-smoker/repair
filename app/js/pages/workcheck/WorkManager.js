@@ -11,6 +11,7 @@ import {
     TextInput,
     Platform,
     Modal,
+    Alert,
     ScrollView, DeviceEventEmitter, BackHandler, TouchableHighlight
 } from 'react-native';
 
@@ -21,7 +22,7 @@ import TodayTask from './TodayTask';
 import ScanResult from '../repair/ScanResult'
 import WorkPage from '../work/WorkPage';
 import TitleBar from '../../component/TitleBar';
-
+import {Loading} from '../../component/Loading'
 
 export default class CheckDetail extends BaseComponent {
     static navigationOptions = {
@@ -30,24 +31,55 @@ export default class CheckDetail extends BaseComponent {
     constructor(props){
         super(props);
         const { navigation } = this.props;
-        const isScan = navigation.getParam('isScan', '');
-        const scanId = navigation.getParam('scanId', '');
-        const equipmentId = navigation.getParam('equipmentId', '');
-        const equipmentName = navigation.getParam('equipmentName', '');
+        // const isScan = navigation.getParam('isScan', '');
+        // const scanId = navigation.getParam('scanId', '');
+        // const equipmentId = navigation.getParam('equipmentId', '');
+        // const equipmentName = navigation.getParam('equipmentName', '');
         this.state = {
-            isScan : isScan,
-            scanId : scanId,
-            equipmentId : equipmentId,
-            equipmentName : equipmentName,
+            isScan : null,
+            scanId : null,
+            equipmentId : null,
+            equipmentName : null,
         }
     }
     componentDidMount() {
+        this.loadDetail()
         // DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
         // if (Platform.OS === 'android' && this.props.setHome != null) {
         //     BackHandler.addEventListener("back", this.onBackClicked);
         // }
     }
-    
+    componentWillReceiveProps(nextProps){
+        setTimeout(
+            () => { 
+            this.loadDetail() 
+            }, 500)
+        
+       
+    }
+    loadDetail(type){
+        const { navigation } = this.props;
+        var isScan = navigation.getParam('isScan', '');
+        var scanId = navigation.getParam('scanId', '');
+        this.setState({    
+            isScan : isScan,
+            scanId : scanId,
+            
+        })
+        this.loadScanMsg(scanId)
+        
+        
+    }
+    loadScanMsg(id){
+        Loading.show()
+        Request.requestGet(ScanMsg + id,null,(result) => {
+            Loading.hidden()
+            this.setState({
+                 equipmentId : result.data.equipmentId,
+                 equipmentName: result.data.equipmentName, 
+            })
+        })
+    }
     goBack(){
         const { navigate } = this.props.navigation;
         this.props.navigation.goBack();
