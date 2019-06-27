@@ -63,9 +63,11 @@ export default class CheckSqLite extends Component {
     //巡检三级页面
     selectThirdCheck(manCode){
         return "select b.ITEM_NAME,b.ITEM_FORMAT,b.ITEM_RESULT_SET " +
-            "from inspect_item_conf b, man_ref_item mri where mri.STATUS_CD=1 and " +
-            "b.STATUS_CD=1 and mri.ITEM_CODE=b.ITEM_CODE " +
-            "and mri.MAN_CODE="+manCode+"";
+            "from inspect_item_conf b, man_ref_item mri where " +
+            "mri.STATUS_CD=1 and " +
+            "b.STATUS_CD=1 and " +
+            "mri.ITEM_CODE=b.ITEM_CODE " +
+            "and mri.MAN_CODE='"+manCode+"'";
     }
 
 

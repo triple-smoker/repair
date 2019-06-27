@@ -17,7 +17,8 @@ import {
 
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
-import TitleBar from '../../component/TitleBar';
+import SQLite from "../../polling/SQLite";
+import CheckSqLite from "../../polling/CheckSqLite";
 
 
 let cachedResults = {
@@ -28,15 +29,19 @@ let cachedResults = {
 };
 
 var username = '';
+var db;
+var checkSqLite = new CheckSqLite();
 export default class CheckDetail extends BaseComponent {
     static navigationOptions = {
         header: null,
     };
   constructor(props){
     super(props);
+      const { navigation } = this.props;
     this.state={
       selectIndex:0,
       theme:this.props.theme,
+      manCode:navigation.getParam('manCode', ''),
       modalVisible:false,
 
     }
@@ -45,13 +50,33 @@ export default class CheckDetail extends BaseComponent {
 
 
   componentDidMount() {
+    this._fetchData();
 
-   
   }
+    _fetchData(){
+        if(!db){
+            db = SQLite.open();
+        }
+        cachedResults.items = [];
+        var sql = checkSqLite.selectThirdCheck(this.state.manCode);
+        db.transaction((tx)=>{
+            tx.executeSql(sql, [],(tx,results)=>{
+                var len = results.rows.length;
+                for(let i=0; i<len; i++){
+                    var checkIm = results.rows.item(i);
+                    console.log(checkIm);
+                }
 
-  componentWillUnmount() {
-  
-  }
+            });
+        },(error)=>{
+            console.log(error);
+        });
+
+    }
+
+  // componentWillUnmount() {
+  //
+  // }
 
   goBack(){
         const { navigate } = this.props.navigation;
@@ -63,15 +88,15 @@ export default class CheckDetail extends BaseComponent {
   
 
   render() {
-var data1= {
-    title:"1,暂存点卫生是否整洁",
-}
-var data2= {
-    title:"2,暂存处防盗，防渗漏，防四害是否合格洁",
-}
-var data3= {
-    title:"3,暂存处交接记录资料是否齐全",
-}
+    var data1= {
+        title:"1,暂存点卫生是否整洁",
+    }
+    var data2= {
+        title:"2,暂存处防盗，防渗漏，防四害是否合格洁",
+    }
+    var data3= {
+        title:"3,暂存处交接记录资料是否齐全",
+    }
     return (
       <View style={styles.container}>
       <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginBottom:5}}>

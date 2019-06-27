@@ -71,10 +71,10 @@ export default class CheckList extends BaseComponent {
         cachedResults.tabIndex = 0;
         this._fetchData(0);
     }
-    componentWillReceiveProps(){
-        cachedResults.tabIndex = 0;
-        this._fetchData(0);
-    }
+    // componentWillReceiveProps(){
+    //     cachedResults.tabIndex = 0;
+    //     this._fetchData(0);
+    // }
 
   _renderSeparatorView(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
     return (
@@ -88,6 +88,7 @@ export default class CheckList extends BaseComponent {
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('CheckDetail',{
                 theme:this.theme,
+                manCode:data.MAN_CODE,
                 callback: (
                     () => {
                         this._fetchData(0);
@@ -301,12 +302,12 @@ export default class CheckList extends BaseComponent {
                   <Text style={{color:this.state.tabIndex===0 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>未完成</Text>
               </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{this.onPressTabItem(1)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+          <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
               <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
                   <Text style={{color:this.state.tabIndex===1 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>紧急</Text>
               </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{this.onPressTabItem(2)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+          <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
               <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
                   <Text style={{color:this.state.tabIndex===2 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>全部</Text>
               </View>
@@ -326,11 +327,6 @@ export default class CheckList extends BaseComponent {
               <Image style={{width:16,height:20,marginLeft:5,marginRight:10}} source={require('../../../res/repair/navbar_ico_sys.png')} />
           </TouchableOpacity>
       </View>
-      {/*<View style={styles.line} />*/}
-      {/*<Text style={{backgroundColor:'#f6f6f6', color:'#999',fontSize:12,height:35, textAlignVertical:'center', textAlign:'center'}}>——  共 {cachedResults.items.length} 条巡检工单  ——</Text>*/}
-      {/*<ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{width:Dimens.screen_width,flex:1}}>*/}
-        {/*{itemView}*/}
-      {/*</ScrollView>*/}
           <RefreshListView
               style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44*2-49}}
               onEndReachedThreshold={10}

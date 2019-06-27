@@ -191,7 +191,11 @@ export default class SQLiteDemo extends Component{
         db.transaction((tx)=>{
             // var a = CheckSqLite.selectFirstCheck;
             console.log("++++++++++");
-            tx.executeSql(SelectFirstCheck, [],(tx,results)=>{
+            var sql ="select b.ITEM_NAME,b.ITEM_FORMAT,b.ITEM_RESULT_SET " +
+                "from inspect_item_conf b, man_ref_item mri where mri.STATUS_CD=1 and " +
+                "b.STATUS_CD=1 and mri.ITEM_CODE=b.ITEM_CODE and " +
+                "mri.MAN_CODE=201906261561538593183";
+            tx.executeSql(sql, [],(tx,results)=>{
                 var len = results.rows.length;
                 console.log(len)
                 for(let i=0; i<len; i++){
