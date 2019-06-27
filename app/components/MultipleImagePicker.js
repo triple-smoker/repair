@@ -47,7 +47,7 @@ class MultipleImagePicker extends BaseComponent {
     selectVideoTapped() {
         const options = {
             mediaType: 'video',
-            videoQuality: 'medium',
+            videoQuality: 'low',
             durationLimit: 30
         };
 

@@ -9,7 +9,6 @@ import SoundRecoding from '../components/SoundRecoding';
 import Axios from '../util/Axios';
 import { toastShort } from '../js/util/ToastUtil';
 import OrderType from "./RepairScreen";
-// import LoadingUtil from "../util/LoadingUtil";
 
 import Loading from 'react-native-easy-loading-view';
 

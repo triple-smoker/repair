@@ -46,7 +46,7 @@ export class VoicePlayer{
                         console.log('playback failed due to audio decoding errors');
                     }
                 });
-            }, 100);
+            }, 1000);
         }, 100);
     }
 
