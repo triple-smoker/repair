@@ -221,8 +221,10 @@ class ConfirmReport extends Component {
         setTimeout(
             ()=>
             {
-                toastShort('提交失败，请检查后重试！');
-                clearInterval(this.timer)
+                if(this.state.images.length !== this.state.imagesRequest.length + this.state.videosRequest.length){
+                    toastShort('提交失败，请检查后重试！');
+                    clearInterval(this.timer)
+                }
             }, 2*60*1000
         )
 
