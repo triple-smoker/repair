@@ -2,8 +2,7 @@
 import React, { Component } from 'react';
 
 
-const newDate = new Date().format("YYYY-MM-dd 00:00:00");
-const newDateString = new Date(newDate).getTime();
+
 // export const SelectFirstCheck = "SELECT"
 // +" distinct(dt.id),dt.JOB_CODE,dt.exec_start_time,dt.exec_end_time,"
 // +" dt.JOB_EXEC_TEAM_ID,ij.JOB_NAME,mri.TABLE_TYPE"
@@ -20,7 +19,7 @@ const newDateString = new Date(newDate).getTime();
 export default class CheckSqLite extends Component {
 
     //巡检首页
-    selectFirstCheck(deptId){
+    selectFirstCheck(deptId,newDateString){
         return "SELECT"
             +" distinct(dt.id),dt.JOB_CODE,dt.exec_start_time,dt.exec_end_time,dt.exec_code_type,"
             +" dt.JOB_EXEC_TEAM_ID,ij.JOB_NAME,mri.TABLE_TYPE"

@@ -99,7 +99,15 @@ export default class RepairScreen extends React.Component {
                         var address = '';
                         Request.requestGet(GetUserAddress + loginUserInfo.userId, null, (result) => {
                             if (result && result.code === 200) {
-                                let info = result.data[0]
+                                var info = result.data[0]
+
+                                result.data.forEach(element => {
+                                    if(element.isDefault == '1'){
+                                        info = element;
+                                    }
+                                });
+
+
                                 if(info){
                                     reporter = info.userName;
                                     address = info.buildingName + info.floorName + info.roomName
@@ -313,14 +321,14 @@ export default class RepairScreen extends React.Component {
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
                     <View style={{height:"1.5%"}}/>
                     {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
-                        <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:10,marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
+                        <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
                             {this.state.repairParentCn}/{this.state.repairChildCn}
                         </Text>
                     }
                     {
                         this.state.isScan == true && 
-                        <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:10,marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
-                            <Text>{this.state.equipmentName}</Text>
+                        <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
+                            {this.state.equipmentName}
                         </Text>
                     }
                     <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', paddingLeft:10, marginRight: '1.5%',}}

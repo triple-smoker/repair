@@ -55,6 +55,7 @@ export default class SQLiteDemo extends Component{
             CREATE_DATE : '',
             UPDATE_DATE : '',
             UPDATE_STAFF : '',
+            sqlText:""
         };
     }
 
@@ -110,16 +111,22 @@ export default class SQLiteDemo extends Component{
                                         // console.log("=="+dataJson);
                                         SQLite.insertData(dates[tableName],tableName);
                                         // console.log(dates[tableName]);
+                                        // if(tableName==="inspect_job_manager"){
+                                        //     this.setState({
+                                        //         sqlText: JSON.stringify(dates[tableName])
+                                        //     })
+                                        // }
                                     }
 
                                 }
+                                alert('读取完成')
 
                             }
                             console.log("++"+JSON.stringify(response));
 
                         }
                     );
-                    alert('读取完成')
+
                 }
             }.bind(this)
         )
@@ -174,10 +181,10 @@ export default class SQLiteDemo extends Component{
         db.transaction((tx)=>{
             tx.executeSql("select * from "+tableName, [],(tx,results)=>{
                 var len = results.rows.length;
+                alert(len.toString());
                 for(let i=0; i<len; i++){
                     var user = results.rows.item(i);
                     console.log("<<<<<<<<<<<<<<<"+tableName);
-                    console.log(user);
                 }
             });
         },(error)=>{
@@ -234,50 +241,9 @@ export default class SQLiteDemo extends Component{
                 {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_room" onPress={()=>this.getTable("t_base_room")}/>*/}
 
                 <Text>
-                    {this.state.ID}
+                    {this.state.sqlText}
                 </Text>
-                <Text>
-                    {this.state.JOB_NAME}
-                </Text>
-                <Text>
-                    {this.state.JOB_CODE}
-                </Text>
-                <Text>
-                    {this.state.PARENT_MAN_ID}
-                </Text>
-                <Text>
-                    {this.state.JOB_EXEC_TEAM_ID}
-                </Text>
-                <Text>
-                    {this.state.JOB_KIND}
-                </Text>
-                <Text>
-                    {this.state.JOB_TIME_RATE}
-                </Text>
-                <Text>
-                    {this.state.VER_NBR}
-                </Text>
-                <Text>
-                    {this.state.ACTION_TYPE}
-                </Text>
-                <Text>
-                    {this.state.STATUS_CD}
-                </Text>
-                <Text>
-                    {this.state.STATUS_DATE}
-                </Text>
-                <Text>
-                    {this.state.CREATE_STAFF}
-                </Text>
-                <Text>
-                    {this.state.CREATE_DATE}
-                </Text>
-                <Text>
-                    {this.state.UPDATE_DATE}
-                </Text>
-                <Text>
-                    {this.state.UPDATE_STAFF}
-                </Text>
+
 
             </View>
         );

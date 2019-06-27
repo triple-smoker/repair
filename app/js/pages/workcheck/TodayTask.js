@@ -126,14 +126,19 @@ export default class TodayTask extends BaseComponent {
         cachedResults.items = [];
        if(cachedResults.tabIndex === 0){
            // var sql = "";
-           var sql = checkSqLite.selectFirstCheck(global.deptId);
+           // var newDate = new Date().format("YYYY-MM-dd 00:00:00");
+           // var newDateString = new Date(newDate).getTime();
+           var timeStamp = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
+           var sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp);
            db.transaction((tx)=>{
                tx.executeSql(sql, [],(tx,results)=>{
                    var len = results.rows.length;
-                   // console.log(len)
+                   console.log(len);
+                   // alert(sql);
+                   // alert(len);
                    for(let i=0; i<len; i++){
                        var checkIm = results.rows.item(i);
-                       // console.log(checkIm);
+                       console.log(checkIm);
                        cachedResults.items.push(checkIm);
                    }
                    this.setState({
@@ -204,7 +209,7 @@ export default class TodayTask extends BaseComponent {
     return (
       <View style={styles.container}>
           {sechBar}
-      <Text style={{backgroundColor:'#f8f8f8', color:'#737373',fontSize:14,height:35, textAlignVertical:'center', textAlign:'center'}}>——  共 {cachedResults.items.length} 条巡检工单  ——</Text>
+      <Text style={{backgroundColor:'#f6f6f6', color:'#999',fontSize:12,height:40, textAlignVertical:'center', textAlign:'center'}}>——  共 {cachedResults.items.length} 条巡检工单  ——</Text>
       <RefreshListView
           style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44*2-49}}
           onEndReachedThreshold={10}
@@ -227,8 +232,8 @@ export default class TodayTask extends BaseComponent {
       )
     }
   }
-const newDate = new Date().format("YYYY-MM-dd 00:00:00");
-const newDateString = new Date(newDate).getTime();
+// const newDate = new Date().format("YYYY-MM-dd 00:00:00");
+// const newDateString = new Date(newDate).getTime();
 class CheckItem extends Component {
 
     render(){
@@ -284,8 +289,8 @@ class CheckItem extends Component {
                     }}
                 />}
                 <View style={{flex:3,}}>
-                    <Text style={{fontSize:16, color:'#404040', marginLeft:10, }}>{this.props.data.JOB_NAME}</Text>
-                    <Text style={{fontSize:14, color:'#737373', marginLeft:10, marginTop:10,}}>{moment(this.props.data.EXEC_START_TIME).format("MM\/DD HH:mm")+"—"+moment(this.props.data.EXEC_END_TIME).format("MM\/DD HH:mm")}</Text>
+                    <Text style={{fontSize:17, color:'#404040', marginLeft:10, }}>{this.props.data.JOB_NAME}</Text>
+                    <Text style={{fontSize:13, color:'#aaa', marginLeft:10, marginTop:10,}}>{moment(this.props.data.EXEC_START_TIME).format("MM\/DD HH:mm")+"—"+moment(this.props.data.EXEC_END_TIME).format("MM\/DD HH:mm")}</Text>
                 </View>
                 <View style={{flex:1,height:80,  textAlignVertical:'center',justifyContent:"center"}}>
                         {this.props.data.TABLE_TYPE === "0" &&
@@ -320,7 +325,7 @@ class CheckItem extends Component {
                         {processType==="2" &&
                             <Text style={{fontSize:16, color:'#FE0000', marginLeft:0, marginRight:5,textAlign:'center',}}>已超时</Text>
                         }
-                        <Text style={{fontSize:13, color:'#999', marginLeft:0, marginRight:5,textAlign:'center',}}>{processTypeText}</Text>
+                        <Text style={{fontSize:13, color:'#999', marginLeft:0, marginRight:5,textAlign:'right',}}>{processTypeText}</Text>
                     </View>
                 }
                 {cachedResults.tabIndex === 1 &&

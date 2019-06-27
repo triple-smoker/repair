@@ -140,7 +140,7 @@ class Adds extends Component {//报修单共用组件
                 <TouchableOpacity onPress={() => (this.props.type==='4')?null:this.props.getEvaluate()}>
                     <Row>
                         {this.props.type!=0 &&
-                        <Col style={{width:70,marginRight:17}}>
+                        <Col style={{width:70,marginRight:17,paddingTop:5}}>
                             {this.getFirstImage(this.props.record.fileMap.imagesRequest,this.props.record.fileMap.videosRequest)}
                             <Button transparent style={{position: 'absolute',width:70,height:70}} onPress= {()=>this._setModalVisible()}/>
                             <View style={{position: 'absolute',left:40,top:5,backgroundColor:'#545658',height:20,paddingLeft:8,width:25,borderRadius:10}}><Text style={{color:'#fff'}}>{this.getLength(this.props.record.fileMap.imagesRequest,this.props.record.fileMap.videosRequest)}</Text></View>

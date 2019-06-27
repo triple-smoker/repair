@@ -375,22 +375,22 @@ class CheckItem extends Component {
                         left:0
                     }}
                     />
-                    <View style={{flex:2,}}>
+                    <View style={{flex:3,}}>
                         <View style={{flexDirection:'row',alignItems:"center"}}>
-                            <Text style={{fontSize:16, color:'#FF0000', marginLeft:15,marginTop:0, textDecorationLine:'underline'}}>{this.props.data.equipment_name}</Text>
+                            <Text style={{fontSize:17, color:'#666', marginLeft:15,marginTop:0, textDecorationLine:'underline'}}>{this.props.data.equipment_name}</Text>
                             {this.props.data.showSpecial && this.props.data.showSpecial===1 &&
                             <Text style={{marginLeft:4,fontSize:12,textAlign:"center",color:"#666",borderRadius:4,borderWidth:1,borderColor:"#bbb",width:28,height:16}}>
                                 特例
                             </Text>
                             }
                         </View>
-                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3, }}>{this.props.data.install_location}</Text>
-                        <Text style={{fontSize:14, color:'#737373', marginLeft:15, marginTop:3,}}>{moment(this.props.beginTime).format("MM\/DD HH:mm")+"—"+moment(this.props.endTime).format("MM\/DD HH:mm")}</Text>
+                        <Text style={{fontSize:13, color:'#aaa', marginLeft:15, marginTop:3, }}>{this.props.data.install_location}</Text>
+                        <Text style={{fontSize:13, color:'#aaa', marginLeft:15, marginTop:3,}}>{moment(this.props.beginTime).format("MM\/DD HH:mm")+"—"+moment(this.props.endTime).format("MM\/DD HH:mm")}</Text>
 
                     </View>
                     <View style={{flex:1,height:80,  textAlignVertical:'center',justifyContent:"center"}}>
                         <Text style={{fontSize:16,textAlign:"center"}}>
-                            Tiffany
+                            {/*Tiffany*/}
                         </Text>
                     </View>
                     <View style={{flex:1, justifyContent:'flex-end',paddingRight:10}}>

@@ -111,7 +111,7 @@ export default class ScanResult extends BaseComponent {
     render() {
         var detaiData = this.state.detaiData;
         var brand = null;
-        var brandId = null;
+        var equipmentId = null;
         var equipmentName = null;
         var status = null;
         var voltageLevel = null;
@@ -128,7 +128,7 @@ export default class ScanResult extends BaseComponent {
         if (detaiData) {
               vardetailAddress = detaiData.detailAddress;
               brand = detaiData.brand;
-              brandId = detaiData.brandId;
+              equipmentId = detaiData.equipmentId;
               model = detaiData.model;
               equipmentName = detaiData.equipmentName;
               status = detaiData.status;
@@ -161,20 +161,24 @@ export default class ScanResult extends BaseComponent {
                             <Image style={styles.images} source={require('../../../res/repair/noImg.png')}/>
                        }
                                                
-                        <View style={{flexDirection: 'column',justifyContent:'space-between'}}>
-                            <Text style={{color:'white'}}>{equipmentName+'（' + model +'）'}</Text>
-                            <Text style={{color:'white'}}>{brand+' | ' +brandId + ' | ' + this.statusTxt(status) }</Text>
+                        <View style={{flexDirection: 'column',justifyContent:'space-between',position:'relative'}}>
+                            <Text style={{color:'white'}}>{equipmentName}</Text>
+                            <Text style={{color:'white'}}>{ model }</Text>
+                            <Text numberOfLines={1} ellipsizeMode={'tail'} style={{color:'white'}}>{brand + '  |  ' + equipmentId}</Text>
+                             <Text numberOfLines={1} ellipsizeMode={'tail'} style={{color:'white',position: "absolute",top:-16,right:-16}}>{this.statusTxt(status)}</Text>
+                           
+                            
                         </View>
                    </View>
                     <View style={styles.main}>
                         <View><Text styles={{color:'#737373',fontSize:12}}>- 基本属性 -</Text></View>
                         <View style={styles.title}>
                             <Text>额定容量：</Text>
-                            <Text>{ratedCapacity}</Text>
+                            <Text>{ratedCapacity} T</Text>
                         </View>
                         <View style={styles.title}>
                             <Text>电压等级：</Text>
-                            <Text>{voltageLevel}</Text>
+                            <Text>{voltageLevel} V</Text>
                         </View>
                         <View style={styles.title}>
                             <Text>定值/阙值：</Text>
@@ -183,11 +187,11 @@ export default class ScanResult extends BaseComponent {
 
                         <View style={styles.title}>
                             <Text>尺寸</Text>
-                            <Text>{size}</Text>
+                            <Text>{size} M</Text>
                         </View>
                         <View style={styles.title}>
                             <Text>重量</Text>
-                            <Text>{weight}</Text>
+                            <Text>{weight} KG</Text>
                         </View>
                         <View style={styles.line} />
                         <View style={styles.title}>
