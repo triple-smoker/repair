@@ -128,7 +128,7 @@ export default class ScanResult extends BaseComponent {
         if (detaiData) {
               vardetailAddress = detaiData.detailAddress;
               brand = detaiData.brand;
-              brandId = detaiData.brandId;
+              equipmentId = detaiData.equipmentId;
               model = detaiData.model;
               equipmentName = detaiData.equipmentName;
               status = detaiData.status;
@@ -163,7 +163,7 @@ export default class ScanResult extends BaseComponent {
                                                
                         <View style={{flexDirection: 'column',justifyContent:'space-between'}}>
                             <Text style={{color:'white'}}>{equipmentName+'（' + model +'）'}</Text>
-                            <Text style={{color:'white'}}>{brand+' | ' +brandId + ' | ' + this.statusTxt(status) }</Text>
+                            <Text style={{color:'white'}}>{brand+' | ' + equipmentId + ' | ' + this.statusTxt(status) }</Text>
                         </View>
                    </View>
                     <View style={styles.main}>
