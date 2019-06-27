@@ -136,6 +136,7 @@ class SQLManager extends Component {
             + 'JOB_CODE varchar(255) DEFAULT NULL ,'
             + 'OBJ_TYPE tinyint(1) DEFAULT NULL ,'
             + 'OBJ_ID varchar(255) DEFAULT NULL ,'
+            + 'ORD_LEVEL int(10) DEFAULT NULL ,'
             + 'SYNC_INSP_SITE tinyint(1) DEFAULT NULL ,'
             + 'TASK_TYPE tinyint(1) DEFAULT 1 ,'
             + 'ACTION_TYPE varchar(255) DEFAULT NULL ,'
