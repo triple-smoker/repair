@@ -9,7 +9,7 @@ import SoundRecoding from '../components/SoundRecoding';
 import Axios from '../util/Axios';
 import { toastShort } from '../js/util/ToastUtil';
 import OrderType from "./RepairScreen";
-
+import LoadingUtil from "../util/LoadingUtil";
 
 class ConfirmReport extends Component {
 
@@ -94,7 +94,7 @@ class ConfirmReport extends Component {
     }
 
     sb(){
-
+        LoadingUtil.showLoading();
         if(this.state.isUpLoad){
             toastShort('正在提交');
             return;
@@ -222,8 +222,10 @@ class ConfirmReport extends Component {
             ()=>
             {
                 if(this.state.images.length !== this.state.imagesRequest.length + this.state.videosRequest.length){
+                    LoadingUtil.dismissLoading();
                     toastShort('提交失败，请检查后重试！');
                     clearInterval(this.timer)
+
                 }
             }, 2*60*1000
         )
@@ -275,6 +277,7 @@ class ConfirmReport extends Component {
             repRepairInfo,
         ).then(
             (res) => {
+                LoadingUtil.dismissLoading();
                 console.log(res);
                 toastShort('提交成功');
                 const { navigate } = this.props.navigation;
