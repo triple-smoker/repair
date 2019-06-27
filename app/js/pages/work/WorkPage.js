@@ -198,12 +198,12 @@ export default class WorkPage extends BaseComponent {
      //let params = null;
      if (cachedResults.tabIndex === 1) {
         //params = {page:cachedResults.nextPage, limit:'20', status:'1,2,3,5,6', repairUserId: global.uinfo.userId};
-        params.set('status', '1,2,3,5,6');
+        params.set('status', '1,2,3,5,6,13');
         params.set('repairUserId', global.uinfo.userId);
      } else if (cachedResults.tabIndex === 0) {
         //params = {page:cachedResults.nextPage, limit:'20', status:'1,2,3,5,6', repairDeptId: global.uinfo.deptAddresses[0].deptId};
         params.set('repairDeptId', global.uinfo.deptAddresses[0].deptId);
-        params.set('status', '20');
+        params.set('status', '13,20');
     } else if (cachedResults.tabIndex === 2) {
         params.set('repairDeptId', global.uinfo.deptAddresses[0].deptId);
         params.set('status', '8,9,10,11');
@@ -499,7 +499,14 @@ export default class WorkPage extends BaseComponent {
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>恢复</Text>
                     <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
-    } else if (data.status === '20') {
+    } else if (data.status === '13') {
+
+      buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
+                    <Text onPress={()=>this.onPressItem(data,(page)=>this._fetchData(page))} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>完工</Text>
+                </View>
+    }
+     else if (data.status === '20') {
         if(global.permissions){
             buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
                 <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
@@ -519,8 +526,13 @@ export default class WorkPage extends BaseComponent {
     if (data.statusDesc) {
           statusDesc = <Text style={{fontSize:12,color:'#909399',marginLeft:0,marginTop:5,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5,backgroundColor:'#f0f0f0'}}>{data.statusDesc}</Text>
-
     }
+
+    if(data.status === '13'){
+      statusDesc = <Text style={{fontSize:12,color:'#909399',marginLeft:0,marginTop:5,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5,backgroundColor:'#f0f0f0'}}>委外中</Text>
+    }
+
     if (this.state.tabIndex === 2) {
       //statusDesc = null;
       buttons = null;

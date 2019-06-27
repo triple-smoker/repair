@@ -95,14 +95,20 @@ export default class RepairScreen extends React.Component {
                     let loginUserInfo = JSON.parse(result);
 
                     if(loginUserInfo != null){
-
+                        var reporter = loginUserInfo.userName;
+                        var address = '';
                         Request.requestGet(GetUserAddress + loginUserInfo.userId, null, (result) => {
                             if (result && result.code === 200) {
                                 let info = result.data[0]
+                                if(info){
+                                    reporter = info.userName;
+                                    address = info.buildingName + info.floorName + info.roomName
+                                }
+
                                 this.setState({
-                                    reporter: info.userName,
+                                    reporter: reporter,
                                     phone: loginUserInfo.telNo,
-                                    address: info.buildingName + info.floorName + info.roomName
+                                    address: address
                                 });
                             }
                         });

@@ -20,6 +20,11 @@ export const RepPause      =  "api/admin/sysCause/list/REP_PAUSE";//暂停原因
 export const DoPause       =  "api/repair/service/pause";//暂停
 export const RepTransfer   =  "api/admin/sysCause/list/REP_TRANSFERF";//转单原因
 export const DoTransfer    =  "api/repair/service/transfer";//转单
+export const DoOutsource   =  "api/repair/service/outsource";//转单 委外
+
+export const listTagKeys   =  "api/admin/tag/listTagKeys/";  //通过分组类型获取标签
+export const baseVendorList   =  "api/basic/baseVendor/list";  //通过分组类型获取标签
+
 
 export const RepairDetail   =  "api/repair/service/detail/";//订单详情
 export const GetDeptListByType   =  "api/basic/baseDept/getDeptListByType";//选择班组
