@@ -9,7 +9,9 @@ import SoundRecoding from '../components/SoundRecoding';
 import Axios from '../util/Axios';
 import { toastShort } from '../js/util/ToastUtil';
 import OrderType from "./RepairScreen";
-import LoadingUtil from "../util/LoadingUtil";
+// import LoadingUtil from "../util/LoadingUtil";
+
+import Loading from 'react-native-easy-loading-view';
 
 class ConfirmReport extends Component {
 
@@ -94,7 +96,7 @@ class ConfirmReport extends Component {
     }
 
     sb(){
-        LoadingUtil.showLoading();
+        Loading.showHud();
         if(this.state.isUpLoad){
             toastShort('正在提交');
             return;
@@ -222,7 +224,7 @@ class ConfirmReport extends Component {
             ()=>
             {
                 if(this.state.images.length !== this.state.imagesRequest.length + this.state.videosRequest.length){
-                    LoadingUtil.dismissLoading();
+                    Loading.dismiss();
                     toastShort('提交失败，请检查后重试！');
                     clearInterval(this.timer)
 
@@ -277,7 +279,7 @@ class ConfirmReport extends Component {
             repRepairInfo,
         ).then(
             (res) => {
-                LoadingUtil.dismissLoading();
+                Loading.dismiss();
                 console.log(res);
                 toastShort('提交成功');
                 const { navigate } = this.props.navigation;
@@ -311,7 +313,7 @@ class ConfirmReport extends Component {
                             {this.state.repairParentCn}/{this.state.repairChildCn}
                         </Text>
                     }
-                    {this.state.isScan == true && 
+                    {this.state.isScan == true &&
                         <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
                             {this.state.equipmentName}
                         </Text>
@@ -335,6 +337,26 @@ class ConfirmReport extends Component {
                         style={{backgroundColor: "#fff"  ,marginLeft: '1.5%', marginRight: '1.5%',}}
                     />
                 </Content>
+                <Loading
+                    ref={(view)=>{Loading.loadingDidCreate(view)}} // 必须调用
+
+                    top={86} // 如果需要在loading或者hud的时候可以点击导航上面的按钮，建议根据自己导航栏具体高度来设置。如果不需要点击可以不设置
+                    offsetY={-150} // 默认loading 和 hud 会在 去掉top之后高度的中间，如果觉得位置不太合适，可以通着offsetY来调整
+
+                    // loadingDefaultText={''} // loading动画的文字
+                    // loadingTextStyle={{ fontSize : 16, color: 'red' }} // loading动画文字的样式
+                    // loadingImage={require('./screen/loading_2.gif')} // loading动画是显示的gif
+                    // loadingImageStyle={{ width : 100, height : 100 }} // gif 图片样式
+
+                    // hudStyle={{ width : 150, height : 150 }} // hud的全局样式
+                    // hudBackgroundColor={'red'} // hud全局背景色
+                    // hudDefaultText={'努力加载中...'} // hud默认全局文字
+                    // hudTextStyle={{ fontSize : 16, color: 'red' }} // 文字样式
+                    // activityIndicatorSize={'small'} // hud上面的圈圈 small or large
+                    // activityIndicatorColor={'red'} // hud上面圈圈的颜色
+                    // hudCustomImage={require('./screen/loading_2.gif')} // 自定义hud上面的圈圈显示，可以把转的圈圈替换为gif
+                    // hudImageStyle={{ width : 50, height : 50 }} // 自定义hud图片的样式
+                />
                 <MyFooter submit={() => this.sb()} value='确定'/>
 
             </Container>
