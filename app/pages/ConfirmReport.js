@@ -304,8 +304,13 @@ class ConfirmReport extends Component {
                 <Content>
                     <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15,marginLeft:"1.5%",}}>请确认您的报修单</Text>
                     {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
-                        <Text style={{backgroundColor:"#fff",flex:1,marginLeft:'1.5%',paddingLeft:10,alignItems:"center",height:18,marginTop:15}}>
-                            {this.state.isScan == true ? <Text style={{fontSize:14,color:"#555",}}>{this.state.equipmentName}</Text> : <Text style={{fontSize:14,color:"#555",}}>{this.state.repairParentCn}/{this.state.repairChildCn}</Text>}
+                        <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
+                            {this.state.repairParentCn}/{this.state.repairChildCn}
+                        </Text>
+                    }
+                    {this.state.isScan == true && 
+                        <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
+                            {this.state.equipmentName}
                         </Text>
                     }
                     <TextInput style={{color: '#000', textAlignVertical: 'top',paddingLeft:10, backgroundColor: "#ffffff" , marginLeft: '1.5%', marginRight: '1.5%',}}
