@@ -313,13 +313,13 @@ export default class RepairScreen extends React.Component {
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
                     <View style={{height:"1.5%"}}/>
                     {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
-                        <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:10,marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
+                        <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
                             {this.state.repairParentCn}/{this.state.repairChildCn}
                         </Text>
                     }
                     {
                         this.state.isScan == true && 
-                        <Text style={{backgroundColor:"#fff",flex:1,color:"#666", paddingLeft:10,marginLeft:'1.5%',fontSize:16,alignItems:"center",height:20}}>
+                        <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
                             <Text>{this.state.equipmentName}</Text>
                         </Text>
                     }
