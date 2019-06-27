@@ -9,6 +9,8 @@ import {TextInput, Image, View, DeviceEventEmitter, TouchableOpacity, TouchableH
 import AsyncStorage from "@react-native-community/async-storage";
 import Recorde from "../components/Recorde";
 import OrderType from "./publicTool/OrderType";
+import RepairType from "./publicTool/RepairType"
+import Request, { GetUserAddress } from "../js/http/Request";
 
 export default class RepairScreen extends React.Component {
 
@@ -86,20 +88,42 @@ export default class RepairScreen extends React.Component {
         }
 
 
-        AsyncStorage.getItem('reporterInfoHistory',function (error, result) {
+        AsyncStorage.getItem('uinfo',function (error, result) {
                 if (error) {
 
                 }else {
-                    let porterList = JSON.parse(result);
+                    let loginUserInfo = JSON.parse(result);
 
-                    if( porterList!=null && porterList.length>0 ){
-                        let reporter = porterList[0]
-                        this.setState({
-                            reporter: reporter.name,
-                            phone: reporter.phone,
-                            address: reporter.address,
+                    if(loginUserInfo != null){
+                        var reporter = loginUserInfo.userName;
+                        var address = '';
+                        Request.requestGet(GetUserAddress + loginUserInfo.userId, null, (result) => {
+                            if (result && result.code === 200) {
+                                let info = result.data[0]
+                                if(info){
+                                    reporter = info.userName;
+                                    address = info.buildingName + info.floorName + info.roomName
+                                }
+
+                                this.setState({
+                                    reporter: reporter,
+                                    phone: loginUserInfo.telNo,
+                                    address: address
+                                });
+                            }
                         });
+
+                        
                     }
+
+                    // if( porterList!=null && porterList.length>0 ){
+                    //     let reporter = porterList[0]
+                    //     this.setState({
+                    //         reporter: reporter.name,
+                    //         phone: reporter.phone,
+                    //         address: reporter.address,
+                    //     });
+                    // }
 
                 }
             }.bind(this)
@@ -268,7 +292,7 @@ export default class RepairScreen extends React.Component {
                     <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
                         <Image style={{width:21,height:37}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
-                    <TouchableOpacity onPress={()=>this.goSearch(()=>this._fetchData(0))} style={{flex:1,height:30, marginRight:0,}}>
+                    <TouchableOpacity style={{flex:1,height:30, marginRight:0,}}>
                         <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
                             <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>新增报修</Text>
                         </View>
@@ -276,7 +300,14 @@ export default class RepairScreen extends React.Component {
                     <TouchableOpacity onPress={()=>this._setTypeVisible()} style={{width:60,flexDirection:'row'}}>
                         <Text style={{color:"#666",fontSize:12}}>类型</Text>
                     </TouchableOpacity>
-                    <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>
+                    {/* <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} 
+                                isShowModal={()=>this._setTypeVisible()} 
+                                modalVisible = {this.state.typeVisible}/> */}
+
+
+                     <RepairType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} 
+                                isShowModal={()=>this._setTypeVisible()} 
+                                modalVisible = {this.state.typeVisible}/>
                 </View>
                 <Content >
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}

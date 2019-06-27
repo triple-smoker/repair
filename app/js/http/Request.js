@@ -11,6 +11,7 @@ export const HospitalId = '1055390940066893827';
 
 export const AuthToken     = 'api/auth/oauth/token';
 export const GetUserInfo   = 'api/admin/user/login';
+export const GetUserAddress  = 'api/basic/user/address/'
 
 export const GetRepairType = 'api/repair/repRepairType/list';//维修类型
 export const GetRepairList = 'api/repair/service/list';//维修单列表
@@ -19,6 +20,11 @@ export const RepPause      =  "api/admin/sysCause/list/REP_PAUSE";//暂停原因
 export const DoPause       =  "api/repair/service/pause";//暂停
 export const RepTransfer   =  "api/admin/sysCause/list/REP_TRANSFERF";//转单原因
 export const DoTransfer    =  "api/repair/service/transfer";//转单
+export const DoOutsource   =  "api/repair/service/outsource";//转单 委外
+
+export const listTagKeys   =  "api/admin/tag/listTagKeys/";  //通过分组类型获取标签
+export const baseVendorList   =  "api/basic/baseVendor/list";  //通过分组类型获取标签
+
 
 export const RepairDetail   =  "api/repair/service/detail/";//订单详情
 export const GetDeptListByType   =  "api/basic/baseDept/getDeptListByType";//选择班组
@@ -40,6 +46,9 @@ export const ScanDetails  = "api/basic/baseEquipment/";//设备详情
 export const ScanMsg = "api/basic/baseEquipment/scan/";//扫码获得设备信息
 export const baseUser = 'api/basic/baseUser';//修改用户信息
 export const Attr =  'api/basic/eqp/attr/';//设备属性
+
+export const baseOptCert = 'api/basic/baseOptCert/';
+
 //https://dev.jxing.com.cn/api/auth/oauth/token?username=10001&password=BlvxyJFFYLcg7n2OB4G5uA%3D%3D&grant_type=password&scope=server
 //'Content-Type': 'application/x-www-form-urlencoded'
 //123456
@@ -125,7 +134,7 @@ static requestGet(action, params, callback) {
     fetch(url, fetchOptions)
      .then((response) => response.json())
      .then((responseText) => {
-     	console.log('responseText: ' + JSON.stringify(responseText));
+     	// console.log('responseText: ' + JSON.stringify(responseText));
      	callback(responseText);
             if(responseText&&responseText.code===401){
                 Request.getUserToken();

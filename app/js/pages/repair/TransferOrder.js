@@ -1,5 +1,3 @@
-
-
 import React, { Component } from 'react';
 import {
     StyleSheet,
@@ -15,7 +13,8 @@ import {
 
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
-import Request, {GetRepairList, RepTransfer, DoTransfer, RepairDetail, GetDeptListByType, GetUserListByDeptId} from '../../http/Request';
+import Request, {GetRepairList, RepTransfer, DoTransfer, RepairDetail, GetDeptListByType, GetUserListByDeptId,listTagKeys,baseVendorList,DoOutsource} from '../../http/Request';
+import { Radio } from 'native-base';
 import {Loading} from '../../component/Loading'
 import { toastShort } from '../../util/ToastUtil';
 import BaseComponent from '../../base/BaseComponent'
@@ -47,8 +46,13 @@ export default class TransferOrder extends BaseComponent {
       selectUserName:null,
       selectDeptData:null,
       selectUserData:null,
+      selectVendorData:null,
       deptList:[],
       userList:[],
+      vendorList:[],
+      isInHospital: true,
+      selectVendorName:null,
+      modalVendorVisible:false,
       dataSourceDept: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
             if (r1 !== r2) {
@@ -71,6 +75,15 @@ export default class TransferOrder extends BaseComponent {
             }
             return true//r1.isSelected !== r2.isSelected;
         }}),
+      dataSourceVendor: new ListView.DataSource({
+        rowHasChanged: (r1, r2)=> {
+            if (r1 !== r2) {
+
+            } else {
+    
+            }
+            return true//r1.isSelected !== r2.isSelected;
+        }}),  
     }
 
   }
@@ -79,6 +92,7 @@ export default class TransferOrder extends BaseComponent {
       this.loadDetail();
       this.loadRep();
       this.getDeptListByType();
+      this.getVendorList();
   }
 
 
@@ -89,6 +103,25 @@ export default class TransferOrder extends BaseComponent {
         if (result && result.code === 200) {
             that.setState({deptList:result.data});
         } else {
+
+        }
+    });
+  }
+
+  getVendorList(){
+    var that = this;
+    var groupType = 1;
+    Request.requestGet(listTagKeys + groupType, null, (result)=> {
+        if (result && result.code === 200) {
+            result.data.forEach(element => {
+                if(element.tagKey == "fws"){
+                    Request.requestGet(baseVendorList + '?tagId=' + element.tagId, null, (resultData)=> {
+                        if (resultData && resultData.code === 200) {
+                            that.setState({vendorList:resultData.data.records});
+                        }
+                    });
+                }
+            });
 
         }
     });
@@ -118,31 +151,61 @@ export default class TransferOrder extends BaseComponent {
 
     var that = this;
 
-    if (this.state.typeCode === 0&&(this.state.selectDeptData===null||this.state.selectUserData===null)) {
-        toastShort('请选择维修人员');
-        return;
+    if(this.state.isInHospital){
+        if (this.state.typeCode === 0&&(this.state.selectDeptData===null)) {
+            toastShort('请选择班组');
+            return;
+        }
+    }else{
+        if (this.state.typeCode === 0&&(this.state.selectVendorData===null)) {
+            toastShort('请选择厂商');
+            return;
+        }
     }
+
+    
 
     if (this.state.selectIndex === -1) {
         toastShort('请选择转单原因');
         return;
     }
 
-      var causeIds = [];
-      var items = this.state.repList;
-
-      causeIds.push(items[this.state.selectIndex].causeId);
+    var url = DoTransfer
+    var causeIds = [];
+    var items = this.state.repList;
+    var repairUserId = null;
+    if(this.state.selectUserData && this.state.selectUserData.userId){
+      repairUserId = this.state.selectUserData.userId 
+    }
+    causeIds.push(items[this.state.selectIndex].causeId);
 
     var params = "";
     if(this.state.typeCode === 0){
-        params = {
-            repairDeptId:this.state.selectDeptData.deptId,
-            repairUserId:this.state.selectUserData.userId,
-            causeIds:causeIds,
-            remark:username,
-            repairId:that.state.repairId,
-            userId:global.uinfo.userId
-        };
+        if(this.state.isInHospital){
+            params = {
+                repairDeptId:this.state.selectDeptData.deptId,
+                repairUserId:repairUserId,
+                causeIds:causeIds,
+                remark:username,
+                repairId:that.state.repairId,
+                userId:global.uinfo.userId
+            };
+        }else{
+            url = DoOutsource;
+            params = {
+                vendorId: this.state.selectVendorData.vendorId,
+                vendorName: this.state.selectVendorData.fullName,
+                telNo: this.state.selectVendorData.telNo,
+                contactName: this.state.selectVendorData.contactName,
+                mobileNo: this.state.selectVendorData.mobileNo,
+                causeIds:causeIds,
+                remark:username,
+                repairId:that.state.repairId,
+                userId:global.uinfo.userId
+            }
+        }
+
+        
     }else{
         params = {
             repairDeptId:this.state.detaiData.deptId,
@@ -153,8 +216,9 @@ export default class TransferOrder extends BaseComponent {
             userId:global.uinfo.userId
         };
     }
+    console.log(params)
     Loading.show();
-    Request.requestPost(DoTransfer, params, (result)=> {
+    Request.requestPost(url, params, (result)=> {
         Loading.hidden();
         if (result && result.code === 200) {
             toastShort('提交成功');
@@ -163,8 +227,6 @@ export default class TransferOrder extends BaseComponent {
         } else {
 
         }
-
-
     });
 
   }
@@ -220,9 +282,59 @@ export default class TransferOrder extends BaseComponent {
             dataSourceDept:this.state.dataSourceDept.cloneWithRows(this.state.deptList),});
     }
 
+    showVendorList(){
+        this.setState({
+            modalVendorVisible:true,
+            dataSourceVendor:this.state.dataSourceVendor.cloneWithRows(this.state.vendorList)
+        });
+    }
+
     _hide() {
         this.setState({modalDeptVisible:false, selectUserData:null});
     }
+
+    _vendorHide() {
+        this.setState({modalVendorVisible:false});
+    }
+
+
+    vendorSubmit() {
+        this.setState({modalVendorVisible:false});
+    }
+
+    renderItemVendor(data) {
+        var color = 'none';
+        var backColor = 'none';
+        if (this.state.selectVendorData&&this.state.selectVendorData.vendorId===data.vendorId) {
+            color = '#444';
+            backColor = 'rgba(0,0,0,0.1)';
+        }else{
+            backColor = '#f6f6f6';
+            color = '#999';
+        }
+
+
+        return (
+            <View key={data.id}>
+                <TouchableOpacity onPress={()=>{this.onPressItemVendor(data)}} style={{height:45,flex:1,backgroundColor: backColor}}>
+                    <View style={{flexDirection:'row',marginLeft:10,height:45,textAlignVertical:'center',alignItems: 'center'}} >
+                        <Text style={{fontSize:14,color:color,flex:1,textAlignVertical:'center',alignItems: 'center',textAlign:'center'}}>{data.fullName}</Text>
+                    </View>
+                </TouchableOpacity>
+
+            </View>
+        );
+    }
+
+    onPressItemVendor(data){
+        var that = this;
+        var items = this.state.vendorList;
+        console.log(JSON.stringify(data))
+        this.setState({dataSourceVendor:this.state.dataSourceVendor.cloneWithRows(items), 
+            selectVendorData:data,selectVendorName:data.fullName});
+
+    }
+
     renderItemLeft(data) {
         var that = this;
         var color = this.state.selectDeptData&&this.state.selectDeptData.deptId===data.deptId ? '#444' : '#999';
@@ -248,7 +360,8 @@ export default class TransferOrder extends BaseComponent {
         var that = this;
         var items = this.state.deptList;
         console.log(JSON.stringify(data))
-        this.setState({dataSourceDept:this.state.dataSourceDept.cloneWithRows(items), selectDeptData:data,selectDeptName:data.deptName});
+        this.setState({dataSourceDept:this.state.dataSourceDept.cloneWithRows(items), 
+            selectDeptData:data,selectDeptName:data.deptName});
         // this.timer = setTimeout(() => {
             that.getUserListByDeptId(data);
         // }, 200);
@@ -270,7 +383,8 @@ export default class TransferOrder extends BaseComponent {
     }
     onPressItemRight(data){
         var items = this.state.userList;
-        this.setState({dataSourcePerson:this.state.dataSourcePerson.cloneWithRows(items), selectUserData:data,selectUserName:data.userName});
+        this.setState({dataSourcePerson:this.state.dataSourcePerson.cloneWithRows(items), 
+                        selectUserData:data,selectUserName:data.userName});
     }
 
     submit() {
@@ -324,18 +438,44 @@ export default class TransferOrder extends BaseComponent {
           }
           {this.state.typeCode === 0 &&
               <View>
-                  <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择维修人员</Text>
-                  <TouchableOpacity onPress={()=>{this.addMan()}} style={{height:40}}>
-                      <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
-                          <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组人员</Text>
-                          <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectUserName}</Text>
-                          <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
-                              <Image source={require('../../../res/login/ic_arrow.png')}
-                                     style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
+                  <View style={{flexDirection:'row',alignItems: 'center',paddingTop:15,paddingLeft:15}}>
+                        <Radio onPress={()=>(this.setState({isInHospital:true}))} style={{marginRight:5}} color={"#999"}
+                            selectedColor={"#999"} selected={this.state.isInHospital == true} ></Radio><Text>院内转单</Text>
+                        <Radio onPress={()=>(this.setState({isInHospital:false}))} style={{marginLeft:20,marginRight:5}} color={"#999"}
+                                    selectedColor={"#999"} selected={this.state.isInHospital == false}></Radio><Text>院外转单</Text>
+                  </View>
 
-                          </View>
-                      </View>
-                  </TouchableOpacity>
+                  {this.state.isInHospital === true ? 
+                    <View>
+                        <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择维修对象</Text>
+                        <TouchableOpacity onPress={()=>{this.addMan()}} style={{height:40}}>
+                            <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
+                                <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>班组对象</Text>
+                                <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectDeptName } {this.state.selectUserName}</Text>
+                                <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
+                                    <Image source={require('../../../res/login/ic_arrow.png')}
+                                           style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
+
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    :
+                    <View>
+                        <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15}}>请选择厂商</Text>
+                        <TouchableOpacity onPress={()=>{this.showVendorList()}} style={{height:40}}>
+                            <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:15, marginRight:15, flexDirection:'row',alignItems:'center',}}>
+                                <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:10,}}>服务商</Text>
+                                <Text style={{color:'#333',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{this.state.selectVendorName}</Text>
+                                <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
+                                    <Image source={require('../../../res/login/ic_arrow.png')}
+                                           style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                  }
+
                   <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center',paddingLeft:15,}}>请选择转单原因</Text>
               </View>
           }
@@ -400,8 +540,38 @@ export default class TransferOrder extends BaseComponent {
                       </View>
                   </View>
               </View>
+          </Modal>
+
+
+          <Modal
+              animationType={"none"}
+              transparent={true}
+              visible={this.state.modalVendorVisible}
+              onRequestClose={() =>this.setState({modalVendorVisible:false})}
+          >
+              <View style={{top:0,height:Dimens.screen_height,width:Dimens.screen_width,backgroundColor: 'rgba(0,0,0,0.5)',alignItems:'center',justifyContent:'center',}}>
+                  <View style={stylesDept.bottomStyle}>
+                      <View style={stylesDept.topStyle}>
+                          <Text onPress={()=>this._vendorHide()} style={{color:'#9b9b9b', marginLeft:10, flex:1}}>取消</Text>
+                          <Text onPress={()=>this.vendorSubmit()} style={{color:'#9b9b9b', marginRight:10, }}>确定</Text>
+                      </View>
+                      <View style={{flexDirection:'row', height:300,}}>
+                          <ListView
+                              initialListSize={1}
+                              dataSource={this.state.dataSourceVendor}
+                              renderRow={(item) => this.renderItemVendor(item)}
+                              style={{backgroundColor:'white',flex:1,height:300,width:Dimens.screen_width}}
+                              onEndReachedThreshold={10}
+                              enableEmptySections={true}
+                              renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}/>
+
+                      </View>
+                  </View>
+              </View>
 
           </Modal>
+
+
       </View>
     )
   }

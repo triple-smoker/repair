@@ -45,7 +45,7 @@ class SQLManager extends Component {
             + 'IS_GEN_REPORT tinyint(2) DEFAULT NULL ,'
             + 'GENERATE_DATE datetime DEFAULT CURRENT_TIMESTAMP ,'
             + 'FLAG tinyint(3) DEFAULT NULL ,'
-            + 'ORIGN_ACTION tinyint(3) DEFAULT NULL ,'
+            + 'ORIGIN_ACTION tinyint(3) DEFAULT NULL ,'
             + 'VERSION varchar(64) DEFAULT NULL )';
         return createDailyTaskSql;
     }
@@ -287,7 +287,7 @@ class SQLManager extends Component {
             + 'dept_id bigint(20) DEFAULT NULL,'
             + 'vendor_id bigint(20) DEFAULT NULL,'
             + 'vendor_name varchar(30) DEFAULT NULL, '
-            + 'equipment_type_id bigint(20) NOT NULL, '
+            + 'equipment_type_id varchar(255) NOT NULL, '
             + 'equipment_type varchar(20) DEFAULT NULL, '
             + 'building_id bigint(20) DEFAULT NULL, '
             + 'floor_id varchar(20) DEFAULT NULL, '
@@ -376,17 +376,28 @@ class SQLManager extends Component {
     insertData(job,tablename){
         var key = "";
         var val = "";
+        // if(tablename==="daily_task"){
+        //     console.log(job);
+        // }
         for(var sx in job){
-            if(job[sx]!=null&&job[sx]!=''){
+            if(job[sx]!=null){
                 key = key+"'"+sx+"'"+",";
-                val = val+"'"+job[sx]+"'"+",";
+                if(job[sx].toString().indexOf("'")>0){
+                    var valTemp = job[sx].toString().replace(/'/g,"''");
+                    val = val+"'"+valTemp+"'"+",";
+                }else{
+                    val = val+"'"+job[sx]+"'"+",";
+                }
+
             }
         }
         var sql = "REPLACE INTO "+tablename;
         var key = '(' + key.substr(0,key.length-1) +')';
         var val = '(' + val.substr(0,val.length-1) +')';
         var insertInspectJobSql = sql + key + " values" + val;
-
+        // if(tablename==="daily_task"){
+        //     console.log(insertInspectJobSql);
+        // }
         return insertInspectJobSql;
     }
     //删除sql

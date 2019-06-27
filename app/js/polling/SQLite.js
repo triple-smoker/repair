@@ -26,7 +26,7 @@ export default class SQLite extends Component {
     }
 
     //打开数据库
-    open(){
+    static open(){
         db = SQLiteStorage.openDatabase(
             database_name,
             database_version,
@@ -42,7 +42,7 @@ export default class SQLite extends Component {
     }
 
     //创建表
-    createTable(tableName){
+    static createTable(tableName){
         if (!db) {
             this.open();
         }
@@ -119,7 +119,7 @@ export default class SQLite extends Component {
     }
 
     //关闭数据库
-    close(){
+    static close(){
         if(db){
             this._successCB('close');
             db.close();
@@ -154,7 +154,7 @@ export default class SQLite extends Component {
     }
 
     //删除表
-    dropTable(tableName){
+    static dropTable(tableName){
         db.transaction((tx)=>{
             var sql = sqlManager.dropTable(tableName);
             tx.executeSql(sql,()=>{
@@ -167,36 +167,42 @@ export default class SQLite extends Component {
     }
 
     //新增数据
-    insertData(jobData,tableName){
+    static insertData(jobData,tableName){
+        // jobData = JSON.stringify(jobData);
+        // jobData = JSON.parse(jobData);
+        // console.log("++++++++"+jobData);
         let len = jobData.length;
-        if (!db) {
-            this.open();
-        }
-        // this.dropTable();
-        this.createTable(tableName);
-        // this.dropTable();
-        db.transaction((tx)=>{
-            for(let i=0; i<len; i++){
-                var job = jobData[i];
-                var sql = sqlManager.insertData(job,tableName);
-                tx.executeSql(sql,()=>{
-                    },(err)=>{
-                        console.log(err);
-                    }
-                );
+        if(len>0){
+            if (!db) {
+                this.open();
             }
-        },(error)=>{
-            this._errorCB('transaction', error);
-        },()=>{
-            this._successCB('transaction insert data');
-        });
+            // this.dropTable();
+            this.createTable(tableName);
+            // this.dropTable();
+            db.transaction((tx)=>{
+                for(let i=0; i<len; i++){
+                    var job = jobData[i];
+                    var sql = sqlManager.insertData(job,tableName);
+                    tx.executeSql(sql,()=>{
+                        },(err)=>{
+                            console.log(err);
+                        }
+                    );
+                }
+            },(error)=>{
+                this._errorCB('transaction', error);
+            },()=>{
+                this._successCB('transaction insert data');
+            });
+        }
+
     }
 
 
-    _successCB(name){
+    static _successCB(name){
         console.log("SQLiteStorage "+name+" success");
     }
-    _errorCB(name, err){
+    static _errorCB(name, err){
         console.log("SQLiteStorage "+name);
         console.log(err);
     }

@@ -42,6 +42,7 @@ import VideoPlayer from '../../../components/VideoPlayer';
 import Video from 'react-native-video';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from '../../../util/RNFetchBlob';
+import {Button, Col, Row, Content, Textarea} from 'native-base';
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -92,6 +93,7 @@ export default class WorkPage extends BaseComponent {
 
   componentDidMount() {
       console.log('OrderList  componentDidMount');
+      cachedResults.tabIndex = 0;
       this._fetchData(0);
       this.loadRep();
       DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
@@ -102,6 +104,7 @@ export default class WorkPage extends BaseComponent {
   componentWillReceiveProps(){
     // console.log(nextProps)
     // if(nextProps.navigation.state != this.props.navigation.state){
+      cachedResults.tabIndex = 0;
         this._fetchData(0);
     // }
   }
@@ -134,6 +137,7 @@ export default class WorkPage extends BaseComponent {
         Request.requestPost(DoPause, params, (result)=> {
             if (result && result.code === 200) {
               toastShort('工单暂停成功');
+                this.setState({showPause:false})
               that._fetchData(0);
             } else {
                 toastShort('暂停失败，请重试');
@@ -194,12 +198,12 @@ export default class WorkPage extends BaseComponent {
      //let params = null;
      if (cachedResults.tabIndex === 1) {
         //params = {page:cachedResults.nextPage, limit:'20', status:'1,2,3,5,6', repairUserId: global.uinfo.userId};
-        params.set('status', '1,2,3,5,6');
+        params.set('status', '1,2,3,5,6,13');
         params.set('repairUserId', global.uinfo.userId);
      } else if (cachedResults.tabIndex === 0) {
         //params = {page:cachedResults.nextPage, limit:'20', status:'1,2,3,5,6', repairDeptId: global.uinfo.deptAddresses[0].deptId};
         params.set('repairDeptId', global.uinfo.deptAddresses[0].deptId);
-        params.set('status', '20');
+        params.set('status', '13,20');
     } else if (cachedResults.tabIndex === 2) {
         params.set('repairDeptId', global.uinfo.deptAddresses[0].deptId);
         params.set('status', '8,9,10,11');
@@ -495,7 +499,14 @@ export default class WorkPage extends BaseComponent {
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>恢复</Text>
                     <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
-    } else if (data.status === '20') {
+    } else if (data.status === '13') {
+
+      buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
+                    <Text onPress={()=>this.onPressItem(data,(page)=>this._fetchData(page))} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>完工</Text>
+                </View>
+    }
+     else if (data.status === '20') {
         if(global.permissions){
             buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
                 <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
@@ -515,8 +526,13 @@ export default class WorkPage extends BaseComponent {
     if (data.statusDesc) {
           statusDesc = <Text style={{fontSize:12,color:'#909399',marginLeft:0,marginTop:5,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5,backgroundColor:'#f0f0f0'}}>{data.statusDesc}</Text>
-
     }
+
+    if(data.status === '13'){
+      statusDesc = <Text style={{fontSize:12,color:'#909399',marginLeft:0,marginTop:5,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5,backgroundColor:'#f0f0f0'}}>委外中</Text>
+    }
+
     if (this.state.tabIndex === 2) {
       //statusDesc = null;
       buttons = null;
@@ -592,7 +608,7 @@ export default class WorkPage extends BaseComponent {
                         <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.detailAddress}</Text>
                     </View>
                     {
-                      this.props.isScan == true && 
+                      data.isEquipment === 1 && 
                       <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>设备名称：</Text>
                         <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.equipmentName}</Text>
@@ -712,15 +728,15 @@ onPlayVoice(filePath) {
         }
       }
 
-    this.setState({selectIndex:index, repList:items, });
+    this.setState({selectIndex:index, repList:items, showPause:false});
   }
 
   renderRepItem(data,i) {
-      return (<Text onPress={()=>{this.onPressRepItem(data, i)}} style={{width:(Dimens.screen_width-130)/3,flexWrap:'nowrap', marginLeft:10,
-              color:(this.state.selectIndex===i?'#369CED':'#333333'),fontSize:11, height:35, marginTop:10,
-              textAlignVertical:'center', textAlign:'center',borderWidth:1, borderColor:(this.state.selectIndex===i?'#369CED':'#aaaaaa'),
-                borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>{data.causeCtn}</Text>
-    );
+      return (
+          <Button onPress={()=>{this.onPressRepItem(data, i)}}  style={{borderColor:(this.state.selectIndex===i)?'#7db4dd':'#efefef',backgroundColor:(this.state.selectIndex===i)?'#ddeaf3':'#fff',borderWidth:1,marginRight:15,paddingLeft:15,paddingRight:15,height:30,marginTop:10}}>
+              <Text style={{color:(this.state.selectIndex===i)?'#70a1ca':'#a1a1a3'}}>{data.causeCtn}</Text>
+          </Button>
+      );
   }
 
   //获取VideoPlayer组件模板元素
@@ -903,38 +919,31 @@ onPlayVoice(filePath) {
             onRequestClose={() => {}}
         >
 
-        <View style={styles.modelStyle}>
-            <View style={[styles.popupStyle, {marginTop:(Dimens.screen_height-390)/2,backgroundColor:'#fbfbfb',}]}>
-                <Text style={{fontSize:16,color:'#333',marginLeft:0,marginTop:10,textAlign:'center',width:Dimens.screen_width-80, height:40}}>暂停</Text>
-                <View style={{backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-80),}} />
-                <View style={{width:Dimens.screen_width-80, height:300}} >
-                <View  style={{height:35,marginTop:5}}>
-                    <Text style={{color:'#999',fontSize:14, height:17, textAlignVertical:'center',marginLeft:10,}}>请选择暂停原因</Text>
-                    {
-                        this.state.showPause ? <Text style={{color:'red',fontSize:12, height:17, textAlignVertical:'center',paddingLeft:10,}}>暂停原因不能为空</Text> : null
-                    }
-                </View>
-                <View style={styles.listViewStyle}>
-                  {repDatas}
-
-                </View>
-                <TextInput
-                  style={styles.input_style}
-                  placeholder="原因描述…"
-                  placeholderTextColor="#aaaaaa"
-                  underlineColorAndroid="transparent"
-                  multiline = {true}
-                  ref={'otherDesc'}
-                  onChangeText={(text) => {
-                    otherDesc = text;
-                  }}
-                />
-                </View>
-                <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
-                    <Text onPress={()=>this.cancel()} style={{borderBottomLeftRadius: 15,textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:40, textAlign:'center', flex:1}}>取消</Text>
-                    <Text onPress={()=>this.submit()} style={{borderBottomRightRadius: 15,textAlignVertical:'center',backgroundColor:'#E1E4E8', color:'#333',fontSize:16, height:40, textAlign:'center', flex:1}}>确定</Text>
-                </View>
+        <View style={modalStyles.container}>
+            <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={()=>this.cancel()}>
+            </TouchableOpacity>
+            <View style={modalStyles.innerContainer}>
+                <Col style={{width:ScreenWidth-60,borderRadius:10,backgroundColor:'#f8f8f8',padding:10}}>
+                    {/*<View  style={{height:35,marginTop:5}}>*/}
+                        <Text style={{color:'#a1a1a3'}}>请选择暂停原因</Text>
+                        {
+                        this.state.showPause ? <Text style={{color:'red',fontSize:12, height:17, textAlignVertical:'center'}}>暂停原因不能为空</Text> : null
+                        }
+                    {/*</View>*/}
+                    <View style={{flexDirection:'row',flexWrap:'wrap'}}>
+                        {repDatas}
+                    </View>
+                    <Textarea bordered rowSpan={5} maxLength={150} onChangeText={(text)=>{otherDesc = text}}  placeholder="亲，请输入您暂停的原因..."  style={{width:ScreenWidth-80,height:110,borderRadius:5,backgroundColor:'#fff',marginTop:20}}>
+                                {otherDesc}
+                            </Textarea>
+                    <Button style={{width:60,marginLeft:ScreenWidth-140,alignItems:'center',justifyContent:"center",backgroundColor:'#fff',marginTop:12}}
+                            onPress={()=>this.submit()}>
+                        <Text>确认</Text>
+                    </Button>
+                </Col>
             </View>
+            <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={()=>this.cancel()}>
+            </TouchableOpacity>
         </View>
     </Modal>
           <Modal
@@ -944,7 +953,7 @@ onPlayVoice(filePath) {
               onRequestClose={() =>this.setState({modalPictureVisible:false})}
           >
               <View style={stylesImage.container}>
-                  <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={() => this.setState({modalPictureVisible:false})}>
+                  <TouchableOpacity style={{height:ScreenHeight/2}} onPress={() => this.setState({modalPictureVisible:false})}>
                   </TouchableOpacity>
                   <View style={{width:ScreenWidth,height:ScreenHeight,alignItems:'center',backgroundColor:'rgba(0, 0, 0, 0.5)',justifyContent:'center'}}>
                       <Swiper
@@ -958,7 +967,7 @@ onPlayVoice(filePath) {
                           {listItems}
                       </Swiper>
                   </View>
-                  <TouchableOpacity  style={{height:ScreenHeight/2}} onPress={() => this.setState({modalPictureVisible:false})}>
+                  <TouchableOpacity style={{height:ScreenHeight/2}} onPress={() => this.setState({modalPictureVisible:false})}>
                   </TouchableOpacity>
               </View>
           </Modal>
@@ -986,6 +995,7 @@ onPlayVoice(filePath) {
       cachedResults.total = 0;
       cachedResults.pages = 0;
       cachedResults.nextPage = 1;
+      cachedResults.timeIndex = 0;
       this.setState({tabIndex:index, dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)});
       this._fetchData(0);
     }
@@ -1142,6 +1152,7 @@ const stylesImage =StyleSheet.create({
         flex: 1,
         width:Dimens.screen_width,
         height:Dimens.screen_height,
+        padding: 40,
         backgroundColor: 'rgba(0,0,0,0.6)',
     },
     listViewStyle:{
@@ -1212,3 +1223,24 @@ const stylesImage =StyleSheet.create({
         paddingVertical: 0,marginTop:10, textAlignVertical:'top', textAlign:'left',backgroundColor: 'white',fontSize: 14,height:80, marginLeft:15,marginRight:15, paddingLeft:8,paddingRight:8,paddingTop:5,paddingBottom:5,
     },
   });
+const modalStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 40,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    },
+    innerContainer: {
+        borderRadius: 10,
+        alignItems:'center',
+    },
+    btnContainer:{
+        width:ScreenWidth,
+        height:46,
+        borderRadius: 5,
+        backgroundColor:'#eff0f2',
+        alignItems:'center',
+        paddingTop:8
+    },
+
+});

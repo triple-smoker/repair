@@ -32,7 +32,7 @@ class Adds extends Component {//报修单共用组件
            modalVisible: false,
            showText: false,
            cancelVisible: false,
-           isPlaying: false
+           isPlaying: false,
        };
     }
 
@@ -174,7 +174,7 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.detailAddress}</Text>
                             </Row>
                             {
-                                this.props.record.isEquipment == 1 && 
+                                this.props.record.isEquipment === 1 && 
                                 <Row>
                                     <Text style={stylesBody.orderContextTip}>设备名称:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.equipmentName}</Text>
                                 </Row>
@@ -446,6 +446,7 @@ class CancelMd extends Component {
        this.state = {
               causeList:[],
               reMark:'',
+              showPause: false
               };
        var   url="/api/admin/sysCause/list/REP_CANCEL";
         Axios.GetAxios(url).then(
@@ -468,7 +469,7 @@ class CancelMd extends Component {
                 cause.showType=!cause.showType;
             }
         });
-        this.setState({causeList:causeList});
+        this.setState({causeList:causeList,showPause: false});
     }
 
     _getCauseItem(){
@@ -494,7 +495,8 @@ class CancelMd extends Component {
             }
         })
         if(causeIds.length===0){
-            toastShort('请选择取消原因');
+            // toastShort('请选择取消原因');
+            this.setState({showPause:true});
             return null;
         }
         console.log("取消ID：");
@@ -512,6 +514,7 @@ class CancelMd extends Component {
             (response) => {
                         setTimeout(function(){
                             toastShort('取消成功');
+                            // this.setState({showPause: false});
                             closer();
                             getRepairList();
                         },200)
@@ -528,6 +531,9 @@ class CancelMd extends Component {
                     <View style={modalStyles.innerContainer}>
                         <Col style={{width:ScreenWidth-60,borderRadius:10,backgroundColor:'#f8f8f8',padding:10}}>
                             <Text style={{color:'#a1a1a3'}}>请选择取消原因</Text>
+                            {
+                                this.state.showPause ? <Text style={{color:'red',fontSize:12, height:17, textAlignVertical:'center'}}>暂停原因不能为空</Text> : null
+                            }
                             <View style={{flexDirection:'row',flexWrap:'wrap'}}>
                                 {this._getCauseItem()}
                             </View>

@@ -15,7 +15,7 @@ class Person extends Component {
 
     _getIcon(person){
         var itemList = [];
-        personList = person;
+        var personList = person;
         let listItems = [];
         for( var i = 0; i<personList.length;i++ ){
             if(i==0){
@@ -34,7 +34,7 @@ class Person extends Component {
 
     _getPerson(person){
         var itemList = [];
-        personList = person;
+        var personList = person;
         console.log(person);
         let listItems =(  itemList === null ? null : personList.map((per, index) =>
                     <PersonItem key={index} name={per.assistantName} num={per.itemPercentage}/>

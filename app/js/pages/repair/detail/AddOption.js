@@ -26,7 +26,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
 import Slider from "react-native-slider";
-import {Loading} from '../../../component/Loading'
+import {Loading} from '../../../component/Loading';
+import RepairType from '../../../../pages/publicTool/RepairType'
 
 
 export default class AddOption extends BaseComponent {
@@ -58,6 +59,10 @@ export default class AddOption extends BaseComponent {
             oldItemPersonList:null,
             type:1,
             userId:null,
+            modalTypeVisible2:false,
+            repairParentCn : null,
+            repairChildCn : null,
+            repairMatterId : null,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
@@ -77,6 +82,15 @@ export default class AddOption extends BaseComponent {
             return true//r1.isSelected !== r2.isSelected;
             }}),
             listSource: new ListView.DataSource({
+                rowHasChanged: (r1, r2)=> {
+                    if (r1 !== r2) {
+
+                    } else {
+
+                    }
+            return true//r1.isSelected !== r2.isSelected;
+            }}),
+            listSource1:new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
 
@@ -158,7 +172,8 @@ export default class AddOption extends BaseComponent {
                 }
             })
             that.state.dataMap.set(that.state.selectDeptData.deptId, list);
-            that.setState({userList:list, dataSource1:that.state.dataSource1.cloneWithRows(list), });
+            that.setState({userList:list,
+                         dataSource1:that.state.dataSource1.cloneWithRows(list), });
 
         } else {
 
@@ -177,7 +192,8 @@ export default class AddOption extends BaseComponent {
             console.log('loadRepairMatterList : 0');
             if (result && result.code === 200) {
 
-                that.setState({repairMatterList:result.data,});
+                that.setState({repairMatterList:result.data,
+                    listSource1:that.state.dataSource1.cloneWithRows(result.data), });
             }
       });
     }
@@ -204,7 +220,7 @@ export default class AddOption extends BaseComponent {
 
   _onSure() {
     var that = this;
-    if (this.state.selectMatterPos === -1) {
+    if (this.state.repairMatterId == null) {
         toastShort('维修事项不能为空');
         return;
     }
@@ -214,7 +230,7 @@ export default class AddOption extends BaseComponent {
         return;
     }
 
-    var matterItem = this.state.repairMatterList[this.state.selectMatterPos];
+    // var matterItem = this.state.repairMatterList[this.state.selectMatterPos];
                      
     var deleteIds = [];
 
@@ -227,7 +243,7 @@ export default class AddOption extends BaseComponent {
         var item = this.state.selUserList[i];
         itemPersonList.push({
                 assistantId:''+item.userId, 
-                repairItemId:''+matterItem.repairMatterId,
+                repairItemId: ''+this.state.repairMatterId,
                 itemPercentage:''+Math.round(item.process), 
                 personType:item.type});
     }
@@ -238,6 +254,8 @@ export default class AddOption extends BaseComponent {
             deleteIds:deleteIds,
         };
      console.log(params);
+
+     
      Loading.show();
      Request.requestPost(SaveRepairMatter, params, (result)=> {
         Loading.hidden();
@@ -352,7 +370,7 @@ export default class AddOption extends BaseComponent {
                     <View style={{flexDirection:'row',height:25,textAlignVertical:'center',flex:1}}>
                         <Text style={{color:'#999',fontSize:12, }}>维修占比</Text>
                         <View style={{flexDirection:'row',justifyContent:'space-between', textAlignVertical:'center'}}>
-                            <Slider style={{marginLeft:10,marginTop:8,height:10,minWidth: 150,width:80,flex:1}}
+                            <Slider style={{marginLeft:10,marginTop:8,height:10,minWidth: 150}}
                             minimumValue={0}
                             maximumValue={100}
                             minimumTrackTintColor={'#3F9AED'}
@@ -361,8 +379,9 @@ export default class AddOption extends BaseComponent {
                             value={data.process}
                             onSlidingComplete={this._complete}
                             onValueChange={(value)=>{that._onChange(data, i, value)}}/>
-                            <Text style={{color:'#3F9AED',fontSize:12, marginLeft:5,marginRight:15,}}>{Math.round(data.process)}%</Text>
+                            
                         </View>
+                        <Text style={{color:'#3F9AED',fontSize:12, marginLeft:5,marginRight:15,}}>{Math.round(data.process)}%</Text>
                         
                     </View>
                 </View>
@@ -391,14 +410,18 @@ export default class AddOption extends BaseComponent {
     }
 
     var repairTypeName = '请选择';
-    if (this.state.selectTypePos !== -1) {
-            repairTypeName = this.state.repairTypeList[this.state.selectTypePos].repairTypeCtn;
+    //if (this.state.selectTypePos !== -1) {
+    //    repairTypeName = this.state.repairTypeList[this.state.selectTypePos].repairTypeCtn;
+    //}
+
+    if(this.state.repairParentCn != null){
+        repairTypeName = this.state.repairParentCn;
     }
 
-    var matterName = '请选择';
-        if (this.state.selectMatterPos !== -1) {
-            matterName = this.state.repairMatterList[this.state.selectMatterPos].matterName;
-        }
+    var matterName = '';
+    if(this.state.repairChildCn != null){
+        matterName = '/' + this.state.repairChildCn;
+    }
 
     return (
       <View style={styles.container}>
@@ -409,7 +432,7 @@ export default class AddOption extends BaseComponent {
       />
 
       <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-50-64, width:Dimens.screen_width,flex:1}}>
-      <TouchableOpacity onPress={()=>this.selectType()}>
+      {/* <TouchableOpacity onPress={()=>this.selectType()}>
       <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:15,}}>维修类别</Text>
             <Text style={{color:'#666',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{repairTypeName}</Text>
@@ -419,12 +442,25 @@ export default class AddOption extends BaseComponent {
 
             </View>
         </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <View style={styles.line} />
-        <TouchableOpacity onPress={()=>this.selectOption()}>
+        {/* <TouchableOpacity onPress={()=>this.selectOption()}>
         <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
             <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:15,}}>维修事项</Text>
             <Text style={{color:'#666',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{matterName}</Text>
+            <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
+                                <Image source={require('../../../../res/login/ic_arrow.png')}
+                                       style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
+
+            </View>
+        </View>
+        </TouchableOpacity> */}
+        <View style={styles.line} />
+        <TouchableOpacity onPress={()=>this.selectType2()}>
+        <View style={{backgroundColor:'white', height:40, textAlignVertical:'center',marginLeft:0, marginRight:0, flexDirection:'row',alignItems:'center',}}>
+            <Text style={{color:'#999',fontSize:14, height:40, textAlignVertical:'center', marginLeft:15,}}>维修事项</Text>
+            <Text style={{color:'#666',fontSize:14, height:40, marginLeft:20,textAlignVertical:'center'}}>{repairTypeName}</Text>
+            <Text style={{color:'#666',fontSize:14, height:40, marginLeft:0,textAlignVertical:'center'}}>{ matterName}</Text>
             <View style={{justifyContent:'flex-end',flexDirection:'row',alignItems:'center', flex:1}}>
                                 <Image source={require('../../../../res/login/ic_arrow.png')}
                                        style={{width:6,height:11,marginLeft:10, marginRight:10,}}/>
@@ -487,6 +523,42 @@ export default class AddOption extends BaseComponent {
 
         </Modal>
 
+        {/* <Modal
+            animationType={"none"}
+            transparent={true}
+            visible={this.state.modalTypeVisible2}
+            onRequestClose={() => {}}
+        >
+            <View style={{top:0,height:Dimens.screen_height,width:Dimens.screen_width,backgroundColor: 'rgba(0,0,0,0.5)',alignItems:'center',justifyContent:'center',}}>
+                <View style={styles.bottomStyle}>
+                    <View style={styles.topStyle}>
+                        <Text onPress={()=>this.cancel()} style={{color:'#9b9b9b', marginLeft:10, flex:1}}>取消</Text>
+                        <Text onPress={()=>this.submitType()} style={{color:'#9b9b9b', marginRight:10, }}>确定</Text>
+                    </View>
+                    <View style={{flexDirection:'row', height:300,}}>
+                    <ListView
+                        initialListSize={1}
+                        dataSource={this.state.listSource}
+                        renderRow={(item) => this.renderTypeItemLeft(item)}
+                        style={{backgroundColor:'white',flex:1,height:300,width:Dimens.screen_width/3,}}
+                        onEndReachedThreshold={10}
+                        enableEmptySections={true}
+                        renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}/>
+
+                    <ListView
+                        initialListSize={1}
+                        dataSource={this.state.listSource1}
+                        renderRow={(item) => this.renderTypeItemRight(item)}
+                        style={{backgroundColor:'white',flex:1,height:300,width:Dimens.screen_width*2/3,}}
+                        onEndReachedThreshold={10}
+                        enableEmptySections={true}
+                        renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}/>
+
+                    </View>
+                </View>
+            </View>
+
+        </Modal> */}
 
       <Modal
             animationType={"none"}
@@ -515,14 +587,39 @@ export default class AddOption extends BaseComponent {
             </View>
         </View>
     </Modal>
+
+    <RepairType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} 
+                                isShowModal={()=>this.closePrairType()} 
+                                modalVisible = {this.state.modalTypeVisible2}/>
     </View>
+
+
     )
 }
-
+  selectItem(){
+      this.setState({
+        //   dataList
+      })
+  }
 
   selectType() {
-     this.setState({modelTitle:'选择维修类别', selectMatterState:false, modalTypeVisible:true, listSource:this.state.listSource.cloneWithRows(this.state.repairTypeList), selectMatterPos:-1});
+     this.setState({
+         modelTitle:'选择维修类别', 
+         selectMatterState:false, 
+         modalTypeVisible:true, 
+         listSource:this.state.listSource.cloneWithRows(this.state.repairTypeList), selectMatterPos:-1});
+
+         
   }
+  selectType2() {
+    this.setState({
+        modelTitle:'选择维修类别', 
+        selectMatterState:false, 
+        modalTypeVisible2:true, 
+        listSource:this.state.listSource.cloneWithRows(this.state.repairTypeList), selectMatterPos:-1});
+
+        
+ }
 
   selectOption() {
      if (this.state.selectTypePos === -1) {
@@ -530,7 +627,11 @@ export default class AddOption extends BaseComponent {
         return;
      }
 
-     this.setState({modelTitle:'选择维修事项', selectMatterState:true, modalTypeVisible:true, listSource:this.state.listSource.cloneWithRows(this.state.repairMatterList), });
+     this.setState({
+         modelTitle:'选择维修事项', 
+         selectMatterState:true, 
+         modalTypeVisible:true, 
+         listSource:this.state.listSource.cloneWithRows(this.state.repairMatterList), });
 
   }
 
@@ -566,9 +667,36 @@ export default class AddOption extends BaseComponent {
 
   }
 
+  onPressTypeItem2(data) {
+    var pos = -1;
 
+    var items = this.state.repairTypeList;
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        if (item.repairTypeId === data.repairTypeId) {
+            pos = i;
+        }
+       }
+
+       this.setState({listSource:this.state.listSource.cloneWithRows(items), selectTypePos:pos,});
+       this.timer = setTimeout(() => {
+            this.loadRepairMatterList();
+        }, 200);
+    return    
+  }
+
+  onPressItem2(data){
+    var items = this.state.repairMatterList;
+
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        if (item.repairMatterId === data.repairMatterId) {
+            pos = i;
+        }
+    }
+      this.setState({listSource1:this.state.listSource.cloneWithRows(items), selectMatterPos:pos, });
+  }
   renderTypeItem(data) {
-
     var that = this;
     if (this.state.selectMatterState) {
         var repairMatterId = null;
@@ -605,22 +733,30 @@ export default class AddOption extends BaseComponent {
   cancel() {
     if (this.state.selectMatterState) {
         this.setState({modalTypeVisible:false, selectMatterPos:-1});
+        this.setState({modalTypeVisible2:false, selectMatterPos:-1});
     } else {
 
-        this.setState({modalTypeVisible:false, selectTypePos:-1, });
+        this.setState({modalTypeVisible:false, selectMatterPos:-1});
+        this.setState({modalTypeVisible2:false, selectMatterPos:-1});
     }
+  }
+
+  closePrairType(){
+      this.setState({
+        modalTypeVisible2 : false
+      })
   }
 
   submitType() {
 
         if (this.state.selectMatterState) {
             if (this.state.selectMatterPos != -1) {
-                this.setState({modalTypeVisible:false,});
+                this.setState({modalTypeVisible:false,modalTypeVisible2:false});
             }
 
         } else {
             if (this.state.selectTypePos != -1) {
-                this.setState({modalTypeVisible:false, });
+                this.setState({modalTypeVisible:false,modalTypeVisible2:false });
             }
         }
   }
@@ -665,6 +801,26 @@ onPressItemLeft(data){
         }, 200);
 
 }
+renderTypeItemLeft(data) {
+    var that = this;
+    console.log('++++++++++++++++++++++++++++++++++')
+    // this.selectOption();
+    img = <Image source={require('../../../../res/login/ic_arrow.png')} style={{width:6,height:11,marginLeft:15,marginRight:15,}}/>
+    var repairTypeId = null;
+    if (this.state.selectTypePos !== -1) {
+        repairTypeId = this.state.repairTypeList[this.state.selectTypePos].repairTypeId;
+    }
+    return (
+        <TouchableOpacity onPress={()=>{that.onPressTypeItem2(data)}} style={{height:45,flex:1}}>
+            <View style={{flexDirection:'row',marginLeft:15,height:45,textAlignVertical:'center',alignItems: 'center',}} >
+            <Text style={{fontSize:14,color:'#777',marginLeft:15,}}>{data.repairTypeCtn}</Text>
+            {repairTypeId&&repairTypeId===data.repairTypeId ? img : null}
+            </View>
+        </TouchableOpacity>
+    );
+}
+
+
 
 renderItemLeft(data) {
     var that = this;
@@ -687,7 +843,26 @@ renderItemLeft(data) {
     </View>
     );
 }
+renderTypeItemRight(data) {
+    var that = this;
+    var repairMatterId = null;
+    if (this.state.selectMatterPos !== -1) {
+        repairMatterId = this.state.repairMatterList[this.state.selectMatterPos].repairMatterId;
+    }
+    return (
+    <View key={data.id}>
+        <TouchableOpacity onPress={()=>{that.onPressItem2(data)}} style={{height:45,flex:1}}>
+        <View style={{flexDirection:'row',marginLeft:10,height:45,textAlignVertical:'center',alignItems: 'center',}} >
+        <Image source={repairMatterId===data.repairMatterId ?
+                require('../../../../res/login/checkbox_pre.png') : require('../../../../res/login/checkbox_nor.png')} 
+                style={{width:18,height:18}}/>
+        <Text style={{fontSize:14,color:'#777',marginLeft:15,}}>{data.matterName}</Text>
+        </View>
+        </TouchableOpacity>
 
+    </View>
+    );
+}
 renderItem(data) {
     var that = this;
     return (
@@ -704,6 +879,18 @@ renderItem(data) {
     </View>
     );
 }
+     //报修导航
+    newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn){
+        // this.submitType();
+        this.setState({modalTypeVisible2:false});
+        if(repairTypeId != null && repairTypeId != ''){
+            this.setState({ 
+                repairParentCn: repairParentCn,
+                repairChildCn: repairChildCn,
+                repairMatterId: repairTypeId,
+            });
+        }
+    }
 
 }
 

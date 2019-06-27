@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Swiper from 'react-native-swiper';
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
-import Request, {GetRepairType} from '../../http/Request';
+import Request, {GetRepairType,ScanMsg} from '../../http/Request';
 import Permissions from 'react-native-permissions';
 import OrderType from "../../../pages/publicTool/OrderType";
 import RNFetchBlob from '../../../util/RNFetchBlob';
@@ -123,6 +123,7 @@ export default class HomePage extends Component {
         Permissions.request('storage', { type: 'always' }).then(response => {
 
         })
+        this._startDetection()
     }
 
 
@@ -252,18 +253,30 @@ export default class HomePage extends Component {
         // this.setState({parsedText: text});
 
         // Alert.alert(tag.id);
+        // console.log(tag.id)
         const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('WorkManager',{
-                theme:this.theme,
-                scanId : tag.id,
-                callback: (
-                    () => {
-                        this.setHome();
-                    })
-            })
-        });
 
+                navigation.navigate('WorkManager',{
+                    theme:this.theme,
+                    scanId : tag.id,
+                    // equipmentId : result.data.equipmentId,
+                    // equipmentName: result.data.equipmentName,
+                    isScan : true,
+                    callback: (
+                        () => {
+                            this.setHome();
+                        })
+                })    
+           
+        // Request.requestGet(ScanMsg + tag.id,null,(result) => {
+        //     if(result && result.code === 200){
+                
+        //         InteractionManager.runAfterInteractions(() => {
+                    
+                    
+        //         });
+        //     }
+        // }) 
     }
     setHome(){
         DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
@@ -295,19 +308,27 @@ export default class HomePage extends Component {
         //1113722002746687489
         //rfid_cod : 040A8A3A325E81
         //qr_code : bf27a82f-85b2-4000-8dac-bec8257c6d3a
-        var rfid = '040A8A3A325E81';
+        var rfid = '04C28A3A325E80';
         var qrCode = 'bf27a82f-85b2-4000-8dac-bec8257c6d3a'
         const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('WorkManager',{
-                theme:this.theme,
-                scanId : qrCode,
-                callback: (
-                    () => {
-                        this.setHome();
+
+        Request.requestGet(ScanMsg+qrCode,null,(result) => {
+            if(result && result.code === 200){
+
+                InteractionManager.runAfterInteractions(() => {
+                    navigation.navigate('WorkManager',{
+                        theme:this.theme,
+                        scanId : rfid,
+                        isScan : true,
+                        callback: (
+                            () => {
+                                this.setHome();
+                            })
                     })
-            })
-        });
+                });
+            }
+        })
+        
     }
     _sqlite(){
         const {navigation} = this.props;
@@ -384,14 +405,14 @@ export default class HomePage extends Component {
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
               <TouchableOpacity onPress={()=>this.repair()}>
                 <Image source={require('../../../res/login/ico_bx.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修单</Text>
                 </TouchableOpacity>
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this.newRepair()}>
                 <Image source={require('../../../res/login/ico_pj.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>快修</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修</Text>
                 </TouchableOpacity>
                 {/*<OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>*/}
             </View>
@@ -419,10 +440,10 @@ export default class HomePage extends Component {
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                <TouchableOpacity onPress={()=>this. _stopDetection()} >
+                {/* <TouchableOpacity onPress={()=>this. _stopDetection()} > */}
                 <Image source={require('../../../res/login/ico_yf.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
                 <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>医疗</Text>
-                </TouchableOpacity>
+                {/* </TouchableOpacity> */}
             </View>
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this._sqlite()} >

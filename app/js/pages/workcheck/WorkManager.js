@@ -11,6 +11,7 @@ import {
     TextInput,
     Platform,
     Modal,
+    Alert,
     ScrollView, DeviceEventEmitter, BackHandler, TouchableHighlight
 } from 'react-native';
 
@@ -21,7 +22,7 @@ import TodayTask from './TodayTask';
 import ScanResult from '../repair/ScanResult'
 import WorkPage from '../work/WorkPage';
 import TitleBar from '../../component/TitleBar';
-
+import {Loading} from '../../component/Loading'
 
 export default class CheckDetail extends BaseComponent {
     static navigationOptions = {
@@ -30,37 +31,54 @@ export default class CheckDetail extends BaseComponent {
     constructor(props){
         super(props);
         const { navigation } = this.props;
-        const scanId = navigation.getParam('scanId', '');
-        this.state={
-            scanId : scanId,
-            detail:null,
-            isScan : false,
-            equipmentId : '',
-            equipmentName : '',
+        // const isScan = navigation.getParam('isScan', '');
+        // const scanId = navigation.getParam('scanId', '');
+        // const equipmentId = navigation.getParam('equipmentId', '');
+        // const equipmentName = navigation.getParam('equipmentName', '');
+        this.state = {
+            isScan : null,
+            scanId : null,
+            equipmentId : null,
+            equipmentName : null,
         }
     }
     componentDidMount() {
+        this.loadDetail()
         // DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
         // if (Platform.OS === 'android' && this.props.setHome != null) {
         //     BackHandler.addEventListener("back", this.onBackClicked);
         // }
-        this.loadDetail()
     }
-    
-    loadDetail(){
-        var id = this.state.scanId;
-        if(id){
-            Request.requestGet(ScanMsg+id,null,(result) => {
-                console.log('++++++++')
-                console.log(result)
-                if(result && result.code === 200){
-                    console.log('------')
-                    console.log(result)
-                    this.setState({detail:result.data})
-                }
-            })
-        }
+    componentWillReceiveProps(nextProps){
+        setTimeout(
+            () => { 
+            this.loadDetail() 
+            }, 500)
         
+       
+    }
+    loadDetail(type){
+        const { navigation } = this.props;
+        var isScan = navigation.getParam('isScan', '');
+        var scanId = navigation.getParam('scanId', '');
+        this.setState({    
+            isScan : isScan,
+            scanId : scanId,
+            
+        })
+        this.loadScanMsg(scanId)
+        
+        
+    }
+    loadScanMsg(id){
+        Loading.show()
+        Request.requestGet(ScanMsg + id,null,(result) => {
+            Loading.hidden()
+            this.setState({
+                 equipmentId : result.data.equipmentId,
+                 equipmentName: result.data.equipmentName, 
+            })
+        })
     }
     goBack(){
         const { navigate } = this.props.navigation;
@@ -72,31 +90,24 @@ export default class CheckDetail extends BaseComponent {
         navigate('Scan',{
             targetRouteName : 'WorkManager',
             callback:((data)=>{
-                
                 this.setState({
                     isScan : data.isScan,
                     equipmentId : data.equipmentId,
-                    equipmentName : data.equipmentName
+                    equipmentName : data.equipmentName,
+                    scanId : null
                 })
-                
             })
         });
     }
 
     render() {
-        var detail = this.state.detail;
+        var scanId = this.state.scanId;
         var pageName = '我的工单';
         var detailShow = false;
-        var equipmentId = null;
-        if(detail){
-            pageName =  detail.equipmentName;
+        if(scanId || this.state.isScan == true){
             detailShow = true;
-            equipmentId = detail.equipmentId;
-            
-        }else if(this.state.isScan == true){
-            pageName =  this.state.equipmentName;
+            pageName = this.state.equipmentName;
         }
-        
 
         return (
             <Container>
@@ -133,7 +144,7 @@ export default class CheckDetail extends BaseComponent {
                     </Tab>
                     {
                         detailShow ? <Tab heading={'详情'} tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
-                                    <ScanResult equipmentId={equipmentId} navigation = {this.props.navigation}/> 
+                                    <ScanResult equipmentId={this.state.equipmentId} navigation = {this.props.navigation}/> 
                                     </Tab>: null
                     }
                 </Tabs>

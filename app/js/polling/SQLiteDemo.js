@@ -6,12 +6,12 @@ import {
 } from 'react-native';
 import SQLite from './SQLite';
 import {CheckSqLite,SelectFirstCheck} from './CheckSqLite';
-import Axios from '../util/Axios';
+import Axios from '../../util/Axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
 
-var sqLite = new SQLite();
+// var sqLite = new SQLite();
 // var checkSqLite = new CheckSqLite();
 var db;
 const tabs = [
@@ -66,7 +66,7 @@ export default class SQLiteDemo extends Component{
         var sqLiteTimeTemp = "0"
         //开启数据库
         if(!db){
-            db = sqLite.open();
+            db = SQLite.open();
         }
         //建表
         // sqLite.createTable();
@@ -85,6 +85,8 @@ export default class SQLiteDemo extends Component{
                     // var url = "/api/generaloperation/portal/batchSynchronization/ModulesName?time="+sqLiteTimeTemp+"&modulesName=xunjian";
                     Axios.GetAxiosSQLite(sqLiteTimeTemp).then(
                         (response)=>{
+                            // console.log("++++++++");
+                            // console.log(response);
                             if(Array.isArray(response.data)&&response.data.length>1){
                                 let key = 'sqLiteTimeTemp';
                                 //json转成字符串
@@ -99,12 +101,15 @@ export default class SQLiteDemo extends Component{
                                     }
                                 })
                                 var dates = response.data[1];
-                                console.log("++"+dates);
+                                // console.log("++"+response.data[1]);
                                 for(var tableName in dates){
                                     //删除数据
                                     // sqLite.dropTable(tableName);
                                     if(dates[tableName]!=null&&dates[tableName].length>0){
-                                        sqLite.insertData(dates[tableName],tableName);
+
+                                        // console.log("=="+dataJson);
+                                        SQLite.insertData(dates[tableName],tableName);
+                                        // console.log(dates[tableName]);
                                     }
 
                                 }
@@ -131,7 +136,7 @@ export default class SQLiteDemo extends Component{
 
     dropTable(){
         tabs.forEach((tabName)=>{
-            sqLite.dropTable(tabName);
+            SQLite.dropTable(tabName);
         })
         //存储
         AsyncStorage.setItem("sqLiteTimeTemp", "", function (error) {
@@ -186,11 +191,16 @@ export default class SQLiteDemo extends Component{
         db.transaction((tx)=>{
             // var a = CheckSqLite.selectFirstCheck;
             console.log("++++++++++");
-            tx.executeSql(SelectFirstCheck, [],(tx,results)=>{
+            var sql ="select b.ITEM_NAME,b.ITEM_FORMAT,b.ITEM_RESULT_SET " +
+                "from inspect_item_conf b, man_ref_item mri where mri.STATUS_CD=1 and " +
+                "b.STATUS_CD=1 and mri.ITEM_CODE=b.ITEM_CODE and " +
+                "mri.MAN_CODE=201906261561538593183";
+            tx.executeSql(sql, [],(tx,results)=>{
                 var len = results.rows.length;
+                console.log(len)
                 for(let i=0; i<len; i++){
                     var user = results.rows.item(i);
-                    console.log("<<<<<<<<<<<<<<<"+tableName);
+                    // console.log("<<<<<<<<<<<<<<<"+tableName);
                     console.log(user);
                 }
             });
@@ -205,23 +215,23 @@ export default class SQLiteDemo extends Component{
             <View>
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="selectFirstCheck" onPress={()=>this.selectFirstCheck()}/>
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="删表" onPress={()=>this.dropTable()}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查inspect_job" onPress={()=>this.getTable("inspect_job")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查equipment_ref_item" onPress={()=>this.getTable("equipment_ref_item")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查inspect_equipment_type_conf" onPress={()=>this.getTable("inspect_equipment_type_conf")}/>
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查inspect_job" onPress={()=>this.getTable("inspect_job")}/>*/}
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查equipment_ref_item" onPress={()=>this.getTable("equipment_ref_item")}/>*/}
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查inspect_equipment_type_conf" onPress={()=>this.getTable("inspect_equipment_type_conf")}/>*/}
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查inspect_item_conf" onPress={()=>this.getTable("inspect_item_conf")}/>
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查inspect_job_manager" onPress={()=>this.getTable("inspect_job_manager")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查job_exec_time" onPress={()=>this.getTable("job_exec_time")}/>
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查job_exec_time" onPress={()=>this.getTable("job_exec_time")}/>*/}
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查man_ref_item" onPress={()=>this.getTable("man_ref_item")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_equipment_typeb" onPress={()=>this.getTable("t_base_equipment_type")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_equipment" onPress={()=>this.getTable("t_base_equipment")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查daily_report" onPress={()=>this.getTable("daily_report")}/>
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_equipment_typeb" onPress={()=>this.getTable("t_base_equipment_type")}/>*/}
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_equipment" onPress={()=>this.getTable("t_base_equipment")}/>*/}
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查daily_report" onPress={()=>this.getTable("daily_report")}/>*/}
                 <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查daily_task" onPress={()=>this.getTable("daily_task")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查r_building_floor" onPress={()=>this.getTable("r_building_floor")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查r_floor_room" onPress={()=>this.getTable("r_floor_room")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_building" onPress={()=>this.getTable("t_base_building")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_place" onPress={()=>this.getTable("t_base_place")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_room" onPress={()=>this.getTable("t_base_room")}/>
-                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_room" onPress={()=>this.getTable("t_base_room")}/>
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查r_building_floor" onPress={()=>this.getTable("r_building_floor")}/>*/}
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查r_floor_room" onPress={()=>this.getTable("r_floor_room")}/>*/}
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_building" onPress={()=>this.getTable("t_base_building")}/>*/}
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_place" onPress={()=>this.getTable("t_base_place")}/>*/}
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_room" onPress={()=>this.getTable("t_base_room")}/>*/}
+                {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_room" onPress={()=>this.getTable("t_base_room")}/>*/}
 
                 <Text>
                     {this.state.ID}

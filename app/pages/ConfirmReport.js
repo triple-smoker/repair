@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Image, TextInput, View} from 'react-native';
+import {Image, TextInput, TouchableHighlight, TouchableOpacity, View} from 'react-native';
 import { Container, Content,Text } from 'native-base';
 import Reporter from '../components/Reporter';
 import MyFooter from '../components/MyFooter';
@@ -8,6 +8,7 @@ import axios from 'axios';
 import SoundRecoding from '../components/SoundRecoding';
 import Axios from '../util/Axios';
 import { toastShort } from '../js/util/ToastUtil';
+import OrderType from "./RepairScreen";
 
 
 class ConfirmReport extends Component {
@@ -17,18 +18,21 @@ class ConfirmReport extends Component {
      * @type {{headerBackImage: *, headerTitle: string, headerStyle: {elevation: number}}}
      */
     static navigationOptions = {
-        // header: null,
-        headerTitle: '报修单确认',
-        headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../image/navbar_ico_back.png')} />),
-        headerStyle: {
-            elevation: 0,
-        },
-        headerRight: (<View />),
-        headerTitleStyle: {
-            flex:1,
-            textAlign: 'center'
-        }
+        header : null
     };
+    // static navigationOptions = {
+    //     // header: null,
+    //     headerTitle: '报修单确认',
+    //     headerBackImage: (<Image resizeMode={'contain'} style={{width: 38, height: 60}} source={require('../image/navbar_ico_back.png')} />),
+    //     headerStyle: {
+    //         elevation: 0,
+    //     },
+    //     headerRight: (<View />),
+    //     headerTitleStyle: {
+    //         flex:1,
+    //         textAlign: 'center'
+    //     }
+    // };
 
     constructor(props){
 
@@ -278,10 +282,25 @@ class ConfirmReport extends Component {
             }
         )
     }
+    goBack(){
+        const { navigate } = this.props.navigation;
+        this.props.navigation.goBack();
+    }
 
     render() {
         return (
             <Container  style={{backgroundColor: "#EEEEEE"}}>
+                <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
+                    <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
+                        <Image style={{width:21,height:37}} source={require("../image/navbar_ico_back.png")}/>
+                    </TouchableHighlight>
+                    <TouchableOpacity style={{flex:1,height:30, marginRight:0,}}>
+                        <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
+                            <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>报修确认</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <View style={{width:60}}/>
+                </View>
                 <Content>
                     <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15,marginLeft:"1.5%",}}>请确认您的报修单</Text>
                     {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
