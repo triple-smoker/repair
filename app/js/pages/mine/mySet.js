@@ -158,7 +158,7 @@ export default class MySet extends BaseComponent {
                 
                 <View style={styles.case} >
                     <Text style={{fontSize:16}}>
-                        消息推送
+                        消息提示音
                     </Text>
                     <Switch  value = {this.state.pushStatus}
                              onValueChange={(value)=>this.onChange(value)} />

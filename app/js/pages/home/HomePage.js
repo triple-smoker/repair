@@ -306,9 +306,9 @@ export default class HomePage extends Component {
     }
     _test(){
         //1113722002746687489
-        //rfid_cod : 040A8A3A325E81
+        //rfid_cod : 040A8A3A325E81 04C88A3A325E80
         //qr_code : bf27a82f-85b2-4000-8dac-bec8257c6d3a
-        var rfid = '04C28A3A325E80';
+        var rfid = '04C88A3A325E80';
         var qrCode = 'bf27a82f-85b2-4000-8dac-bec8257c6d3a'
         const {navigation} = this.props;
 
@@ -405,14 +405,14 @@ export default class HomePage extends Component {
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
               <TouchableOpacity onPress={()=>this.repair()}>
                 <Image source={require('../../../res/login/ico_bx.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修单</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修</Text>
                 </TouchableOpacity>
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this.newRepair()}>
                 <Image source={require('../../../res/login/ico_pj.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>快修</Text>
                 </TouchableOpacity>
                 {/*<OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>*/}
             </View>
