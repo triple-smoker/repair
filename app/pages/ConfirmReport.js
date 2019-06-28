@@ -228,7 +228,7 @@ class ConfirmReport extends Component {
                     clearInterval(this.timer)
 
                 }
-            }, 2*60*1000
+            }, 45*1000
         )
 
     }
