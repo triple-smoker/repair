@@ -289,8 +289,8 @@ class CheckItem extends Component {
                     }}
                 />}
                 <View style={{flex:3,}}>
-                    <Text style={{fontSize:16, color:'#404040', marginLeft:10, }}>{this.props.data.JOB_NAME}</Text>
-                    <Text style={{fontSize:14, color:'#737373', marginLeft:10, marginTop:10,}}>{moment(this.props.data.EXEC_START_TIME).format("MM\/DD HH:mm")+"—"+moment(this.props.data.EXEC_END_TIME).format("MM\/DD HH:mm")}</Text>
+                    <Text style={{fontSize:17, color:'#404040', marginLeft:10, }}>{this.props.data.JOB_NAME}</Text>
+                    <Text style={{fontSize:13, color:'#aaa', marginLeft:10, marginTop:10,}}>{moment(this.props.data.EXEC_START_TIME).format("MM\/DD HH:mm")+"—"+moment(this.props.data.EXEC_END_TIME).format("MM\/DD HH:mm")}</Text>
                 </View>
                 <View style={{flex:1,height:80,  textAlignVertical:'center',justifyContent:"center"}}>
                         {this.props.data.TABLE_TYPE === "0" &&
@@ -325,7 +325,7 @@ class CheckItem extends Component {
                         {processType==="2" &&
                             <Text style={{fontSize:16, color:'#FE0000', marginLeft:0, marginRight:5,textAlign:'center',}}>已超时</Text>
                         }
-                        <Text style={{fontSize:13, color:'#999', marginLeft:0, marginRight:5,textAlign:'center',}}>{processTypeText}</Text>
+                        <Text style={{fontSize:13, color:'#999', marginLeft:0, marginRight:5,textAlign:'right',}}>{processTypeText}</Text>
                     </View>
                 }
                 {cachedResults.tabIndex === 1 &&
