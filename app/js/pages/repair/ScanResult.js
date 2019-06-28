@@ -54,7 +54,7 @@ export default class ScanResult extends BaseComponent {
         setTimeout(
             () => { 
                 this.loadDetail()
-            }, 1000)
+            }, 500)
     }
     loadDetail() {
         var that = this;
