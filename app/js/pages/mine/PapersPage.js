@@ -118,7 +118,7 @@ export default class PapersPage extends BaseComponent {
         return(
             <View key={data.content.key} style={{...headerStyle,...styles.headerRepeat}}>
                 <View style={styles.case}>
-                    <Text style={{fontSize:16,color:'#404040'}}>
+                    <Text style={{fontSize:16,color:'#666',fontWeight:'bold'}}>
                         {item.code}
                     </Text>
                     <View style={{flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',}}>
@@ -131,19 +131,35 @@ export default class PapersPage extends BaseComponent {
                     </View>
                     
                 </View>
+                {item.expireDays > 0 ?
                 <View style={styles.case}>
-                    <Text style={{fontSize:15,color:'#404040'}}>
+                    <Text style={{fontSize:15,color:'#666'}}>
                        【{optType}】
                     </Text>
-                    <Text style={{fontSize:15,color:'#404040'}}>
+                    <Text style={{fontSize:15,color:'#666'}}>
                         有效期:{toDate(expireTime,'yyyy-MM-dd')}
                     </Text>
-                    <Text style={{fontSize:15,color:'#404040'}}>
+                    <Text style={{fontSize:15,color:'#666'}}>
                     {/* Math.abs() */}
-                    {item.expireDays > 0 ? '剩'+item.expireDays+'天过期' : '过期'+Math.abs(item.expireDays)+'天'} 
+                     {'剩'+item.expireDays+'天过期' }
                     </Text>
-
+                </View>  :
+                <View style={styles.case}>
+                    <Text style={{fontSize:15,color:'#999'}}>
+                    【{optType}】
+                    </Text>
+                    <Text style={{fontSize:15,color:'#999'}}>
+                        有效期:{toDate(expireTime,'yyyy-MM-dd')}
+                    </Text>
+                    <Text style={{fontSize:15,color:'#999'}}>
+                    {/* Math.abs() */}
+                    { '过期'+Math.abs(item.expireDays)+'天'} 
+                    </Text>
                 </View>
+                
+            
+            
+            }
               
             </View>
         )
