@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Image, TextInput, TouchableHighlight, TouchableOpacity, View} from 'react-native';
+import {Image, TextInput, TouchableHighlight, TouchableOpacity, View, BackHandler,} from 'react-native';
 import { Container, Content,Text } from 'native-base';
 import Reporter from '../components/Reporter';
 import MyFooter from '../components/MyFooter';
@@ -71,6 +71,16 @@ class ConfirmReport extends Component {
         }
 
 
+
+    }
+
+
+    componentDidMount() {
+
+        //取消报修单提交
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener("back", ()=> clearInterval(this.timer));
+        }
 
     }
 
@@ -279,7 +289,7 @@ class ConfirmReport extends Component {
         return (
             <Container  style={{backgroundColor: "#EEEEEE"}}>
                 <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-                    <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
+                    <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>{this.goBack();clearInterval(this.timer);}}>
                         <Image style={{width:21,height:37}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
                     <TouchableOpacity style={{flex:1,height:30, marginRight:0,}}>
