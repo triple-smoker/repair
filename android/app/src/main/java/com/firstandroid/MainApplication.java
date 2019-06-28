@@ -3,6 +3,7 @@ package com.firstandroid;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.shahenlibrary.RNVideoProcessingPackage;
 import community.revteltech.nfc.NfcManagerPackage;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import com.brentvatne.react.ReactVideoPackage;
@@ -50,6 +51,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
               new SQLitePluginPackage(),
           new MainReactPackage(),
+            new RNVideoProcessingPackage(),
             new NfcManagerPackage(),
             new RNViewShotPackage(),
             new ReactVideoPackage(),

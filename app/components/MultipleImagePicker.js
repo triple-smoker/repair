@@ -8,7 +8,7 @@ import Video from 'react-native-video';
 import ImgPreview from './ImgPreview';
 
 import BaseComponent from '../js/base/BaseComponent'
-
+// import { ProcessingManager } from 'react-native-video-processing';
 
 class MultipleImagePicker extends BaseComponent {
 
@@ -59,6 +59,30 @@ class MultipleImagePicker extends BaseComponent {
             } else if (response.customButton) {
                 console.log('User tapped custom button: ', response.customButton);
             } else {
+                // const compressOptions = {
+                //     width: 720,
+                //     height: 1280,
+                //     bitrateMultiplier: 3,
+                //     saveToCameraRoll: true, // default is false, iOS only
+                //     saveWithCurrentDate: true, // default is false, iOS only
+                //     minimumBitrate: 300000,
+                //     // removeAudio: true, // default is false
+                // };
+
+                // ProcessingManager.compress(response.path, compressOptions) // like VideoPlayer compress options
+                //     .then((data) => {
+                //         let video = {
+                //             path : data.source,
+                //             type : 'video',
+                //         }
+                //         console.log('video : ' + video)
+                //         let videos = [];
+                //         videos.push(video);
+                //         this.appendImage(videos);
+                //         this.setState({ visibleModal: false })
+                //     });
+
+
                 console.log('video response : ' + response)
                 let video = {
                     path : 'file://' + response.path,

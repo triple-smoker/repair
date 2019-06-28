@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Image, TextInput, TouchableHighlight, TouchableOpacity, View} from 'react-native';
+import {Image, TextInput, TouchableHighlight, TouchableOpacity, View, BackHandler,} from 'react-native';
 import { Container, Content,Text } from 'native-base';
 import Reporter from '../components/Reporter';
 import MyFooter from '../components/MyFooter';
@@ -9,6 +9,8 @@ import SoundRecoding from '../components/SoundRecoding';
 import Axios from '../util/Axios';
 import { toastShort } from '../js/util/ToastUtil';
 import OrderType from "./RepairScreen";
+// import LoadingUtil from "../util/LoadingUtil";
+import { ProcessingManager } from 'react-native-video-processing';
 
 import Loading from 'react-native-easy-loading-view';
 
@@ -72,6 +74,16 @@ class ConfirmReport extends Component {
 
     }
 
+
+    componentDidMount() {
+
+        //取消报修单提交
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener("back", ()=> clearInterval(this.timer));
+        }
+
+    }
+
     async UpLoad(path, name) {
         let pos = path.lastIndexOf("/");
         let file = {type:'multipart/form-data', uri: path, name:path.substr(pos+1)};
@@ -105,73 +117,68 @@ class ConfirmReport extends Component {
             isUpLoad : true,
         })
 
-        console.log('上传图片列表');
-
-        console.log(this.state.images)
-
         let imagesRequest = [];
         let videoRequest = [];
 
         try {
             let images = this.state.images;
+            const compressOptions = {
+                width: 720,
+                height: 1280,
+                bitrateMultiplier: 3,
+                saveToCameraRoll: true, // default is false, iOS only
+                saveWithCurrentDate: true, // default is false, iOS only
+                minimumBitrate: 300000,
+            };
 
             for(let i = 0; i<images.length; i++){
                 let image = images[i];
-                let s  = this.UpLoad(image.uri, 'image'+ i + '.jpg')
-                s.then(
-                    (s)=> {
-                        console.log(s);
-                        let imageLoad = {
-                            "filePath":s.fileDownloadUri,
-                            "fileName":s.originalName,
-                            "fileBucket":s.bucketName,
-                            "fileType": s.fileType,
-                            "fileHost":s.fileHost,
-                        }
-
-                        console.log('上传成功');
-                        console.log(imageLoad);
-
-                        if(image.type==='video'){
-
-                            videoRequest.push(imageLoad)
-
-                            this.setState(
-                                {
-                                    videosRequest : videoRequest,
+                if(image.type==='video'){
+                    ProcessingManager.compress(image.uri, compressOptions) // like VideoPlayer compress options
+                        .then((data) => {
+                            let s  = this.UpLoad(data.source, 'image'+ i + '.jpg')
+                            s.then(
+                                (s)=> {
+                                    console.log(s);
+                                    let imageLoad = {
+                                        "filePath":s.fileDownloadUri,
+                                        "fileName":s.originalName,
+                                        "fileBucket":s.bucketName,
+                                        "fileType": s.fileType,
+                                        "fileHost":s.fileHost,
+                                    }
+                                    videoRequest.push(imageLoad)
+                                    this.setState({videosRequest : videoRequest,})
                                 }
-                            )
-                        }else{
+                            );
+                        });
+                    continue;
+                }else {
+                    let s  = this.UpLoad(image.uri, 'image'+ i + '.jpg')
+                    s.then(
+                        (s)=> {
+                            console.log(s);
+                            let imageLoad = {
+                                "filePath":s.fileDownloadUri,
+                                "fileName":s.originalName,
+                                "fileBucket":s.bucketName,
+                                "fileType": s.fileType,
+                                "fileHost":s.fileHost,
+                            }
                             imagesRequest.push(imageLoad)
-
-                            this.setState(
-                                {
-                                    imagesRequest : imagesRequest,
-                                    // imagesNum : this.state.imagesNum + 1
-                                }
-                            )
+                            this.setState({imagesRequest : imagesRequest})
                         }
-
-
-                    }
-
-                );
-
-
-
-
+                    );
+                }
             }
         } catch (err) {
             clearInterval(this.timer);
-            console.log('上传失败')
-            console.log(err)
         }
 
         let voicesRequest = [];
 
         try {
             let voice = this.state.voices;
-
             if('' === voice.filePath){
                 console.log('无语音文件上传');
             }else{
@@ -185,17 +192,10 @@ class ConfirmReport extends Component {
                             "fileHost":s.fileHost,
                         }
                         voicesRequest.push(voice)
-                        this.setState(
-                            {
-                                voicesRequest : voicesRequest,
-                                // voicesNum : this.state.voicesNum + 1
-                            }
-                        )
+                        this.setState({voicesRequest : voicesRequest,})
                     }
                 );
             }
-
-
         } catch (err) {
             console.log(err)
             clearInterval(this.timer);
@@ -203,11 +203,6 @@ class ConfirmReport extends Component {
 
         this.timer = setInterval(
             () => {
-                console.log('this.state.voices.filePath :  '+this.state.voices.filePath);
-                console.log('this.state.voicesRequest.length :  '+this.state.voicesRequest.length);
-                console.log('this.state.images.length :  '+this.state.images.length);
-                console.log('this.state.imagesRequest.length :  '+this.state.imagesRequest.length);
-                console.log('this.state.videosRequest.length :  '+this.state.videosRequest.length);
                 if(this.state.images.length === this.state.imagesRequest.length + this.state.videosRequest.length){
                     if(1 === this.state.voicesRequest.length){
                         this.submit();
@@ -216,8 +211,7 @@ class ConfirmReport extends Component {
                         this.submit();
                     }
                 }
-            } , 1500
-        )
+            } , 1500);
 
         setTimeout(
             ()=>
@@ -295,7 +289,7 @@ class ConfirmReport extends Component {
         return (
             <Container  style={{backgroundColor: "#EEEEEE"}}>
                 <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-                    <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
+                    <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>{this.goBack();clearInterval(this.timer);}}>
                         <Image style={{width:21,height:37}} source={require("../image/navbar_ico_back.png")}/>
                     </TouchableHighlight>
                     <TouchableOpacity style={{flex:1,height:30, marginRight:0,}}>
@@ -338,23 +332,8 @@ class ConfirmReport extends Component {
                 </Content>
                 <Loading
                     ref={(view)=>{Loading.loadingDidCreate(view)}} // 必须调用
-
                     top={86} // 如果需要在loading或者hud的时候可以点击导航上面的按钮，建议根据自己导航栏具体高度来设置。如果不需要点击可以不设置
                     offsetY={-150} // 默认loading 和 hud 会在 去掉top之后高度的中间，如果觉得位置不太合适，可以通着offsetY来调整
-
-                    // loadingDefaultText={''} // loading动画的文字
-                    // loadingTextStyle={{ fontSize : 16, color: 'red' }} // loading动画文字的样式
-                    // loadingImage={require('./screen/loading_2.gif')} // loading动画是显示的gif
-                    // loadingImageStyle={{ width : 100, height : 100 }} // gif 图片样式
-
-                    // hudStyle={{ width : 150, height : 150 }} // hud的全局样式
-                    // hudBackgroundColor={'red'} // hud全局背景色
-                    // hudDefaultText={'努力加载中...'} // hud默认全局文字
-                    // hudTextStyle={{ fontSize : 16, color: 'red' }} // 文字样式
-                    // activityIndicatorSize={'small'} // hud上面的圈圈 small or large
-                    // activityIndicatorColor={'red'} // hud上面圈圈的颜色
-                    // hudCustomImage={require('./screen/loading_2.gif')} // 自定义hud上面的圈圈显示，可以把转的圈圈替换为gif
-                    // hudImageStyle={{ width : 50, height : 50 }} // 自定义hud图片的样式
                 />
                 <MyFooter submit={() => this.sb()} value='确定'/>
 
