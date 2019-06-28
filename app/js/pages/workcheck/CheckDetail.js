@@ -31,6 +31,7 @@ let cachedResults = {
 var username = '';
 var db;
 var checkSqLite = new CheckSqLite();
+var dateSourceItem =[];
 export default class CheckDetail extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -43,7 +44,7 @@ export default class CheckDetail extends BaseComponent {
       theme:this.props.theme,
       manCode:navigation.getParam('manCode', ''),
       modalVisible:false,
-
+      dateSource:[]
     }
   }
 
@@ -57,7 +58,7 @@ export default class CheckDetail extends BaseComponent {
         if(!db){
             db = SQLite.open();
         }
-        cachedResults.items = [];
+        dateSourceItem = [];
         var sql = checkSqLite.selectThirdCheck(this.state.manCode);
         db.transaction((tx)=>{
             tx.executeSql(sql, [],(tx,results)=>{
@@ -65,7 +66,12 @@ export default class CheckDetail extends BaseComponent {
                 for(let i=0; i<len; i++){
                     var checkIm = results.rows.item(i);
                     console.log(checkIm);
+                    dateSourceItem.push(checkIm);
                 }
+                this.setState({
+                    dataSource: dateSourceItem
+                });
+                console.log("+++"+this.state.dataSource);
 
             });
         },(error)=>{
@@ -83,20 +89,29 @@ export default class CheckDetail extends BaseComponent {
         this.props.navigation.goBack();
         this.props.navigation.state.params.callback()
   }
+  getItem(){
+      var list = dateSourceItem;
+      // console.log("___"+list);
+      var listItem =  list === null ? null : list.map((item, index) =>
+          <CheckItem key={index} num={index+1} data={item} onPressFeedback={()=>{this.onPressFeedback()}}/>
+      );
+      return listItem;
+  }
 
 
   
 
   render() {
-    var data1= {
-        title:"1,暂存点卫生是否整洁",
-    }
-    var data2= {
-        title:"2,暂存处防盗，防渗漏，防四害是否合格洁",
-    }
-    var data3= {
-        title:"3,暂存处交接记录资料是否齐全",
-    }
+
+    {/*var data1= {*/}
+        {/*title:"1,暂存点卫生是否整洁",*/}
+    {/*}*/}
+    {/*var data2= {*/}
+        {/*title:"2,暂存处防盗，防渗漏，防四害是否合格洁",*/}
+    {/*}*/}
+    {/*var data3= {*/}
+        {/*title:"3,暂存处交接记录资料是否齐全",*/}
+    {/*}*/}
     return (
       <View style={styles.container}>
       <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginBottom:5}}>
@@ -117,9 +132,11 @@ export default class CheckDetail extends BaseComponent {
             </View>
             <Text style={{color:'#333',fontSize:12, marginLeft:10,marginRight:10,marginTop:10,}}>3/5</Text>
         </View>
-        <CheckItem checkType={0} data={data1} onPressFeedback={()=>{this.onPressFeedback()}}/>
-        <CheckItem checkType={1} data={data2} onPressFeedback={()=>{this.onPressFeedback()}}/>
-        <CheckItem checkType={2} data={data3} onPressFeedback={()=>{this.onPressFeedback()}}/>
+          {this.getItem()}
+          <View style={{height:46}}/>
+        {/*<CheckItem checkType={0} data={data1} onPressFeedback={()=>{this.onPressFeedback()}}/>*/}
+        {/*<CheckItem checkType={1} data={data2} onPressFeedback={()=>{this.onPressFeedback()}}/>*/}
+        {/*<CheckItem checkType={2} data={data3} onPressFeedback={()=>{this.onPressFeedback()}}/>*/}
 
 
         {/*<View style={{backgroundColor:'white',flexDirection:'row', height:35,*/}
@@ -280,14 +297,45 @@ export default class CheckDetail extends BaseComponent {
 
 }
 class CheckItem extends Component {
-
+    constructor(props){
+        super(props);
+        this.state={
+            causeChecked:"",
+            stringText:"",
+        }
+    }
+    getCaues(causeNmae){
+        this.setState({causeChecked:causeNmae})
+    }
 
     render(){
+        var listItem;
+        var stringText="";
+        if(this.props.data.ITEM_FORMAT === "选择型"){
+            if(this.props.data.ITEM_RESULT_SET){
+                var itemString = this.props.data.ITEM_RESULT_SET;
+                var items = itemString.split(";");
+                // this.setState({causeList:items});
+                listItem =  items === null ? null : items.map((item, index) =>
+                    <View key={index} style={{height:40}} >
+                        <TouchableOpacity onPress={()=>this.getCaues(item)} style={{flexDirection:'row',textAlignVertical:'center',}}>
+                            {this.state.causeChecked===item &&
+                                <Image source={require('../../../res/static/ic_checked.png')} style={{width:18,height:18, marginLeft:10,marginTop:11,}}/>
+                            }
+                            {this.state.causeChecked!==item &&
+                            <Image source={require('../../../res/login/checkbox_nor.png')} style={{width:18,height:18, marginLeft:10,marginTop:11,}}/>
+                            }
+                            <Text style={{color:'#333',fontSize:13, marginLeft:10,marginRight:10,marginTop:10,height:40,}}>{item}</Text>
+                        </TouchableOpacity>
+                    </View>
+                );
+            }
+        }
         return (
             <View>
                 <View style={{backgroundColor:'white',flexDirection:'row', height:35,
                     alignItems:'center', justifyContent:'center', textAlignVertical:'center',}}>
-                    <Text style={{fontSize:13, color:'#333', marginLeft:10,flex:1, }}>{this.props.data.title}</Text>
+                    <Text style={{fontSize:13, color:'#333', marginLeft:15,flex:1, }}>{this.props.num+"、"+this.props.data.ITEM_NAME}</Text>
                     <TouchableOpacity  onPress={()=>{this.props.onPressFeedback()}}>
                         <View style={{backgroundColor:'white',flexDirection:'row',justifyContent:'center',alignItems:'center', marginRight:10, textAlignVertical:'center',borderWidth:1, borderColor:'#6DC5C9',
                             borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>
@@ -299,35 +347,29 @@ class CheckItem extends Component {
                 </View>
                 <View style={styles.line} />
 
-                {this.props.checkType === 0 &&
+                {this.props.data.ITEM_FORMAT === "选择型" &&
                     <View style={{backgroundColor:'#ffffff',}} >
-                        <View style={{height:40,flexDirection:'row',textAlignVertical:'center',}} >
-                            <Image source={require('../../../res/static/ic_checked.png')} style={{width:18,height:18, marginLeft:10,marginTop:11,}}/>
-                            <Text style={{color:'#333',fontSize:13, marginLeft:10,marginRight:10,marginTop:10,height:40,}}>整洁</Text>
-                        </View>
-                        <View style={{height:40,flexDirection:'row',textAlignVertical:'center',}} >
-                            <Image source={require('../../../res/login/checkbox_nor.png')} style={{width:14,height:14, marginLeft:10,marginTop:13,}}/>
-                            <Text style={{color:'#333',fontSize:13, marginLeft:10,marginRight:10,marginTop:10,height:40,}}>脏乱，有杂物</Text>
-                        </View>
+                        {listItem}
                     </View>
                 }
-                {this.props.checkType === 1 &&
+                {this.props.data.ITEM_FORMAT === "文本型" &&
                     <View style={{backgroundColor:'#ffffff',height:100}} >
                         <TextInput
                             style={styles.input_style}
-                            placeholder="请输入检查结果"
+                            placeholder="请输入..."
                             placeholderTextColor="#aaaaaa"
                             underlineColorAndroid="transparent"
                             multiline = {true}
-                            ref={'username'}
+                            ref={'stringText'}
                             autoFocus={false}
                             onChangeText={(text) => {
-                                username = text;
+                                this.setState({stringText: text})
                             }}
+                            value={this.state.stringText}
                         />
                     </View>
                 }
-                {this.props.checkType === 2 &&
+                {this.props.data.ITEM_FORMAT === "拍照型"&&
                     <View style={{backgroundColor:'#ffffff',height:120}} >
                         <View style={{zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >
                             <Image source={require('../../../res/static/ic_add.png')} style={{width:26,height:27, }}/>
@@ -335,6 +377,33 @@ class CheckItem extends Component {
                         </View>
                         <Image source={require('../../../res/static/ic_frame.png')} style={{zIndex:1,width:81,height:80, top:15,left:15,position: 'absolute',}}/>
                     </View>
+                }
+                {this.props.data.ITEM_FORMAT === "视频型"&&
+                    <View style={{backgroundColor:'#ffffff',height:120}} >
+                        <View style={{zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >
+                            <Image source={require('../../../res/static/ic_add.png')} style={{width:26,height:27, }}/>
+                            <Text style={{fontSize:13, color:'#999', marginTop:5, }}>视屏</Text>
+                        </View>
+                        <Image source={require('../../../res/static/ic_frame.png')} style={{zIndex:1,width:81,height:80, top:15,left:15,position: 'absolute',}}/>
+                    </View>
+                }
+                {this.props.data.ITEM_FORMAT === "数值型" &&
+                <View style={{backgroundColor:'#ffffff',height:100}} >
+                    <TextInput
+                        style={styles.input_style}
+                        placeholder={"建议输入["+this.props.data.ITEM_RESULT_SET+"]"}
+                        placeholderTextColor="#aaaaaa"
+                        underlineColorAndroid="transparent"
+                        multiline = {true}
+                        value={this.state.stringText}
+                        autoFocus={false}
+                        keyboardType='numeric'
+                        onChangeText={(text) => {
+                            const newText = text.replace(/[^\d]+/, '');
+                            this.setState({stringText: newText})
+                        }}
+                    />
+                </View>
                 }
 
 
