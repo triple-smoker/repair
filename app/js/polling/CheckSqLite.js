@@ -61,12 +61,36 @@ export default class CheckSqLite extends Component {
     }
     //巡检三级页面
     selectThirdCheck(manCode){
-        return "select b.ITEM_NAME,b.ITEM_FORMAT,b.ITEM_RESULT_SET " +
+        return "select b.ID,b.ITEM_NAME,b.ITEM_FORMAT,b.ITEM_RESULT_SET,b.ITEM_CODE " +
             "from inspect_item_conf b, man_ref_item mri where " +
             "mri.STATUS_CD=1 and " +
             "b.STATUS_CD=1 and " +
             "mri.ITEM_CODE=b.ITEM_CODE " +
             "and mri.MAN_CODE='"+manCode+"'";
+    }
+
+    //提交报表-建表
+    createAutoUp()
+    {
+        var createAutoUpSql = "CREATE TABLE IF NOT EXISTS auto_up("
+            + "code varchar(255),"
+            + "dailyTaskCode varchar(255),"
+            + "equipmentId varchar(255),"
+            + "equipmentTypeId varchar(255),"
+            + "execEndTime varchar(255),"
+            + "execStartTime varchar(255),"
+            + "fillDate varchar(255),"
+            + "itemCode varchar(255),"
+            + "itemResultSet varchar(255),"
+            + "jobCode varchar(255),"
+            + "jobExecCode varchar(255),"
+            + "manCode varchar(255),"
+            + "reportBy varchar(255),"
+            + "reportDate varchar(255),"
+            + "resultDesc varchar(255),"
+            + "status varchar(255)"
+            + ')';
+        return createAutoUpSql;
     }
 
 

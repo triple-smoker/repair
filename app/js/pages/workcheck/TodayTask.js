@@ -138,7 +138,7 @@ export default class TodayTask extends BaseComponent {
                    // alert(len);
                    for(let i=0; i<len; i++){
                        var checkIm = results.rows.item(i);
-                       console.log(checkIm);
+                       // console.log(checkIm);
                        cachedResults.items.push(checkIm);
                    }
                    this.setState({
