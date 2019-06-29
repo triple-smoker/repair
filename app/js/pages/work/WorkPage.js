@@ -94,6 +94,7 @@ export default class WorkPage extends BaseComponent {
   componentDidMount() {
       console.log('OrderList  componentDidMount');
       cachedResults.tabIndex = 0;
+      this.setState({tabIndex:0});
       this._fetchData(0);
       this.loadRep();
       DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
@@ -104,6 +105,7 @@ export default class WorkPage extends BaseComponent {
   componentWillReceiveProps(){
     // console.log(nextProps)
     // if(nextProps.navigation.state != this.props.navigation.state){
+      this.setState({tabIndex:0});
       cachedResults.tabIndex = 0;
         this._fetchData(0);
     // }
@@ -456,7 +458,7 @@ export default class WorkPage extends BaseComponent {
     var that = this;
     let buttons = null;
     let statusDesc = null;
-    // console.log(data)
+   
     if (data.status === '1') {
 
         buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
@@ -648,36 +650,36 @@ onPlayVoice(filePath) {
 
 }
 
-  callPhone(num) {
-    let url = 'tel: ' + num;
-    Linking.canOpenURL(url).then(supported => {
-      if (!supported) {
-        console.log('Can\'t handle url: ' + url);
-      } else {
-        return Linking.openURL(url);
-      }
-    }).catch(err => console.error('An error occurred', err));
-  }
+callPhone(num) {
+  let url = 'tel: ' + num;
+  Linking.canOpenURL(url).then(supported => {
+    if (!supported) {
+      console.log('Can\'t handle url: ' + url);
+    } else {
+      return Linking.openURL(url);
+    }
+  }).catch(err => console.error('An error occurred', err));
+}
 
-  search() {
-    console.log('search')
-        const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            // navigator.push({
-            //     component: SearchOrder,
-            //     name: 'SearchOrder',
-            //     params:{
-            //         theme:this.theme,
+search() {
+  console.log('search')
+      const {navigation} = this.props;
+      InteractionManager.runAfterInteractions(() => {
+          // navigator.push({
+          //     component: SearchOrder,
+          //     name: 'SearchOrder',
+          //     params:{
+          //         theme:this.theme,
 
-            //     }
-            // });
-            navigation.navigate('SearchOrder',{
-              theme:this.theme,
-              isScan: this.props.isScan,
-              equipmentId: this.props.equipmentId,
-            })
-        });
-  }
+          //     }
+          // });
+          navigation.navigate('SearchOrder',{
+            theme:this.theme,
+            isScan: this.props.isScan,
+            equipmentId: this.props.equipmentId,
+          })
+      });
+}
 
    arrangeWork(data,_fetchData) {
      console.log("<<<<<")

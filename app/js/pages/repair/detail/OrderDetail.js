@@ -374,6 +374,69 @@ export default class OrderDetail extends BaseComponent {
             </Content>
         );
     }
+    arrangeWork(data) {
+        console.log("<<<<<")
+        console.log(data)
+           const {navigation} = this.props;
+           InteractionManager.runAfterInteractions(() => {
+               navigation.navigate('ArrangeWork',{
+                         theme:this.theme,
+                         repairId:data.repairId,
+                         })
+           });
+       }
+    //接单
+    pullOrder(data){
+        var responseInfo = {
+            repair_id: data.repairId,
+            userId: global.userId,
+        };
+        Axios.PostAxios("/api/repair/service/taken",responseInfo).then(
+            (response) => {
+                console.log("接单接口:"+response)
+                if (response && response.code === 200) {
+                    toastShort('接单成功');
+                    this.loadDetail();
+                }else{
+                    toastShort('接单失败');
+                }
+            }
+        );
+    } 
+    transferOrder(data,typeCode) {
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('TransferOrder',{
+                     theme:this.theme,
+                     typeCode:typeCode,
+                     repairId:data.repairId,
+            })
+        });
+    }
+
+    resetOrder(data) {
+        var that = this;
+        Request.requestGet(CancelPause+data.repairId, null, (result)=> {
+            if (result && result.code === 200) {
+                toastShort('工单恢复成功');
+                that.loadDetail();
+            } else {
+    
+            }
+        });
+      }
+      gotoCommenced(data){
+        const {navigation} = this.props;
+            InteractionManager.runAfterInteractions(() => {
+                    navigation.navigate('TakePhotos',{
+                              repairId:data.repairId,
+                              title:'维修开始拍照',
+                              step:1,
+                              theme:this.theme,
+                              
+                            })
+            });
+      }  
 
     render() {
         var detaiData = this.state.detaiData;
@@ -394,7 +457,7 @@ export default class OrderDetail extends BaseComponent {
         var i = 0;
         var j = 0;
         var listItems = [];
-
+        var FooterTabItem = null;
         var materialList = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无内容</Text>;
         var processList = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无内容</Text>;
         if (detaiData) {
@@ -544,7 +607,48 @@ export default class OrderDetail extends BaseComponent {
                     }
                 }
             }
-
+            if(this.state.status){
+                var status = this.state.status;
+                
+                 if(status === '5'){
+                    FooterTabItem =  <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
+                        <Text onPress={()=>this.pauseOrder()} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>暂停</Text>
+                        <Text onPress={()=>this.complete()} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>完工</Text>
+                    </View>
+                 }else if(status === '13'){
+                    FooterTabItem =  <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
+                        {/* <Text onPress={()=>this.pauseOrder()} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>暂停</Text> */}
+                        <Text onPress={()=>this.complete()} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>完工</Text>
+                    </View>
+                 }else if(status ==='20'){
+                    if(global.permissions){
+                        FooterTabItem =  <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
+                            <Text onPress={()=>this.arrangeWork(detaiData)} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>派工</Text>
+                            <Text onPress={()=>this.pullOrder(detaiData)} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>接单</Text>
+                        </View>
+                    }else{
+                        FooterTabItem =  <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>    
+                            <Text onPress={()=>this.pullOrder(detaiData)} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>抢单</Text>
+                        </View>
+                    }
+                 }else if(status === '1'){
+                    FooterTabItem =  <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
+                        <Text onPress={()=>this.transferOrder(detaiData,1)} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>拒绝</Text>
+                        <Text onPress={()=>this.pullOrder(detaiData)} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>接单</Text>
+                    </View>
+                 }else if(status === '2' || status === '3'){
+                        FooterTabItem =  <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
+                            <Text onPress={()=>this.transferOrder(detaiData,0)} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>转单</Text>
+                            <Text onPress={()=>this.gotoCommenced(detaiData)} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>拍照开始维修</Text>
+                        </View>
+                 }else if(status === '6'){
+                        FooterTabItem =  <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
+                            <Text onPress={()=>this.resetOrder(detaiData)} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>恢复</Text>
+                            <Text onPress={()=>this.transferOrder(detaiData,0)} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>转单</Text>
+                        </View>
+                 }
+                 
+            }
         }
 
 
@@ -634,12 +738,9 @@ export default class OrderDetail extends BaseComponent {
                     />
 
                 </ScrollView>
-                {this.state.status === '5' || this.state.status === '13' ? <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
-                        <Text onPress={()=>this.pauseOrder()} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>暂停</Text>
-                        <Text onPress={()=>this.complete()} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>完工</Text>
-                    </View>
-                    : null}
-
+               
+                  {FooterTabItem}
+                     
                 <Modal
                     animationType={"none"}
                     transparent={true}

@@ -7,6 +7,7 @@ import {
     View,
     Image,
     DeviceEventEmitter,
+    InteractionManager,
     Modal,
     ListView,
     TouchableOpacity,
@@ -136,11 +137,24 @@ export default class ArrangeWork extends BaseComponent {
         userId:''+global.uinfo.userId,
         remark:''
         };
+
+        // this.props.navigation.state.params.callback();
+        console.log(this.props.navigation)
+        
+
+
      Request.requestPost(DispatchWork, params, (result)=> {
+        console.log(params) 
+        console.log(result)
         if (result && result.code === 200 && !result.data.error) {
             toastShort('派工成功');
-            this.props.navigation.state.params.callback();
-            this.props.navigation.goBack();
+            // this.props.navigation.state.params.callback();
+            const {navigation} = this.props;
+            InteractionManager.runAfterInteractions(() => {
+                navigation.navigate('WorkManager',{
+                        theme:this.theme
+                        })
+            });
 
         } else {
             if (result && result.data && result.data.error){
