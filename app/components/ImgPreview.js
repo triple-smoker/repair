@@ -76,6 +76,8 @@ class ImgPreview extends Component {
     }
   }
 
+ 
+
   render() {
     let num = typeof(this.props.PicMsg.index) == 'number'
       ? this.props.PicMsg.index
@@ -87,12 +89,16 @@ class ImgPreview extends Component {
         transparent={true}
         visible={this.props.PicMsg.visible}
         onRequestClose={this.props.setModalVisible}>
+           
         <View style={StyleImages.container}>
+       
           <View style={StyleImages.ViewCon}>
+          <TouchableOpacity  style={{ height: ScreenHeight/5,width:ScreenWidth}} onPress={() => this.props.setModalVisible()}>
+        </TouchableOpacity>
             <Swiper
               style={{
               width: ScreenWidth,
-              height: ScreenHeight / 3
+              height: ScreenHeight*3/5
             }}
               onMomentumScrollEnd={(e, state, context) => (console.log('index:', state.index),this.setVideoCurrentTime(state.index))}
               dot={< View style = {{backgroundColor: 'rgba(0,0,0,0.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}}/>}
@@ -106,7 +112,10 @@ class ImgPreview extends Component {
               index={num}>
               {this.getImageItem(this.props.imagesRequest,this.props.setModalVisible)}
             </Swiper>
+            <TouchableOpacity  style={{height: ScreenHeight/5,width:ScreenWidth}} onPress={() => this.props.setModalVisible()}>
+          </TouchableOpacity>
           </View>
+          
         </View>
 
       </Modal>
@@ -174,6 +183,7 @@ const StyleImages = StyleSheet.create({
   ViewCon: {
     width: ScreenWidth,
     height: ScreenHeight,
+   
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)'
@@ -184,6 +194,7 @@ const StyleImages = StyleSheet.create({
   },
   slide: {
     flex: 1,
+  
     justifyContent: 'center',
     backgroundColor: 'transparent'
   },
