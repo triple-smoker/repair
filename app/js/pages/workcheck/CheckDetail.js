@@ -11,7 +11,9 @@ import {
     TextInput,
     Platform,
     Modal,
-    ScrollView, TouchableHighlight
+    ScrollView,
+    TouchableHighlight,
+    NetInfo
 } from 'react-native';
 
 
@@ -19,6 +21,7 @@ import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
 import SQLite from "../../polling/SQLite";
 import CheckSqLite from "../../polling/CheckSqLite";
+import {Textarea} from "native-base";
 
 
 let cachedResults = {
@@ -44,7 +47,9 @@ export default class CheckDetail extends BaseComponent {
       theme:this.props.theme,
       manCode:navigation.getParam('manCode', ''),
       modalVisible:false,
-      dateSource:[]
+      dateSource:[],
+      personText:"",
+      person:0,
     }
   }
 
@@ -65,13 +70,15 @@ export default class CheckDetail extends BaseComponent {
                 var len = results.rows.length;
                 for(let i=0; i<len; i++){
                     var checkIm = results.rows.item(i);
+                    checkIm.resultString=null;
                     console.log(checkIm);
                     dateSourceItem.push(checkIm);
                 }
                 this.setState({
-                    dataSource: dateSourceItem
+                    dataSource: dateSourceItem,
+                    personText:0+"/"+dateSourceItem.length,
+                    person:0
                 });
-                console.log("+++"+this.state.dataSource);
 
             });
         },(error)=>{
@@ -93,7 +100,7 @@ export default class CheckDetail extends BaseComponent {
       var list = dateSourceItem;
       // console.log("___"+list);
       var listItem =  list === null ? null : list.map((item, index) =>
-          <CheckItem key={index} num={index+1} data={item} onPressFeedback={()=>{this.onPressFeedback()}}/>
+          <CheckItem key={index} num={index+1} data={item} onPressFeedback={(dataString,resultString)=>{this.onPressFeedback(dataString,resultString)}}/>
       );
       return listItem;
   }
@@ -128,129 +135,12 @@ export default class CheckDetail extends BaseComponent {
       <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{width:Dimens.screen_width,flex:1}}>
         <View style={{flexDirection:'row',marginLeft:10,textAlignVertical:'center',}}>
             <View style={{marginLeft:15,marginTop:20,marginBottom:20,flexDirection:'row',height:3,backgroundColor:'#fff', width:Dimens.screen_width-95}}> 
-                  <View style={{flexDirection:'row',height:3,backgroundColor:'#6DC5C9', width: 50}}/>
+                  <View style={{flexDirection:'row',height:3,backgroundColor:'#6DC5C9', width: (Dimens.screen_width-95)*(this.state.person)}}/>
             </View>
-            <Text style={{color:'#333',fontSize:12, marginLeft:10,marginRight:10,marginTop:10,}}>3/5</Text>
+            <Text style={{color:'#333',fontSize:12, marginLeft:10,marginRight:10,marginTop:10,}}>{this.state.personText}</Text>
         </View>
           {this.getItem()}
           <View style={{height:46}}/>
-        {/*<CheckItem checkType={0} data={data1} onPressFeedback={()=>{this.onPressFeedback()}}/>*/}
-        {/*<CheckItem checkType={1} data={data2} onPressFeedback={()=>{this.onPressFeedback()}}/>*/}
-        {/*<CheckItem checkType={2} data={data3} onPressFeedback={()=>{this.onPressFeedback()}}/>*/}
-
-
-        {/*<View style={{backgroundColor:'white',flexDirection:'row', height:35,*/}
-          {/*alignItems:'center', justifyContent:'center', textAlignVertical:'center',}}>*/}
-            {/*<Text style={{fontSize:13, color:'#333', marginLeft:10,flex:1, }}>2,暂存处安全标志是否安全</Text>*/}
-            {/*<TouchableOpacity  onPress={()=>{this.onPressFeedback()}}>*/}
-                {/*<View style={{backgroundColor:'white',flexDirection:'row',justifyContent:'center',alignItems:'center', marginRight:10, textAlignVertical:'center',borderWidth:1, borderColor:'#6DC5C9',*/}
-                    {/*borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>*/}
-                  {/*<Image source={require('../../../res/static/ic_feedback_deng.png')} style={{width:18,height:22, marginLeft:5,}}/>*/}
-                  {/*<Text style={{flexWrap:'nowrap', marginLeft:5,*/}
-                  {/*color:'#6DC5C9',fontSize:10, textAlignVertical:'center', textAlign:'center',marginRight:5, }}>反馈</Text>*/}
-                {/*</View>*/}
-            {/*</TouchableOpacity>*/}
-        {/*</View>*/}
-        {/*<View style={styles.line} />*/}
-        {/*<View style={{backgroundColor:'#ffffff',}} >*/}
-          {/*<View style={{height:40,flexDirection:'row',textAlignVertical:'center',}} >*/}
-            {/*<Image source={require('../../../res/static/ic_checked.png')} style={{width:18,height:18, marginLeft:10,marginTop:11,}}/>*/}
-            {/*<Text style={{color:'#333',fontSize:13, marginLeft:10,marginRight:10,marginTop:10,height:40,}}>齐全，醒目</Text>*/}
-          {/*</View>*/}
-          {/*<View style={{height:40,flexDirection:'row',textAlignVertical:'center',}} >*/}
-            {/*<Image source={require('../../../res/login/checkbox_nor.png')} style={{width:14,height:14, marginLeft:10,marginTop:13,}}/>*/}
-            {/*<Text style={{color:'#333',fontSize:13, marginLeft:10,marginRight:10,marginTop:10,height:40,}}>缺失</Text>*/}
-          {/*</View>*/}
-          {/*<View style={{height:40,flexDirection:'row',textAlignVertical:'center',}} >*/}
-            {/*<Image source={require('../../../res/login/checkbox_nor.png')} style={{width:14,height:14, marginLeft:10,marginTop:13,}}/>*/}
-            {/*<Text style={{color:'#333',fontSize:13, marginLeft:10,marginRight:10,marginTop:10,height:40,}}>遮挡</Text>*/}
-          {/*</View>*/}
-        {/*</View>*/}
-        {/*<View style={{width:Dimens.screen_width,height:5}} />*/}
-
-        {/*<View style={{backgroundColor:'white',flexDirection:'row', height:35,*/}
-          {/*alignItems:'center', justifyContent:'center', textAlignVertical:'center',}}>*/}
-            {/*<Text style={{fontSize:13, color:'#333', marginLeft:10,flex:1, }}>3,暂存处防盗，防渗漏，防四害是否合格</Text>*/}
-            {/*<TouchableOpacity  onPress={()=>{this.onPressFeedback()}}>*/}
-                {/*<View style={{backgroundColor:'white',flexDirection:'row',justifyContent:'center',alignItems:'center', marginRight:10, textAlignVertical:'center',borderWidth:1, borderColor:'#6DC5C9',*/}
-                    {/*borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>*/}
-                  {/*<Image source={require('../../../res/static/ic_feedback_deng.png')} style={{width:18,height:22, marginLeft:5,}}/>*/}
-                  {/*<Text style={{flexWrap:'nowrap', marginLeft:5,*/}
-                  {/*color:'#6DC5C9',fontSize:10, textAlignVertical:'center', textAlign:'center',marginRight:5, }}>反馈</Text>*/}
-                {/*</View>*/}
-            {/*</TouchableOpacity>*/}
-        {/*</View>*/}
-        {/*<View style={styles.line} />*/}
-        {/*<View style={{backgroundColor:'#ffffff',height:100}} >*/}
-          {/*<TextInput */}
-            {/*style={styles.input_style}*/}
-            {/*placeholder="请输入检查结果"*/}
-            {/*placeholderTextColor="#aaaaaa"*/}
-            {/*underlineColorAndroid="transparent"*/}
-            {/*multiline = {true}*/}
-            {/*ref={'username'}*/}
-            {/*autoFocus={false}*/}
-            {/*onChangeText={(text) => {*/}
-            {/*username = text;*/}
-            {/*}}*/}
-        {/*/>*/}
-        {/*</View>*/}
-
-        {/*<View style={{width:Dimens.screen_width,height:5}} />*/}
-
-        {/*<View style={{backgroundColor:'white',flexDirection:'row', height:35,*/}
-          {/*alignItems:'center', justifyContent:'center', textAlignVertical:'center',}}>*/}
-            {/*<Text style={{fontSize:13, color:'#333', marginLeft:10,flex:1, }}>4,暂存处交接记录资料是否齐全</Text>*/}
-            {/*<TouchableOpacity  onPress={()=>{this.onPressFeedback()}}>*/}
-                {/*<View style={{backgroundColor:'white',flexDirection:'row',justifyContent:'center',alignItems:'center', marginRight:10, textAlignVertical:'center',borderWidth:1, borderColor:'#6DC5C9',*/}
-                    {/*borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>*/}
-                  {/*<Image source={require('../../../res/static/ic_feedback_deng.png')} style={{width:18,height:22, marginLeft:5,}}/>*/}
-                  {/*<Text style={{flexWrap:'nowrap', marginLeft:5,*/}
-                  {/*color:'#6DC5C9',fontSize:10, textAlignVertical:'center', textAlign:'center',marginRight:5, }}>反馈</Text>*/}
-                {/*</View>*/}
-            {/*</TouchableOpacity>*/}
-        {/*</View>*/}
-        {/*<View style={styles.line} />*/}
-        {/*<View style={{backgroundColor:'#ffffff',height:120}} >*/}
-          {/**/}
-          {/*<View style={{zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >*/}
-              {/*<Image source={require('../../../res/static/ic_add.png')} style={{width:26,height:27, }}/>*/}
-              {/*<Text style={{fontSize:13, color:'#999', marginTop:5, }}>拍照</Text>*/}
-          {/*</View>*/}
-          {/*<Image source={require('../../../res/static/ic_frame.png')} style={{zIndex:1,width:81,height:80, top:15,left:15,position: 'absolute',}}/>*/}
-
-
-        {/*</View>*/}
-
-        {/*<View style={{width:Dimens.screen_width,height:5}} />*/}
-
-
-        {/*<View style={{backgroundColor:'white',flexDirection:'row', height:35,*/}
-          {/*alignItems:'center', justifyContent:'center', textAlignVertical:'center',}}>*/}
-            {/*<Text style={{fontSize:13, color:'#333', marginLeft:10,flex:1, }}>5,暂存处交接记录资料是否齐全</Text>*/}
-            {/*<TouchableOpacity  onPress={()=>{this.onPressFeedback()}}>*/}
-                {/*<View style={{backgroundColor:'white',flexDirection:'row',justifyContent:'center',alignItems:'center', marginRight:10, textAlignVertical:'center',borderWidth:1, borderColor:'#6DC5C9',*/}
-                    {/*borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>*/}
-                  {/*<Image source={require('../../../res/static/ic_feedback_deng.png')} style={{width:18,height:22, marginLeft:5,}}/>*/}
-                  {/*<Text style={{flexWrap:'nowrap', marginLeft:5,*/}
-                  {/*color:'#6DC5C9',fontSize:10, textAlignVertical:'center', textAlign:'center',marginRight:5, }}>反馈</Text>*/}
-                {/*</View>*/}
-            {/*</TouchableOpacity>*/}
-        {/*</View>*/}
-        {/*<View style={styles.line} />*/}
-        {/*<View style={{backgroundColor:'#ffffff',height:120}} >*/}
-          {/**/}
-          {/*<View style={{zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >*/}
-              {/*<Image source={require('../../../res/static/ic_add.png')} style={{width:26,height:27, }}/>*/}
-              {/*<Text style={{fontSize:13, color:'#999', marginTop:5, }}>拍照</Text>*/}
-          {/*</View>*/}
-          {/*<Image source={require('../../../res/static/ic_frame.png')} style={{zIndex:1,width:81,height:80, top:15,left:15,position: 'absolute',}}/>*/}
-
-
-        {/*</View>*/}
-
-        {/*<View style={{width:Dimens.screen_width,height:100}} />*/}
-
       </ScrollView>
       <Text
             onPress={()=>this._onSure()}
@@ -282,12 +172,65 @@ export default class CheckDetail extends BaseComponent {
     }
 
 
-    onPressFeedback() {
-        this.setState({modalVisible:true, });
+    onPressFeedback(dataString,resultString) {
+        var i =0;
+        dateSourceItem.forEach((item)=>{
+            if(item.ID===dataString.ID){
+                item.resultString = resultString;
+            }
+            if(item.resultString){
+                i++;
+            }
+        })
+        if(dateSourceItem.length>0){
+            this.setState({
+                personText:i+"/"+dateSourceItem.length,
+                person:i/dateSourceItem.length
+            });
+        }else{
+            this.setState({
+                personText:i+"/"+dateSourceItem.length,
+                person:0
+            });
+        }
+
+
     }
 
   _onSure() {
+        console.log(dateSourceItem);
+        var connected = false;
+        NetInfo.isConnected.fetch().done((isConnected) => {
+          if(isConnected){
+              connected = true;
+          }
+        });
+        if(connected){
+            console.log("伤处啊你借口");
+        }else{
+            if(!db){
+                db = SQLite.open();
+            }
+            var sql = checkSqLite.createAutoUp();
+            //创建用户表
+            db.transaction((tx)=> {
+                tx.executeSql(sql
+                    , [], ()=> {
+                        sql = "";
+                        tx.executeSql(sql, [],(tx,results)=>{
+                            var len = results.rows.length;
+                            for(let i=0; i<len; i++){
+                                var checkIm = results.rows.item(i);
 
+                            }
+                        });
+                    },(error)=>{
+                        console.log(error);
+                    });
+            },(error)=>{
+                console.log(error);
+            });
+        }
   }
 
     onChangeType(index) {
@@ -318,7 +261,7 @@ class CheckItem extends Component {
                 // this.setState({causeList:items});
                 listItem =  items === null ? null : items.map((item, index) =>
                     <View key={index} style={{height:40}} >
-                        <TouchableOpacity onPress={()=>this.getCaues(item)} style={{flexDirection:'row',textAlignVertical:'center',}}>
+                        <TouchableOpacity onPress={()=>{this.getCaues(item),this.props.onPressFeedback(this.props.data,item)}} style={{flexDirection:'row',textAlignVertical:'center',}}>
                             {this.state.causeChecked===item &&
                                 <Image source={require('../../../res/static/ic_checked.png')} style={{width:18,height:18, marginLeft:10,marginTop:11,}}/>
                             }
@@ -363,6 +306,7 @@ class CheckItem extends Component {
                             ref={'stringText'}
                             autoFocus={false}
                             onChangeText={(text) => {
+                                this.props.onPressFeedback(this.props.data,text);
                                 this.setState({stringText: text})
                             }}
                             value={this.state.stringText}
@@ -388,18 +332,21 @@ class CheckItem extends Component {
                     </View>
                 }
                 {this.props.data.ITEM_FORMAT === "数值型" &&
-                <View style={{backgroundColor:'#ffffff',height:100}} >
+                <View style={{backgroundColor:'#ffffff',height:40}} >
                     <TextInput
-                        style={styles.input_style}
+                        style={{paddingVertical: 0,marginTop:10, textAlignVertical:'top', textAlign:'left',backgroundColor: 'white',fontSize: 14,height:30, marginLeft:15,marginRight:15, paddingLeft:8,paddingRight:8,paddingTop:5,paddingBottom:5,}}
                         placeholder={"建议输入["+this.props.data.ITEM_RESULT_SET+"]"}
                         placeholderTextColor="#aaaaaa"
                         underlineColorAndroid="transparent"
                         multiline = {true}
                         value={this.state.stringText}
                         autoFocus={false}
+                        rowSpan={1}
+                        maxLength={20}
                         keyboardType='numeric'
                         onChangeText={(text) => {
                             const newText = text.replace(/[^\d]+/, '');
+                            this.props.onPressFeedback(this.props.data,text);
                             this.setState({stringText: newText})
                         }}
                     />
