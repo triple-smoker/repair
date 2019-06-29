@@ -216,14 +216,7 @@ export default class CheckDetail extends BaseComponent {
             db.transaction((tx)=> {
                 tx.executeSql(sql
                     , [], ()=> {
-                        sql = "";
-                        tx.executeSql(sql, [],(tx,results)=>{
-                            var len = results.rows.length;
-                            for(let i=0; i<len; i++){
-                                var checkIm = results.rows.item(i);
-
-                            }
-                        });
+                        SQLite.insertData(dateSourceItem,"auto_up");
                     },(error)=>{
                         console.log(error);
                     });
@@ -237,6 +230,7 @@ export default class CheckDetail extends BaseComponent {
       this.setState({modalVisible:false, });
 
     }
+
 
 }
 class CheckItem extends Component {

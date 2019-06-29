@@ -52,7 +52,7 @@ export default class CheckDetail extends BaseComponent {
     componentWillReceiveProps(nextProps){
         setTimeout(
             () => { 
-             this.loadDetail() 
+             this.loadDetail()
             }, 500)
         
        
@@ -61,7 +61,7 @@ export default class CheckDetail extends BaseComponent {
         const { navigation } = this.props;
         var isScan = navigation.getParam('isScan', '');
         var scanId = navigation.getParam('scanId', '');
-		if(scanId != null){
+		if(scanId != null && scanId !== ''){
 			this.setState({    
 			    isScan : isScan,
 			    scanId : scanId,    
