@@ -8,7 +8,8 @@ import {
     TextInput,
     ListView,
     Modal,
-    TouchableOpacity
+    TouchableOpacity,
+    InteractionManager
 } from 'react-native';
 
 import TitleBar from '../../component/TitleBar';
@@ -222,8 +223,14 @@ export default class TransferOrder extends BaseComponent {
         Loading.hidden();
         if (result && result.code === 200) {
             toastShort('提交成功');
-            this.props.navigation.state.params.callback();
-            this.props.navigation.goBack();
+            // this.props.navigation.state.params.callback();
+            // this.props.navigation.goBack();
+            const {navigation} = this.props;
+            InteractionManager.runAfterInteractions(() => {
+                navigation.navigate('WorkManager',{
+                        theme:this.theme
+                        })
+            });
         } else {
 
         }
