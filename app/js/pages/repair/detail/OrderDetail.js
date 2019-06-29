@@ -16,7 +16,7 @@ import {
     Linking,
     ActivityIndicator
 } from 'react-native';
-
+import Axios from "../../../../util/Axios";
 import TitleBar from '../../../component/TitleBar';
 import * as Dimens from '../../../value/dimens';
 import Request, {GetRepairList, RepairDetail, RepPause, DoPause, RepairCommenced} from '../../../http/Request';
@@ -678,25 +678,25 @@ export default class OrderDetail extends BaseComponent {
                                     <View style={{marginLeft:10, flex:1}} >
                                         <View style={{marginLeft:0, marginTop:0, flexDirection:'row',}} >
                                             <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:3,}}>报修单号：</Text>
-                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:3,}}>{repairNo}</Text>
+                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:3,width:'60%'}}>{repairNo}</Text>
                                         </View>
                                         <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                                             <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修时间：</Text>
-                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{createTime}</Text>
+                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{createTime}</Text>
                                         </View>
                                         <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                                             <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>维修时长：</Text>
-                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairHours}</Text>
+                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{repairHours}</Text>
                                         </View>
                                         <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                                             <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
-                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{detailAddress}</Text>
+                                            <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{detailAddress}</Text>
                                         </View>
                                         {
                                             isEquipment === 1 && 
                                             <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                                                 <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>设备名称：</Text>
-                                                <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{equipmentName}</Text>
+                                                <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{equipmentName}</Text>
                                             </View>
                                         }
                                         <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >

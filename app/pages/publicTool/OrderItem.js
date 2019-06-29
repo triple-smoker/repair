@@ -171,7 +171,8 @@ class Adds extends Component {//报修单共用组件
                             <Text style={stylesBody.orderContextTip}>已耗时长:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.hours+'小时'}</Text>
                             </Row>
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>报修位置:</Text><Text style={stylesBody.orderContextAut}>{this.props.record.detailAddress}</Text>
+                            <Text style={stylesBody.orderContextTip}>报修位置:</Text>
+                            <Text style={stylesBody.orderContextAut}>{this.props.record.detailAddress}</Text>
                             </Row>
                             {
                                 this.props.record.isEquipment === 1 && 
@@ -621,6 +622,7 @@ const stylesBody=StyleSheet.create({
         color:'#a9a9a9',
     },
     orderContextAut:{
+        width:'60%',
         fontSize:14,
         color:'#737373',
         marginLeft:10
