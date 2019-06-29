@@ -188,7 +188,7 @@ class MyAddress extends Component {
 
     history(){
         const reporterList = this.state.reporterList;
-        const listItems =  reporterList === null ? null : reporterList.map((report, index) =>
+        const listItems =  reporterList === null ? <Text style={{width: '100%',textAlign:'center',color:'#999',marginTop:14,fontSize:14}}>暂无历史地址</Text> : reporterList.map((report, index) =>
             <Adds key={index} name={report.name} phone={report.phone} address={report.address}
                   changAdds={()=>this._changeAdds(report.name,report.phone,report.address)}/>
         );

@@ -396,7 +396,7 @@ export default class TaskList extends BaseComponent {
     return (
       <TouchableOpacity onPress={()=>{that.onPressItem(data)}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
-              <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:8,}}>报修位置：{data.repairDeptName}</Text>
+              <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:8,}}>报修位置：11111111111111111111111111{data.repairDeptName}</Text>
               <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:3,}}>报修内容：{data.matterName}</Text>
               <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:15, marginRight:15, backgroundColor:'#eeeeee'}}/>
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >

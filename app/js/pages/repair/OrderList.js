@@ -237,15 +237,15 @@ export default class OrderList extends BaseComponent {
                 <View style={{marginLeft:15, flex:1}} >
                     <View style={{marginLeft:0, marginTop:0, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:3,}}>报修单号：</Text>
-                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:3,}}>{data.repairNo}</Text>
+                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:3,width:'60%'}}>{data.repairNo}</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修时间：</Text>
-                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{new Date(data.createTime).format("yyyy-MM-dd hh:mm:ss")}</Text>
+                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{new Date(data.createTime).format("yyyy-MM-dd hh:mm:ss")}</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>已耗时长：</Text>
-                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.hours}小时</Text>
+                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{data.hours}小时</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>

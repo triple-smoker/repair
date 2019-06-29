@@ -244,23 +244,23 @@ export default class ArrangeWork extends BaseComponent {
                 <View style={{marginLeft:5, flex:1, }} >
                     <View style={{marginLeft:0, marginTop:0, flexDirection:'row',}} >
                         <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:3,}}>报修单号：</Text>
-                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:3,}}>{repairNo}</Text>
+                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:3,width:'60%'}}>{repairNo}</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修时间：</Text>
-                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{createTime}</Text>
+                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{createTime}</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>已耗时长：</Text>
-                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairHours}</Text>
+                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{repairHours}</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修位置：</Text>
-                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{detailAddress}</Text>
+                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{detailAddress}</Text>
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:12,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
-                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,}}>{repairUserName}</Text>
+                        <Text style={{fontSize:12,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{repairUserName}</Text>
                         <TouchableOpacity onPress={()=>{this.callPhone(telNo)}} style={{marginLeft:5}}>
                             <Image source={require('../../../res/repair/list_call.png')} style={{width:20,height:20,}}/>
                         </TouchableOpacity>
