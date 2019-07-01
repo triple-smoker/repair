@@ -59,7 +59,7 @@ export default class TodayTask extends BaseComponent {
       }),
 
     };
-      // 每1000毫秒对showText状态做一次取反操作
+      // 每60000毫秒对状态做一次操作
       setInterval(() => {
           this._fetchData(0);
       }, 60000);
@@ -91,6 +91,8 @@ export default class TodayTask extends BaseComponent {
                 beginTime:data.EXEC_START_TIME,
                 endTime:data.EXEC_END_TIME,
                 jobCode:data.JOB_CODE,
+                jobExecCode:data.JOB_EXEC_CODE,
+                dailyTaskCode:data.CODE,
                 callback: (
                     () => {
                         this._fetchData(0);

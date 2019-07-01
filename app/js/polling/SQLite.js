@@ -98,6 +98,9 @@ export default class SQLite extends Component {
         if(tableName==="t_base_floor"){
             sql = sqlManager.createTBaseFloor();
         }
+        if(tableName==="auto_up"){
+            sql = sqlManager.createAutoUp();
+        }
 
         console.log(sql)
         console.log(">>>>>>>>>>>>")

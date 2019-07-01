@@ -184,7 +184,8 @@ export default class SQLiteDemo extends Component{
                 alert(len.toString());
                 for(let i=0; i<len; i++){
                     var user = results.rows.item(i);
-                    console.log("<<<<<<<<<<<<<<<"+tableName);
+                    // console.log("<<<<<<<<<<<<<<<"+tableName);
+                    console.log(user);
                 }
             });
         },(error)=>{
@@ -239,6 +240,8 @@ export default class SQLiteDemo extends Component{
                 {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_place" onPress={()=>this.getTable("t_base_place")}/>*/}
                 {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_room" onPress={()=>this.getTable("t_base_room")}/>*/}
                 {/*<Button style={{width:50,height:30,backgroundColor:"#000"}} title="查t_base_room" onPress={()=>this.getTable("t_base_room")}/>*/}
+                <Button style={{width:50,height:30,backgroundColor:"#000"}} title="上报表数据" onPress={()=>this.getTable("auto_up")}/>
+
 
                 <Text>
                     {this.state.sqlText}

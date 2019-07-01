@@ -48,6 +48,8 @@ export default class CheckList extends BaseComponent {
         beginTime:navigation.getParam('beginTime', ''),
         endTime:navigation.getParam('endTime', ''),
         jobCode:navigation.getParam('jobCode', ''),
+        jobExecCode:navigation.getParam('jobExecCode', ''),
+        dailyTaskCode:navigation.getParam('dailyTaskCode', ''),
         isLoadingTail: false, // loading?
         isRefreshing: false, // refresh?
         dataSource: new ListView.DataSource({
@@ -89,6 +91,14 @@ export default class CheckList extends BaseComponent {
             navigation.navigate('CheckDetail',{
                 theme:this.theme,
                 manCode:data.MAN_CODE,
+                equipmentId:data.equipment_id,
+                equipmentName:data.equipment_name,
+                equipmentTypeId:data.equipment_type_id,
+                jobExecCode:this.state.jobExecCode,
+                jobCode:this.state.jobCode,
+                dailyTaskCode:this.state.dailyTaskCode,
+                beginTime:this.state.beginTime,
+                endTime:this.state.endTime,
                 callback: (
                     () => {
                         this._fetchData(0);

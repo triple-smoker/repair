@@ -232,7 +232,7 @@ export default class Login extends BaseComponent {
                     if (error) {
                         console.log('error: save error' + JSON.stringify(error));
                     } else {
-                        //console.log('save: uinfo = ' + JSON.stringify(result.data));
+                        console.log('save: uinfo = ' + JSON.stringify(result.data));
                     }
 
                     const {navigation} = that.props;

@@ -122,14 +122,14 @@ android {
     }
 
 
-//    signingConfigs {
-//        release {
-//            storeFile file(MYAPP_RELEASE_STORE_FILE)
-//            storePassword MYAPP_RELEASE_STORE_PASSWORD
-//            keyAlias MYAPP_RELEASE_KEY_ALIAS
-//            keyPassword MYAPP_RELEASE_KEY_PASSWORD
-//        }
-//    }
+    signingConfigs {
+        release {
+            storeFile file(MYAPP_RELEASE_STORE_FILE)
+            storePassword MYAPP_RELEASE_STORE_PASSWORD
+            keyAlias MYAPP_RELEASE_KEY_ALIAS
+            keyPassword MYAPP_RELEASE_KEY_PASSWORD
+        }
+    }
 
     splits {
         abi {
@@ -141,7 +141,7 @@ android {
     }
     buildTypes {
         release {
-//            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -162,6 +162,7 @@ android {
 }
 
 dependencies {
+    implementation project(':@react-native-community_netinfo')
     implementation project(':react-native-video-processing')
     implementation project(':react-native-nfc-manager')
     implementation project(':react-native-view-shot')
