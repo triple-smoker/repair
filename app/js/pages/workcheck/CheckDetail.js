@@ -212,7 +212,7 @@ export default class CheckDetail extends BaseComponent {
         // console.log(dateSourceItem);
       var dateSourceItemTemp = [];
         dateSourceItem.forEach((item)=>{
-            console.log(item);
+            // console.log(item);
             var code = this.state.dailyTaskCode+""+this.state.jobCode+""+this.state.jobExecCode+""+this.state.manCode+""+this.state.equipmentId+""+item.ITEM_CODE;
             code = md5(code,32);
             var itemResultSet = "正常";
@@ -244,22 +244,23 @@ export default class CheckDetail extends BaseComponent {
                 "equipmentTypeId": this.state.equipmentTypeId,  //第二页携带
                 "execEndTime": moment(this.state.endTime).format("YYYY-MM-DD HH:mm:ss"),   //第一页携带
                 "execStartTime": moment(this.state.beginTime).format("YYYY-MM-DD HH:mm:ss"),  //第一页携带
-                "fillDate": moment().format("YYYY-MM-dd HH:mm:ss"),  //填报的业务时间
+                "fillDate": moment().format("YYYY-MM-DD HH:mm:ss"),  //填报的业务时间
                 "itemCode": item.ITEM_CODE,    //第三页 检查项表的itemcode
                 "itemResultSet": itemResultSet,                  //正常（数值型根据参考值判断，超过范围显示‘异常’）
                 "jobCode": this.state.jobCode,        //第一页的daily_task jobCode携带
                 "jobExecCode": this.state.jobExecCode,     //第一页的daily_task jobExecCode携带
                 "manCode": this.state.manCode,      //第二页 mancode携带
                 "reportBy": global.uinfo.userName,                 //用户名
-                "reportDate": moment().format("YYYY-MM-dd HH:mm:ss"),
-                "resultDesc": item.resultString,   //选项内容、哈哈哈哈、url、url、double
+                // "reportDate": moment().format("YYYY-MM-DD HH:mm:ss"),
+                "reportDate": null,
+                "resultDesc": (item.resultString===null)? "":item.resultString,   //选项内容、哈哈哈哈、url、url、double
                 "status": "1",
             }
             console.log(requestN);
             dateSourceItemTemp.push(requestN);
         })
 
-        var connected = false;
+        // var connected = false;
         NetInfo.fetch().then(state => {
             if(state.isConnected){
                 console.log("上传接口");
@@ -281,7 +282,7 @@ export default class CheckDetail extends BaseComponent {
         //   }
         //   console.log("网络连接："+isConnected);
         // });
-        console.log(connected);
+        // console.log(connected);
 
   }
 

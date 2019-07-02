@@ -9,10 +9,13 @@ import { Content,Row,Col,Text,List,ListItem } from 'native-base';
 import * as Progress from 'react-native-progress';
 
 
-
+/*
+* 报修单详情 维修事项模块组件封装
+* */
 let ScreenWidth = Dimensions.get('window').width;
 class Person extends Component {
 
+    //获取人员头像
     _getIcon(person){
         var itemList = [];
         var personList = person;
@@ -31,13 +34,13 @@ class Person extends Component {
         }
         return listItems;
     }
-
+    //人员部分渲染
     _getPerson(person){
         var itemList = [];
         var personList = person;
         console.log(person);
         let listItems =(  itemList === null ? null : personList.map((per, index) =>
-                    <PersonItem key={index} name={per.assistantName} num={per.itemPercentage}/>
+                    <PersonItem key={index} mobile={per.assistantMobile} name={per.assistantName} num={per.itemPercentage}/>
         ))
         return listItems;
     }
@@ -64,24 +67,26 @@ class Person extends Component {
   }
 }
 
+/*
+* 人员组件渲染
+* */
 class PersonItem extends Component {//head模块
   render() {
     return (
         <Content style={{height:70}}>
             <Row>
-                <Text style={{width:"27%",color:'#262626'}}>{this.props.name}</Text><Text style={{color:'#262626'}}>13888888888</Text>
+                <Text style={{width:"27%",color:'#262626'}}>{this.props.name}</Text><Text style={{color:'#262626'}}>{this.props.mobile}</Text>
             </Row>
             <Row>
-                <Text style={{width:"27%",color:'#9a9a9a'}}>维修占比</Text>
+                <Text style={{width:80,color:'#9a9a9a'}}>维修占比</Text>
                 <Progress.Bar
                   color='#3595ec'
                   borderWidth={0}
                   unfilledColor='#dedede'
-                  width={170}
-                  style={{marginTop:10,height:5}}
+                  style={{marginTop:10,height:5,flex:1}}
                   progress={this.props.num/100}//占比
                 />
-                <Text style={{marginLeft:15,color:'#3996ec'}}>{this.props.num+'%'}</Text>
+                <Text style={{marginLeft:15,color:'#3996ec',width:40}}>{this.props.num+'%'}</Text>
             </Row>
         </Content>
     );
