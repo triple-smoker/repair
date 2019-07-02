@@ -373,7 +373,7 @@ class SQLManager extends Component {
     createAutoUp()
     {
         var createAutoUpSql = "CREATE TABLE IF NOT EXISTS auto_up("
-            + "code varchar(255),"
+            + "code varchar(255) PRIMARY KEY,"
             + "dailyTaskCode varchar(255),"
             + "equipmentId varchar(255),"
             + "equipmentTypeId varchar(255),"

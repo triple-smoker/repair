@@ -18,14 +18,17 @@ import {
 
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
-import TitleBar from '../../component/TitleBar';
 import RefreshListView from '../../component/RefreshListView'
-import Request, {GetRepairList} from "../../http/Request";
 import SQLite from '../../polling/SQLite';
 import CheckSqLite from "../../polling/CheckSqLite";
 import moment from "moment";
+import NetInfo from '@react-native-community/netinfo';
+import Axios from "../../../util/Axios";
 
-
+/*
+* 每日任务列表
+*
+* */
 let cachedResults = {
   nextPage: 1, // 下一页
   items: [], // 
@@ -63,6 +66,11 @@ export default class TodayTask extends BaseComponent {
       setInterval(() => {
           this._fetchData(0);
       }, 60000);
+      // 每10分钟检测一遍是否有报表需要上传
+      setInterval(() => {
+          this._pushData();
+      }, 600000);
+
   }
 
 
@@ -74,7 +82,71 @@ export default class TodayTask extends BaseComponent {
     //     cachedResults.tabIndex = 0;
     //     this._fetchData(0);
     // }
+  //获取auto_up表中的信息进行网络添加
+    _pushData(){
+        NetInfo.fetch().then(state => {
+            if(state.isConnected){
+                if(!db){
+                    db = SQLite.open();
+                }
+                let sql = "select * from auto_up";
+                var itemList = [];
+                db.transaction((tx)=>{
+                    tx.executeSql(sql, [],(tx,results)=>{
+                        let len = results.rows.length;
+                        console.log("需要上传的报表数量："+len);
+                        if(len>0){
+                            for(let i=0; i<len; i++){
+                                let checkIm = results.rows.item(i);
+                                console.log(checkIm);
+                                itemList.push(checkIm);
+                            }
+                            this.pushNetowrk(itemList);
+                        }
+                    });
+                },(error)=>{
+                    console.log(error);
+                });
 
+
+            }
+        });
+
+    }
+    pushNetowrk(itemList){
+        itemList.forEach((checkIm)=>{
+            Axios.PostAxiosUpPorter(checkIm).then(
+                (response)=>{
+                    if(response && response.id){
+                        if(!db){
+                            db = SQLite.open();
+                        }
+                        let sql = "delete from auto_up where code="+"'"+checkIm.code+"'";
+                        db.transaction((tx)=>{
+                            // tx.executeSql(sql, [],(tx,results)=>{
+                            //     console.log("本地删除成功");
+                            //     console.log(response);
+                            // });
+                            tx.executeSql(sql,()=>{
+                                        console.log("本地删除成功");
+                                },(err)=>{
+                                    console.log(err);
+                                }
+                            );
+                        },(error)=>{
+                            console.log(error);
+                        });
+
+
+                        // tx.executeSql("delete from auto_up where code="+"'"+checkIm.code+"'", [],(tx,results)=>{
+                        //     console.log("本地删除成功");
+                        //     console.log(response);
+                        // })
+                    }
+                })
+        })
+
+    }
 
 
   _renderSeparatorView(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
@@ -82,7 +154,7 @@ export default class TodayTask extends BaseComponent {
       <View key={`${sectionID}-${rowID}`} style={styles.separator} />
     );
   }
-
+  //跳转到二级页面
   onPressItem(data){
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
@@ -236,6 +308,9 @@ export default class TodayTask extends BaseComponent {
   }
 // const newDate = new Date().format("YYYY-MM-dd 00:00:00");
 // const newDateString = new Date(newDate).getTime();
+/*
+* 任务项组件封装
+* */
 class CheckItem extends Component {
 
     render(){
@@ -265,18 +340,6 @@ class CheckItem extends Component {
             var timeLengthMinutes = Math.floor((dateTemp%(1000*60*60))/(60*1000));
             processTypeText = processTypeText + timeLengthHours + "小时" + timeLengthMinutes + "分钟";
         }
-        // var oldTime = moment(this.props.data.EXEC_END_TIME);
-        // var nowDate = moment();
-        // var timeDiffHour = moment(currentDate.diff(nowDate)).hour();
-        // var timeDiffMinutes = moment(oldTime.diff(nowDate)).minute();
-        // var timeDiffSeconds = moment(oldTime.diff(nowDate)).seconds();
-        // var oldDate = new Date(this.props.data.EXEC_END_TIME).getTime();
-        // var nowDate = new Date().getTime();
-        // var timeDiffHour = ((nowDate-oldDate)/1000/60);
-        // var timeDiffMinutes = 0;
-        // console.log("++++++++");
-        // console.log(nowDate);
-        // console.log(oldTime);
         return (
             <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data)}} >
                 <View style={{flex:1, backgroundColor:'white',flexDirection:'row',height:80,

@@ -38,6 +38,9 @@ var username = '';
 var db;
 var checkSqLite = new CheckSqLite();
 var dateSourceItem =[];
+/*
+* 巡检三级页面
+* */
 export default class CheckDetail extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -70,6 +73,7 @@ export default class CheckDetail extends BaseComponent {
     this._fetchData();
 
   }
+    //列表数据获取
     _fetchData(){
         if(!db){
             db = SQLite.open();
@@ -107,6 +111,7 @@ export default class CheckDetail extends BaseComponent {
         this.props.navigation.goBack();
         this.props.navigation.state.params.callback()
   }
+  //单任务
   getItem(){
       var list = dateSourceItem;
       // console.log("___"+list);
@@ -182,7 +187,7 @@ export default class CheckDetail extends BaseComponent {
       )
     }
 
-
+    //任务填写
     onPressFeedback(dataString,resultString) {
         var i =0;
         dateSourceItem.forEach((item)=>{
@@ -207,7 +212,7 @@ export default class CheckDetail extends BaseComponent {
 
 
     }
-
+  //确认提交
   _onSure() {
         // console.log(dateSourceItem);
       var dateSourceItemTemp = [];
@@ -233,7 +238,8 @@ export default class CheckDetail extends BaseComponent {
                     min = ("-"+nums[1]);
                     max = ("-"+nums[3]);
                 }
-                if(item.resultString< min || item.resultString > max){
+
+                if( parseFloat(item.resultString)< parseFloat(min) || parseFloat(item.resultString) > parseFloat(max)){
                     itemResultSet = "不正常";
                 }
             }
@@ -274,15 +280,10 @@ export default class CheckDetail extends BaseComponent {
             }else{
                 SQLite.insertData(dateSourceItemTemp,"auto_up");
             }
-
         });
-        // NetInfo.isConnected.fetch().done((isConnected) => {
-        //   if(isConnected){
-        //       connected = true;
-        //   }
-        //   console.log("网络连接："+isConnected);
-        // });
-        // console.log(connected);
+
+
+
 
   }
 
@@ -293,6 +294,10 @@ export default class CheckDetail extends BaseComponent {
 
 
 }
+
+/*
+* 每个任务项渲染
+* */
 class CheckItem extends Component {
     constructor(props){
         super(props);
@@ -399,17 +404,15 @@ class CheckItem extends Component {
                         maxLength={20}
                         keyboardType='numeric'
                         onChangeText={(text) => {
-                            const newText = text.replace(/[^\d]+/, '');
-                            this.props.onPressFeedback(this.props.data,text);
-                            this.setState({stringText: newText})
+                            var newText = text.replace(/[^(\-|\.?)\d]+/, '');
+                            var newTextString = newText.replace(/[0-9][\-]/,'')
+                            var newTextStringTo = newTextString.replace(/^(\.)/,'')
+                            this.props.onPressFeedback(this.props.data,newTextStringTo);
+                            this.setState({stringText: newTextStringTo})
                         }}
                     />
                 </View>
                 }
-
-
-
-
 
                 <View style={{width:Dimens.screen_width,height:5}} />
             </View>
