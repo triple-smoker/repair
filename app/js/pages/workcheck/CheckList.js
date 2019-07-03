@@ -23,6 +23,7 @@ import RefreshListView from '../../component/RefreshListView'
 import SQLite from "../../polling/SQLite";
 import CheckSqLite from "../../polling/CheckSqLite";
 import moment from "moment";
+import Axios from "../../../util/Axios";
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -50,6 +51,7 @@ export default class CheckList extends BaseComponent {
         jobCode:navigation.getParam('jobCode', ''),
         jobExecCode:navigation.getParam('jobExecCode', ''),
         dailyTaskCode:navigation.getParam('dailyTaskCode', ''),
+        taskId:navigation.getParam('taskId', ''),
         isLoadingTail: false, // loading?
         isRefreshing: false, // refresh?
         dataSource: new ListView.DataSource({
@@ -129,7 +131,7 @@ export default class CheckList extends BaseComponent {
                     // console.log(len)
                     for(let i=0; i<len; i++){
                         var checkIm = results.rows.item(i);
-                        console.log(checkIm);
+                        // console.log(checkIm);
                         itemTemp.push(checkIm);
                         // cachedResults.items.push(checkIm);
                     }
@@ -146,7 +148,7 @@ export default class CheckList extends BaseComponent {
                     if(len>0){
                         for(let i=0; i<len; i++){
                             var checkIm = results.rows.item(i);
-                            console.log(checkIm);
+                            // console.log(checkIm);
                             var equipmentIdList = checkIm.OBJ_ID.split(",");
                             var lenE = equipmentIdList.length;
                             for (let j=1;j<lenE;j++){
@@ -156,7 +158,7 @@ export default class CheckList extends BaseComponent {
                                     // console.log(lenTemp);
                                     for(let z=0; z<lenTemp; z++){
                                         var checkIm = results.rows.item(z);
-                                        console.log(checkIm);
+                                        // console.log(checkIm);
                                         checkIm.showSpecial = 1;
                                         itemSpecial.push(checkIm);
                                         // cachedResults.items.push(checkIm);

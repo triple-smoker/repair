@@ -271,7 +271,7 @@ export default class CheckDetail extends BaseComponent {
             if(state.isConnected){
                 console.log("上传接口");
                 dateSourceItemTemp.forEach((item)=>{
-                    Axios.PostAxiosUpPorter(item).then(
+                    Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
                         (response)=>{
                             console.log(response);
                         })

@@ -32,7 +32,9 @@ let cachedResults = {
     timeIndex: 0,//自定义时间编码
 };
 
-
+/*
+* 报修单列表页面
+* */
 let ScreenWidth = Dimensions.get('window').width;
 let dialogWidth = ScreenWidth-80;
 class AllOrder extends BaseComponent {
@@ -80,6 +82,7 @@ class AllOrder extends BaseComponent {
         cachedResults.tabIndex=0;
         this._fetchData(0);
     }
+    //报修单列表数据加载
     _fetchData(page) {
         console.log('WP : _fetchData')
         var that = this;
@@ -195,7 +198,7 @@ class AllOrder extends BaseComponent {
     //     this.setState({typeVisible: !this.state.typeVisible});
     // }
 
-
+    //搜索
     goSearch(getRepairList){
         const { navigate } = this.props.navigation;
         navigate('OrderSearch',{
@@ -249,7 +252,7 @@ class AllOrder extends BaseComponent {
                                 })
                                 this.gotoCuiDan(cdTimeListNew,repairId);
                             }else{
-                                Alert.alert("过"+Math.ceil(30-timeDiff)+"分钟后再次催单");
+                                Alert.alert("您已催单，请过"+Math.ceil(30-timeDiff)+"分钟后再催单");
                             }
                         }
                     }

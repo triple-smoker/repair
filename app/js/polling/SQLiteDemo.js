@@ -36,6 +36,7 @@ const tabs = [
     "t_base_equipment",
     "t_base_equipment",
     "auto_up",
+    "auto_percent",
 ]
 export default class SQLiteDemo extends Component{
     constructor(props) {

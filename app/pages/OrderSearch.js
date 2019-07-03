@@ -30,6 +30,9 @@ let cachedResults = {
 };
 let ScreenWidth = Dimensions.get('window').width;
 let dialogWidth = ScreenWidth-80;
+/*
+* 搜索页面
+* */
 class OrderSearch extends BaseComponent {
 
     static navigationOptions = {
@@ -71,6 +74,7 @@ class OrderSearch extends BaseComponent {
             }.bind(this)
         )
     }
+    //搜索列表数据加载
     _fetchData(page) {
         console.log('WP : _fetchData')
         var that = this;
@@ -172,6 +176,7 @@ class OrderSearch extends BaseComponent {
         // this._getOrders(context);
         this._fetchData(0);
     }
+    //搜索记录缓存
     saveReport(context){
 
         let key = 'searchItemHistory';
@@ -290,7 +295,7 @@ class OrderSearch extends BaseComponent {
                                 })
                                 this.gotoCuiDan(cdTimeListNew,repairId,sendDeptId,sendUserId);
                             }else{
-                                Alert.alert("过"+(30-timeDiff)+"分钟后再次催单");
+                                Alert.alert("您已催单，请过"+(30-timeDiff)+"分钟后再催单");
                             }
                         }
                     }

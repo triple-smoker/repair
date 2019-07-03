@@ -392,6 +392,19 @@ class SQLManager extends Component {
             + ')';
         return createAutoUpSql;
     }
+    //巡检任务百分比-建表
+    createAutoPercent()
+    {
+        var createAutoPercentSql = "CREATE TABLE IF NOT EXISTS auto_percent("
+            + "rqCode varchar(255)  PRIMARY KEY,"
+            + "taskId varchar(255) ,"
+            + "equipmentId varchar(255) ,"
+            + "percentF varchar(10),"
+            + "percentZ varchar(10),"
+            + "isUp varchar(10)"
+            + ')';
+        return createAutoPercentSql;
+    }
 
 
 
