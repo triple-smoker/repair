@@ -52,8 +52,6 @@ export default class MyData extends BaseComponent {
         this.eventListener = DeviceEventEmitter.addListener('Event_Take_Photo', (param) => {
             // console.log('componentDidMount Event_Take_Photo : ' + param + ", imagePos : " );
             that.setState({imagePath0:param,});
-            
-
             that.uploadFile(param);
         });
     }
@@ -74,6 +72,7 @@ export default class MyData extends BaseComponent {
             }
         })
     }
+    /** 上传文件 头像*/
     uploadFile(path) {
         // Loading.show();
         var that = this;
@@ -90,6 +89,7 @@ export default class MyData extends BaseComponent {
             } 
       });
     }
+    /**新头像地址更新到个人信息 */
     updatePortrait(Msg){
         console.log('MSG:'+Msg)
         Request.requestPut(baseUser,{
@@ -103,6 +103,7 @@ export default class MyData extends BaseComponent {
             }
         })
     }
+    /**关闭相关修改框 */
     _edit(type){
         // console.log(type)
         var that = this;
@@ -114,6 +115,7 @@ export default class MyData extends BaseComponent {
             that.setState({sexShow:!that.state.sexShow})
         }
     }
+    /** 修改个人信息（类型，新，旧） */
     modification(type,Msg,oldMsg){
         var that = this;
         if(type == 'username'){
@@ -170,13 +172,16 @@ export default class MyData extends BaseComponent {
             }
         }
     }
+    /**判断空值 */
     isEmpty(obj){
-        if(typeof obj == "undefined" || obj == null || obj == ""){
+        if(typeof obj == "undefined" || obj == null || obj == "" || obj == " "){
                 return true;
         }else{
                 return false;
         }
     }
+    /**返回信息框 输入框||文本 \
+     * (dom类型，信息，信息类型) */
     TextInputModule(domType,txt,type){
        if(domType == 'input'){
            return <TextInput
@@ -196,7 +201,7 @@ export default class MyData extends BaseComponent {
            return <Text  style={{color:'#737373'}}>{txt}</Text>
        }  
     }
-
+    /**性别选择 */
     checkSex(type,oldType){
         console.log(type+':'+oldType)
         if(type != oldType){
@@ -215,6 +220,7 @@ export default class MyData extends BaseComponent {
         }
         
     }
+    //拍照
     onTake() {
         //this.routeToPage(this.props.navigator, 'OrderDetail');
         this.toggleModal()
@@ -225,6 +231,7 @@ export default class MyData extends BaseComponent {
                     })
         });
       }
+    //相册选择照片
     pickMultiple() {
         ImagePicker.openPicker({
             multiple: true,
@@ -442,7 +449,7 @@ toggleModal(){
 }
         
 
-       
+//更新个人信息       
 fetchUserInfo() {
     var that = this;
     Request.requestGet(GetUserInfo, null, (result)=> {

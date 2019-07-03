@@ -103,7 +103,6 @@ class TypeMd extends Component {
         )
 
       }
-//渲染二级类型
  
      //渲染一级类型shuju
      getRepair(){
@@ -174,6 +173,7 @@ class TypeMd extends Component {
                 </View>
             );
         }  
+        //右侧按钮方法
         onPressItem(data){
             var items = this.state.childrenList;
             this.setState({
@@ -186,6 +186,7 @@ class TypeMd extends Component {
             <View key={`${sectionID}-${rowID}`} style={styles.separator} />
             );
         }
+        //确认按钮
       submit(){
           console.log('确认');
           console.log(this.state.selectChildrenData)
@@ -203,10 +204,7 @@ class TypeMd extends Component {
                 repairMatterId,
                 this.state.repairParentCn,
                 repairTypeCtn
-                )  
-       
-          
-          
+            )          
       }
         render(){
             var repairParentCn = this.state.repairParentCn;

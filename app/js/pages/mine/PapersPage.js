@@ -60,6 +60,7 @@ export default class PapersPage extends BaseComponent {
             }
         })    
     }
+    /**数据请求 */
     loadOptCert(id){
         Request.requestGet(baseOptCert+id,null,(result) => {
             if(result && result.code == 200){
@@ -70,6 +71,7 @@ export default class PapersPage extends BaseComponent {
             }
         })
     }
+    /**显示列表 */
     OptCertList(item,i){
         console.log(item)
         var list = <View key={item.archivesNo}  style={styles.content_bg}> 
@@ -97,6 +99,7 @@ export default class PapersPage extends BaseComponent {
             /> 
         )
     }
+    /**内容 */
     _renderContent(item) {
         return (
             <Content>
@@ -104,6 +107,7 @@ export default class PapersPage extends BaseComponent {
             </Content>
         );
     }
+    /**header */
     _renderHeader(data,expanded){
         var item = data.item;
         var expireTime = item.expireTime;
@@ -155,10 +159,7 @@ export default class PapersPage extends BaseComponent {
                     {/* Math.abs() */}
                     { '过期'+Math.abs(item.expireDays)+'天'} 
                     </Text>
-                </View>
-                
-            
-            
+                </View>  
             }
               
             </View>

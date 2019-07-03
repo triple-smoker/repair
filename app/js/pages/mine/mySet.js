@@ -31,8 +31,7 @@ export default class MySet extends BaseComponent {
             pushStatus:false
         }
     }
-
-
+    /** 退出*/
     logout() {
         global.access_token = null;
         global.deptId = null;
@@ -63,6 +62,7 @@ export default class MySet extends BaseComponent {
                         navigation.navigate('Login',{theme:this.theme})
                     });
     }
+    //del
     _deleteData(){
         console.log('删除')
 
@@ -86,6 +86,7 @@ export default class MySet extends BaseComponent {
 
         RNFetchBlob.clearCache();
     }
+    /**跳转个人信息 */
     lookData(){
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {

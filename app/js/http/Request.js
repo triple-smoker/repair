@@ -48,7 +48,18 @@ export const baseUser = 'api/basic/baseUser';//修改用户信息
 export const Attr =  'api/basic/eqp/attr/';//设备属性
 
 export const baseOptCert = 'api/basic/baseOptCert/';
-
+// 获取我的关注
+export const FollowList = 'api/opcs/follow/list/';
+/**关注的 工单 科室 设备 用户 */ 
+export const FollowWork = 'api/opcs/follow/work/';
+export const FollowDept = 'api/opcs/follow/dept/';
+export const FollowEqp = 'api/opcs/follow/eqp/';
+export const FollowUser = 'api/opcs/follow/user/';
+//查询科室 用户 
+export const BaseDeptList =  'api/basic/baseDept/list';
+export const BaseUserList =  'api/basic/baseUser/list';
+//提交我的关注
+export const addFollow =  'api/opcs/follow/post';
 //https://dev.jxing.com.cn/api/auth/oauth/token?username=10001&password=BlvxyJFFYLcg7n2OB4G5uA%3D%3D&grant_type=password&scope=server
 //'Content-Type': 'application/x-www-form-urlencoded'
 //123456

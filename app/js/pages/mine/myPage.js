@@ -81,6 +81,7 @@ export default class MyPage extends BaseComponent {
             })
         });
     }
+    /**导航栏（123。。。） */
     gotoPage(num){
         console.log('qu'+num)
         const {navigation} = this.props;
@@ -93,7 +94,7 @@ export default class MyPage extends BaseComponent {
                 page = ''
             break;
             case 3:
-                page = ''
+                page = 'MyInterest'
             break;
             case 4:
                 page = ''
@@ -114,6 +115,7 @@ export default class MyPage extends BaseComponent {
             })
         });
     }
+    /**跳到证照 */
     loogPapers(){
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {

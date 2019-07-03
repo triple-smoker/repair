@@ -45,7 +45,7 @@ export default class ScanResult extends BaseComponent {
         }
     }
     componentWillUnmount(){
-        //  this.loadDetail();
+        // this.loadDetail();
     }
     componentDidMount() {
         this.loadDetail();
@@ -60,7 +60,7 @@ export default class ScanResult extends BaseComponent {
         var that = this;
         // 040A8A3A325E81
         // 1083394199443472386
-        //var scanCode = "040A8A3A325E81"
+        // var scanCode = "040A8A3A325E81"
         // var scanId = "1083394199443472386"
         Request.requestGet(ScanDetails + this.props.equipmentId, null, (result)=> {
             if (result && result.code === 200) {
@@ -71,9 +71,7 @@ export default class ScanResult extends BaseComponent {
             } else {
     
             }
-        });
-        
-                
+        });            
     }
         
     
@@ -86,7 +84,7 @@ export default class ScanResult extends BaseComponent {
         //         repairId: this.state.repairId})
         // });
     }
-
+    /* 使用状态*/ 
     statusTxt(num){
         var txt;
         switch (num) {
