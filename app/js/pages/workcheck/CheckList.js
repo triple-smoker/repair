@@ -23,6 +23,7 @@ import RefreshListView from '../../component/RefreshListView'
 import SQLite from "../../polling/SQLite";
 import CheckSqLite from "../../polling/CheckSqLite";
 import moment from "moment";
+import Axios from "../../../util/Axios";
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -48,6 +49,9 @@ export default class CheckList extends BaseComponent {
         beginTime:navigation.getParam('beginTime', ''),
         endTime:navigation.getParam('endTime', ''),
         jobCode:navigation.getParam('jobCode', ''),
+        jobExecCode:navigation.getParam('jobExecCode', ''),
+        dailyTaskCode:navigation.getParam('dailyTaskCode', ''),
+        taskId:navigation.getParam('taskId', ''),
         isLoadingTail: false, // loading?
         isRefreshing: false, // refresh?
         dataSource: new ListView.DataSource({
@@ -89,6 +93,14 @@ export default class CheckList extends BaseComponent {
             navigation.navigate('CheckDetail',{
                 theme:this.theme,
                 manCode:data.MAN_CODE,
+                equipmentId:data.equipment_id,
+                equipmentName:data.equipment_name,
+                equipmentTypeId:data.equipment_type_id,
+                jobExecCode:this.state.jobExecCode,
+                jobCode:this.state.jobCode,
+                dailyTaskCode:this.state.dailyTaskCode,
+                beginTime:this.state.beginTime,
+                endTime:this.state.endTime,
                 callback: (
                     () => {
                         this._fetchData(0);
@@ -119,7 +131,7 @@ export default class CheckList extends BaseComponent {
                     // console.log(len)
                     for(let i=0; i<len; i++){
                         var checkIm = results.rows.item(i);
-                        console.log(checkIm);
+                        // console.log(checkIm);
                         itemTemp.push(checkIm);
                         // cachedResults.items.push(checkIm);
                     }
@@ -136,7 +148,7 @@ export default class CheckList extends BaseComponent {
                     if(len>0){
                         for(let i=0; i<len; i++){
                             var checkIm = results.rows.item(i);
-                            console.log(checkIm);
+                            // console.log(checkIm);
                             var equipmentIdList = checkIm.OBJ_ID.split(",");
                             var lenE = equipmentIdList.length;
                             for (let j=1;j<lenE;j++){
@@ -146,7 +158,7 @@ export default class CheckList extends BaseComponent {
                                     // console.log(lenTemp);
                                     for(let z=0; z<lenTemp; z++){
                                         var checkIm = results.rows.item(z);
-                                        console.log(checkIm);
+                                        // console.log(checkIm);
                                         checkIm.showSpecial = 1;
                                         itemSpecial.push(checkIm);
                                         // cachedResults.items.push(checkIm);

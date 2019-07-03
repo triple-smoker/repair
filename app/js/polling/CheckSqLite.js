@@ -21,7 +21,7 @@ export default class CheckSqLite extends Component {
     //巡检首页
     selectFirstCheck(deptId,newDateString){
         return "SELECT"
-            +" distinct(dt.id),dt.JOB_CODE,dt.exec_start_time,dt.exec_end_time,dt.exec_code_type,"
+            +" distinct(dt.id),dt.JOB_CODE,dt.job_exec_code,dt.code,dt.exec_start_time,dt.exec_end_time,dt.exec_code_type,"
             +" dt.JOB_EXEC_TEAM_ID,ij.JOB_NAME,mri.TABLE_TYPE"
             +" FROM"
             +" daily_task as dt LEFT outer JOIN inspect_job as ij ON dt.job_code=ij.job_code"
@@ -70,28 +70,28 @@ export default class CheckSqLite extends Component {
     }
 
     //提交报表-建表
-    createAutoUp()
-    {
-        var createAutoUpSql = "CREATE TABLE IF NOT EXISTS auto_up("
-            + "code varchar(255),"
-            + "dailyTaskCode varchar(255),"
-            + "equipmentId varchar(255),"
-            + "equipmentTypeId varchar(255),"
-            + "execEndTime varchar(255),"
-            + "execStartTime varchar(255),"
-            + "fillDate varchar(255),"
-            + "itemCode varchar(255),"
-            + "itemResultSet varchar(255),"
-            + "jobCode varchar(255),"
-            + "jobExecCode varchar(255),"
-            + "manCode varchar(255),"
-            + "reportBy varchar(255),"
-            + "reportDate varchar(255),"
-            + "resultDesc varchar(255),"
-            + "status varchar(255)"
-            + ')';
-        return createAutoUpSql;
-    }
+    // createAutoUp()
+    // {
+    //     var createAutoUpSql = "CREATE TABLE IF NOT EXISTS auto_up("
+    //         + "code varchar(255),"
+    //         + "dailyTaskCode varchar(255),"
+    //         + "equipmentId varchar(255),"
+    //         + "equipmentTypeId varchar(255),"
+    //         + "execEndTime varchar(255),"
+    //         + "execStartTime varchar(255),"
+    //         + "fillDate varchar(255),"
+    //         + "itemCode varchar(255),"
+    //         + "itemResultSet varchar(255),"
+    //         + "jobCode varchar(255),"
+    //         + "jobExecCode varchar(255),"
+    //         + "manCode varchar(255),"
+    //         + "reportBy varchar(255),"
+    //         + "reportDate varchar(255),"
+    //         + "resultDesc varchar(255),"
+    //         + "status varchar(255)"
+    //         + ')';
+    //     return createAutoUpSql;
+    // }
 
 
 

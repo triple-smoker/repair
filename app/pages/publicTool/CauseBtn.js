@@ -7,7 +7,9 @@ import {
     Text
 } from 'react-native';
 import {Button,Container} from 'native-base';
-
+/*
+* 报单取消按钮组件封装
+* */
 class CauseBtn extends Component{
     constructor(props) {
        super(props);

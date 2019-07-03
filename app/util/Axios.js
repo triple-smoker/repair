@@ -89,7 +89,19 @@ console.log('http://47.102.197.221:4008/portal/batchSynchronization/ModulesName?
 
     })
 }
-
+function PostAxiosUpPorter(url = '' , data = defaultData, ) {
+    return axios({
+        method: 'POST',
+        url : url,
+        data,
+    })
+}
+function GetAxiosUpPorter(url = '') {
+    return axios({
+        method: 'POST',
+        url : url,
+    })
+}
 
 
 function UpLoad(path) {
@@ -149,5 +161,7 @@ export default {
     PostAxios,
     GetAxios,
     GetAxiosSQLite,
+    PostAxiosUpPorter,
+    GetAxiosUpPorter,
     UpLoad
 }

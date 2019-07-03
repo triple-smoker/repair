@@ -22,6 +22,9 @@ import RNFetchBlob from '../../util/RNFetchBlob';
 import {getVoicePlayer} from '../../components/VoicePlayer';
 
 
+/*
+* 报修单  报修内容模块 组件化
+* */
 import moment from "moment";
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
@@ -45,6 +48,7 @@ class Adds extends Component {//报修单共用组件
     _showText(){
         this.setState({showText: !this.state.showText});
     }
+    //获取报修单图片数量
     getLength(imagesRequest,videosRequest){
         var length = 0;
         if(imagesRequest!=null){
@@ -55,6 +59,7 @@ class Adds extends Component {//报修单共用组件
         }
         return length;
     }
+    //获取报修单首张图片
     getFirstImage(imagesRequest,videosRequest){
         if(imagesRequest != null && imagesRequest.length>0){
             var path = '';
@@ -101,6 +106,7 @@ class Adds extends Component {//报修单共用组件
             return <View style={{width: 70, height: 70, backgroundColor:'#c8c8c8'}}/>
         }
     }
+    //语音播放
     _showYy(fileMap){
         var voicesRequest = fileMap.voicesRequest;
         if(voicesRequest!=null){
@@ -246,6 +252,9 @@ class Adds extends Component {//报修单共用组件
   }
 }
 
+/*
+* 图片预览图层
+* */
 class PictureMd extends Component {
 
     constructor(props) {
@@ -274,7 +283,7 @@ class PictureMd extends Component {
             videoItemRef.setVideoCurrentTime();
         }
       }
-
+    //图片渲染
     getImageItem(imagesRequest,videosRequest,setModalVisible){
         var i = 0;
         var j = 0;
@@ -341,7 +350,9 @@ class ImageItem extends Component{
         )
     }
 }
-
+/*
+* 视屏组件渲染
+* */
 class VideoItem extends Component{
 
         //获取VideoPlayer组件模板元素
@@ -439,7 +450,9 @@ const PreVideo  = (video) => {
                repeat={false} />
     );
 }
-
+/*
+* 报修单取消图层
+* */
 class CancelMd extends Component {
 
     constructor(props) {
@@ -462,6 +475,7 @@ class CancelMd extends Component {
                 }
         )
     }
+    //取消原因变更
     changeCause(visible){
         var causeList = [];
         causeList = this.state.causeList;
@@ -472,7 +486,7 @@ class CancelMd extends Component {
         });
         this.setState({causeList:causeList,showPause: false});
     }
-
+    //取消原因按钮渲染
     _getCauseItem(){
         var causeList = [];
         causeList = this.state.causeList;
@@ -486,6 +500,7 @@ class CancelMd extends Component {
     _setRemark(remark){
         this.setState({reMark:remark});
     }
+    //取消原因提交
     pushCancel(record,getRepairList,closer){
        var   url="/api/repair/request/misinform";
        var causeList = this.state.causeList;

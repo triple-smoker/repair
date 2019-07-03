@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Image, TextInput, TouchableHighlight, TouchableOpacity, View, BackHandler,} from 'react-native';
+import {Image, TextInput, TouchableHighlight, TouchableOpacity, View, BackHandler,Platform} from 'react-native';
 import { Container, Content,Text } from 'native-base';
 import Reporter from '../components/Reporter';
 import MyFooter from '../components/MyFooter';

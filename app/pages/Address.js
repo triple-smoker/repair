@@ -4,7 +4,13 @@ import {Row, Container, Content, Left, Right, Button, Text, List, ListItem ,Text
 import MyFooter from '../components/MyFooter';
 import AsyncStorage from '@react-native-community/async-storage';
 import Notice from '../components/Notice';
-
+/*
+*
+*
+*
+*
+*
+* */
 class MyAddress extends Component {
 
     static navigationOptions = {
@@ -134,7 +140,7 @@ class MyAddress extends Component {
 
         newreporterList1.splice(0,0,info);
 
-        if(newreporterList1.length >=6){
+        if(newreporterList1.length >=4){
             newreporterList1.pop()
         }
 

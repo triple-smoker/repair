@@ -369,6 +369,42 @@ class SQLManager extends Component {
             + 'DELETE_FLAG varchar(2) DEFAULT \'0\' )';
         return createTBaseRoomSql;
     }
+    //提交报表-建表
+    createAutoUp()
+    {
+        var createAutoUpSql = "CREATE TABLE IF NOT EXISTS auto_up("
+            + "code varchar(255) PRIMARY KEY,"
+            + "dailyTaskCode varchar(255),"
+            + "equipmentId varchar(255),"
+            + "equipmentTypeId varchar(255),"
+            + "execEndTime varchar(255),"
+            + "execStartTime varchar(255),"
+            + "fillDate varchar(255),"
+            + "itemCode varchar(255),"
+            + "itemResultSet varchar(255),"
+            + "jobCode varchar(255),"
+            + "jobExecCode varchar(255),"
+            + "manCode varchar(255),"
+            + "reportBy varchar(255),"
+            + "reportDate varchar(255),"
+            + "resultDesc varchar(255),"
+            + "status varchar(255)"
+            + ')';
+        return createAutoUpSql;
+    }
+    //巡检任务百分比-建表
+    createAutoPercent()
+    {
+        var createAutoPercentSql = "CREATE TABLE IF NOT EXISTS auto_percent("
+            + "rqCode varchar(255)  PRIMARY KEY,"
+            + "taskId varchar(255) ,"
+            + "equipmentId varchar(255) ,"
+            + "percentF varchar(10),"
+            + "percentZ varchar(10),"
+            + "isUp varchar(10)"
+            + ')';
+        return createAutoPercentSql;
+    }
 
 
 

@@ -13,7 +13,10 @@ import { Content,Row,Col,Text,List,ListItem,Button,Item,Textarea } from 'native-
 import Axios from '../../util/Axios';
 import CauseBtn from './CauseBtn';
 
-
+/*
+* 报修单评价页面 评价操作模块组件封装
+*
+* */
 let ScreenWidth = Dimensions.get('window').width;
 class OrderEva extends Component {
     constructor(props) {
@@ -66,6 +69,7 @@ class OrderEva extends Component {
          )
 
     }
+    //评价选项点击切换提示语
     _change(btnum){
         this.setState({ btColor:btnum});
         var bttArrayBmy = this.state.bttArrayBmy;
@@ -87,7 +91,7 @@ class OrderEva extends Component {
                 this.setState({btTitle:'（请选择满意的地方）',bttArrayYb:bttArrayYb,bttArrayBmy:bttArrayBmy});
         }
     }
-
+    //评价选项点击切换按钮
     changeCause(cause){
         var bttArrayBmy = this.state.bttArrayBmy;
         var bttArrayYb = this.state.bttArrayYb;
@@ -124,6 +128,7 @@ class OrderEva extends Component {
          });
          return arrayCause;
     }
+    //获取评价子按钮
     getCause(chCause){
         var causeList = [];
         if(this.state.btColor===1){
@@ -140,6 +145,7 @@ class OrderEva extends Component {
         ))
         return listItems;
     }
+    //评价按钮渲染
     getImageItem(repair){
         var imagesList = [];
         var listItems ="";

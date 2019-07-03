@@ -24,6 +24,8 @@ import RNFetchBlob from '../../../util/RNFetchBlob';
 
 import NfcManager, {Ndef} from 'react-native-nfc-manager';
 import {FLAG_TAB} from "../entry/MainPage";
+import SQLite from "../../polling/SQLite";
+import Axios from "../../../util/Axios";
 
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
@@ -31,6 +33,10 @@ require('../../../res/default/banner_02.jpg'),
 require('../../../res/default/banner_03.jpg')
 ]
 
+/*
+* 首页菜单
+* */
+var db;
 export default class HomePage extends Component {
     static navigationOptions = {
         header: null,
@@ -122,8 +128,62 @@ export default class HomePage extends Component {
         // this.loadRepairTypes();
         Permissions.request('storage', { type: 'always' }).then(response => {
 
-        })
-        this._startDetection()
+        });
+        this._startDetection();
+        this.getSqlite();
+    }
+
+    getSqlite(){
+        var sqLiteTimeTemp = "0"
+        //开启数据库
+        if(!db){
+            db = SQLite.open();
+        }
+        //建表
+        // sqLite.createTable();
+        AsyncStorage.getItem('sqLiteTimeTemp',function (error, result) {
+
+                if (error) {
+                    // alert('读取失败')
+                }else {
+                    var sqlTime = JSON.parse(result);
+                    if(sqlTime != null && sqlTime != ""){
+                        sqLiteTimeTemp = sqlTime;
+                    }
+                    console.log(">>>>>>>>>>>>")
+                    console.log(sqLiteTimeTemp)
+                    //数据同步接口条用
+                    Axios.GetAxiosSQLite(sqLiteTimeTemp).then(
+                        (response)=>{
+                            if(Array.isArray(response.data)&&response.data.length>1){
+                                let key = 'sqLiteTimeTemp';
+                                //json转成字符串
+                                let jsonStr = JSON.stringify(response.data[0]);
+                                //存储
+                                AsyncStorage.setItem(key, jsonStr, function (error) {
+
+                                    if (error) {
+                                        console.log('存储失败')
+                                    }else {
+                                        console.log('存储完成')
+                                    }
+                                })
+                                var dates = response.data[1];
+                                for(var tableName in dates){
+                                    if(dates[tableName]!=null&&dates[tableName].length>0){
+                                        SQLite.insertData(dates[tableName],tableName);
+                                    }
+
+                                }
+                            }
+                            console.log("++"+JSON.stringify(response));
+
+                        }
+                    );
+
+                }
+            }.bind(this)
+        )
     }
 
 
@@ -403,16 +463,16 @@ export default class HomePage extends Component {
 
         <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:20,paddingLeft:0,paddingRight:0,}}>
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-              <TouchableOpacity onPress={()=>this.repair()}>
+              <TouchableOpacity onPress={()=>this.newRepair()}>
                 <Image source={require('../../../res/login/ico_bx.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修单</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修</Text>
                 </TouchableOpacity>
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                <TouchableOpacity onPress={()=>this.newRepair()}>
+                <TouchableOpacity onPress={()=>this.repair()}>
                 <Image source={require('../../../res/login/ico_pj.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修</Text>
+                <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修单</Text>
                 </TouchableOpacity>
                 {/*<OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>*/}
             </View>

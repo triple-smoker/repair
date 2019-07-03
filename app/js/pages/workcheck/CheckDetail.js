@@ -13,7 +13,6 @@ import {
     Modal,
     ScrollView,
     TouchableHighlight,
-    NetInfo
 } from 'react-native';
 
 
@@ -21,6 +20,10 @@ import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
 import SQLite from "../../polling/SQLite";
 import CheckSqLite from "../../polling/CheckSqLite";
+import moment from "moment";
+import md5 from "md5";
+import Axios from '../../../util/Axios';
+import NetInfo from '@react-native-community/netinfo';
 import {Textarea} from "native-base";
 
 
@@ -35,6 +38,9 @@ var username = '';
 var db;
 var checkSqLite = new CheckSqLite();
 var dateSourceItem =[];
+/*
+* 巡检三级页面
+* */
 export default class CheckDetail extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -46,6 +52,14 @@ export default class CheckDetail extends BaseComponent {
       selectIndex:0,
       theme:this.props.theme,
       manCode:navigation.getParam('manCode', ''),
+      jobCode:navigation.getParam('jobCode', ''),
+      jobExecCode:navigation.getParam('jobExecCode', ''),
+      dailyTaskCode:navigation.getParam('dailyTaskCode', ''),
+      beginTime:navigation.getParam('beginTime', ''),
+      endTime:navigation.getParam('endTime', ''),
+      equipmentId:navigation.getParam('equipmentId', ''),
+      equipmentName:navigation.getParam('equipmentName', ''),
+      equipmentTypeId:navigation.getParam('equipmentTypeId', ''),
       modalVisible:false,
       dateSource:[],
       personText:"",
@@ -59,6 +73,7 @@ export default class CheckDetail extends BaseComponent {
     this._fetchData();
 
   }
+    //列表数据获取
     _fetchData(){
         if(!db){
             db = SQLite.open();
@@ -96,6 +111,7 @@ export default class CheckDetail extends BaseComponent {
         this.props.navigation.goBack();
         this.props.navigation.state.params.callback()
   }
+  //单任务
   getItem(){
       var list = dateSourceItem;
       // console.log("___"+list);
@@ -171,7 +187,7 @@ export default class CheckDetail extends BaseComponent {
       )
     }
 
-
+    //任务填写
     onPressFeedback(dataString,resultString) {
         var i =0;
         dateSourceItem.forEach((item)=>{
@@ -196,34 +212,79 @@ export default class CheckDetail extends BaseComponent {
 
 
     }
-
+  //确认提交
   _onSure() {
-        console.log(dateSourceItem);
-        var connected = false;
-        NetInfo.isConnected.fetch().done((isConnected) => {
-          if(isConnected){
-              connected = true;
-          }
-        });
-        if(connected){
-            console.log("伤处啊你借口");
-        }else{
-            if(!db){
-                db = SQLite.open();
+        // console.log(dateSourceItem);
+      var dateSourceItemTemp = [];
+        dateSourceItem.forEach((item)=>{
+            // console.log(item);
+            var code = this.state.dailyTaskCode+""+this.state.jobCode+""+this.state.jobExecCode+""+this.state.manCode+""+this.state.equipmentId+""+item.ITEM_CODE;
+            code = md5(code,32);
+            var itemResultSet = "正常";
+            if(item.ITEM_FORMAT === "数值型"){
+                let nums = item.ITEM_RESULT_SET.split("-");
+                 var min = "";
+                 var max = "";
+                if(nums.length === 2){
+                    min = nums[0];
+                    max = nums[0];
+                }else if(nums.length === 3 && item.ITEM_RESULT_SET.indexOf("-")===0){
+                    min = ("-"+nums[1]);
+                    max = (nums[2]);
+                }else if(nums.length === 3 && item.ITEM_RESULT_SET.indexOf("-")!=0){
+                    min = (nums[0]);
+                    max = ("-"+nums[2]);
+                }else if(nums.length === 4){
+                    min = ("-"+nums[1]);
+                    max = ("-"+nums[3]);
+                }
+
+                if( parseFloat(item.resultString)< parseFloat(min) || parseFloat(item.resultString) > parseFloat(max)){
+                    itemResultSet = "不正常";
+                }
             }
-            var sql = checkSqLite.createAutoUp();
-            //创建用户表
-            db.transaction((tx)=> {
-                tx.executeSql(sql
-                    , [], ()=> {
-                        SQLite.insertData(dateSourceItem,"auto_up");
-                    },(error)=>{
-                        console.log(error);
-                    });
-            },(error)=>{
-                console.log(error);
-            });
-        }
+            var requestN = {
+                "code": code, //这个字段值用(jobCode+jobExecCode+manCode+equipmentId+itemCode)数字 形成就好，满足两个人上传同一个任务检查项时此字段一致
+                "dailyTaskCode": this.state.dailyTaskCode,  //第一页的daily_task code携带
+                "equipmentId": this.state.equipmentId, //第二页携带
+                "equipmentTypeId": this.state.equipmentTypeId,  //第二页携带
+                "execEndTime": moment(this.state.endTime).format("YYYY-MM-DD HH:mm:ss"),   //第一页携带
+                "execStartTime": moment(this.state.beginTime).format("YYYY-MM-DD HH:mm:ss"),  //第一页携带
+                "fillDate": moment().format("YYYY-MM-DD HH:mm:ss"),  //填报的业务时间
+                "itemCode": item.ITEM_CODE,    //第三页 检查项表的itemcode
+                "itemResultSet": itemResultSet,                  //正常（数值型根据参考值判断，超过范围显示‘异常’）
+                "jobCode": this.state.jobCode,        //第一页的daily_task jobCode携带
+                "jobExecCode": this.state.jobExecCode,     //第一页的daily_task jobExecCode携带
+                "manCode": this.state.manCode,      //第二页 mancode携带
+                "reportBy": global.uinfo.userName,                 //用户名
+                // "reportDate": moment().format("YYYY-MM-DD HH:mm:ss"),
+                "reportDate": null,
+                "resultDesc": (item.resultString===null)? "":item.resultString,   //选项内容、哈哈哈哈、url、url、double
+                "status": "1",
+            }
+            console.log(requestN);
+            dateSourceItemTemp.push(requestN);
+        })
+
+        // var connected = false;
+        NetInfo.fetch().then(state => {
+            if(state.isConnected){
+                console.log("上传接口");
+                dateSourceItemTemp.forEach((item)=>{
+                    Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
+                        (response)=>{
+                            console.log(response);
+                        })
+                })
+
+            }else{
+                SQLite.insertData(dateSourceItemTemp,"auto_up");
+            }
+        });
+
+
+
+
   }
 
     onChangeType(index) {
@@ -233,6 +294,10 @@ export default class CheckDetail extends BaseComponent {
 
 
 }
+
+/*
+* 每个任务项渲染
+* */
 class CheckItem extends Component {
     constructor(props){
         super(props);
@@ -339,17 +404,15 @@ class CheckItem extends Component {
                         maxLength={20}
                         keyboardType='numeric'
                         onChangeText={(text) => {
-                            const newText = text.replace(/[^\d]+/, '');
-                            this.props.onPressFeedback(this.props.data,text);
-                            this.setState({stringText: newText})
+                            var newText = text.replace(/[^(\-|\.?)\d]+/, '');
+                            var newTextString = newText.replace(/[0-9][\-]/,'')
+                            var newTextStringTo = newTextString.replace(/^(\.)/,'')
+                            this.props.onPressFeedback(this.props.data,newTextStringTo);
+                            this.setState({stringText: newTextStringTo})
                         }}
                     />
                 </View>
                 }
-
-
-
-
 
                 <View style={{width:Dimens.screen_width,height:5}} />
             </View>

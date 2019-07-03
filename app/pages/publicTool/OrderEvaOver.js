@@ -12,10 +12,12 @@ import { Content,Row,Col,Text,List,ListItem,Button,Item,Textarea } from 'native-
 import axios from 'axios';
 import Swiper from 'react-native-swiper';
 
-
+/*
+* 报修单评价页面 已评价模块封装
+* */
 let ScreenWidth = Dimensions.get('window').width;
 class OrderEvaOver extends Component {
-
+    //获取评价数据
     getCause(causes){
         var causeList = [];
         if(causes!=''){
@@ -26,7 +28,7 @@ class OrderEvaOver extends Component {
         ))
         return listItems;
     }
-//图片轮播渲染
+    //图片轮播渲染
     getImageItem(repair){
         var imagesList = [];
         var listItems ="";

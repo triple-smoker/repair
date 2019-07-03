@@ -18,14 +18,17 @@ import {
 
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
-import TitleBar from '../../component/TitleBar';
 import RefreshListView from '../../component/RefreshListView'
-import Request, {GetRepairList} from "../../http/Request";
 import SQLite from '../../polling/SQLite';
 import CheckSqLite from "../../polling/CheckSqLite";
 import moment from "moment";
+import NetInfo from '@react-native-community/netinfo';
+import Axios from "../../../util/Axios";
 
-
+/*
+* 每日任务列表
+*
+* */
 let cachedResults = {
   nextPage: 1, // 下一页
   items: [], // 
@@ -59,22 +62,82 @@ export default class TodayTask extends BaseComponent {
       }),
 
     };
-      // 每1000毫秒对showText状态做一次取反操作
+      // 每60000毫秒对状态做一次操作
       setInterval(() => {
           this._fetchData(0);
       }, 60000);
+      // 每10分钟检测一遍是否有报表需要上传
+      // setInterval(() => {
+      //     this._pushData();
+      // }, 600000);
+
   }
 
 
   componentDidMount() {
       cachedResults.tabIndex = 0;
       this._fetchData(0);
+
   }
     // componentWillReceiveProps(){
     //     cachedResults.tabIndex = 0;
     //     this._fetchData(0);
     // }
+  //获取auto_up表中的信息进行网络添加
+    _pushData(){
+        NetInfo.fetch().then(state => {
+            if(state.isConnected){
+                if(!db){
+                    db = SQLite.open();
+                }
+                let sql = "select * from auto_up";
+                var itemList = [];
+                db.transaction((tx)=>{
+                    tx.executeSql(sql, [],(tx,results)=>{
+                        let len = results.rows.length;
+                        console.log("需要上传的报表数量："+len);
+                        if(len>0){
+                            for(let i=0; i<len; i++){
+                                let checkIm = results.rows.item(i);
+                                console.log(checkIm);
+                                itemList.push(checkIm);
+                            }
+                            this.pushNetowrk(itemList);
+                        }
+                    });
+                },(error)=>{
+                    console.log(error);
+                });
 
+
+            }
+        });
+
+    }
+    pushNetowrk(itemList){
+        itemList.forEach((checkIm)=>{
+            Axios.PostAxiosUpPorter(checkIm).then(
+                (response)=>{
+                    if(response && response.id){
+                        if(!db){
+                            db = SQLite.open();
+                        }
+                        let sql = "delete from auto_up where code="+"'"+checkIm.code+"'";
+                        db.transaction((tx)=>{
+                            tx.executeSql(sql,()=>{
+                                        console.log("本地删除成功");
+                                },(err)=>{
+                                    console.log(err);
+                                }
+                            );
+                        },(error)=>{
+                            console.log(error);
+                        });
+                    }
+                })
+        })
+
+    }
 
 
   _renderSeparatorView(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
@@ -82,15 +145,18 @@ export default class TodayTask extends BaseComponent {
       <View key={`${sectionID}-${rowID}`} style={styles.separator} />
     );
   }
-
+  //跳转到二级页面
   onPressItem(data){
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('CheckList',{
                 theme:this.theme,
+                taskId:data.ID,
                 beginTime:data.EXEC_START_TIME,
                 endTime:data.EXEC_END_TIME,
                 jobCode:data.JOB_CODE,
+                jobExecCode:data.JOB_EXEC_CODE,
+                dailyTaskCode:data.CODE,
                 callback: (
                     () => {
                         this._fetchData(0);
@@ -101,6 +167,7 @@ export default class TodayTask extends BaseComponent {
   }
 
   renderItem(data,i) {
+
     return (
         <CheckItem data={data} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
     );
@@ -120,25 +187,17 @@ export default class TodayTask extends BaseComponent {
         if(!db){
             db = SQLite.open();
         }
-        // var params = new Map();
-        // params.set('page', cachedResults.nextPage);
-        // params.set('limit', '20');
         cachedResults.items = [];
        if(cachedResults.tabIndex === 0){
-           // var sql = "";
-           // var newDate = new Date().format("YYYY-MM-dd 00:00:00");
-           // var newDateString = new Date(newDate).getTime();
            var timeStamp = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
            var sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp);
            db.transaction((tx)=>{
                tx.executeSql(sql, [],(tx,results)=>{
                    var len = results.rows.length;
                    console.log(len);
-                   // alert(sql);
-                   // alert(len);
                    for(let i=0; i<len; i++){
                        var checkIm = results.rows.item(i);
-                       // console.log(checkIm);
+                       console.log(checkIm);
                        cachedResults.items.push(checkIm);
                    }
                    this.setState({
@@ -171,12 +230,6 @@ export default class TodayTask extends BaseComponent {
                console.log(error);
            });
        }
-       // console.log("------------------")
-        // this.setState({
-        //     isLoadingTail: false,
-        //     isRefreshing: false,
-        //     dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
-        // });
     }
 
   render() {
@@ -234,7 +287,47 @@ export default class TodayTask extends BaseComponent {
   }
 // const newDate = new Date().format("YYYY-MM-dd 00:00:00");
 // const newDateString = new Date(newDate).getTime();
+/*
+* 任务项组件封装
+* */
+let percent = 1;
 class CheckItem extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            percent:1
+        }
+        this.getNetworkData(this.props.data.ID);
+    }
+    getNetworkData(taskId){
+        Axios.GetAxiosUpPorter("http://47.102.197.221:8081/api/dailyTask/getReportListByTaskId?taskId="+taskId).then(
+            (response)=>{
+                var dataList = [];
+                if(Array.isArray(response) && response.length>0){
+                    var sum = 0;
+                    response.forEach((item)=>{
+                        console.log(item);
+                        if(item.completion === "已完成"){
+                            sum++;
+                        }
+                        var data = {rqCode:moment().format("YYYYMMDD")+""+taskId,
+                            taskId:taskId,
+                            equipmentId:item.equipmentId,
+                            percentF:"",
+                            percentZ:item.completed,
+                            isUp:""}
+                        dataList.push(data);
+                    })
+                    dataList.forEach((item)=>{
+                        item.percentF = parseInt((sum/dataList.length)*ScreenWidth);
+                        item.percentF = item.percentF===0 ? 1:item.percentF
+                        // percent =  parseInt((sum/dataList.length)*ScreenWidth);
+                        // console.log("************"+sum+"/"+dataList.length);
+                    })
+                    SQLite.insertData(dataList,"auto_percent");
+                }
+            })
+    }
 
     render(){
         var processTypeText = "";
@@ -263,18 +356,39 @@ class CheckItem extends Component {
             var timeLengthMinutes = Math.floor((dateTemp%(1000*60*60))/(60*1000));
             processTypeText = processTypeText + timeLengthHours + "小时" + timeLengthMinutes + "分钟";
         }
-        // var oldTime = moment(this.props.data.EXEC_END_TIME);
-        // var nowDate = moment();
-        // var timeDiffHour = moment(currentDate.diff(nowDate)).hour();
-        // var timeDiffMinutes = moment(oldTime.diff(nowDate)).minute();
-        // var timeDiffSeconds = moment(oldTime.diff(nowDate)).seconds();
-        // var oldDate = new Date(this.props.data.EXEC_END_TIME).getTime();
-        // var nowDate = new Date().getTime();
-        // var timeDiffHour = ((nowDate-oldDate)/1000/60);
-        // var timeDiffMinutes = 0;
-        // console.log("++++++++");
-        // console.log(nowDate);
-        // console.log(oldTime);
+
+        if(!db){
+            db = SQLite.open();
+        }
+        let sql = "select * from auto_percent where rqCode="+moment().format("YYYYMMDD") + "" +this.props.data.ID;
+        db.transaction((tx)=>{
+            tx.executeSql(sql, [],(tx,results)=>{
+                var len = results.rows.length;
+                console.log(len);
+                if(len===0){
+                    percent = 1;
+                    if(percent!=this.state.percent){
+                        this.setState({percent:percent})
+                    }
+                    // console.log("========="+percent);
+                }else{
+                    for(let i=0; i<len; i++){
+                        var checkIm = results.rows.item(i);
+                        if(checkIm && checkIm.percentF){
+                            percent = parseInt(checkIm.percentF);
+                        }
+                        // console.log("========="+percent);
+                        if(percent!=this.state.percent){
+                            this.setState({percent:percent})
+                        }
+                    }
+                }
+
+            });
+        },(error)=>{
+            console.log(error);
+        });
+
         return (
             <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data)}} >
                 <View style={{flex:1, backgroundColor:'white',flexDirection:'row',height:80,
@@ -283,7 +397,7 @@ class CheckItem extends Component {
                 <View style={{
                     backgroundColor:'rgba(239,249,249,0.6)',
                     position:"absolute",
-                    width:1/4*ScreenWidth,
+                    width:(percent===0)?1:percent,
                     height:80,
                     left:0
                     }}
