@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import {StyleSheet, Alert, Image, TextInput, View} from 'react-native';
+import {StyleSheet, Alert, Image, TextInput, View,TouchableOpacity} from 'react-native';
 import {Row, Container, Content, Left, Right, Button, Text, List, ListItem ,Textarea} from 'native-base';
 import MyFooter from '../components/MyFooter';
 import AsyncStorage from '@react-native-community/async-storage';
 import Notice from '../components/Notice';
+import PlaceType from "./publicTool/PlaceType"
 /*
 *
 *
@@ -40,6 +41,7 @@ class MyAddress extends Component {
             reporterList : [],
             showNotice : false,
             noticeText: '',
+            typeVisible:true,
 
         };
 
@@ -72,6 +74,22 @@ class MyAddress extends Component {
             AddPhone: phone,
             AddAdds: adds
         })
+    }
+    newRepair(buildingName,floorName,roomName){
+        var adds = '';
+        if(buildingName){
+            adds = buildingName
+        }
+        if(buildingName && floorName){
+            adds = buildingName+ ' ' +floorName
+        }
+        if(buildingName && floorName && roomName){
+            adds = buildingName+ ' ' +floorName+ ' '+roomName+'室'
+        }
+        this.setState({
+            AddAdds: adds
+        })
+        this._setTypeVisible()
     }
 
 
@@ -184,11 +202,24 @@ class MyAddress extends Component {
             AddPhone : value,
         })
     }
+
+    //保存位置
     changeAdds(value){
         // Alert.alert(value);
         this.setState({
             AddAdds : value,
         })
+    }
+    newPlace(value){
+        this.setState({
+            typeVisible: !this.state.typeVisible,
+            AddAdds : value   
+        });
+    }
+    _setTypeVisible() {
+        console.log('+++++++++++++++++++++++++++++++++++++++++++')
+        this.setState({typeVisible: !this.state.typeVisible});
+        console.log(this.state.typeVisible)
     }
 
 
@@ -210,12 +241,16 @@ class MyAddress extends Component {
                 changeName = {(value) => this.changeName(value)}
                 changePhone = {(value) => this.changePhone(value)}
                 changeAdds = {(value) => this.changeAdds(value)}
+                setType = {()=> this._setTypeVisible()}
                 name={this.state.AddName} phone={this.state.AddPhone} address={this.state.AddAdds}/>
             <Row style={{height:40,backgroundColor:'#f8f8f8'}}>
                 <Text style={{width: '100%',textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>--------------切换以下历史地址--------------</Text>
             </Row>
             {this.history()}
         </Content>
+        <PlaceType goToRepair={(buildingName,floorName,roomName)=>this.newRepair(buildingName,floorName,roomName)} 
+                                isShowModal={()=>this._setTypeVisible()} 
+                                modalVisible = {this.state.typeVisible}/>
           <MyFooter submit={() => this.saveReport()} value='确定'/>
       </Container>
     );
@@ -228,18 +263,24 @@ class MyMessage extends Component {//地址输入模块
         <Content>
             <Item ItemName={"报修人"} type={0} change = {( value) => this.props.changeName(value)} ItemValue={this.props.name}/>
             <Item ItemName={"联系电话"} type={1} change = {( value) => this.props.changePhone(value)} ItemValue={this.props.phone}/>
-            <Item ItemName={"报修位置"} type={2}  change = {( value) => this.props.changeAdds(value)} ItemValue={this.props.address}/>
+            <Item ItemName={"报修位置"} type={2}  change = {( value) => this.props.changeAdds(value)} setType = {()=>this.props.setType()} ItemValue={this.props.address}/>
         </Content>
     );
   }
 }
 
-const Item = ({ItemName , ItemValue, change}) => (
-    <Row style={{height:42,borderBottomWidth: 2,borderColor:'#e1e1e1',marginLeft:16}}>
+const Item = ({ItemName , ItemValue, change,type,setType}) => (
+    <Row style={{height:42,borderBottomWidth: 2,borderColor:'#e1e1e1',marginLeft:16,position:'relative'}}>
         <Text style={stylesBody.bodyFont}>{ItemName}</Text>
         <TextInput style={stylesBody.bodyInputFont}
                    onChangeText={(text) => change(text)}
                    value={ItemValue} />
+        {type == 2 ? <TouchableOpacity onPress={()=>setType()} style={{width:35,flexDirection:'row'}}>
+                        <Text style={{position:'absolute',right:16,fontSize:16,
+                        color:'#000',
+                        marginTop:10,
+                        }}> > </Text>
+                    </TouchableOpacity> : null}
     </Row>
     );
 // class Item extends Component {
