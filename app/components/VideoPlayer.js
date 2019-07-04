@@ -93,10 +93,8 @@ class VideoPlayer extends Component {
                 {
                     this.state.showVideoControl ?
                     <View>
-                        
-                        <TouchableOpacity style={styles.header} onPress={this.props.closeVideoPlayer}>
-                        {/* <TouchableOpacity style={styles.header} onPress={() => { this._setModalVisible() }}> */}
-                            <Image style={styles.shrinkControl} source={require('../image/mesbox_close@2.png')}/>
+                        <TouchableOpacity style={{zIndex:1,position: 'absolute',top: 0,right: 0}} onPress={this.props.closeVideoPlayer}>
+                            <Image source={require('../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginRight:10,marginTop:5, }}/>
                         </TouchableOpacity>
                     </View> : null
                 }

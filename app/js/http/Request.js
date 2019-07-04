@@ -13,6 +13,8 @@ export const AuthToken     = 'api/auth/oauth/token';
 export const GetUserInfo   = 'api/admin/user/login';
 export const GetUserAddress  = 'api/basic/user/address/'
 
+export const GetUserAtWork = 'api/opcs/user/at_work/'; //员工是否在岗
+
 export const GetRepairType = 'api/repair/repRepairType/list';//维修类型
 export const GetRepairList = 'api/repair/service/list';//维修单列表
 export const CancelPause   =  "api/repair/service/pause_recover/";//恢复

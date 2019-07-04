@@ -46,12 +46,22 @@ class Person extends Component {
     }
 
   render() {
+
+    var repairItemInfo = null;
+    //维修事项存在则展示维修事项信息，不存在则展示报修类信息
+    // {this.props.repair.itemPersonList[0].repairItemId}
+    if(this.props.repair.itemPersonList && this.props.repair.itemPersonList.length > 0){
+        repairItemInfo = <Text style={{color:'#2b2b2b',fontSize:14}}>维修类别：<Text style={{color:'#4b4b4b',fontSize:13}}>{this.props.repair.parentTypeName+"/"+this.props.repair.repairTypeName}</Text></Text>
+    }else{
+        if(this.props.repair.parentTypeName !=null && this.props.repair.repairTypeName!=null){
+            repairItemInfo = <Text style={{color:'#2b2b2b',fontSize:14}}>维修类别：<Text style={{color:'#4b4b4b',fontSize:13}}>{this.props.repair.parentTypeName+"/"+this.props.repair.repairTypeName}</Text></Text>
+        }
+    }
+
     return (
         <Content style={{padding:15}}>
             <Col style={{borderBottomWidth:1,borderBottomColor:'#dedede',paddingBottom:10}}>
-                {this.props.repair.parentTypeName !=null && this.props.repair.repairTypeName!=null &&
-                    <Text style={{color:'#2b2b2b',fontSize:14}}>维修类别：<Text style={{color:'#4b4b4b',fontSize:13}}>{this.props.repair.parentTypeName+"/"+this.props.repair.repairTypeName}</Text></Text>
-                }
+                {repairItemInfo}
                 <Text style={{color:'#2b2b2b',fontSize:14}}>维修事项：<Text style={{color:'#4b4b4b',fontSize:13}}>{this.props.repair.matterName}</Text></Text>
             </Col>
             <Row>
