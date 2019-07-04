@@ -396,7 +396,7 @@ class SQLManager extends Component {
     createAutoPercent()
     {
         var createAutoPercentSql = "CREATE TABLE IF NOT EXISTS auto_percent("
-            + "rqCode varchar(255)  PRIMARY KEY,"
+            + "rqCode varchar(255) PRIMARY KEY,"
             + "taskId varchar(255) ,"
             + "equipmentId varchar(255) ,"
             + "percentF varchar(10),"

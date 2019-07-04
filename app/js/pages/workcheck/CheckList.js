@@ -35,6 +35,9 @@ let cachedResults = {
 let ScreenWidth = Dimensions.get('window').width;
 var db;
 var checkSqLite = new CheckSqLite();
+/*
+* 巡检二级页面
+* */
 export default class CheckList extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -85,7 +88,7 @@ export default class CheckList extends BaseComponent {
       <View key={`${sectionID}-${rowID}`} style={styles.separator} />
     );
   }
-
+  //跳转巡检三级页面
   onPressItem(data){
 
         const {navigation} = this.props;
@@ -101,6 +104,7 @@ export default class CheckList extends BaseComponent {
                 dailyTaskCode:this.state.dailyTaskCode,
                 beginTime:this.state.beginTime,
                 endTime:this.state.endTime,
+                taskId:this.state.taskId,
                 callback: (
                     () => {
                         this._fetchData(0);
@@ -111,9 +115,50 @@ export default class CheckList extends BaseComponent {
   }
 
   renderItem(data, i) {
-    return <CheckItem data={data} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
+      // this.getProcess(data, i);
+      return <CheckItem data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
 
   }
+    // //获取当前设备进度
+    // getProcess(data, i){
+    //     let percent = 0;
+    //     if(!db){
+    //         db = SQLite.open();
+    //     }
+    //     let sql = "select * from auto_percent where taskId="+ "'"+this.props.taskId+"'" +" and equipmentId= "+"'"+this.props.data.equipment_id+"'";
+    //     db.transaction((tx)=>{
+    //         tx.executeSql(sql, [],(tx,results)=>{
+    //             var len = results.rows.length;
+    //             let isUp = "0";
+    //             if(len===0){
+    //                 percent = 0;
+    //                 // this.setState({percent:percent})
+    //             }else{
+    //                 // console.log(len);
+    //                 for(let i=0; i<len; i++){
+    //                     var checkIm = results.rows.item(i);
+    //                     console.log(checkIm);
+    //                     if(checkIm && checkIm.percentZ){
+    //                         percent = parseInt(parseFloat(checkIm.percentZ)*ScreenWidth);
+    //                         isUp = checkIm.isUp;
+    //                         // if(percent!=this.state.percent){
+    //                         // this.setState({percent:percent})
+    //                         // }
+    //                         // if(checkIm.isUp){
+    //                         //     this.setState({isUp:"1"})
+    //                         // }
+    //                     }
+    //                 }
+    //             }
+    //             return <CheckItem data={data} percent={percent} isUp={isUp} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
+    //         });
+    //     },(error)=>{
+    //         console.log(error);
+    //     });
+    // }
+
+
+
     //请求数据
     _fetchData(page) {
         if(!db){
@@ -128,18 +173,10 @@ export default class CheckList extends BaseComponent {
             db.transaction((tx)=>{
                 tx.executeSql(sql, [],(tx,results)=>{
                     var len = results.rows.length;
-                    // console.log(len)
                     for(let i=0; i<len; i++){
                         var checkIm = results.rows.item(i);
-                        // console.log(checkIm);
                         itemTemp.push(checkIm);
-                        // cachedResults.items.push(checkIm);
                     }
-                    // this.setState({
-                    //     isLoadingTail: false,
-                    //     isRefreshing: false,
-                    //     dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
-                    // });
                 });
                 sql = checkSqLite.selectSecondCheckOne(this.state.jobCode);
                 tx.executeSql(sql, [],(tx,results)=>{
@@ -152,7 +189,7 @@ export default class CheckList extends BaseComponent {
                             var equipmentIdList = checkIm.OBJ_ID.split(",");
                             var lenE = equipmentIdList.length;
                             for (let j=1;j<lenE;j++){
-                                var tempSql = checkSqLite.selectSecondCheckEquipment(equipmentIdList[j]);
+                                var tempSql = checkSqLite.selectSecondCheckEquipment(equipmentIdList[j],this.state.jobCode);
                                 tx.executeSql(tempSql, [],(tx,results)=>{
                                     var lenTemp = results.rows.length;
                                     // console.log(lenTemp);
@@ -362,11 +399,58 @@ export default class CheckList extends BaseComponent {
     }
   }
 
+
 class CheckItem extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            percent:0,
+            isUp:"0",
+        }
+    }
+    // componentDidMount() {
+    //     this.getProcess();
+    // }
+
+    // getProcess(){
+    //     let percent = 0;
+    //     if(!db){
+    //         db = SQLite.open();
+    //     }
+    //     let sql = "select * from auto_percent where taskId="+ "'"+this.props.taskId+"'" +" and equipmentId= "+"'"+this.props.data.equipment_id+"'";
+    //     db.transaction((tx)=>{
+    //         tx.executeSql(sql, [],(tx,results)=>{
+    //             var len = results.rows.length;
+    //             if(len===0){
+    //                 percent = 0;
+    //                     this.setState({percent:percent})
+    //             }else{
+    //                 // console.log(len);
+    //                 for(let i=0; i<len; i++){
+    //                     var checkIm = results.rows.item(i);
+    //                     console.log(checkIm);
+    //                     if(checkIm && checkIm.percentZ){
+    //                         percent = parseInt(parseFloat(checkIm.percentZ)*ScreenWidth);
+    //                         // if(percent!=this.state.percent){
+    //                             this.setState({percent:percent})
+    //                         // }
+    //                         if(checkIm.isUp){
+    //                             this.setState({isUp:"1"})
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //
+    //         });
+    //     },(error)=>{
+    //         console.log(error);
+    //     });
+    // }
 
     render(){
         var processType = "0";
         var currentDate = new Date().getTime();
+
 
         if(currentDate < this.props.beginTime){
             processType = "0";
@@ -375,6 +459,44 @@ class CheckItem extends Component {
         }else if(currentDate > this.props.endTime){
             processType = "2";
         }
+
+        let percent = 0;
+        if(!db){
+            db = SQLite.open();
+        }
+        let sql = "select * from auto_percent where taskId="+ "'"+this.props.taskId+"'" +" and equipmentId= "+"'"+this.props.data.equipment_id+"'";
+        db.transaction((tx)=>{
+            tx.executeSql(sql, [],(tx,results)=>{
+                var len = results.rows.length;
+                if(len===0){
+                    percent = 0;
+                    if(percent!=this.state.percent) {
+                        this.setState({percent: percent})
+                    }
+                }else{
+                    // console.log(len);
+                    for(let i=0; i<len; i++){
+                        var checkIm = results.rows.item(i);
+                        console.log(checkIm);
+                        if(checkIm && checkIm.percentZ){
+                            percent = parseInt(parseFloat(checkIm.percentZ)*ScreenWidth);
+                            if(percent!=this.state.percent){
+                                this.setState({percent:percent})
+                            }
+                            if(checkIm.isUp!=this.state.isUp && checkIm.isUp==="1"){
+                                this.setState({isUp:"1"})
+                            }
+                        }
+                    }
+                }
+
+            });
+        },(error)=>{
+            console.log(error);
+        });
+
+
+
         return (
             <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data)}} style={{flex:1, backgroundColor:'#f6f6f6',width:Dimens.screen_width,}}>
                 <View style={{flex:1, flexDirection:'row',height:80, width:Dimens.screen_width,
@@ -382,7 +504,7 @@ class CheckItem extends Component {
                     <View style={{
                         backgroundColor:'rgba(239,249,249,0.6)',
                         position:"absolute",
-                        width:3/5*ScreenWidth,
+                        width:(this.state.percent===0)?0:this.state.percent,
                         height:80,
                         left:0
                     }}
@@ -406,22 +528,21 @@ class CheckItem extends Component {
                         </Text>
                     </View>
                     <View style={{flex:1, justifyContent:'flex-end',paddingRight:10}}>
-                        {processType === "0" &&
-                            <View style={{flex:1, justifyContent:'flex-end', flexDirection:'row',alignItems:"center"}}>
-                                <Text style={{fontSize:16, color:'#FE8900', marginLeft:0, marginRight:12,}}>待开始</Text>
-                            </View>
-                        }
-                        {processType === "1" &&
-                            <View style={{flex:1, justifyContent:'flex-end', flexDirection:'row',alignItems:"center"}}>
-                                <Text style={{fontSize:16, color:'#61C0C5', marginLeft:0, marginRight:12,}}>进行中</Text>
-                            </View>
-                        }
-                        {processType === "2" &&
-                            <View style={{flex:1, justifyContent:'flex-end', flexDirection:'row',alignItems:"center"}}>
-                                <Text style={{fontSize:16, color:'#FE0000', marginLeft:0, marginRight:12,}}>已超时</Text>
-                            </View>
-                        }
 
+                            <View style={{flex:1, justifyContent:'center', flexDirection:'column',alignItems:"center"}}>
+                                {processType === "0" &&
+                                    <Text style={{fontSize:16, color:'#FE8900', marginLeft:0, marginRight:12,}}>待开始</Text>
+                                }
+                                {processType === "1" &&
+                                    <Text style={{fontSize:16, color:'#61C0C5', marginLeft:0, marginRight:12,}}>进行中</Text>
+                                }
+                                {processType === "2" &&
+                                    <Text style={{fontSize:16, color:'#FE0000', marginLeft:0, marginRight:12,}}>已超时</Text>
+                                }
+                                {this.state.isUp === "1" &&
+                                    <Text style={{fontSize:12, color:'#aaa', marginLeft:0, marginRight:12,}}>待上传</Text>
+                                }
+                            </View>
 
                     </View>
                 </View>

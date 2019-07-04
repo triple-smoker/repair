@@ -48,7 +48,7 @@ class MultipleImagePicker extends BaseComponent {
         const options = {
             mediaType: 'video',
             videoQuality: 'low',
-            durationLimit: 30
+            durationLimit: 15
         };
 
         ImagePickers.launchCamera(options, (response) => {

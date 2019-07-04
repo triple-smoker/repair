@@ -30,7 +30,7 @@ export default class CheckSqLite extends Component {
             +" WHERE"
             +" dt.exec_end_time >= '"+newDateString+"'"
             +" AND dt.JOB_EXEC_TEAM_ID LIKE '%"+deptId+"%' AND mri.TABLE_TYPE in(0,1,2) and ij.status_cd =1 and ijm.status_cd=1 and "
-            +" mri.status_cd=1";
+            +" mri.status_cd=1 order by dt.exec_end_time asc";
     }
     //巡检二级页面 type=0
     selectSecondCheckZero(jobCode){
@@ -50,13 +50,13 @@ export default class CheckSqLite extends Component {
         return "SELECT" +
             " a.OBJ_ID" +
             " FROM" +
-            " inspect_job_manager a where a.OBJ_TYPE=1 and a.JOB_CODE = '"+jobCode+"';";
+            " inspect_job_manager a where a.OBJ_TYPE=1 and a.JOB_CODE = '"+jobCode+"'";
     }
     //巡检二级页面 设备详情
-    selectSecondCheckEquipment(equipmentId){
+    selectSecondCheckEquipment(equipmentId,jobCode){
         return "select a.MAN_CODE,b.install_location, b.equipment_id, b.equipment_name, " +
             "b.equipment_type_id FROM t_base_equipment as b , " +
-            "inspect_job_manager as a where b.equipment_id="+equipmentId+" " +
+            "inspect_job_manager as a where a.JOB_CODE='"+jobCode+"' and b.equipment_id='"+equipmentId+"' " +
             "and a.OBJ_ID like '%"+equipmentId+"%'  and a.status_cd=1 and a.OBJ_TYPE=1";
     }
     //巡检三级页面

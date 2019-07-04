@@ -25,6 +25,7 @@ import md5 from "md5";
 import Axios from '../../../util/Axios';
 import NetInfo from '@react-native-community/netinfo';
 import {Textarea} from "native-base";
+import { toastShort } from '../../util/ToastUtil';
 
 
 let cachedResults = {
@@ -60,6 +61,7 @@ export default class CheckDetail extends BaseComponent {
       equipmentId:navigation.getParam('equipmentId', ''),
       equipmentName:navigation.getParam('equipmentName', ''),
       equipmentTypeId:navigation.getParam('equipmentTypeId', ''),
+      taskId:navigation.getParam('taskId', ''),
       modalVisible:false,
       dateSource:[],
       personText:"",
@@ -108,8 +110,8 @@ export default class CheckDetail extends BaseComponent {
 
   goBack(){
         const { navigate } = this.props.navigation;
-        this.props.navigation.goBack();
         this.props.navigation.state.params.callback()
+        this.props.navigation.goBack();
   }
   //单任务
   getItem(){
@@ -218,7 +220,7 @@ export default class CheckDetail extends BaseComponent {
       var dateSourceItemTemp = [];
         dateSourceItem.forEach((item)=>{
             // console.log(item);
-            var code = this.state.dailyTaskCode+""+this.state.jobCode+""+this.state.jobExecCode+""+this.state.manCode+""+this.state.equipmentId+""+item.ITEM_CODE;
+            var code = this.state.taskId+""+this.state.jobCode+""+this.state.jobExecCode+""+this.state.manCode+""+this.state.equipmentId+""+item.ITEM_CODE;
             code = md5(code,32);
             var itemResultSet = "正常";
             if(item.ITEM_FORMAT === "数值型"){
@@ -271,15 +273,33 @@ export default class CheckDetail extends BaseComponent {
             if(state.isConnected){
                 console.log("上传接口");
                 dateSourceItemTemp.forEach((item)=>{
+                    console.log(item);
                     Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
                         (response)=>{
                             console.log(response);
+                            toastShort("数据已上报");
                         })
                 })
-
             }else{
                 SQLite.insertData(dateSourceItemTemp,"auto_up");
+                if (!db) {
+                    this.open();
+                }
+                db.transaction((tx)=>{
+                        let sql = "update auto_percent set isUp ='1' where taskId="+ "'" +this.state.taskId+ "'" +" and equipmentId= "+"'"+this.state.equipmentId+"'";
+                    tx.executeSql(sql,()=>{
+                            toastShort("数据已保存");
+                            },(err)=>{
+                                console.log(err);
+                            }
+                        );
+                },(error)=>{
+                    console.log('transaction', error);
+                },()=>{
+                    console.log('transaction insert data');
+                });
             }
+            this.goBack();
         });
 
 
@@ -290,6 +310,12 @@ export default class CheckDetail extends BaseComponent {
     onChangeType(index) {
       this.setState({modalVisible:false, });
 
+    }
+    goBack(){
+      console.log("++++++++++++++")
+        const { navigate } = this.props.navigation;
+        this.props.navigation.goBack();
+        this.props.navigation.state.params.callback()
     }
 
 
