@@ -115,45 +115,47 @@ export default class CheckList extends BaseComponent {
   }
 
   renderItem(data, i) {
-      this.getProcess(data, i);
+      // this.getProcess(data, i);
+      return <CheckItem data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
+
   }
-    //获取当前设备进度
-    getProcess(data, i){
-        let percent = 0;
-        if(!db){
-            db = SQLite.open();
-        }
-        let sql = "select * from auto_percent where taskId="+ "'"+this.props.taskId+"'" +" and equipmentId= "+"'"+this.props.data.equipment_id+"'";
-        db.transaction((tx)=>{
-            tx.executeSql(sql, [],(tx,results)=>{
-                var len = results.rows.length;
-                let isUp = "0";
-                if(len===0){
-                    percent = 0;
-                    // this.setState({percent:percent})
-                }else{
-                    // console.log(len);
-                    for(let i=0; i<len; i++){
-                        var checkIm = results.rows.item(i);
-                        console.log(checkIm);
-                        if(checkIm && checkIm.percentZ){
-                            percent = parseInt(parseFloat(checkIm.percentZ)*ScreenWidth);
-                            isUp = checkIm.isUp;
-                            // if(percent!=this.state.percent){
-                            // this.setState({percent:percent})
-                            // }
-                            // if(checkIm.isUp){
-                            //     this.setState({isUp:"1"})
-                            // }
-                        }
-                    }
-                }
-                return <CheckItem data={data} percent={percent} isUp={isUp} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
-            });
-        },(error)=>{
-            console.log(error);
-        });
-    }
+    // //获取当前设备进度
+    // getProcess(data, i){
+    //     let percent = 0;
+    //     if(!db){
+    //         db = SQLite.open();
+    //     }
+    //     let sql = "select * from auto_percent where taskId="+ "'"+this.props.taskId+"'" +" and equipmentId= "+"'"+this.props.data.equipment_id+"'";
+    //     db.transaction((tx)=>{
+    //         tx.executeSql(sql, [],(tx,results)=>{
+    //             var len = results.rows.length;
+    //             let isUp = "0";
+    //             if(len===0){
+    //                 percent = 0;
+    //                 // this.setState({percent:percent})
+    //             }else{
+    //                 // console.log(len);
+    //                 for(let i=0; i<len; i++){
+    //                     var checkIm = results.rows.item(i);
+    //                     console.log(checkIm);
+    //                     if(checkIm && checkIm.percentZ){
+    //                         percent = parseInt(parseFloat(checkIm.percentZ)*ScreenWidth);
+    //                         isUp = checkIm.isUp;
+    //                         // if(percent!=this.state.percent){
+    //                         // this.setState({percent:percent})
+    //                         // }
+    //                         // if(checkIm.isUp){
+    //                         //     this.setState({isUp:"1"})
+    //                         // }
+    //                     }
+    //                 }
+    //             }
+    //             return <CheckItem data={data} percent={percent} isUp={isUp} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
+    //         });
+    //     },(error)=>{
+    //         console.log(error);
+    //     });
+    // }
 
 
 
@@ -187,7 +189,7 @@ export default class CheckList extends BaseComponent {
                             var equipmentIdList = checkIm.OBJ_ID.split(",");
                             var lenE = equipmentIdList.length;
                             for (let j=1;j<lenE;j++){
-                                var tempSql = checkSqLite.selectSecondCheckEquipment(equipmentIdList[j]);
+                                var tempSql = checkSqLite.selectSecondCheckEquipment(equipmentIdList[j],this.state.jobCode);
                                 tx.executeSql(tempSql, [],(tx,results)=>{
                                     var lenTemp = results.rows.length;
                                     // console.log(lenTemp);
@@ -458,7 +460,40 @@ class CheckItem extends Component {
             processType = "2";
         }
 
+        let percent = 0;
+        if(!db){
+            db = SQLite.open();
+        }
+        let sql = "select * from auto_percent where taskId="+ "'"+this.props.taskId+"'" +" and equipmentId= "+"'"+this.props.data.equipment_id+"'";
+        db.transaction((tx)=>{
+            tx.executeSql(sql, [],(tx,results)=>{
+                var len = results.rows.length;
+                if(len===0){
+                    percent = 0;
+                    if(percent!=this.state.percent) {
+                        this.setState({percent: percent})
+                    }
+                }else{
+                    // console.log(len);
+                    for(let i=0; i<len; i++){
+                        var checkIm = results.rows.item(i);
+                        console.log(checkIm);
+                        if(checkIm && checkIm.percentZ){
+                            percent = parseInt(parseFloat(checkIm.percentZ)*ScreenWidth);
+                            if(percent!=this.state.percent){
+                                this.setState({percent:percent})
+                            }
+                            if(checkIm.isUp!=this.state.isUp && checkIm.isUp==="1"){
+                                this.setState({isUp:"1"})
+                            }
+                        }
+                    }
+                }
 
+            });
+        },(error)=>{
+            console.log(error);
+        });
 
 
 
@@ -469,7 +504,7 @@ class CheckItem extends Component {
                     <View style={{
                         backgroundColor:'rgba(239,249,249,0.6)',
                         position:"absolute",
-                        width:(this.props.percent===0)?0:this.props.percent,
+                        width:(this.state.percent===0)?0:this.state.percent,
                         height:80,
                         left:0
                     }}
@@ -494,7 +529,7 @@ class CheckItem extends Component {
                     </View>
                     <View style={{flex:1, justifyContent:'flex-end',paddingRight:10}}>
 
-                            <View style={{flex:1, justifyContent:'flex-end', flexDirection:'column',alignItems:"center"}}>
+                            <View style={{flex:1, justifyContent:'center', flexDirection:'column',alignItems:"center"}}>
                                 {processType === "0" &&
                                     <Text style={{fontSize:16, color:'#FE8900', marginLeft:0, marginRight:12,}}>待开始</Text>
                                 }
@@ -504,7 +539,7 @@ class CheckItem extends Component {
                                 {processType === "2" &&
                                     <Text style={{fontSize:16, color:'#FE0000', marginLeft:0, marginRight:12,}}>已超时</Text>
                                 }
-                                {this.props.isUp === "1" &&
+                                {this.state.isUp === "1" &&
                                     <Text style={{fontSize:12, color:'#aaa', marginLeft:0, marginRight:12,}}>待上传</Text>
                                 }
                             </View>
