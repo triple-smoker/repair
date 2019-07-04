@@ -26,6 +26,7 @@ import NfcManager, {Ndef} from 'react-native-nfc-manager';
 import {FLAG_TAB} from "../entry/MainPage";
 import SQLite from "../../polling/SQLite";
 import Axios from "../../../util/Axios";
+import { toastShort } from '../../util/ToastUtil';
 
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
@@ -176,8 +177,7 @@ export default class HomePage extends Component {
 
                                 }
                             }
-                            console.log("++"+JSON.stringify(response));
-
+                            toastShort("本地数据同步成功");
                         }
                     );
 

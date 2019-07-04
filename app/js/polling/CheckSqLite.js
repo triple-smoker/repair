@@ -30,7 +30,7 @@ export default class CheckSqLite extends Component {
             +" WHERE"
             +" dt.exec_end_time >= '"+newDateString+"'"
             +" AND dt.JOB_EXEC_TEAM_ID LIKE '%"+deptId+"%' AND mri.TABLE_TYPE in(0,1,2) and ij.status_cd =1 and ijm.status_cd=1 and "
-            +" mri.status_cd=1";
+            +" mri.status_cd=1 order by dt.exec_end_time asc";
     }
     //巡检二级页面 type=0
     selectSecondCheckZero(jobCode){
