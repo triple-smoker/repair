@@ -32,6 +32,20 @@ export default class CheckSqLite extends Component {
             +" AND dt.JOB_EXEC_TEAM_ID LIKE '%"+deptId+"%' AND mri.TABLE_TYPE in(0,1,2) and ij.status_cd =1 and ijm.status_cd=1 and "
             +" mri.status_cd=1 order by dt.exec_end_time asc";
     }
+    //保养首页
+    selectFirstCheckKeep(deptId,newDateString){
+        return "SELECT"
+            +" distinct(dt.id),dt.JOB_CODE,dt.job_exec_code,dt.code,dt.exec_start_time,dt.exec_end_time,dt.exec_code_type,"
+            +" dt.JOB_EXEC_TEAM_ID,ij.JOB_NAME,mri.TABLE_TYPE"
+            +" FROM"
+            +" daily_task as dt LEFT outer JOIN inspect_job as ij ON dt.job_code=ij.job_code"
+            +" LEFT outer JOIN inspect_job_manager as ijm ON ij.job_code=ijm.job_code"
+            +" LEFT outer JOIN man_ref_item as mri ON ijm.MAN_CODE= mri.MAN_CODE"
+            +" WHERE"
+            +" dt.exec_end_time >= '"+newDateString+"'"
+            +" AND dt.JOB_EXEC_TEAM_ID LIKE '%"+deptId+"%' AND mri.TABLE_TYPE=3 and ij.status_cd =1 and ijm.status_cd=1 and "
+            +" mri.status_cd=1 order by dt.exec_end_time asc";
+    }
     //巡检二级页面 type=0
     selectSecondCheckZero(jobCode){
         return "SELECT" +

@@ -144,7 +144,7 @@ export default class CheckDetail extends BaseComponent {
               <Image style={{width:21,height:37}} source={require("../../../image/navbar_ico_back.png")}/>
           </TouchableHighlight>
           <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
-              <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>NO.00002</Text>
+              <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>{this.state.equipmentName}</Text>
           </View>
           <View style={{width:20}}/>
       </View>
