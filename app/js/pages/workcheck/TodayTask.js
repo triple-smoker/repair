@@ -47,6 +47,7 @@ export default class TodayTask extends BaseComponent {
       theme:this.props.theme,
       isLoadingTail: false, // loading?
       isRefreshing: false, // refresh?
+      checkType: this.props.checkType, //checkType
       dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
             if (r1 !== r2) {
@@ -212,35 +213,35 @@ export default class TodayTask extends BaseComponent {
             })
     }
 
-    getProcess(data,i){
-        let percent = 1;
-        if(!db){
-            db = SQLite.open();
-        }
-        let sql = "select * from auto_percent where taskId="+data.ID +" group by taskId";
-        db.transaction((tx)=>{
-            tx.executeSql(sql, [],(tx,results)=>{
-                var len = results.rows.length;
-                if(len===0){
-                    percent = 1;
-                }else{
-                    for(let i=0; i<len; i++){
-                        var checkIm = results.rows.item(i);
-                        if(checkIm && checkIm.percentF){
-                            percent = parseInt(checkIm.percentF);
-                        }
-                    }
-                }
-                return (
-                    <CheckItem data={data} percent={percent} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
-                );
-
-            });
-        },(error)=>{
-            console.log(error);
-        });
-        return null;
-    }
+    // getProcess(data,i){
+    //     let percent = 1;
+    //     if(!db){
+    //         db = SQLite.open();
+    //     }
+    //     let sql = "select * from auto_percent where taskId="+data.ID +" group by taskId";
+    //     db.transaction((tx)=>{
+    //         tx.executeSql(sql, [],(tx,results)=>{
+    //             var len = results.rows.length;
+    //             if(len===0){
+    //                 percent = 1;
+    //             }else{
+    //                 for(let i=0; i<len; i++){
+    //                     var checkIm = results.rows.item(i);
+    //                     if(checkIm && checkIm.percentF){
+    //                         percent = parseInt(checkIm.percentF);
+    //                     }
+    //                 }
+    //             }
+    //             return (
+    //                 <CheckItem data={data} percent={percent} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
+    //             );
+    //
+    //         });
+    //     },(error)=>{
+    //         console.log(error);
+    //     });
+    //     return null;
+    // }
 
 
 
@@ -263,7 +264,14 @@ export default class TodayTask extends BaseComponent {
         cachedResults.items = [];
        if(cachedResults.tabIndex === 0){
            var timeStamp = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
-           var sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp);
+           var sql = "";
+           if(this.state.checkType===1){
+               sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp);
+           }
+           if(this.state.checkType===2){
+               sql = checkSqLite.selectFirstCheckKeep(global.deptId,timeStamp);
+           }
+
            db.transaction((tx)=>{
                tx.executeSql(sql, [],(tx,results)=>{
                    var len = results.rows.length;
