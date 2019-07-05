@@ -19,7 +19,7 @@ import {
 
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
-import Request, {ScanDetails} from '../../http/Request';
+import Request, {ScanDetails,GetUserAtWork} from '../../http/Request';
 import { toastShort } from '../../util/ToastUtil';
 import { toDate } from '../../util/DensityUtils';
 import BaseComponent from '../../base/BaseComponent'
@@ -37,6 +37,7 @@ export default class MyPage extends BaseComponent {
         super(props);
         this.state={
             userData:null,
+            atWork:false
         }
     }
     componentWillUnmount(){
@@ -61,6 +62,13 @@ export default class MyPage extends BaseComponent {
                 var userInfo =  JSON.parse(result);
                 that.setState({userData:userInfo});
                 console.log(userInfo)
+
+                Request.requestGet(GetUserAtWork + userInfo.userId,null,(result) => {
+                    console.info(result)
+                    this.setState({
+                        atWork:result.data
+                    })
+                })
             }
         })
     }
@@ -157,7 +165,17 @@ export default class MyPage extends BaseComponent {
                             
                             <Text style={{marginLeft:20,fontSize:15,color:'#333'}}>{userName}</Text>
                             { gender == 1 ? <Image style={{width:15,height:15,marginLeft:5}} source={require('../../../res/login/m.png')}/> : <Image style={{width:15,height:15,marginLeft:5}} source={require('../../../res/login/f.png')}/> }
-                            
+                            {this.state.atWork === true ? 
+                                <View style={{flexDirection: 'row',position:"absolute",top:-5,right:10,fontSize:14}}>
+                                    <Image style={{width:20,height:20}} source={require('../../../image/clock_in_2.jpg')}/>
+                                    <Text> 已打卡</Text>    
+                                </View>                                :
+                                <View style={{flexDirection: 'row',position:"absolute",top:-5,right:10,fontSize:14}}>
+                                    <Image style={{width:20,height:20}} source={require('../../../image/no_clock_in_2.jpg')}/>
+                                    <Text> 未打卡</Text>    
+                                </View>
+                                
+                                }
                         </View>
                         <View style={{flexDirection: 'row', justifyContent:'space-around',alignItems: 'center',paddingLeft: 8,
                                 paddingRight: 8,marginTop:15}}>

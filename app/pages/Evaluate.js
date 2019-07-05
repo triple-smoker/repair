@@ -156,6 +156,16 @@ class OrderEvaluate extends Component {//主页面
                       expanded={0}
                     />
                 }
+                {this.state.thisRecord.status==='9' &&
+                <Accordion
+                    dataArray={[{ title: "评价", content: <OrderEvaOver evaluate={this.state.evaluate} repair={this.state.repair} record={this.state.thisRecord}/>}]}
+                    animation={true}
+                    expanded={true}
+                    renderHeader={this._renderHeader}
+                    renderContent={this._renderContent}
+                    expanded={0}
+                />
+                }
                 <Accordion
                   dataArray={this.state.dataArrayA}
                   animation={true}
@@ -180,16 +190,6 @@ class OrderEvaluate extends Component {//主页面
                   renderContent={this._renderContent}
                   expanded={0}
                 />
-                {this.state.thisRecord.status==='9' &&
-                    <Accordion
-                      dataArray={[{ title: "评价", content: <OrderEvaOver evaluate={this.state.evaluate} repair={this.state.repair} record={this.state.thisRecord}/>}]}
-                      animation={true}
-                      expanded={true}
-                      renderHeader={this._renderHeader}
-                      renderContent={this._renderContent}
-                      expanded={0}
-                    />
-                }
             </Content>
             {this.state.thisRecord.status==='8' &&
                 <MySub goToAllOrders={()=>this.goToAllOrders()} satisfactionLevel={this.state.satisfactionLevel} repairId={this.state.thisRecord.repairId} remark={this.state.causeRemark} causeIds={this.state.causeIdList}/>

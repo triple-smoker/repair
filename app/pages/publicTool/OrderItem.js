@@ -9,17 +9,15 @@ import {
     View,
     Linking,
     Text,
-    ActivityIndicator,
 } from 'react-native';
 import {Button, Col, Row, Content, Textarea} from 'native-base';
 import Swiper from 'react-native-swiper';
 import Axios from '../../util/Axios';
 import Video from 'react-native-video';
-import VideoPlayer from '../../components/VideoPlayer';
 import { toastShort } from '../../js/util/ToastUtil';
-import AsyncStorage from '@react-native-community/async-storage';
-import RNFetchBlob from '../../util/RNFetchBlob';
 import {getVoicePlayer} from '../../components/VoicePlayer';
+import VideoPreview from '../../components/VideoPreview';
+
 
 
 /*
@@ -187,7 +185,12 @@ class Adds extends Component {//报修单共用组件
                                 </Row>
                             }
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={{fontSize:14,marginLeft:10,color:"#737373"}}>{this.props.record.repairUserName}</Text>
+                            {this.props.record.repairUserName && this.props.record.repairUserName!=="" &&
+                                <Row>
+                                    <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={{fontSize:14,marginLeft:10,color:"#737373"}}>{this.props.record.repairUserName}</Text>
+                                </Row>
+                            }
+
                             {(this.props.record.repairUserMobile != '' && this.props.record.repairUserMobile!=null) &&
                                 <TouchableHighlight
                                     style={{width:20,height:20,backgroundColor:'#fff',marginLeft:10}}
@@ -304,12 +307,12 @@ class PictureMd extends Component {
 
         if(imagesRequest!=null && imagesRequest.length > 0){
             listItems =(  imagesRequest === null ? null : imagesRequest.map((imageItem, index) =>
-                <ImageItem num={index+1} sum={i}  imageurl={imageItem.filePath} key={index}/>
+                <ImageItem num={index+1} sum={i} setModalVisible={setModalVisible} imageurl={imageItem.filePath} key={index}/>
             ))
         }
         if(videosRequest!=null && videosRequest.length > 0){
              let videoItems =(  videosRequest === null ? null : videosRequest.map((videoItem, index) =>
-                <VideoItem  onRef={this.onRef} setModalVisible={setModalVisible} num={index+1+j} sum={i}  imageurl={videoItem.filePath} fileName={videoItem.fileName} key={index}/>
+                <VideoPreview  onRef={this.onRef} setModalVisible={setModalVisible} num={index+1+j} sum={i}  url={videoItem.filePath} fileName={videoItem.fileName} key={index}/>
             ))
             listItems = listItems.concat(videoItems);
         }
@@ -344,85 +347,10 @@ class ImageItem extends Component{
     render(){
         return (
             <View style={stylesImage.slide}>
+                <TouchableOpacity style={{zIndex:1,position: 'absolute',top: 0,right: 0}} onPress={()=> this.props.setModalVisible()}>
+                    <Image source={require('../../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginRight:10,marginTop:18, }}/>
+                </TouchableOpacity>
                 <Image resizeMode='contain' style={stylesImage.image} source={{uri:this.props.imageurl}} />
-                <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
-            </View>
-        )
-    }
-}
-/*
-* 视屏组件渲染
-* */
-class VideoItem extends Component{
-
-        //获取VideoPlayer组件模板元素
-    onRef = (ref) => {
-        this.videoPlayerRef = ref;
-    }
-
-    componentDidMount(){
-        this.props.onRef(this);
-    }
-
-    setVideoCurrentTime = (e) =>{
-      if(this.videoPlayerRef){
-          this.videoPlayerRef.setVideoCurrentTime(0);
-      }
-    }
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            videoPath: null,
-            animating: true
-        };
-        this.getVideoFilePath(this.props.imageurl,this.props.fileName);
-    }
-
-    getVideoFilePath(path,fileName){
-        AsyncStorage.getItem('fileVideoCache', function (error,result) {
-                if (error) {
-                    console.log('读取失败')
-                }else {
-                    console.log('读取完成')
-                    let fileVideo = JSON.parse(result) || {};
-                    if(fileVideo != null && fileVideo[fileName]){
-                        this.setState({
-                            videoPath : fileVideo[fileName],
-                            animating: false
-                        })
-                    }else{
-                        RNFetchBlob.fileVideoCache(path,fileName).then((res) => {
-                            fileVideo[fileName] = res.path()
-                            //json转成字符串
-                            let jsonStr = JSON.stringify(fileVideo);
-                            AsyncStorage.setItem('fileVideoCache', jsonStr, function (error) {
-                                if (error) {
-                                    console.log('存储失败')
-                                }else {
-                                    console.log('存储完成')
-                                }
-                            })
-                            this.setState({
-                                videoPath : res.path(),
-                                animating: false
-                            })
-                        }).catch((error) => {
-                            console.info("存储失败" + error)
-                        });
-                    }
-                }
-            }.bind(this)
-        )
-    }
-
-    render(){
-        return (
-            <View style={stylesImage.slide}>
-                {
-                    this.state.videoPath == null ? <View style={stylesImage.image}><Loading animating={this.state.animating}/></View>
-                    : <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.state.videoPath}></VideoPlayer>
-                }
                 <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
             </View>
         )
@@ -569,41 +497,6 @@ class CancelMd extends Component {
         }
 }
 
-
-const Loading = (loading) =>{
-
-    return(
-        <View style={loadStyles.wrapper}>
-          <View style={loadStyles.box}>
-            <ActivityIndicator
-              animating={loading.animating}
-              color='white'
-              size='large'
-            />
-          </View>
-        </View>
-    )
-}
-
-
-const loadStyles=StyleSheet.create({
-    wrapper:{
-      justifyContent:'center',
-      alignItems:'center',
-      position:'absolute',
-      height:Dimensions.get('window').height,
-      width:Dimensions.get('window').width,
-      zIndex:10,
-    },
-    box:{
-      paddingVertical:12,
-      paddingHorizontal:20,
-      flexDirection:'row',
-      justifyContent:'center',
-      alignItems:'center',
-      borderRadius:6
-    },
-})
 
 
 const stylesImage =StyleSheet.create({

@@ -12,9 +12,7 @@ import {
     TouchableOpacity,
     ScrollView,
     Modal,
-    TextInput,
     Linking,
-    ActivityIndicator
 } from 'react-native';
 import Axios from "../../../../util/Axios";
 import TitleBar from '../../../component/TitleBar';
@@ -22,14 +20,11 @@ import * as Dimens from '../../../value/dimens';
 import Request, {GetRepairList, RepairDetail, RepPause, DoPause, RepairCommenced} from '../../../http/Request';
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
-import Sound from "react-native-sound";
 import {getVoicePlayer} from '../../../../components/VoicePlayer'
 import Swiper from 'react-native-swiper';
-import VideoPlayer from '../../../../components/VideoPlayer';
-import Video from 'react-native-video';
 import {Content, Accordion, Col, Textarea, Button,} from "native-base";
-import AsyncStorage from '@react-native-community/async-storage';
-import RNFetchBlob from '../../../../util/RNFetchBlob';
+import VideoPreview from '../../../../components/VideoPreview';
+
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
@@ -493,6 +488,9 @@ export default class OrderDetail extends BaseComponent {
             if(detaiData.fileMap.imagesRequest && detaiData.fileMap.imagesRequest.length > 0){
                 listItems =(  detaiData.fileMap.imagesRequest === null ? null : detaiData.fileMap.imagesRequest.map((imageItem, index) =>
                     <View style={stylesImage.slide} key={index}>
+                        <TouchableOpacity style={{zIndex:1,position: 'absolute',top: 0,right: 0}} onPress={()=> this._setModalPictureVisible()}>
+                            <Image source={require('../../../../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginRight:10,marginTop:18, }}/>
+                        </TouchableOpacity>
                         <Image resizeMode='contain' style={stylesImage.image} source={{uri:imageItem.filePath}} />
                         <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1}/{i}</Text></View>
                     </View>
@@ -502,9 +500,7 @@ export default class OrderDetail extends BaseComponent {
             if(detaiData.fileMap.videosRequest && detaiData.fileMap.videosRequest.length > 0){
                 let videoItems =(  detaiData.fileMap.videosRequest === null ? null : detaiData.fileMap.videosRequest.map((videoItem, index) =>
                     <View style={stylesImage.slide} key={index}>
-                        {/* <VideoPlayer  onRef={this.onRef} num={index+1+j} closeVideoPlayer={()=> {this._setModalPictureVisible()}} uri={videoItem.filePath}></VideoPlayer>
-                        <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1+j}/{i}</Text></View> */}
-                        <VideoItem onRef={this.onRef} setModalVisible={()=> {this._setModalPictureVisible()}} num={index+1+j} sum={i} url={videoItem.filePath} fileName={videoItem.fileName} />
+                        <VideoPreview onRef={this.onRef} setModalVisible={()=> {this._setModalPictureVisible()}} num={index+1+j} sum={i} url={videoItem.filePath} fileName={videoItem.fileName} />
                     </View>
                 ))
                 listItems = listItems.concat(videoItems);
@@ -555,7 +551,7 @@ export default class OrderDetail extends BaseComponent {
                 });
                 
                 processList = <View style={{backgroundColor:'white', paddingTop:10, paddingBottom:10,}}>
-                    <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>维修类别：{detaiData.parentTypeName}</Text>
+                    <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>维修类别：{detaiData.parentTypeName}/{detaiData.repairTypeName}</Text>
                     <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', marginBottom:10, }}>维修事项：{detaiData.matterName}</Text>
                     <View style={styles.line} />
                     <View style={{flexDirection:'row',}}>
@@ -566,6 +562,13 @@ export default class OrderDetail extends BaseComponent {
                             {viewList}
                         </View>
                     </View>
+                </View>
+            }else{
+                processList = <View style={{backgroundColor:'white', paddingTop:10, paddingBottom:10,}}>
+                    {detaiData.parentTypeName != null && detaiData.repairTypeName != null && 
+                        <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', }}>维修类别：{detaiData.parentTypeName}/{detaiData.repairTypeName}</Text>
+                    }
+                    <Text style={{fontSize:13,color:'#333',marginLeft:10,textAlign:'left', marginBottom:10, }}>维修事项：{detaiData.matterName}</Text>
                 </View>
             }
 
@@ -909,120 +912,6 @@ export default class OrderDetail extends BaseComponent {
         });
     }
 }
-
-class VideoItem extends Component{
-
-    //获取VideoPlayer组件模板元素
-    onRef = (ref) => {
-        this.videoPlayerRef = ref;
-    }
-
-    componentDidMount(){
-        this.props.onRef(this);
-    }
-
-    setVideoCurrentTime = (e) =>{
-        if(this.videoPlayerRef){
-            this.videoPlayerRef.setVideoCurrentTime(0);
-        }
-    }
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            videoPath: null,
-            animating: true
-        };
-        this.getVideoFilePath(this.props.url,this.props.fileName);
-    }
-
-    getVideoFilePath(path,fileName){
-        AsyncStorage.getItem('fileVideoCache', function (error,result) {
-                if (error) {
-                    console.log('读取失败')
-                }else {
-                    console.log('读取完成')
-                    let fileVideo = JSON.parse(result) || {};
-                    console.info(fileVideo)
-                    if(fileVideo != null && fileVideo[fileName]){
-                        this.setState({
-                            videoPath : fileVideo[fileName],
-                            animating: false
-                        })
-                    }else{
-                        RNFetchBlob.fileVideoCache(path,fileName).then((res) => {
-                            fileVideo[fileName] = res.path()
-                            //json转成字符串
-                            let jsonStr = JSON.stringify(fileVideo);
-                            AsyncStorage.setItem('fileVideoCache', jsonStr, function (error) {
-                                if (error) {
-                                    console.log('存储失败')
-                                }else {
-                                    console.log('存储完成')
-                                }
-                            })
-                            this.setState({
-                                videoPath : res.path(),
-                                animating: false
-                            })
-                        }).catch((error) => {
-                            console.info("存储失败" + error)
-                        });
-                    }
-                }
-            }.bind(this)
-        )
-    }
-
-    render(){
-        return (
-            <View style={stylesImage.slide}>
-                {
-                    this.state.videoPath == null ? <View style={stylesImage.image}><Loading animating={this.state.animating}/></View>
-                    : <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.state.videoPath}></VideoPlayer>
-                }
-                <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
-            </View>
-        )
-    }
-}
-
-
-const Loading = (loading) =>{
-
-  return(
-      <View style={loadStyles.wrapper}>
-        <View style={loadStyles.box}>
-          <ActivityIndicator
-            animating={loading.animating}
-            color='white'
-            size='large'
-          />
-        </View>
-      </View>
-  )
-}
-
-
-const loadStyles=StyleSheet.create({
-  wrapper:{
-    justifyContent:'center',
-    alignItems:'center',
-    position:'absolute',
-    height:Dimensions.get('window').height,
-    width:Dimensions.get('window').width,
-    zIndex:10,
-  },
-  box:{
-    paddingVertical:12,
-    paddingHorizontal:20,
-    flexDirection:'row',
-    justifyContent:'center',
-    alignItems:'center',
-    borderRadius:6
-  },
-})
-
 
 const stylesImage =StyleSheet.create({
     container: {

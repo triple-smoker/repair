@@ -295,7 +295,14 @@ class OrderSearch extends BaseComponent {
                                 })
                                 this.gotoCuiDan(cdTimeListNew,repairId,sendDeptId,sendUserId);
                             }else{
-                                Alert.alert("您已催单，请过"+(30-timeDiff)+"分钟后再催单");
+                                // Alert.alert("您已催单，请过"+(30-timeDiff)+"分钟后再催单");
+                                Alert.alert(
+                                    'Tips',
+                                    "\n您已催单，请过"+Math.ceil(30-timeDiff)+"分钟后再催单",
+                                    [
+                                        {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                    ],
+                                )
                             }
                         }
                     }

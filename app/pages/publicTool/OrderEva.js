@@ -146,11 +146,11 @@ class OrderEva extends Component {
         return listItems;
     }
     //评价按钮渲染
-    getImageItem(repair){
+    getImageItem(fileMap){
         var imagesList = [];
-        var listItems ="";
-        if(repair!=null&&repair!=''){
-            var imagesCompleted = repair.fileMap.imagesCompleted;
+        var listItems = null;
+        if(fileMap!=null&&fileMap!=''&&fileMap.imagesCompleted!=null&&fileMap.imagesCompleted.length > 0){
+            var imagesCompleted = fileMap.imagesCompleted;
             imagesList = imagesCompleted;
             var sum = imagesList.length;
             listItems =(  imagesList === null ? null : imagesList.map((image, index) =>
@@ -159,7 +159,6 @@ class OrderEva extends Component {
         }else{
             listItems =<View style={{width:"100%",height:"100%",backgroundColor:'#ccc',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
         }
-
         return listItems;
     }
 
@@ -173,7 +172,7 @@ class OrderEva extends Component {
                   dot={<View style={{backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                   activeDot={<View style={{backgroundColor: '#000', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
                   showsPagination={false} loop>
-                    {this.getImageItem(this.props.repair)}
+                    {this.getImageItem(this.props.repair.fileMap)}
                 </Swiper>
             </Row>
             <Row style={{padding:15,borderBottomWidth:1,borderColor:'#e4e4e4'}}>
