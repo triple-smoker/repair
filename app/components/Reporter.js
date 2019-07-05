@@ -13,6 +13,9 @@ export default class Reporter extends React.Component {
                             <Text>{this.props.phone}</Text>
                         </View>
                         <View>
+                            <Text >所在科室:{this.props.deptName}</Text>
+                        </View>
+                        <View>
                             <Text >报修位置:{this.props.adds}</Text>
                         </View>
                 </View>
