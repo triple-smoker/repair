@@ -16,7 +16,7 @@ import Request, {ScanMsg,ScanDetails,Attr} from '../../js/http/Request';
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
-class OrderType extends Component {
+class PlaceType extends Component {
 
   render() {
     return (
@@ -355,10 +355,10 @@ class TypeMd extends Component {
                                 </View>
                                 <View style={{flexDirection:'row',justifyContent:'space-around',height:40}}>
                                     <TouchableOpacity onPress={()=>this.loadDetail(1)} style={{marginLeft:10, flex:1}}>
-                                        <Text  style={{color:leftColor, fontSize:13,borderBottomColor:leftColor,borderBottomWidth:leftbot,marginLeft:10, flex:1,textAlign:'center',lineHeight:40}}>内部位置</Text>
+                                        <Text  style={{color:leftColor, fontSize:13,borderBottomColor:leftColor,borderBottomWidth:leftbot,marginLeft:10, flex:1,textAlign:'center',lineHeight:40}}>地址</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={()=>this.loadDetail(2)} style={{marginLeft:10, flex:1}}>
-                                        <Text  style={{color:rightColor, fontSize:13,borderBottomColor:rightColor,borderBottomWidth:rightbot, marginLeft:10, flex:1,textAlign:'center',lineHeight:40}}>外部位置</Text>
+                                        <Text  style={{color:rightColor, fontSize:13,borderBottomColor:rightColor,borderBottomWidth:rightbot, marginLeft:10, flex:1,textAlign:'center',lineHeight:40}}>病区</Text>
                                     </TouchableOpacity>
                                 </View>
                                 
@@ -476,4 +476,4 @@ const styles = StyleSheet.create({
 
 
 
-module.exports=OrderType;
+module.exports=PlaceType;

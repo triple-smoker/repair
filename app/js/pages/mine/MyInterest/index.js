@@ -195,7 +195,7 @@ export default class MyInterest extends BaseComponent {
                     tabs={tabs} tabBarActiveTextColor={'#61C0C5'} 
                     tabBarUnderlineStyle={{width:0,}}
                     initialPage={0}>
-                    <View style={styles.main}>
+                    <View style={{flex:1,}}>
                         <InterestList workRecords={workRecords} />
                     </View>
                     <View style={styles.main}>

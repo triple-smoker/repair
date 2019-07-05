@@ -85,6 +85,8 @@ export default class RepairScreen extends React.Component {
                 filePath : '',
             },
             typeVisible:false,
+            deptName : ''
+
         }
 
 
@@ -93,12 +95,13 @@ export default class RepairScreen extends React.Component {
 
                 }else {
                     let loginUserInfo = JSON.parse(result);
-
+                    console.log(loginUserInfo)
                     if(loginUserInfo != null){
                         var reporter = loginUserInfo.userName;
                         var address = '';
                         Request.requestGet(GetUserAddress + loginUserInfo.userId, null, (result) => {
                             if (result && result.code === 200) {
+                                console.log(result)
                                 var info = result.data[0]
 
                                 result.data.forEach(element => {
@@ -262,11 +265,13 @@ export default class RepairScreen extends React.Component {
             address: this.state.address,
             callback: (
                 (info) => {
+                    console.log(info)
                     this.setState(
                         {
                             reporter: info.name,
                             phone: info.phone,
                             address: info.address,
+                            deptName : info.deptName
                         }
                     )
                 }
@@ -348,7 +353,7 @@ export default class RepairScreen extends React.Component {
                         style={{backgroundColor: "#fff" ,marginTop: '1.5%', marginLeft: '1.5%', marginRight: '1.5%',}}
                     />
                     <View style={{borderColor: '#000', width: '100%',height: 1, border: 0.5, marginLeft: '1.5%', marginRight: '1.5%',}}/>
-                    <Reporter name={this.state.reporter} phone={this.state.phone} adds={this.state.address} changAdds={()=>this.changeReporter()}/>
+                    <Reporter deptName={this.state.deptName} name={this.state.reporter} phone={this.state.phone} adds={this.state.address} changAdds={()=>this.changeReporter()}/>
                     <Recorde show = {this.state.showVoice} recordCallBack = {(record)=>this.recordCallBack(record)} />
 
                 </Content>

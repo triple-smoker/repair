@@ -5,6 +5,7 @@ import MyFooter from '../components/MyFooter';
 import AsyncStorage from '@react-native-community/async-storage';
 import Notice from '../components/Notice';
 import PlaceType from "./publicTool/PlaceType"
+import DeptType from "./publicTool/DeptType"
 /*
 *
 *
@@ -41,7 +42,9 @@ class MyAddress extends Component {
             reporterList : [],
             showNotice : false,
             noticeText: '',
-            typeVisible:true,
+            typeVisible:false,
+            deptVisible:false,
+            deptName:null
 
         };
 
@@ -59,6 +62,9 @@ class MyAddress extends Component {
                 }
             }.bind(this)
         )
+
+        console.log('++++++++++++++++++++++++++++++++++++prop')
+        console.log(this.props)
 
       }
 
@@ -91,7 +97,12 @@ class MyAddress extends Component {
         })
         this._setTypeVisible()
     }
-
+    newRepair1(deptName){
+        this.setState({
+            deptName: deptName
+        })
+        this._setDept()
+    }
 
 
         // 是否电话号码
@@ -131,7 +142,8 @@ class MyAddress extends Component {
         let info = {
             name : this.state.AddName,
             phone : this.state.AddPhone,
-            address : this.state.AddAdds
+            address : this.state.AddAdds,
+            deptName : this.state.deptName
         };
 
 
@@ -179,7 +191,8 @@ class MyAddress extends Component {
             }
         })
 
-
+        // console.log('info++++++++++++++++++++')
+        // console.log(info)
         this.props.navigation.state.params.callback(info);
         this.props.navigation.goBack();
 
@@ -221,12 +234,14 @@ class MyAddress extends Component {
         this.setState({typeVisible: !this.state.typeVisible});
         console.log(this.state.typeVisible)
     }
-
+    _setDept(){
+        this.setState({deptVisible: !this.state.deptVisible});
+    }
 
     history(){
         const reporterList = this.state.reporterList;
         const listItems =  reporterList === null ? <Text style={{width: '100%',textAlign:'center',color:'#999',marginTop:14,fontSize:14}}>暂无历史地址</Text> : reporterList.map((report, index) =>
-            <Adds key={index} name={report.name} phone={report.phone} address={report.address}
+            <Adds key={index} deptName={report.deptName} name={report.name} phone={report.phone} address={report.address}
                   changAdds={()=>this._changeAdds(report.name,report.phone,report.address)}/>
         );
         return listItems;
@@ -242,12 +257,18 @@ class MyAddress extends Component {
                 changePhone = {(value) => this.changePhone(value)}
                 changeAdds = {(value) => this.changeAdds(value)}
                 setType = {()=> this._setTypeVisible()}
+                setDept = {()=> this._setDept()}
+                deptName = {this.state.deptName}
                 name={this.state.AddName} phone={this.state.AddPhone} address={this.state.AddAdds}/>
             <Row style={{height:40,backgroundColor:'#f8f8f8'}}>
                 <Text style={{width: '100%',textAlign:'center',color:'#a7a7a7',marginTop:14,fontSize:12}}>--------------切换以下历史地址--------------</Text>
             </Row>
             {this.history()}
         </Content>
+        <DeptType goToRepair={(deptName)=>this.newRepair1(deptName)} 
+                                isShowModal={()=>this._setDept()} 
+                                modalVisible = {this.state.deptVisible}/>
+
         <PlaceType goToRepair={(buildingName,floorName,roomName)=>this.newRepair(buildingName,floorName,roomName)} 
                                 isShowModal={()=>this._setTypeVisible()} 
                                 modalVisible = {this.state.typeVisible}/>
@@ -261,7 +282,7 @@ class MyMessage extends Component {//地址输入模块
   render() {
     return (
         <Content>
-            <Item ItemName={"报修人"} type={0} change = {( value) => this.props.changeName(value)} ItemValue={this.props.name}/>
+            <Item ItemName={"报修人"} type={0} change = {( value) => this.props.changeName(value)} deptName={this.props.deptName} ItemValue={this.props.name} setDept={()=>this.props.setDept()}  />
             <Item ItemName={"联系电话"} type={1} change = {( value) => this.props.changePhone(value)} ItemValue={this.props.phone}/>
             <Item ItemName={"报修位置"} type={2}  change = {( value) => this.props.changeAdds(value)} setType = {()=>this.props.setType()} ItemValue={this.props.address}/>
         </Content>
@@ -269,12 +290,23 @@ class MyMessage extends Component {//地址输入模块
   }
 }
 
-const Item = ({ItemName , ItemValue, change,type,setType}) => (
+const Item = ({ItemName , ItemValue, change,type,setType,setDept,deptName}) => (
     <Row style={{height:42,borderBottomWidth: 2,borderColor:'#e1e1e1',marginLeft:16,position:'relative'}}>
         <Text style={stylesBody.bodyFont}>{ItemName}</Text>
         <TextInput style={stylesBody.bodyInputFont}
                    onChangeText={(text) => change(text)}
                    value={ItemValue} />
+        { type == 0 ? <TouchableOpacity onPress={()=>setDept()} style={{width:75,flexDirection:'row',marginRight:20}}>
+            <Text style={{position:'absolute',fontSize:15,
+            color:'#000',
+            marginTop:10,
+            borderColor:'#bfbfbf',
+            borderWidth:1,
+            borderRadius:5,
+            borderWidth:1,
+            }}> {deptName ?  deptName : '所在科室' } <Image resizeMode={'contain'} style={{width: 12, height: 12}} source={require('../res/repair/ico_seh.png')} /></Text>
+        </TouchableOpacity> : null}
+
         {type == 2 ? <TouchableOpacity onPress={()=>setType()} style={{width:35,flexDirection:'row'}}>
                         <Text style={{position:'absolute',right:16,fontSize:16,
                         color:'#000',
@@ -316,6 +348,9 @@ class Adds extends Component {//历史地址模块
                       </Row>
                       <Row>
                           <Text style={stylesBody.linkMan}>报修位置:<Text style={stylesBody.linkMan}>{this.props.address}</Text></Text>
+                      </Row>
+                      <Row>
+                          <Text style={stylesBody.linkMan}>所在科室:<Text style={stylesBody.linkMan}>{this.props.deptName}</Text></Text>
                       </Row>
                   </Content>
               </Left>

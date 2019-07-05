@@ -19,8 +19,7 @@ import * as Dimens from '../../../value/dimens';
 
 import {Content, Accordion, Col, Textarea, Button,} from "native-base";
 import {toDate} from '../../../util/DensityUtils'
-
-
+import { Tabs,Icon, SearchBar, TabBar } from '@ant-design/react-native';
 let ScreenWidth = Dimensions
   .get('window')
   .width;
@@ -35,7 +34,8 @@ export default class InterestList extends BaseComponent {
         super(props);
         this.state={
             theme:this.props.theme,
-            userData : null
+            userData : null,
+            selectedTab : 'redTab',
         }
     }
     componentDidMount() {
@@ -56,8 +56,8 @@ export default class InterestList extends BaseComponent {
     eqpList(item,i){
         return <View  key={i} style={styles.list}>
             <View style={styles.leftT}>
-                <Text style={{color:'#333333',fontWeight:'400',fontSize:13}}>xxxxxx</Text>
-                <Text style={{color:'#666',fontWeight:'400',fontSize:11}}>{item.sourceName}</Text>
+                <Text style={{color:'#333333',fontWeight:'bold',fontSize:13}}>{item.sourceName}</Text>
+                <Text style={{color:'#666',fontWeight:'400',fontSize:12}}>{item.installLocation}</Text>
             </View>
             <Text style={styles.rightT}>√已关注</Text>
         </View>
@@ -68,7 +68,7 @@ export default class InterestList extends BaseComponent {
                 <View style={styles.leftT2}>
                     <View style={{position:'relative'}}>
                         <Image style={{width:28,height:28,borderRadius:28}} source={require("../../../../image/user_wx.png")}/>
-                        <Image style={{width:9,height:13,position:'absolute',right:0,bottom:0}} source={require("../../../../res/login/f.png")}/>
+                        {/* <Image style={{width:9,height:13,position:'absolute',right:0,bottom:0}} source={require("../../../../res/login/f.png")}/> */}
                     </View>
                 
                     <Text style={{marginLeft:5,color:'#333333',fontWeight:'400',fontSize:13}}>{item.sourceName}</Text>
@@ -79,18 +79,77 @@ export default class InterestList extends BaseComponent {
     }
     //关注的工单列表dom
     workList(item,i){
-        return <View key={i} style={styles.list}>
-                <View style={styles.leftT2}>
-                    <Text style={{color:'#333333',fontWeight:'400',fontSize:13}}>{item.sourceName}</Text>
-            
-                
-                    <Text style={{marginLeft:5,color:'#333333',fontWeight:'400',fontSize:13}}>{item.workUserName}</Text>
-                
-                </View>
-                <Text style={styles.rightT}>√已关注</Text>
-            </View>
+        var list1=[]
+        var list2=[]
+        var list3=[]
+        const worktabs = [
+            { title: '巡检' },
+            { title: '维修' },
+            { title: '保养' },
+          ];
+        switch(item.bizFlag) {
+            case 1:
+                    list1.push(item)
+               break;
+            case 2:
+                    list2.push(item)
+               break;
+            case 3:
+                    list3.push(item)
+                break;
+            default:
+                break;
+       } 
+       console.log('list1')
+       console.log(list1)
+       return  <Tabs key={i} onChange={(tab,index)=>{this.setTab(tab,index)}} 
+                            tabs={worktabs} tabBarActiveTextColor={'#61C0C5'} 
+                            tabBarUnderlineStyle={{backgroundColor:'#61C0C5'}}
+                            initialPage={0}>
+                            <View style={styles.main1}>
+                            <ScrollView style={{ backgroundColor: '#fff' }}>
+                                {this.workChildList(list1)}
+                            </ScrollView>  
+                            </View>
+                            <View style={styles.main1}>
+                            {this.workChildList(list2)}
+                            </View>
+                            <View style={styles.main1}>
+                            {this.workChildList(list3)}
+                            </View>
+                        
+                    </Tabs>
     }
-    
+    workChildList(item){
+        var childList = null;
+        if(item.length != 0){
+            childList = item.map((data,i)=>{
+                return this.workChildList2(data,i)
+             })
+     
+        }else{
+            childList = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无关注</Text>;
+        }
+       
+        return childList
+       
+    }
+    workChildList2(data,i){
+     
+        return <View key={i} style={styles.list}>
+                    <View style={styles.leftT2}>
+                        <Text style={{marginLeft:5,color:'#333333',fontWeight:'400',fontSize:13}}>{data.workUserName}</Text>
+                    
+                    </View>
+                    <Text style={styles.rightT}>√已关注</Text>
+                </View>
+   
+            
+        
+    }
+    setTab(tab,index){
+        console.log(index)
+    }
     render() {
         var ViewList = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无关注</Text>;
         var deptRecords = null;
@@ -99,19 +158,31 @@ export default class InterestList extends BaseComponent {
         var workRecords =null;
         if(this.props.deptRecords){
             deptRecords = this.props.deptRecords
-            ViewList = deptRecords.map((item,i)=>{
-                return this.deptList(item,i)
-            })
+            
+            ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
+                        style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
+                {deptRecords.map((item,i)=>{
+                    return this.deptList(item,i)
+                })}
+            </ScrollView> 
+            
         }else if(this.props.eqpRecords){
             eqpRecords = this.props.eqpRecords
-            ViewList = eqpRecords.map((item,i)=>{
-                return this.eqpList(item,i)
-            })
+       
+            ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
+                        style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
+                    {eqpRecords.map((item,i)=>{
+                        return this.eqpList(item,i)
+                    })}
+            </ScrollView> 
         }else if(this.props.userRecords){
             userRecords = this.props.userRecords
-            ViewList = userRecords.map((item,i)=>{
-                return this.userList(item,i)
-            })
+            ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
+                        style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
+                { userRecords.map((item,i)=>{
+                    return this.userList(item,i)
+                })}
+            </ScrollView>
         }else if(this.props.workRecords){
             workRecords = this.props.workRecords
             ViewList = workRecords.map((item,i)=>{
@@ -120,10 +191,9 @@ export default class InterestList extends BaseComponent {
         }
         return (
         <View style={styles.container1}>
-            <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
-                    style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
-            {ViewList}
            
+            {ViewList}
+            
             {/* <View style={styles.list}>
                 <View style={styles.leftT}>
                     <Text style={{color:'#333333',fontWeight:'400',fontSize:13}}>{this.props.type}</Text>
@@ -142,7 +212,7 @@ export default class InterestList extends BaseComponent {
                 </View>
                 <Text style={styles.rightT}>√已关注</Text>
             </View> */}
-            </ScrollView>  
+            
         </View>
 
     )
@@ -157,7 +227,7 @@ const styles = StyleSheet.create({
         marginTop:5
     },
     list:{
-        height:36,
+        height:40,
         width:ScreenWidth,
         paddingLeft: 30,
         paddingRight: 30,
@@ -191,5 +261,10 @@ const styles = StyleSheet.create({
         color:'#909090',
         lineHeight:18,
         textAlign:'center'
-    }
+    },
+    main1:{
+        backgroundColor: '#fff',  
+        paddingTop: 5,
+        flex:2,
+      }
 });

@@ -11,11 +11,11 @@ import {
 import { Content,Row,Col,Text,List,ListItem,Button } from 'native-base';
 import Axios from '../../util/Axios';
 import * as Dimens from '../../js/value/dimens';
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
-class OrderType extends Component {
+class DeptType extends Component {
 
   render() {
     return (
@@ -35,19 +35,13 @@ class TypeMd extends Component {
         super(props);
         this.state = {
             repairList : [],
-            repairParent:'',
-            repairParentCn:'',
-            repairChildCn:'',
-            repairChildList:[],
-            repairChild:'',
-            repairCareList:[],
-            deptList:[],
-            userList:[],
-            selUserList:[],
-            selectTypeData:null,
-            selectChildrenData:null,
+            deptData:null,
             returnList:null,
             childrenList:[],
+            customerId: null,
+            dadId:null,
+            dadname:null,
+            deptName:null,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
@@ -67,51 +61,57 @@ class TypeMd extends Component {
             return true
             }}),
             };
-        var   url="/api/repair/repRepairType/list";
-//接口获取报修类型
-        Axios.GetAxios(url).then(
-            (response) => {
-                    var types = response.data;
-                    console.log('types-------------------------------')
-                    this.setState({
-                        repairList:types,
-                        dataSource:this.state.dataSource.cloneWithRows(types),
-                    });
-                    }
-        ).then
+        
       }
       
       componentDidMount(){
-          
+          this.loadData()
       }
+      loadData(){
+        var that = this;
+        AsyncStorage.getItem('uinfo',function (error, result) {
+            if (error) {
+                console.log(error)
+            }else {
+                console.log(result)
+                let userInfo = JSON.parse(result);
+                var customerId = userInfo.customerId
+                // that.setState({
+                //     customerId : customerId
+                // })
+                that.getDeptListData(customerId)
+            }
 
-//接口获取快修选项 目前没有使用
-      setChild(visible,ctn){
-        this.setState({repairChild:visible,repairChildCn:ctn})
-        var   url="/api/repair/repRepairType/getRepairMatterList";
-        var data = {
-            "repairTypeId":visible,
-            "typeParentId":"",
-            "matterName":""
-        };
-        Axios.PostAxios(url,data).then(
+        })
+      }
+      getDeptListData(id){
+        var   url="/api/basic/hospital/getDeptStructure";
+        //接口获取报修类型
+        Axios.GetAxios(url).then(
             (response) => {
-                    var cares = response.data;
-                    console.log('cares+++++++++++++++++++++++++')
-                    this.setState({repairCareList:cares});
+                    var types = response.data;
+                    var childList = types[0].childrenList
+                    var list = null
+                    childList.map((item,i)=>{
+                        if(item.id == id){
+                            list = item.childrenList 
+                        }
+                    })
+                    console.log(list)
+                    this.setState({
+                        repairList:list,
+                        dataSource:this.state.dataSource.cloneWithRows(list),
+                    });
                     }
         )
-
       }
-
+      
       //左侧
       renderItemLeft(data) {
-            var that = this;
-            // console.log('left+++++++++++++++++++++')
-            // console.log(data)   
-            var color = this.state.selectTypeData&&this.state.selectTypeData==data.repairTypeId ? '#444' : '#999';
+            var that = this; 
+            var color = this.state.dadId&&this.state.dadId==data.id ? '#444' : '#999';
             var img = null;
-            if (this.state.selectTypeData&&this.state.selectTypeData==data.repairTypeId) {
+            if (this.state.dadId&&this.state.dadId==data.id) {
                 img = <Image source={require('../../res/login/ic_arrow.png')} 
                 style={{width:6,height:11,marginLeft:15,marginRight:15,}}/>
             }
@@ -121,7 +121,7 @@ class TypeMd extends Component {
                 <TouchableOpacity onPress={()=>{this.onPressItemLeft(data)}} style={{height:45,flex:1,backgroundColor: '#f6f6f6',}}>
                     <View style={{flexDirection:'row',marginLeft:10,height:45,textAlignVertical:'center',alignItems: 'center',}} >
                         <Text style={{fontSize:14,color:color,marginLeft:15,flex:1}}>
-                            {data.repairTypeCtn}
+                            {data.name}
                         </Text>
                         {img}
                     </View>
@@ -133,13 +133,11 @@ class TypeMd extends Component {
         onPressItemLeft(data){
             var that = this;
             var items = this.state.repairList;
-            //保存 listView列表数据 选中的父id 文本 字列表
             this.setState({
                 dataSource1:that.state.dataSource1.cloneWithRows(data.childrenList), 
-                dataSource:that.state.dataSource.cloneWithRows(items), 
-                selectTypeData:data.repairTypeId,
-                repairParent:data.repairTypeId,
-                repairParentCn:data.repairTypeCtn,     
+                dataSource:that.state.dataSource.cloneWithRows(items),  
+                dadId : data.id,
+                dadname : data.name,
                 childrenList:data.childrenList
             })
            
@@ -156,11 +154,11 @@ class TypeMd extends Component {
                                     marginLeft:10,height:45,
                                     textAlignVertical:'center',
                                     alignItems: 'center',}} >
-                            <Image source={this.state.selectChildrenData&&this.state.selectChildrenData.repairTypeId===data.repairTypeId ? 
+                            <Image source={this.state.deptData&&this.state.deptData.id===data.id ? 
                                     require('../../res/login/checkbox_pre.png') :
                                     require('../../res/login/checkbox_nor.png')} 
                                     style={{width:18,height:18}}/>
-                            <Text style={{fontSize:14,color:'#777',marginLeft:15,}}>{data.repairTypeCtn}</Text>
+                            <Text style={{fontSize:14,color:'#777',marginLeft:15,}}>{data.name}</Text>
                         </View>
                     </TouchableOpacity>
             
@@ -172,7 +170,8 @@ class TypeMd extends Component {
             var items = this.state.childrenList;
             this.setState({
                 dataSource1:this.state.dataSource1.cloneWithRows(items),
-                selectChildrenData:data
+                deptData:data,
+                deptName:data.name
             })
         }
         _renderSeparatorView(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
@@ -181,28 +180,30 @@ class TypeMd extends Component {
             );
         }
         //确认按钮
-      submit(){
-          console.log('确认');
-          console.log(this.state.selectChildrenData)
-          var data = this.state.selectChildrenData;
-          var repairTypeId = ''
-           var  repairMatterId = ''
-            var  repairTypeCtn = ''
-          if(data){
-                repairTypeId =data.repairTypeId
-              repairMatterId =data.repairMatterId
-              repairTypeCtn = data.repairTypeCtn
-          }
-            this.props.goToRepair(
-                repairTypeId,
-                repairMatterId,
-                this.state.repairParentCn,
-                repairTypeCtn
-            )          
-      }
+        submit(){
+            console.log('确认');
+            console.log(this.state.deptName)
+            var deptName = null;
+             var dadname = null;  
+            if(this.state.deptName || this.state.dadname){
+                if(this.state.deptName){
+                    deptName = this.state.deptName
+                    this.props.goToRepair(
+                        deptName
+                    )  
+                } else {
+                    dadname = this.state.dadname
+                    this.props.goToRepair(
+                        dadname
+                    ) 
+                } 
+                
+            }
+                        
+        }
         render(){
-            var repairParentCn = this.state.repairParentCn;
-            var repairChildCn = this.state.repairChildCn;
+          
+        
             return (
                 <View style={modalStyles.container}>
                  
@@ -287,4 +288,4 @@ const styles = StyleSheet.create({
 
 
 
-module.exports=OrderType;
+module.exports=DeptType;
