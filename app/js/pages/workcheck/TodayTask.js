@@ -121,9 +121,9 @@ export default class TodayTask extends BaseComponent {
     pushNetowrk(itemList){
         itemList.forEach((checkIm)=>{
             let chenk = checkIm;
-            chenk.code=null;
             Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",chenk).then(
                 (response)=>{
+                    console.log(response);
                     if(response && response.id){
                         if(!db){
                             db = SQLite.open();

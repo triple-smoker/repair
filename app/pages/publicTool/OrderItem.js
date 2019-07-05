@@ -185,7 +185,12 @@ class Adds extends Component {//报修单共用组件
                                 </Row>
                             }
                             <Row>
-                            <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={{fontSize:14,marginLeft:10,color:"#737373"}}>{this.props.record.repairUserName}</Text>
+                            {this.props.record.repairUserName && this.props.record.repairUserName!=="" &&
+                                <Row>
+                                    <Text style={stylesBody.orderContextTip}>维修人员:</Text><Text style={{fontSize:14,marginLeft:10,color:"#737373"}}>{this.props.record.repairUserName}</Text>
+                                </Row>
+                            }
+
                             {(this.props.record.repairUserMobile != '' && this.props.record.repairUserMobile!=null) &&
                                 <TouchableHighlight
                                     style={{width:20,height:20,backgroundColor:'#fff',marginLeft:10}}

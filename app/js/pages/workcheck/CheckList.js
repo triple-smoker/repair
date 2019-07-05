@@ -107,7 +107,7 @@ export default class CheckList extends BaseComponent {
                 taskId:this.state.taskId,
                 callback: (
                     () => {
-                        this._fetchData(0);
+                           this._fetchData(0);
                     })
             });
         });
@@ -115,57 +115,46 @@ export default class CheckList extends BaseComponent {
   }
 
   renderItem(data, i) {
-      // this.getProcess(data, i);
-      return <CheckItem data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
+      return <CheckItem tabIndex={cachedResults.tabIndex} data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
 
   }
-    // //获取当前设备进度
-    // getProcess(data, i){
-    //     let percent = 0;
-    //     if(!db){
-    //         db = SQLite.open();
-    //     }
-    //     let sql = "select * from auto_percent where taskId="+ "'"+this.props.taskId+"'" +" and equipmentId= "+"'"+this.props.data.equipment_id+"'";
-    //     db.transaction((tx)=>{
-    //         tx.executeSql(sql, [],(tx,results)=>{
-    //             var len = results.rows.length;
-    //             let isUp = "0";
-    //             if(len===0){
-    //                 percent = 0;
-    //                 // this.setState({percent:percent})
-    //             }else{
-    //                 // console.log(len);
-    //                 for(let i=0; i<len; i++){
-    //                     var checkIm = results.rows.item(i);
-    //                     console.log(checkIm);
-    //                     if(checkIm && checkIm.percentZ){
-    //                         percent = parseInt(parseFloat(checkIm.percentZ)*ScreenWidth);
-    //                         isUp = checkIm.isUp;
-    //                         // if(percent!=this.state.percent){
-    //                         // this.setState({percent:percent})
-    //                         // }
-    //                         // if(checkIm.isUp){
-    //                         //     this.setState({isUp:"1"})
-    //                         // }
-    //                     }
-    //                 }
-    //             }
-    //             return <CheckItem data={data} percent={percent} isUp={isUp} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
-    //         });
-    //     },(error)=>{
-    //         console.log(error);
-    //     });
-    // }
-
-
+//在线获取任务进度
+    getNetworkData(taskId){
+        Axios.GetAxiosUpPorter("http://47.102.197.221:8081/api/dailyTask/getReportListByTaskId?taskId="+taskId).then(
+            (response)=>{
+                var dataList = [];
+                if(Array.isArray(response) && response.length>0){
+                    var sum = 0;
+                    response.forEach((item)=>{
+                        // console.log(item);
+                        if(item.completion === "已完成"){
+                            sum++;
+                        }
+                        var data = {rqCode:taskId+""+item.equipmentId,
+                            taskId:taskId,
+                            equipmentId:item.equipmentId,
+                            percentF:"",
+                            percentZ:item.completed,
+                            isUp:""}
+                        dataList.push(data);
+                    })
+                    dataList.forEach((item)=>{
+                        item.percentF = parseInt((sum/dataList.length)*ScreenWidth);
+                        item.percentF = item.percentF===0 ? 1:item.percentF
+                    })
+                    SQLite.insertData(dataList,"auto_percent");
+                }
+            })
+    }
 
     //请求数据
     _fetchData(page) {
+      this.getNetworkData(this.state.taskId);
         if(!db){
             db = SQLite.open();
         }
         cachedResults.items = [];
-        if(cachedResults.tabIndex === 0){
+        if(cachedResults.tabIndex === 0 || cachedResults.tabIndex === 2){
             var itemTemp = [];
             var itemSpecial = [];
             //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
@@ -270,26 +259,6 @@ export default class CheckList extends BaseComponent {
             },(error)=>{
                 console.log(error);
             });
-        }else if(cachedResults.tabIndex === 2){
-            var sql = checkSqLite.selectSecondCheck(this.state.jobCode);
-            db.transaction((tx)=>{
-                tx.executeSql(sql, [],(tx,results)=>{
-                    var len = results.rows.length;
-                    // console.log(len)
-                    for(let i=0; i<len; i++){
-                        var checkIm = results.rows.item(i);
-                        // console.log(checkIm);
-                        cachedResults.items.push(checkIm);
-                    }
-                    this.setState({
-                        isLoadingTail: false,
-                        isRefreshing: false,
-                        dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)
-                    });
-                });
-            },(error)=>{
-                console.log(error);
-            });
         }
     }
 
@@ -356,7 +325,7 @@ export default class CheckList extends BaseComponent {
                   <Text style={{color:this.state.tabIndex===1 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>紧急</Text>
               </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
+          <TouchableOpacity onPress={()=>{this.onPressTabItem(2)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
               <View style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
                   <Text style={{color:this.state.tabIndex===2 ?'#5ec4c8':'#999',fontSize:14, textAlign:'center', textAlignVertical:'center'}}>全部</Text>
               </View>
@@ -408,44 +377,7 @@ class CheckItem extends Component {
             isUp:"0",
         }
     }
-    // componentDidMount() {
-    //     this.getProcess();
-    // }
 
-    // getProcess(){
-    //     let percent = 0;
-    //     if(!db){
-    //         db = SQLite.open();
-    //     }
-    //     let sql = "select * from auto_percent where taskId="+ "'"+this.props.taskId+"'" +" and equipmentId= "+"'"+this.props.data.equipment_id+"'";
-    //     db.transaction((tx)=>{
-    //         tx.executeSql(sql, [],(tx,results)=>{
-    //             var len = results.rows.length;
-    //             if(len===0){
-    //                 percent = 0;
-    //                     this.setState({percent:percent})
-    //             }else{
-    //                 // console.log(len);
-    //                 for(let i=0; i<len; i++){
-    //                     var checkIm = results.rows.item(i);
-    //                     console.log(checkIm);
-    //                     if(checkIm && checkIm.percentZ){
-    //                         percent = parseInt(parseFloat(checkIm.percentZ)*ScreenWidth);
-    //                         // if(percent!=this.state.percent){
-    //                             this.setState({percent:percent})
-    //                         // }
-    //                         if(checkIm.isUp){
-    //                             this.setState({isUp:"1"})
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //
-    //         });
-    //     },(error)=>{
-    //         console.log(error);
-    //     });
-    // }
 
     render(){
         var processType = "0";
@@ -477,7 +409,7 @@ class CheckItem extends Component {
                     // console.log(len);
                     for(let i=0; i<len; i++){
                         var checkIm = results.rows.item(i);
-                        console.log(checkIm);
+                        // console.log(checkIm);
                         if(checkIm && checkIm.percentZ){
                             percent = parseInt(parseFloat(checkIm.percentZ)*ScreenWidth);
                             if(percent!=this.state.percent){
@@ -498,6 +430,8 @@ class CheckItem extends Component {
 
 
         return (
+            <View>
+            {((cachedResults.tabIndex===0 && this.state.percent===0) || cachedResults.tabIndex===2) &&
             <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data)}} style={{flex:1, backgroundColor:'#f6f6f6',width:Dimens.screen_width,}}>
                 <View style={{flex:1, flexDirection:'row',height:80, width:Dimens.screen_width,
                     alignItems:'center', justifyContent:'center', textAlignVertical:'center',backgroundColor:"white"}}>
@@ -548,6 +482,9 @@ class CheckItem extends Component {
                 </View>
                 {/*<View style={{backgroundColor: '#f2f2f2', height:5, width:Dimens.screen_width, marginTop:5, }}/>*/}
             </TouchableOpacity>
+            }
+
+            </View>
         );
     }
 }
