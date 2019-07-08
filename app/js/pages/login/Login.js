@@ -15,13 +15,10 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
-// import Setting from './Setting';
 import Pop from 'rn-global-modal'
-// import HospitalPicker from '../entry/HospitalPicker';
-
 import Request, {AuthToken, GetUserInfo} from '../../http/Request';
 import {Toast} from '../../component/Toast'
-import {aesEncrypt} from '../../util/CipherUtils';
+import {aesEncrypt,aesEncryptWithKey} from '../../util/CipherUtils';
 
 let tempTypeIds = [1, 2, 3, 4];
 
@@ -113,11 +110,36 @@ export default class Login extends BaseComponent {
             storeLists: STORE_DATA.data,
             selectIndex: '-1',
             modalVisible: false,
+            username:null,
+            password:null
         }
 
     }
 
-
+    componentDidMount(){
+        this.loadData();
+    }
+    loadData(){
+        var that = this;
+        AsyncStorage.getItem('logInfo',function(err,res){
+            if(err){
+                console.log(err)
+                return
+            }else{
+                var logininfo =  JSON.parse(res);
+                if(logininfo){
+                    // password = logininfo.password
+                    // username = logininfo.username
+                    that.setState({
+                        username:username,
+                        password:password
+                    })
+                }
+                
+            }
+        })
+      
+    }
     _onFocus(index) {
 
         if (index === 0) {
@@ -151,10 +173,22 @@ export default class Login extends BaseComponent {
     }
 
     _onForgotPsw() {
-        const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('HospitalPicker', {theme: this.theme})
-        });
+
+        AsyncStorage.getItem('logInfo',function(err,res){
+            
+            if(err){
+                console.log(err)
+                return
+            }else{
+                var logInfo =  JSON.parse(res);
+                // that.setState({userData:userInfo});
+                console.log(logInfo)
+            }
+        })
+        // const {navigation} = this.props;
+        // InteractionManager.runAfterInteractions(() => {
+        //     navigation.navigate('HospitalPicker', {theme: this.theme})
+        // });
     }
 
     _onLogin() {
@@ -167,9 +201,9 @@ export default class Login extends BaseComponent {
          Toast.show('密码不能为空');
          return;
      }
-
+     var keepPsw = this.state.keepPsw;
      var psw = aesEncrypt(password);
-     console.log('password: ' + password + ', psw: ' + psw);
+     console.log('password: ' + password + ', psw加密: ' + psw);
      var that = this;
      var params = new Map();
      params.set('username', username);
@@ -182,16 +216,25 @@ export default class Login extends BaseComponent {
             if (result && result.access_token) {
                 var logInfo = {
                     username: username,
-                    password: encodeURIComponent(psw)
+                    password: encodeURIComponent(password)
                 }
                 var logInfoString = JSON.stringify(logInfo);
-                AsyncStorage.setItem('logInfo', logInfoString, function (error) {
-                    if (error) {
-                        console.log('error: save error');
-                    } else {
-                        console.log('save: logInfo = ' + logInfo);
-                    }
-                });
+                if(keepPsw){
+                    AsyncStorage.setItem('logInfo', logInfoString, function (error) {
+                        if (error) {
+                            console.log('error: save error');
+                        } else {
+                            console.log('save: logInfo = ' + logInfo);
+                        }
+                    });
+                }else{
+                    AsyncStorage.setItem('logInfo', '', function (error) {
+                        if (error) {
+                            console.log('error: save error');
+                        }
+                    });
+                }
+                
 
                 Toast.show('登录成功');
 
@@ -464,8 +507,10 @@ export default class Login extends BaseComponent {
                             onChangeText={(text) => {
                                 username = text;
                             }}
+                            defaultValue= {this.state.username}
                             onFocus={(event) => this._onFocus(0)}
                             onBlur={(event) => this._onFocus(-1)}
+                            
                         />
                     </View>
                     <View style={{
@@ -489,8 +534,11 @@ export default class Login extends BaseComponent {
                             onChangeText={(text) => {
                                 password = text;
                             }}
+                            defaultValue={this.state.password}
                             onFocus={(event) => this._onFocus(1)}
                             onBlur={(event) => this._onFocus(-1)}
+                            // value={password}
+                            
                         />
 
                     </View>

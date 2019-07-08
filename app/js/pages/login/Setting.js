@@ -3,7 +3,8 @@ import {
     View,
     Text,
     StyleSheet,
-    TextInput
+    TextInput,
+    InteractionManager
 } from 'react-native';
 
 import TitleBar from '../../component/TitleBar';
@@ -28,7 +29,12 @@ export default class Setting extends BaseComponent {
     _onSure() {
         alert('确定');
     }
-
+    goBack(){
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('Login', {theme: this.theme})
+        });
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -36,7 +42,7 @@ export default class Setting extends BaseComponent {
                     centerText={'系统设置'}
                     isShowLeftBackIcon={true}
                     navigation={this.props.navigation}
-                    leftPress={() => this.naviGoBack(this.props.navigation)}
+                    leftPress={() => this.goBack()}
 
                 />
 

@@ -42,11 +42,11 @@ export default class MySet extends BaseComponent {
                     console.log('error: save error');
                 } 
             });
-            AsyncStorage.setItem('logInfo', '', function (error) {
-                if (error) {
-                    console.log('error: save error');
-                }
-            });
+            // AsyncStorage.setItem('logInfo', '', function (error) {
+            //     if (error) {
+            //         console.log('error: save error');
+            //     }
+            // });
 
         global.uinfo = null;
             AsyncStorage.setItem('uinfo', '', function (error) {
