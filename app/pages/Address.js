@@ -74,11 +74,12 @@ class MyAddress extends Component {
           });
       }
 
-    _changeAdds(name,phone,adds){
+    _changeAdds(name,phone,adds,deptName){
         this.setState({
             AddName: name,
             AddPhone: phone,
-            AddAdds: adds
+            AddAdds: adds,
+            deptName : deptName
         })
     }
     newRepair(buildingName,floorName,roomName){
@@ -242,7 +243,7 @@ class MyAddress extends Component {
         const reporterList = this.state.reporterList;
         const listItems =  reporterList === null ? <Text style={{width: '100%',textAlign:'center',color:'#999',marginTop:14,fontSize:14}}>暂无历史地址</Text> : reporterList.map((report, index) =>
             <Adds key={index} deptName={report.deptName} name={report.name} phone={report.phone} address={report.address}
-                  changAdds={()=>this._changeAdds(report.name,report.phone,report.address)}/>
+                  changAdds={()=>this._changeAdds(report.name,report.phone,report.address,report.deptName)}/>
         );
         return listItems;
     }
