@@ -135,8 +135,7 @@ export default class MyInterest extends BaseComponent {
             url = FollowWork + userdata.userId;
             // url = FollowList + '1/' + userdata.userId;
             this.loadData(url,index)  
-        }else if(index == 1){
-            
+        }else if(index == 1){       
             url = FollowDept + userdata.userId;
             this.loadData(url,index)  
         }else if(index==2){

@@ -180,63 +180,69 @@ export default class MyPage extends BaseComponent {
                         <View style={{flexDirection: 'row', justifyContent:'space-around',alignItems: 'center',paddingLeft: 8,
                                 paddingRight: 8,marginTop:15}}>
                             <Image style={{width:22,height:20}} source={require('../../../res/login/gh.png')}/>
-                            <Text>{workNumber + ' | '}</Text>
-                            <Image style={{width:22,height:20}} source={require('../../../res/login/cellph.png')}/>
-                            <Text> {telNo + ' | '}</Text>
-                            <Image style={{width:22,height:20}} source={require('../../../res/login/department.png')}/>
-                            <Text>{deptName}</Text>
+                            <Text style={{color:'#999',fontWeight:'400',fontSize:13}}>{workNumber + ' | '}</Text>
+                            <Image style={{width:20,height:20}} source={require('../../../res/login/cellph.png')}/>
+                            <Text style={{color:'#999',fontWeight:'400',fontSize:13}}> {telNo + ' | '}</Text>
+                            <Image style={{width:23,height:20}} source={require('../../../res/login/department.png')}/>
+                            <Text style={{color:'#999',fontWeight:'400',fontSize:13}}>{deptName}</Text>
                         </View>
-                        <View style={{backgroundColor:'#61c0c5',paddingLeft: 8,height:30,marginTop:15,
+                        <View style={{backgroundColor:'#61c0c5',paddingLeft: 8,height:35,marginTop:15,
                                 paddingRight: 8,}}>
                             <TouchableOpacity onPress={()=>this.loogPapers()}>      
-                            <Text style={{lineHeight:30,color:'white'}}>证照</Text>
+                            <Text style={{lineHeight:35,color:'#fff',fontWeight:'400',fontSize:14}}>证照</Text>
                             </TouchableOpacity> 
                         </View>
                     </View>
-                    <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:60,paddingLeft:0,paddingRight:0,}}>
-                        <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                        <TouchableOpacity onPress={()=>this.gotoPage(1)}>
-                            <Image source={require('../../../res/login/jf.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                            <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>我的积分</Text>
-                            </TouchableOpacity>
-                        </View>
+                    <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:30,paddingLeft:0,paddingRight:0,}}>
+                        <TouchableOpacity onPress={()=>this.gotoPage(1)} style={{...styles.pageBox,borderBottomWidth:1,borderRightWidth:1}}>
+                            <View style={styles.touchSize} >
+                            <Image source={require('../../../res/login/jf.png')} style={{width:39,height:39,marginLeft:0, marginRight:0,}}/>
+                            </View>
+                            <Text style={styles.pageTxt}>我的积分</Text>
+                            
+                        </TouchableOpacity>
 
-                        <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                            <TouchableOpacity onPress={()=>this.gotoPage(2)}>
-                            <Image source={require('../../../res/login/jx.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                            <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>我的绩效</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                            <TouchableOpacity onPress={()=>this.gotoPage(3)}>
-                            <Image source={require('../../../res/login/gz.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                            <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>我的关注</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity onPress={()=>this.gotoPage(2)} style={{...styles.pageBox,borderRightWidth:1,borderBottomWidth:1}}>
+                            <View  style={styles.touchSize}  >
+                            <Image source={require('../../../res/login/jx.png')} style={{width:34,height:34,marginLeft:0, marginRight:0,}}/>
+                            </View>
+                            <Text style={styles.pageTxt}>我的绩效</Text>
+                            
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>this.gotoPage(3)} style={{...styles.pageBox,borderBottomWidth:1}}>
+                            <View style={styles.touchSize}  >
+                            <Image source={require('../../../res/login/gz.png')} style={{width:37,height:38,marginLeft:0, marginRight:0,}}/>
+                            </View>
+                            <Text style={styles.pageTxt}>我的关注</Text>
+                           
+                        </TouchableOpacity>
 
                         
                     </View>
 
-                    <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:20,paddingLeft:0,paddingRight:0,}}>
-                        <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                            <TouchableOpacity onPress={()=>this.gotoPage(4)} >
-                            <Image source={require('../../../res/login/gd.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                            <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>工单</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                            <TouchableOpacity onPress={()=>this.gotoPage(5)} >
-                            <Image source={require('../../../res/login/notice.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                            <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>通知</Text>
-                            </TouchableOpacity>
-                        </View>
+                    <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:0,paddingLeft:0,paddingRight:0,}}>
+                        <TouchableOpacity  onPress={()=>this.gotoPage(4)} style={{...styles.pageBox,borderRightWidth:1}}>
+                            <View  style={styles.touchSize}  >
+                            <Image source={require('../../../res/login/gd.png')} style={{width:30,height:37,marginLeft:0, marginRight:0,}}/>
+                            
+                            </View>
+                            <Text style={styles.pageTxt}>工单</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity  onPress={()=>this.gotoPage(5)} style={{...styles.pageBox,borderRightWidth:1}}>
+                            <View  style={styles.touchSize}  >
+                            <Image source={require('../../../res/login/notice.png')} style={{width:35,height:32,marginLeft:0, marginRight:0,}}/>
+                            </View>
+                            <Text style={styles.pageTxt}>通知</Text>
+                            
+                        </TouchableOpacity>
 
-                        <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                            <TouchableOpacity onPress={()=>this.gotoPage(6)} >
-                            <Image source={require('../../../res/login/cggn.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
-                            <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>常规功能</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity onPress={()=>this.gotoPage(6)} style={styles.pageBox}>
+                            <View style={styles.touchSize}  >
+                            <Image source={require('../../../res/login/cggn.png')} style={{width:32,height:34,marginLeft:0, marginRight:0,}}/>
+                            </View>
+                            <Text style={styles.pageTxt}>常规功能</Text>
+                            
+                        </TouchableOpacity>
                     </View>
 
                 </ScrollView>    
@@ -251,7 +257,7 @@ const styles = StyleSheet.create({
    
     container: {
         flex: 1,
-        backgroundColor: '#f6f6f6',
+        backgroundColor: '#fcfcfc',
     },
     images:{
         height:45,
@@ -283,5 +289,18 @@ const styles = StyleSheet.create({
         marginTop:5,
         flexDirection: 'row',
         justifyContent:'space-between',
+    },
+    pageTxt:{
+        fontSize:14,color:'#666',fontWeight:'400',marginLeft:0,marginTop:5,textAlign:'center',
+    },
+    pageBox:{
+        justifyContent:'center',alignItems:'center',flex:1,padding:20,backgroundColor:'#fff',borderColor: '#f6f6f6',
+    },
+    touchSize:{
+        width:40,
+        height:40,
+        flex:1,
+        justifyContent:'center',
+        alignItems:'center'
     }
 });

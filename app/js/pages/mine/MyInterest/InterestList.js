@@ -47,8 +47,9 @@ export default class InterestList extends BaseComponent {
     }
     //关注的科室列表
     deptList(item,i){
+        console.log('deptList--------------------------------')
         return <View key={i} style={styles.list}>
-                        <Text style={{color:'#333333',fontWeight:'400',fontSize:13}}>{item.sourceName}</Text>
+                        <Text style={{color:'#333333',fontWeight:'400',fontSize:15}}>{item.sourceName}</Text>
                         <Text style={styles.rightT}>√已关注</Text>
                     </View>
     }
@@ -56,8 +57,8 @@ export default class InterestList extends BaseComponent {
     eqpList(item,i){
         return <View  key={i} style={styles.list}>
             <View style={styles.leftT}>
-                <Text style={{color:'#333333',fontWeight:'bold',fontSize:13}}>{item.sourceName}</Text>
-                <Text style={{color:'#666',fontWeight:'400',fontSize:12}}>{item.installLocation}</Text>
+                <Text style={{color:'#333333',fontWeight:'bold',fontSize:15}}>{item.sourceName}</Text>
+                <Text style={{color:'#666',fontWeight:'400',fontSize:13}}>{item.installLocation}</Text>
             </View>
             <Text style={styles.rightT}>√已关注</Text>
         </View>
@@ -71,14 +72,14 @@ export default class InterestList extends BaseComponent {
                         {/* <Image style={{width:9,height:13,position:'absolute',right:0,bottom:0}} source={require("../../../../res/login/f.png")}/> */}
                     </View>
                 
-                    <Text style={{marginLeft:5,color:'#333333',fontWeight:'400',fontSize:13}}>{item.sourceName}</Text>
+                    <Text style={{marginLeft:5,color:'#333333',fontWeight:'400',fontSize:15}}>{item.sourceName}</Text>
                 
                 </View>
                 <Text style={styles.rightT}>√已关注</Text>
             </View>
     }
     //关注的工单列表dom
-    workList(item,i){
+    workList(items){
         var list1=[]
         var list2=[]
         var list3=[]
@@ -87,22 +88,26 @@ export default class InterestList extends BaseComponent {
             { title: '维修' },
             { title: '保养' },
           ];
-        switch(item.bizFlag) {
-            case 1:
-                    list1.push(item)
-               break;
-            case 2:
-                    list2.push(item)
-               break;
-            case 3:
-                    list3.push(item)
-                break;
-            default:
-                break;
-       } 
-       console.log('list1')
-       console.log(list1)
-       return  <Tabs key={i} onChange={(tab,index)=>{this.setTab(tab,index)}} 
+          console.log(items)
+          items.map((item,i)=>{
+            switch(item.bizFlag) {
+                case 2:
+                        list1.push(item)
+                   break;
+                case 1:
+                        list2.push(item)
+                   break;
+                case 3:
+                        list3.push(item)
+                    break;
+                default:
+                    break;
+           } 
+          })
+        
+       console.log('list2')
+       console.log(list2)
+       return  <Tabs  onChange={(tab,index)=>{this.setTab(tab,index)}} 
                             tabs={worktabs} tabBarActiveTextColor={'#61C0C5'} 
                             tabBarUnderlineStyle={{backgroundColor:'#61C0C5'}}
                             initialPage={0}>
@@ -138,7 +143,7 @@ export default class InterestList extends BaseComponent {
      
         return <View key={i} style={styles.list}>
                     <View style={styles.leftT2}>
-                        <Text style={{marginLeft:5,color:'#333333',fontWeight:'400',fontSize:13}}>{data.workUserName}</Text>
+                        <Text style={{marginLeft:5,color:'#333333',fontWeight:'400',fontSize:15}}>{data.workUserName}</Text>
                     
                     </View>
                     <Text style={styles.rightT}>√已关注</Text>
@@ -156,7 +161,7 @@ export default class InterestList extends BaseComponent {
         var eqpRecords = null;
         var userRecords = null;
         var workRecords =null;
-        if(this.props.deptRecords){
+        if(this.props.deptRecords && this.props.deptRecords.length>0){
             deptRecords = this.props.deptRecords
             
             ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
@@ -166,7 +171,7 @@ export default class InterestList extends BaseComponent {
                 })}
             </ScrollView> 
             
-        }else if(this.props.eqpRecords){
+        }else if(this.props.eqpRecords && this.props.eqpRecords.length>0){
             eqpRecords = this.props.eqpRecords
        
             ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
@@ -175,7 +180,7 @@ export default class InterestList extends BaseComponent {
                         return this.eqpList(item,i)
                     })}
             </ScrollView> 
-        }else if(this.props.userRecords){
+        }else if(this.props.userRecords && this.props.userRecords.length>0){
             userRecords = this.props.userRecords
             ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
                         style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
@@ -183,11 +188,13 @@ export default class InterestList extends BaseComponent {
                     return this.userList(item,i)
                 })}
             </ScrollView>
-        }else if(this.props.workRecords){
+        }else if(this.props.workRecords && this.props.workRecords.length>0){
             workRecords = this.props.workRecords
-            ViewList = workRecords.map((item,i)=>{
-                return this.workList(item,i)
-            })
+            ViewList = this.workList(workRecords)
+                
+            
+        }else{
+            ViewList = ViewList
         }
         return (
         <View style={styles.container1}>
@@ -227,7 +234,7 @@ const styles = StyleSheet.create({
         marginTop:5
     },
     list:{
-        height:40,
+        height:45,
         width:ScreenWidth,
         paddingLeft: 30,
         paddingRight: 30,
@@ -251,15 +258,16 @@ const styles = StyleSheet.create({
         alignItems:'center',
     },
     rightT:{
-        width:48,
-        height:18,
+        paddingLeft:2,
+        paddingRight:2,
+        height:20,
         backgroundColor:'rgba(255,255,255,1)',
         borderColor: 'rgba(153,153,153,1)',
         borderWidth: 1,
         borderRadius:3,
-        fontSize: 12,
+        fontSize: 14,
         color:'#909090',
-        lineHeight:18,
+        lineHeight:20,
         textAlign:'center'
     },
     main1:{

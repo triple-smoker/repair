@@ -234,10 +234,6 @@ export default class Login extends BaseComponent {
                         }
                     });
                 }
-                
-
-                Toast.show('登录成功');
-
                 global.access_token = result.access_token;
                 AsyncStorage.setItem('token', result.access_token, function (error) {
                     if (error) {
@@ -246,7 +242,7 @@ export default class Login extends BaseComponent {
                         console.log('save: access_token = ' + result.access_token);
                     }
                 });
-
+                Toast.show('登录成功');
                 that.fetchUserInfo();
             } else {
                 
