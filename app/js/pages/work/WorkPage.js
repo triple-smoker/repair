@@ -773,11 +773,13 @@ search() {
     if(this.state.imagesRequest && this.state.imagesRequest.length > 0){
       listItems =(  this.state.imagesRequest === null ? null : this.state.imagesRequest.map((imageItem, index) =>
           <View style={stylesImage.slide} key={index}>
-              <TouchableOpacity style={{zIndex:1,position: 'absolute',top: 0,right: 0}} onPress={()=> this.setState({modalPictureVisible:false})}>
-                  <Image source={require('../../../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginRight:10,marginTop:18, }}/>
+              {/*<TouchableOpacity style={{zIndex:1,position: 'absolute',top: 0,right: 0}} onPress={()=> this.setState({modalPictureVisible:false})}>*/}
+              <TouchableOpacity activeOpacity={1} style={{zIndex:1,flex:1}} onPress={()=> this.setState({modalPictureVisible:false})}>
+                  {/*<Image source={require('../../../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginRight:10,marginTop:18, }}/>*/}
+              {/*</TouchableOpacity>*/}
+                  <Image resizeMode='contain' style={stylesImage.image} num={index+1} source={{uri:imageItem.filePath}} />
+                  <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1}/{i}</Text></View>
               </TouchableOpacity>
-              <Image resizeMode='contain' style={stylesImage.image} num={index+1} source={{uri:imageItem.filePath}} />
-              <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{index+1}/{i}</Text></View>
           </View>
       ))
     }

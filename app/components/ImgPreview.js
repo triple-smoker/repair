@@ -146,15 +146,15 @@ class ImageItem extends Component {
         {
           this.props.type === 'video' ? <VideoPlayer onRef={this.onRef} closeVideoPlayer={()=> {this.props.setModalVisible()}} uri={this.props.imageurl}></VideoPlayer> :
           <View style={{flex: 1}}>
-            <TouchableOpacity style={{zIndex:1,position: 'absolute',top: 0,right: 0}} onPress={()=> this.props.setModalVisible()}>
-                <Image source={require('../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginRight:10,marginTop:5, }}/>
+            <TouchableOpacity activeOpacity={1} style={{zIndex:1,flex:1}} onPress={()=> this.props.setModalVisible()}>
+                {/*<Image source={require('../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginRight:10,marginTop:5, }}/>*/}
+              <Image
+                    resizeMode='contain'
+                    style={StyleImages.image}
+                    source={{
+                    uri: this.props.imageurl
+                  }}/>
             </TouchableOpacity>
-            <Image
-                  resizeMode='contain'
-                  style={StyleImages.image}
-                  source={{
-                  uri: this.props.imageurl
-                }}/>
           </View>
         }
         <View

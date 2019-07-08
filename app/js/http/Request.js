@@ -13,7 +13,10 @@ export const AuthToken     = 'api/auth/oauth/token';
 export const GetUserInfo   = 'api/admin/user/login';
 export const GetUserAddress  = 'api/basic/user/address/'
 
+export const userOnWork = 'api/opcs/user/on_work/'; //员工打卡上班
+export const userOffWork = 'api/opcs/user/off_work/'; //员工打卡下班
 export const GetUserAtWork = 'api/opcs/user/at_work/'; //员工是否在岗
+export const GetUserAtWorkByDeptId = 'api/opcs/user/at_work_dept/'; //根据部门查询员工是否在岗
 
 export const GetRepairType = 'api/repair/repRepairType/list';//维修类型
 export const GetRepairList = 'api/repair/service/list';//维修单列表

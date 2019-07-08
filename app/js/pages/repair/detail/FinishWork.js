@@ -480,10 +480,10 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         textAlignVertical:'center',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
+        // position: 'absolute',
+        // bottom: 0,
+        // left: 0,
+        // right: 0,
         alignSelf: 'center'
     },
     images:{
