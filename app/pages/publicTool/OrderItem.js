@@ -347,12 +347,13 @@ class ImageItem extends Component{
     render(){
         return (
             <View style={stylesImage.slide}>
-                <TouchableOpacity style={{zIndex:1,position: 'absolute',top: 0,right: 0}} onPress={()=> this.props.setModalVisible()}>
-                    <Image source={require('../../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginRight:10,marginTop:18, }}/>
-                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={1} style={{zIndex:1,flex:1}} onPress={()=> this.props.setModalVisible()}>
+                    {/*<Image source={require('../../res/repair/ic_photo_close.png')} style={{width:20,height:25,marginRight:10,marginTop:18, }}/>*/}
+
                 <Image resizeMode='contain' style={stylesImage.image} source={{uri:this.props.imageurl}} />
                 <View style={{position: 'relative',left:ScreenWidth-70,top:-40,backgroundColor:'#545658',height:22,paddingLeft:2,width:40,borderRadius:10}}><Text style={{color:'#fff',paddingLeft:5}}>{this.props.num}/{this.props.sum}</Text></View>
-            </View>
+                </TouchableOpacity>
+                </View>
         )
     }
 }
