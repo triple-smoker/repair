@@ -9,7 +9,8 @@ import {
     ListView,
     Modal,
     TouchableOpacity,
-    InteractionManager
+    InteractionManager,
+    ScrollView
 } from 'react-native';
 
 import TitleBar from '../../component/TitleBar';
@@ -443,6 +444,7 @@ export default class TransferOrder extends BaseComponent {
                   navigation={this.props.navigation}
               />
           }
+          <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64, width:Dimens.screen_width,flex:1}}>
           {this.state.typeCode === 0 &&
               <View>
                   <View style={{flexDirection:'row',alignItems: 'center',paddingTop:15,paddingLeft:15}}>
@@ -506,7 +508,7 @@ export default class TransferOrder extends BaseComponent {
             username = text;
             }}
         />
-
+          </ScrollView>
 
           <Text
             onPress={()=>this._onSure()}
@@ -625,10 +627,10 @@ listViewStyle:{
     alignItems:'center',
     justifyContent:'center',
     textAlignVertical:'center',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+    // position: 'absolute',
+    // bottom: 0,
+    // left: 0,
+    // right: 0,
     alignSelf: 'center'
   },
   input_style:{
@@ -690,10 +692,10 @@ const stylesDept = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         textAlignVertical:'center',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
+        // position: 'absolute',
+        // bottom: 0,
+        // left: 0,
+        // right: 0,
         alignSelf: 'center'
     },
 
