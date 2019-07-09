@@ -301,22 +301,29 @@ class ConfirmReport extends Component {
                 </View>
                 <Content>
                     <Text style={{color:'#a5a7ac',paddingTop:20,fontSize:15,marginLeft:"1.5%",}}>请确认您的报修单</Text>
-                    {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
-                        <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
-                            {this.state.repairParentCn}/{this.state.repairChildCn}
-                        </Text>
-                    }
-                    {this.state.isScan == true &&
-                        <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
-                            {this.state.equipmentName}
-                        </Text>
-                    }
+
                     <TextInput style={{color: '#000', textAlignVertical: 'top',paddingLeft:10, backgroundColor: "#ffffff" , marginLeft: '1.5%', marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}
                                value={this.state.desc}
                                editable = {false}
                     />
+                    <View style={{paddingBottom:5,paddingTop:5,flex:1,flexDirection:"row",paddingLeft:5,paddingRight:8,backgroundColor:"#fff",marginLeft: '1.5%',marginRight: '1.5%',justifyContent:"space-between"}}>
+                        {/*<View style={{flex:1}}/>*/}
+                        <RepairTypeMk
+                            repairType={this.state.repairParentCn+"/"+this.state.repairChildCn}
+                            deleteType={()=>this.deleteType()}
+                            readOnly={true}
+                            selectType={()=>this._setTypeVisible()}
+                        />
+                        {this.state.isScan === true &&
+                        <View style={{flexDirection:"row",justifyContent:"flex-end",height:30,alignItems:"center",marginLeft: '1.5%',marginRight: '1.5%',backgroundColor:"#fff",}}>
+                            <Text style={{color:"#aaa",fontSize:14,alignItems:"center"}}>
+                                {"*"+this.state.equipmentName+"*"}
+                            </Text>
+                        </View>
+                        }
+                    </View>
                     {this.state.voices.filePath == '' ? null : <SoundRecoding readOnly={true} record={this.state.voices}/>}
                     <Reporter
                         name={this.state.report.reporter}
@@ -342,5 +349,59 @@ class ConfirmReport extends Component {
     }
 }
 
+class RepairTypeMk extends Component {
+    constructor(props){
+        super(props);
+    }
+    render() {
+        if(this.props.repairType !== "/"){
+            return (<View style={{
+                flexDirection: "row",
+                flexWrap: 'wrap',
+                backgroundColor: "#F9F9F9",
+                height: 30,
+                borderRadius: 15,
+                borderWidth: 1,
+                borderColor: "#D9D9D9",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginRight:3
+            }}>
+
+                <Text style={{color: "#61C0C5", textAlign: "center", fontSize: 14, marginLeft: 3, marginRight: 3}}>
+                    {"#"+this.props.repairType}
+                </Text>
+                {this.props.readOnly !==true &&
+                <TouchableOpacity onPress={() => this.props.deleteType()}>
+                    <View style={{width: 1, backgroundColor: "#D9D9D9", height: 31}}/>
+                    <Text style={{color: "#FF0000", fontSize: 14, width: 20, textAlign: "center"}}>
+                        ×
+                    </Text>
+                </TouchableOpacity>
+                }
+            </View>)
+        }
+        if(this.props.repairType === "/" && this.props.readOnly !==true){
+            return (<View style={{
+                flexDirection: "row",
+                flexWrap: 'wrap',
+                backgroundColor: "#F9F9F9",
+                height: 30,
+                borderRadius: 15,
+                borderWidth: 1,
+                borderColor: "#D9D9D9",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginRight:3
+            }}>
+                <TouchableOpacity onPress={()=>this.props.selectType()}>
+                    <Text style={{color: "#8C8C8C", textAlign: "center", fontSize: 14, marginLeft: 3, marginRight: 3}}>
+                        #类型选择
+                    </Text>
+                </TouchableOpacity>
+            </View>)
+        }
+    }
+}
 
 module.exports=ConfirmReport;
