@@ -42,7 +42,7 @@ class MultipleImagePicker extends BaseComponent {
     }
 
     /**
-     * 拍摄视频，限时30秒
+     * 拍摄视频，限时15秒
      */
     selectVideoTapped() {
         const options = {
@@ -239,7 +239,7 @@ class MultipleImagePicker extends BaseComponent {
                     <View style={styles.modalContent}>
                         <RenderModal item='相册' onPress={() => this.pickMultiple()} />
                         <RenderModal item='拍照' onPress={() => this.pickSingleWithCamera()} />
-                        <RenderModal item="摄像" onPress={() => this.selectVideoTapped()} />
+                        <RenderModal item="摄像(15s)" onPress={() => this.selectVideoTapped()} />
                     </View>
                 </Modal>
                 <ImgPreview

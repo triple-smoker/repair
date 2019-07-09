@@ -388,7 +388,8 @@ class SQLManager extends Component {
             + "reportBy varchar(255),"
             + "reportDate varchar(255),"
             + "resultDesc varchar(255),"
-            + "status varchar(255)"
+            + "status varchar(255),"
+            + "ITEM_FORMAT varchar(255)"
             + ')';
         return createAutoUpSql;
     }

@@ -12,7 +12,7 @@ import {
     Platform,
     Modal,
     ScrollView,
-    TouchableHighlight,
+    TouchableHighlight, DeviceEventEmitter,
 } from 'react-native';
 
 
@@ -24,9 +24,12 @@ import moment from "moment";
 import md5 from "md5";
 import Axios from '../../../util/Axios';
 import NetInfo from '@react-native-community/netinfo';
-import {Textarea} from "native-base";
 import { toastShort } from '../../util/ToastUtil';
-
+import {Loading} from "../../component/Loading";
+import ImagePickers from 'react-native-image-picker';
+import Video from 'react-native-video';
+import Request, {RepairCommenced} from "../../http/Request";
+import { ProcessingManager } from 'react-native-video-processing';
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -73,7 +76,6 @@ export default class CheckDetail extends BaseComponent {
 
   componentDidMount() {
     this._fetchData();
-
   }
     //列表数据获取
     _fetchData(){
@@ -118,7 +120,7 @@ export default class CheckDetail extends BaseComponent {
       var list = dateSourceItem;
       // console.log("___"+list);
       var listItem =  list === null ? null : list.map((item, index) =>
-          <CheckItem key={index} num={index+1} data={item} onPressFeedback={(dataString,resultString)=>{this.onPressFeedback(dataString,resultString)}}/>
+          <CheckItem key={index} pickSingleWithCamera={()=>this.pickSingleWithCamera()} num={index+1} data={item} onPressFeedback={(dataString,resultString)=>{this.onPressFeedback(dataString,resultString)}}/>
       );
       return listItem;
   }
@@ -128,15 +130,6 @@ export default class CheckDetail extends BaseComponent {
 
   render() {
 
-    {/*var data1= {*/}
-        {/*title:"1,暂存点卫生是否整洁",*/}
-    {/*}*/}
-    {/*var data2= {*/}
-        {/*title:"2,暂存处防盗，防渗漏，防四害是否合格洁",*/}
-    {/*}*/}
-    {/*var data3= {*/}
-        {/*title:"3,暂存处交接记录资料是否齐全",*/}
-    {/*}*/}
     return (
       <View style={styles.container}>
       <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginBottom:5}}>
@@ -263,6 +256,7 @@ export default class CheckDetail extends BaseComponent {
                 "reportDate": null,
                 "resultDesc": (item.resultString===null)? "":item.resultString,   //选项内容、哈哈哈哈、url、url、double
                 "status": "1",
+                "ITEM_FORMAT":item.ITEM_FORMAT,
             }
             console.log(requestN);
             dateSourceItemTemp.push(requestN);
@@ -272,13 +266,76 @@ export default class CheckDetail extends BaseComponent {
         NetInfo.fetch().then(state => {
             if(state.isConnected){
                 console.log("上传接口");
+                var i = 0;
                 dateSourceItemTemp.forEach((item)=>{
                     console.log(item);
-                    Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
-                        (response)=>{
-                            console.log(response);
-                            toastShort("数据已上报");
-                        })
+                    if(item.ITEM_FORMAT==="拍照型"){
+                        Loading.show();
+                        var that = this;
+                        Request.uploadFile(item.resultDesc, (result)=> {
+                            console.log('path')
+                            console.log(item.resultDesc)
+                            console.log('result')
+                            console.log(result)
+                            if (result && result.code === 200) {
+                                // console.log(result);
+                                item.ITEM_FORMAT=null;
+                                item.resultDesc = result.data.fileDownloadUri;
+                                Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
+                                    (response)=>{
+                                        console.log(response);
+                                        i++;
+                                        if(i===dateSourceItemTemp.length){
+                                            toastShort("数据已上报");
+                                        }
+                                        Loading.hidden();
+                                    })
+                            }
+                        });
+                    }else if(item.ITEM_FORMAT==="视频型"){
+                        let compressOptions = {
+                            width: 720,
+                            height: 1280,
+                            bitrateMultiplier: 3,
+                            saveToCameraRoll: true, // default is false, iOS only
+                            saveWithCurrentDate: true, // default is false, iOS only
+                            minimumBitrate: 300000,
+                        };
+                        ProcessingManager.compress(item.resultDesc, compressOptions) // like VideoPlayer compress options
+                            .then((data) => {
+                                Request.uploadFile(data.source, (result)=> {
+                                    console.log('path')
+                                    console.log(item.resultDesc)
+                                    console.log('result')
+                                    console.log(result)
+                                    if (result && result.code === 200) {
+                                        // console.log(result);
+                                        item.ITEM_FORMAT=null;
+                                        item.resultDesc = result.data.fileDownloadUri;
+                                        Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
+                                            (response)=>{
+                                                console.log(response);
+                                                i++;
+                                                if(i===dateSourceItemTemp.length){
+                                                    toastShort("数据已上报");
+                                                }
+                                                Loading.hidden();
+                                            })
+                                    }
+                                });
+                            });
+                    }else{
+                        item.ITEM_FORMAT=null;
+                        Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
+                            (response)=>{
+                                console.log(response);
+                                i++;
+                                if(i===dateSourceItemTemp.length){
+                                    toastShort("数据已上报");
+                                }
+                            })
+                    }
+
                 })
             }else{
                 SQLite.insertData(dateSourceItemTemp,"auto_up");
@@ -302,9 +359,6 @@ export default class CheckDetail extends BaseComponent {
             this.goBack();
         });
 
-
-
-
   }
 
     onChangeType(index) {
@@ -318,25 +372,100 @@ export default class CheckDetail extends BaseComponent {
         this.props.navigation.state.params.callback()
     }
 
+    /**
+     * 相机拍摄图片
+     * @param cropping
+     * @param mediaType
+     */
+    pickSingleWithCamera(){
+        imagePos = 0;
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('TakePicture',{
+                theme:this.theme
+            })
+        });
+    }
+
+
 
 }
 
 /*
 * 每个任务项渲染
 * */
+var imagePos = -1;
+// var videoPos = "";
 class CheckItem extends Component {
     constructor(props){
         super(props);
         this.state={
             causeChecked:"",
             stringText:"",
+            imagePath0:null,
+            videoPos:""
+            // imageUrl0:null
         }
     }
     getCaues(causeNmae){
         this.setState({causeChecked:causeNmae})
     }
+    componentDidMount() {
+        var that = this;
+        this.eventListener = DeviceEventEmitter.addListener('Event_Take_Photo', (param) => {
+            console.log('componentDidMount Event_Take_Photo : ' + param + ", imagePos : " + imagePos );
+            if(imagePos === 0){
+                that.setState({imagePath0:param,});
+                this.props.onPressFeedback(this.props.data,param);
+            }
+            console.log();
+            // that.uploadFile(param);
+        });
+
+    }
+    componentWillUnmount() {
+        // global.imageUrl0 = null;
+        Loading.hidden();
+        if(this.eventListener){
+            this.eventListener.remove();
+        }
+    }
+    /**
+     * 拍摄视频，限时15秒
+     */
+    selectVideoTapped() {
+        const options = {
+            mediaType: 'video',
+            videoQuality: 'low',
+            durationLimit: 15
+        };
+
+        ImagePickers.launchCamera(options, (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled video picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+                console.log('video response : ' + response)
+                let video = {
+                    path : 'file://' + response.path,
+                    type : 'video',
+                }
+                console.log('video : ' + JSON.stringify(video))
+                // videoPos = video.path;
+                this.setState({videoPos:video.path})
+                this.props.onPressFeedback(this.props.data,video.path);
+            }
+
+        });
+    }
 
     render(){
+        var imageSource0 = this.state.imagePath0 ? {uri:this.state.imagePath0} : null;
+        console.log("+++++++");
+        console.log(imageSource0);
         var listItem;
         var stringText="";
         if(this.props.data.ITEM_FORMAT === "选择型"){
@@ -399,21 +528,55 @@ class CheckItem extends Component {
                     </View>
                 }
                 {this.props.data.ITEM_FORMAT === "拍照型"&&
-                    <View style={{backgroundColor:'#ffffff',height:120}} >
-                        <View style={{zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >
+                <View style={{backgroundColor:'#ffffff',height:120}} >
+                    <TouchableOpacity onPress={()=>this.props.pickSingleWithCamera()}>
+                        {imageSource0===null &&
+                        <View style={{borderRadius:4,borderWidth:1,borderColor:"#61C0C5",borderStyle:'dotted',zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >
                             <Image source={require('../../../res/static/ic_add.png')} style={{width:26,height:27, }}/>
                             <Text style={{fontSize:13, color:'#999', marginTop:5, }}>拍照</Text>
                         </View>
-                        <Image source={require('../../../res/static/ic_frame.png')} style={{zIndex:1,width:81,height:80, top:15,left:15,position: 'absolute',}}/>
-                    </View>
+                        }
+                        {imageSource0 !== null &&
+                        <View style={{borderRadius:4,borderWidth:1,borderColor:"#61C0C5",borderStyle:'dotted',zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >
+                            <Image source={imageSource0} style={{zIndex:10,width: 75, height: 70}}/>
+                        </View>
+                        }
+                    </TouchableOpacity>
+                </View>
                 }
                 {this.props.data.ITEM_FORMAT === "视频型"&&
                     <View style={{backgroundColor:'#ffffff',height:120}} >
-                        <View style={{zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >
-                            <Image source={require('../../../res/static/ic_add.png')} style={{width:26,height:27, }}/>
-                            <Text style={{fontSize:13, color:'#999', marginTop:5, }}>视屏</Text>
-                        </View>
-                        <Image source={require('../../../res/static/ic_frame.png')} style={{zIndex:1,width:81,height:80, top:15,left:15,position: 'absolute',}}/>
+                        <TouchableOpacity onPress={()=>this.selectVideoTapped()}>
+                            {this.state.videoPos==="" &&
+                            <View style={{borderRadius:4,borderWidth:1,borderColor:"#61C0C5",borderStyle:'dotted',zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >
+                                <Image source={require('../../../res/static/ic_add.png')} style={{width:26,height:27, }}/>
+                                <Text style={{fontSize:13, color:'#999', marginTop:5, }}>视频</Text>
+                            </View>
+                            }
+                            {this.state.videoPos!=="" &&
+                            <View style={{borderRadius:4,borderWidth:1,borderColor:"#61C0C5",borderStyle:'dotted',zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >
+                                {/*<Image source={imageSource0} style={{zIndex:10,width: 75, height: 70}}/>*/}
+                                <View  style={{zIndex:10,width: 75, height: 70}}>
+                                    <Video source={{uri: this.state.videoPos}}
+                                           style={{position: 'absolute',
+                                               top: 0,
+                                               left: 0,
+                                               bottom: 0,
+                                               right: 0
+                                           }}
+                                           rate={1}
+                                           paused={true}
+                                           volume={1}
+                                           muted={false}
+                                           resizeMode={'cover'}
+                                           onError={e => console.log(e)}
+                                           onLoad={load => console.log(load)}
+                                           repeat={true} />
+                                </View>
+                            </View>
+                            }
+
+                        </TouchableOpacity>
                     </View>
                 }
                 {this.props.data.ITEM_FORMAT === "数值型" &&
