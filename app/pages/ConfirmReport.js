@@ -381,25 +381,8 @@ class RepairTypeMk extends Component {
                 }
             </View>)
         }
-        if(this.props.repairType === "/" && this.props.readOnly !==true){
-            return (<View style={{
-                flexDirection: "row",
-                flexWrap: 'wrap',
-                backgroundColor: "#F9F9F9",
-                height: 30,
-                borderRadius: 15,
-                borderWidth: 1,
-                borderColor: "#D9D9D9",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                marginRight:3
-            }}>
-                <TouchableOpacity onPress={()=>this.props.selectType()}>
-                    <Text style={{color: "#8C8C8C", textAlign: "center", fontSize: 14, marginLeft: 3, marginRight: 3}}>
-                        #类型选择
-                    </Text>
-                </TouchableOpacity>
-            </View>)
+        if(this.props.repairType === "/" && this.props.readOnly ===true){
+            return null;
         }
     }
 }

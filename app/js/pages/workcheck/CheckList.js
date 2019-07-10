@@ -24,6 +24,7 @@ import SQLite from "../../polling/SQLite";
 import CheckSqLite from "../../polling/CheckSqLite";
 import moment from "moment";
 import Axios from "../../../util/Axios";
+import {toastShort} from "../../util/ToastUtil";
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -89,33 +90,35 @@ export default class CheckList extends BaseComponent {
     );
   }
   //跳转巡检三级页面
-  onPressItem(data){
-
-        const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('CheckDetail',{
-                theme:this.theme,
-                manCode:data.MAN_CODE,
-                equipmentId:data.equipment_id,
-                equipmentName:data.equipment_name,
-                equipmentTypeId:data.equipment_type_id,
-                jobExecCode:this.state.jobExecCode,
-                jobCode:this.state.jobCode,
-                dailyTaskCode:this.state.dailyTaskCode,
-                beginTime:this.state.beginTime,
-                endTime:this.state.endTime,
-                taskId:this.state.taskId,
-                callback: (
-                    () => {
-                           this._fetchData(0);
-                    })
-            });
-        });
-
+  onPressItem(data,percent){
+      if(percent!=null && percent>0){
+          toastShort("已完成");
+      }else{
+          const {navigation} = this.props;
+          InteractionManager.runAfterInteractions(() => {
+              navigation.navigate('CheckDetail',{
+                  theme:this.theme,
+                  manCode:data.MAN_CODE,
+                  equipmentId:data.equipment_id,
+                  equipmentName:data.equipment_name,
+                  equipmentTypeId:data.equipment_type_id,
+                  jobExecCode:this.state.jobExecCode,
+                  jobCode:this.state.jobCode,
+                  dailyTaskCode:this.state.dailyTaskCode,
+                  beginTime:this.state.beginTime,
+                  endTime:this.state.endTime,
+                  taskId:this.state.taskId,
+                  callback: (
+                      () => {
+                          this._fetchData(0);
+                      })
+              });
+          });
+      }
   }
 
   renderItem(data, i) {
-      return <CheckItem tabIndex={cachedResults.tabIndex} data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
+      return <CheckItem tabIndex={cachedResults.tabIndex} data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data,percent)=>this.onPressItem(data,percent)}/>
 
   }
 //在线获取任务进度
@@ -126,7 +129,7 @@ export default class CheckList extends BaseComponent {
                 if(Array.isArray(response) && response.length>0){
                     var sum = 0;
                     response.forEach((item)=>{
-                        // console.log(item);
+                        console.log(item);
                         if(item.completion === "已完成"){
                             sum++;
                         }
@@ -135,12 +138,15 @@ export default class CheckList extends BaseComponent {
                             equipmentId:item.equipmentId,
                             percentF:"",
                             percentZ:item.completed,
+                            reportBy:item.reportBy,
                             isUp:""}
                         dataList.push(data);
                     })
+                    console.log(">>>>>>>>>>>>>>>"+taskId);
+                    console.log(dataList);
                     dataList.forEach((item)=>{
-                        item.percentF = parseInt((sum/dataList.length)*ScreenWidth);
-                        item.percentF = item.percentF===0 ? 1:item.percentF
+                        item.percentF = parseInt((sum/dataList.length)*100);
+                        item.percentF = item.percentF===0 ? 0:item.percentF
                     })
                     SQLite.insertData(dataList,"auto_percent");
                 }
@@ -375,6 +381,7 @@ class CheckItem extends Component {
         this.state = {
             percent:0,
             isUp:"0",
+            reportBy:""
         }
     }
 
@@ -411,9 +418,9 @@ class CheckItem extends Component {
                         var checkIm = results.rows.item(i);
                         // console.log(checkIm);
                         if(checkIm && checkIm.percentZ){
-                            percent = parseInt(parseFloat(checkIm.percentZ)*ScreenWidth);
+                            percent = parseInt(parseFloat(checkIm.percentZ)*1);
                             if(percent!=this.state.percent){
-                                this.setState({percent:percent})
+                                this.setState({percent:percent,reportBy:(checkIm.reportBy===null? "":checkIm.reportBy)})
                             }
                             if(checkIm.isUp!=this.state.isUp && checkIm.isUp==="1"){
                                 this.setState({isUp:"1"})
@@ -431,29 +438,30 @@ class CheckItem extends Component {
 
         return (
             <View>
-            {((cachedResults.tabIndex===0 && this.state.percent===0) || cachedResults.tabIndex===2) &&
-            <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data)}} style={{flex:1, backgroundColor:'#f6f6f6',width:Dimens.screen_width,}}>
+            {((cachedResults.tabIndex===0 && this.state.percent<1) || cachedResults.tabIndex===2) &&
+            <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data,this.state.percent)}} style={{flex:1, backgroundColor:'#f6f6f6',width:Dimens.screen_width,}}>
                 <View style={{flex:1, flexDirection:'row',height:80, width:Dimens.screen_width,
                     alignItems:'center', justifyContent:'center', textAlignVertical:'center',backgroundColor:"white"}}>
-                    <View style={{
-                        backgroundColor:'rgba(239,249,249,0.6)',
-                        position:"absolute",
-                        width:(this.state.percent===0)?0:this.state.percent,
-                        height:80,
-                        left:0
-                    }}
-                    />
-                    <View style={{flex:3,}}>
+                    {/*<View style={{*/}
+                        {/*backgroundColor:'rgba(239,249,249,0.6)',*/}
+                        {/*position:"absolute",*/}
+                        {/*width:(this.state.percent===0)?0:this.state.percent,*/}
+                        {/*height:80,*/}
+                        {/*left:0*/}
+                    {/*}}*/}
+                    {/*/>*/}
+                    <View style={{flex:3,paddingLeft:10}}>
                         <View style={{flexDirection:'row',alignItems:"center"}}>
-                            <Text style={{fontSize:17, color:'#666', marginLeft:15,marginTop:0, textDecorationLine:'underline'}}>{this.props.data.equipment_name}</Text>
                             {this.props.data.showSpecial && this.props.data.showSpecial===1 &&
-                            <Text style={{marginLeft:4,fontSize:12,textAlign:"center",color:"#666",borderRadius:4,borderWidth:1,borderColor:"#bbb",width:28,height:16}}>
+                            <Text style={{fontSize:10,borderWidth:1,borderColor:"#47AAFA",width:28,height:15,textAlign:"center",color:"#068AFA",
+                                borderBottomRightRadius: 2,borderBottomLeftRadius: 2,borderTopLeftRadius: 2,borderTopRightRadius: 2,marginRight:10}}>
                                 特例
                             </Text>
                             }
+                            <Text style={{fontSize:17, color:'#666', marginLeft:0,marginTop:0, textDecorationLine:'underline'}}>{this.props.data.equipment_name}</Text>
                         </View>
-                        <Text style={{fontSize:13, color:'#aaa', marginLeft:15, marginTop:3, }}>{this.props.data.install_location}</Text>
-                        <Text style={{fontSize:13, color:'#aaa', marginLeft:15, marginTop:3,}}>{moment(this.props.beginTime).format("MM\/DD HH:mm")+"—"+moment(this.props.endTime).format("MM\/DD HH:mm")}</Text>
+                        <Text style={{fontSize:13, color:'#aaa', marginLeft:0, marginTop:3, }}>{this.props.data.install_location}</Text>
+                        <Text style={{fontSize:13, color:'#aaa', marginLeft:0, marginTop:3,}}>{moment(this.props.beginTime).format("MM\/DD HH:mm")+"—"+moment(this.props.endTime).format("MM\/DD HH:mm")}</Text>
 
                     </View>
                     <View style={{flex:1,height:80,  textAlignVertical:'center',justifyContent:"center"}}>
@@ -464,18 +472,25 @@ class CheckItem extends Component {
                     <View style={{flex:1, justifyContent:'flex-end',paddingRight:10}}>
 
                             <View style={{flex:1, justifyContent:'center', flexDirection:'column',alignItems:"center"}}>
-                                {processType === "0" &&
+                                {processType === "0" && this.state.percent <1 &&
                                     <Text style={{fontSize:16, color:'#FE8900', marginLeft:0, marginRight:12,}}>待开始</Text>
                                 }
-                                {processType === "1" &&
+                                {processType === "1" && this.state.percent < 1 &&
                                     <Text style={{fontSize:16, color:'#61C0C5', marginLeft:0, marginRight:12,}}>进行中</Text>
                                 }
-                                {processType === "2" &&
+                                {processType === "2" && this.state.percent < 1 &&
                                     <Text style={{fontSize:16, color:'#FE0000', marginLeft:0, marginRight:12,}}>已超时</Text>
                                 }
-                                {this.state.isUp === "1" &&
-                                    <Text style={{fontSize:12, color:'#aaa', marginLeft:0, marginRight:12,}}>待上传</Text>
+                                {this.state.percent >= 1 &&
+                                    <Image style={{width:59,height:59}} source={require("../../../image/ico_ywc.jpg")}/>
                                 }
+                                {this.state.isUp === "1" &&
+                                <Text style={{fontSize:12, color:'#aaa', marginLeft:0, marginRight:12,}}>待上传</Text>
+                                }
+                                {this.state.reportBy!==null && this.state.reportBy!=="" &&
+                                    <Text style={{fontSize:12, color:'#aaa', marginLeft:0, }}>{this.state.reportBy}</Text>
+                                }
+
                             </View>
 
                     </View>

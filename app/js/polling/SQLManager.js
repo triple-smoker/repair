@@ -402,7 +402,8 @@ class SQLManager extends Component {
             + "equipmentId varchar(255) ,"
             + "percentF varchar(10),"
             + "percentZ varchar(10),"
-            + "isUp varchar(10)"
+            + "isUp varchar(10),"
+            + "reportBy varchar(100)"
             + ')';
         return createAutoPercentSql;
     }

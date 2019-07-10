@@ -210,6 +210,10 @@ export default class CheckDetail extends BaseComponent {
   //确认提交
   _onSure() {
         // console.log(dateSourceItem);
+      if(this.state.person!==1){
+          toastShort("请完善您的上报单！");
+          return null;
+      }
       var dateSourceItemTemp = [];
         dateSourceItem.forEach((item)=>{
             // console.log(item);
@@ -217,21 +221,12 @@ export default class CheckDetail extends BaseComponent {
             code = md5(code,32);
             var itemResultSet = "正常";
             if(item.ITEM_FORMAT === "数值型"){
-                let nums = item.ITEM_RESULT_SET.split("-");
+                let nums = item.ITEM_RESULT_SET.split("~");
                  var min = "";
                  var max = "";
                 if(nums.length === 2){
                     min = nums[0];
-                    max = nums[0];
-                }else if(nums.length === 3 && item.ITEM_RESULT_SET.indexOf("-")===0){
-                    min = ("-"+nums[1]);
-                    max = (nums[2]);
-                }else if(nums.length === 3 && item.ITEM_RESULT_SET.indexOf("-")!=0){
-                    min = (nums[0]);
-                    max = ("-"+nums[2]);
-                }else if(nums.length === 4){
-                    min = ("-"+nums[1]);
-                    max = ("-"+nums[3]);
+                    max = nums[1];
                 }
 
                 if( parseFloat(item.resultString)< parseFloat(min) || parseFloat(item.resultString) > parseFloat(max)){
@@ -266,11 +261,11 @@ export default class CheckDetail extends BaseComponent {
         NetInfo.fetch().then(state => {
             if(state.isConnected){
                 console.log("上传接口");
+                Loading.show();
                 var i = 0;
                 dateSourceItemTemp.forEach((item)=>{
                     console.log(item);
                     if(item.ITEM_FORMAT==="拍照型"){
-                        Loading.show();
                         var that = this;
                         Request.uploadFile(item.resultDesc, (result)=> {
                             console.log('path')
@@ -287,9 +282,15 @@ export default class CheckDetail extends BaseComponent {
                                         i++;
                                         if(i===dateSourceItemTemp.length){
                                             toastShort("数据已上报");
+                                            Loading.hidden();
+                                            this.goBack();
                                         }
-                                        Loading.hidden();
+
                                     })
+                            }else{
+                                toastShort("图片上传不成功，请重新尝试");
+                                Loading.hidden();
+                                return null;
                             }
                         });
                     }else if(item.ITEM_FORMAT==="视频型"){
@@ -317,10 +318,15 @@ export default class CheckDetail extends BaseComponent {
                                                 console.log(response);
                                                 i++;
                                                 if(i===dateSourceItemTemp.length){
+                                                    Loading.hidden();
                                                     toastShort("数据已上报");
+                                                    this.goBack();
                                                 }
-                                                Loading.hidden();
                                             })
+                                    }else{
+                                        Loading.hidden();
+                                        toastShort("视频上传不成功，请重新尝试");
+                                        return null;
                                     }
                                 });
                             });
@@ -331,7 +337,9 @@ export default class CheckDetail extends BaseComponent {
                                 console.log(response);
                                 i++;
                                 if(i===dateSourceItemTemp.length){
+                                    Loading.hidden();
                                     toastShort("数据已上报");
+                                    this.goBack();
                                 }
                             })
                     }
@@ -346,6 +354,7 @@ export default class CheckDetail extends BaseComponent {
                         let sql = "update auto_percent set isUp ='1' where taskId="+ "'" +this.state.taskId+ "'" +" and equipmentId= "+"'"+this.state.equipmentId+"'";
                     tx.executeSql(sql,()=>{
                             toastShort("数据已保存");
+                            this.goBack();
                             },(err)=>{
                                 console.log(err);
                             }
@@ -356,7 +365,7 @@ export default class CheckDetail extends BaseComponent {
                     console.log('transaction insert data');
                 });
             }
-            this.goBack();
+
         });
 
   }
@@ -366,7 +375,6 @@ export default class CheckDetail extends BaseComponent {
 
     }
     goBack(){
-      console.log("++++++++++++++")
         const { navigate } = this.props.navigation;
         this.props.navigation.goBack();
         this.props.navigation.state.params.callback()
@@ -418,7 +426,7 @@ class CheckItem extends Component {
                 that.setState({imagePath0:param,});
                 this.props.onPressFeedback(this.props.data,param);
             }
-            console.log();
+            imagePos=-1;
             // that.uploadFile(param);
         });
 
@@ -464,8 +472,6 @@ class CheckItem extends Component {
 
     render(){
         var imageSource0 = this.state.imagePath0 ? {uri:this.state.imagePath0} : null;
-        console.log("+++++++");
-        console.log(imageSource0);
         var listItem;
         var stringText="";
         if(this.props.data.ITEM_FORMAT === "选择型"){
@@ -550,7 +556,7 @@ class CheckItem extends Component {
                             {this.state.videoPos==="" &&
                             <View style={{borderRadius:4,borderWidth:1,borderColor:"#61C0C5",borderStyle:'dotted',zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >
                                 <Image source={require('../../../res/static/ic_add.png')} style={{width:26,height:27, }}/>
-                                <Text style={{fontSize:13, color:'#999', marginTop:5, }}>视频</Text>
+                                <Text style={{fontSize:13, color:'#999', marginTop:5, }}>视频(15s)</Text>
                             </View>
                             }
                             {this.state.videoPos!=="" &&
@@ -650,10 +656,10 @@ class CheckItem extends Component {
       alignItems:'center',
       justifyContent:'center',
       textAlignVertical:'center',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
+      // position: 'absolute',
+      // bottom: 0,
+      // left: 0,
+      // right: 0,
       alignSelf: 'center'
     },
     line:{

@@ -78,7 +78,7 @@ class TypeMd extends Component {
                         dataSource:this.state.dataSource.cloneWithRows(types),
                     });
                     }
-        ).then
+        ).then()
       }
       
       componentDidMount(){

@@ -64,7 +64,7 @@ export default class CheckSqLite extends Component {
         return "SELECT" +
             " a.OBJ_ID" +
             " FROM" +
-            " inspect_job_manager a where a.OBJ_TYPE=1 and a.JOB_CODE = '"+jobCode+"'";
+            " inspect_job_manager a where a.OBJ_TYPE=1 and a.JOB_CODE = '"+jobCode+"' and a.STATUS_CD =1";
     }
     //巡检二级页面 设备详情
     selectSecondCheckEquipment(equipmentId,jobCode){
