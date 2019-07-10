@@ -174,21 +174,11 @@ export default class Login extends BaseComponent {
 
     _onForgotPsw() {
 
-        AsyncStorage.getItem('logInfo',function(err,res){
-            
-            if(err){
-                console.log(err)
-                return
-            }else{
-                var logInfo =  JSON.parse(res);
-                // that.setState({userData:userInfo});
-                console.log(logInfo)
-            }
-        })
-        // const {navigation} = this.props;
-        // InteractionManager.runAfterInteractions(() => {
-        //     navigation.navigate('HospitalPicker', {theme: this.theme})
-        // });
+       
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('findPsw', {theme: this.theme})
+        });
     }
 
     _onLogin() {
@@ -584,7 +574,7 @@ export default class Login extends BaseComponent {
                         <Text style={{fontSize: 14, color: '#777', marginLeft: 10,}}>记住密码</Text>
                     </TouchableOpacity>
                     <Text style={{fontSize: 14, color: '#777'}}></Text>
-                    <Text style={{fontSize: 14, color: '#777'}} onPress={() => this._onForgotPsw()}>忘记密码</Text>
+                    <Text style={{fontSize: 14, color: '#777'}} onPress={() => this._onForgotPsw()}>找回密码</Text>
                 </View>
 
                 <Image source={require('../../../res/login/login_bottom.png')}

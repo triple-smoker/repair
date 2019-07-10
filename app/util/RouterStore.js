@@ -41,7 +41,8 @@ import addFocus from '../js/pages/mine/MyInterest/addFocus'
 //我的工单
 import WorkManager from '../js/pages/workcheck/WorkManager';
 
-
+//找回密码
+import findPsw from '../js/pages/login/findPassWord'
 export default {
     SearchOrder : SearchOrder,
     HistoryDetail : HistoryDetail,
@@ -66,5 +67,5 @@ export default {
     MyInterest : MyInterest,
     addFocus : addFocus,
     WorkManager : WorkManager,
-    
+    findPsw: findPsw
 }

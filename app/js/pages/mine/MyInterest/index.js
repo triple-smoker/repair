@@ -56,14 +56,6 @@ export default class MyInterest extends BaseComponent {
         this.loadDetail()
       
     }
-    componentWillReceiveProps(nextProps){
-        setTimeout(
-            () => { 
-             this.loadDetail()
-            }, 500)
-        
-       
-    }
     loadDetail(type){    
         var that = this;        
         AsyncStorage.getItem('uinfo',function (error, result) {
@@ -147,7 +139,11 @@ export default class MyInterest extends BaseComponent {
             this.loadData(url,index)
         }
     }
-    
+    updateData(i){
+        console.log('update:'+i)
+
+        this.setDesk(null,i-1)
+    }
       
     render() {
         const tabs = [
@@ -195,16 +191,17 @@ export default class MyInterest extends BaseComponent {
                     tabBarUnderlineStyle={{width:0,}}
                     initialPage={0}>
                     <View style={{flex:1,}}>
-                        <InterestList workRecords={workRecords} />
+                    {/* const {navigation} = this.props; */}
+                        <InterestList workRecords={workRecords} navigation={this.props.navigation} updateData={()=>this.updateData(1)} />
                     </View>
                     <View style={styles.main}>
-                         <InterestList deptRecords={deptRecords} />
+                         <InterestList deptRecords={deptRecords} navigation={this.props.navigation} updateData={()=>this.updateData(2)} />
                     </View>
                     <View style={styles.main}>
-                        <InterestList eqpRecords={eqpRecords} />
+                        <InterestList eqpRecords={eqpRecords} navigation={this.props.navigation} updateData={()=>this.updateData(3)} />
                     </View>
                     <View style={styles.main}>
-                        <InterestList userRecords={userRecords}/>
+                        <InterestList userRecords={userRecords}  navigation={this.props.navigation} updateData={()=>this.updateData(4)} />
                     </View>
                 </Tabs>
             </View>
