@@ -36,6 +36,8 @@ export default class OrderDetail extends BaseComponent {
     };
     constructor(props){
         super(props);
+        const { navigation } = this.props;
+        const noFooter1 = navigation.getParam('noFooter', '');
         orderStatus = props.navigation.state.params.status;
         this.state={
             detaiData:null,
@@ -46,7 +48,8 @@ export default class OrderDetail extends BaseComponent {
             modalPictureVisible:false,
             status:null,
             videoItemRefMap: new Map(), //存储子组件模板节点
-            showPause:false
+            showPause:false,
+            noFooter:noFooter1,
         }
     }
 
@@ -614,8 +617,9 @@ export default class OrderDetail extends BaseComponent {
             }
             if(this.state.status){
                 var status = this.state.status;
-                
-                 if(status === '5'){
+                if(this.state.noFooter && this.state.noFooter == true){
+                    FooterTabItem = null;
+                }else if(status === '5'){
                     FooterTabItem =  <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
                         <Text onPress={()=>this.pauseOrder()} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>暂停</Text>
                         <Text onPress={()=>this.complete()} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>完工</Text>
