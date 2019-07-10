@@ -157,8 +157,10 @@ class Recorde extends Component {
                         onPressOut={() => {this._stop(), this.setState({active : false}),this.setModalVisible()}}>
                         <Image
                             style={{
-                                marginRight: 'auto',
-                                marginLeft: 'auto',
+                                position: 'absolute',
+                                bottom:0,
+                                left:"12%",
+                                right:"12%",
                                 width:'75%',
                                 resizeMode:'contain'
                             }}

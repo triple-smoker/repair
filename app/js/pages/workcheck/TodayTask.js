@@ -24,6 +24,10 @@ import CheckSqLite from "../../polling/CheckSqLite";
 import moment from "moment";
 import NetInfo from '@react-native-community/netinfo';
 import Axios from "../../../util/Axios";
+import {Loading} from "../../component/Loading";
+import Request from "../../http/Request";
+import {toastShort} from "../../util/ToastUtil";
+import {ProcessingManager} from "react-native-video-processing";
 
 /*
 * 每日任务列表
@@ -106,6 +110,7 @@ export default class TodayTask extends BaseComponent {
                             for(let i=0; i<len; i++){
                                 let checkIm = results.rows.item(i);
                                 console.log(checkIm);
+                                // checkIm.ITEM_FORMAT=null;
                                 itemList.push(checkIm);
                             }
                             this.pushNetowrk(itemList);
@@ -122,28 +127,80 @@ export default class TodayTask extends BaseComponent {
     pushNetowrk(itemList){
         itemList.forEach((checkIm)=>{
             let chenk = checkIm;
-            Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",chenk).then(
-                (response)=>{
-                    console.log(response);
-                    if(response && response.id){
-                        if(!db){
-                            db = SQLite.open();
-                        }
-                        let sql = "delete from auto_up where code="+"'"+checkIm.code+"'";
-                        db.transaction((tx)=>{
-                            tx.executeSql(sql,()=>{
-                                        console.log("本地删除成功");
-                                },(err)=>{
-                                    console.log(err);
-                                }
-                            );
-                        },(error)=>{
-                            console.log(error);
-                        });
+
+            if(chenk.ITEM_FORMAT==="拍照型"){
+                Request.uploadFile(chenk.resultDesc, (result)=> {
+                    console.log('path')
+                    console.log(item.resultDesc)
+                    console.log('result')
+                    console.log(result)
+                    if (result && result.code === 200) {
+                        // console.log(result);
+                        chenk.ITEM_FORMAT=null;
+                        chenk.resultDesc = result.data.fileDownloadUri;
+                        Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",chenk).then(
+                            (response)=>{
+                                console.log(response);
+                                this.deleteLocal(response,chenk);
+                            })
                     }
-                })
+                });
+            }else if(chenk.ITEM_FORMAT==="视频型"){
+                let compressOptions = {
+                    width: 720,
+                    height: 1280,
+                    bitrateMultiplier: 3,
+                    saveToCameraRoll: true, // default is false, iOS only
+                    saveWithCurrentDate: true, // default is false, iOS only
+                    minimumBitrate: 300000,
+                };
+                ProcessingManager.compress(chenk.resultDesc, compressOptions) // like VideoPlayer compress options
+                    .then((data) => {
+                        Request.uploadFile(data.source, (result)=> {
+                            console.log('path')
+                            console.log(item.resultDesc)
+                            console.log('result')
+                            console.log(result)
+                            if (result && result.code === 200) {
+                                // console.log(result);
+                                item.ITEM_FORMAT=null;
+                                item.resultDesc = result.data.fileDownloadUri;
+                                Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
+                                    (response)=>{
+                                        console.log(response);
+                                        this.deleteLocal(response,chenk);
+                                    })
+                            }
+                        });
+                    });
+            }else{
+                chenk.ITEM_FORMAT=null;
+                Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",chenk).then(
+                    (response)=>{
+                        console.log(response);
+                        this.deleteLocal(response,chenk);
+                    })
+            }
         })
 
+    }
+    deleteLocal(response,chenk){
+        if(response && response.id){
+            if(!db){
+                db = SQLite.open();
+            }
+            let sql = "delete from auto_up where code="+"'"+chenk.code+"'";
+            db.transaction((tx)=>{
+                tx.executeSql(sql,()=>{
+                        console.log("本地删除成功");
+                    },(err)=>{
+                        console.log(err);
+                    }
+                );
+            },(error)=>{
+                console.log(error);
+            });
+        }
     }
 
 

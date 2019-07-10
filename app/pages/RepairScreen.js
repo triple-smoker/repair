@@ -1,11 +1,11 @@
-import React from "react";
+import React, { Component } from 'react';
 import {Container, Content , Text} from 'native-base';
 import MultipleImagePicker from "../components/MultipleImagePicker";
 import Reporter from '../components/Reporter';
 import Notice from '../components/Notice';
 import SoundRecoding from '../components/SoundRecoding';
 import MyFooter from '../components/MyFooter';
-import {TextInput, Image, View, DeviceEventEmitter, TouchableOpacity, TouchableHighlight} from "react-native";
+import {TextInput, Image, View, DeviceEventEmitter, TouchableOpacity, TouchableHighlight,ScrollView,} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import Recorde from "../components/Recorde";
 import OrderType from "./publicTool/OrderType";
@@ -220,6 +220,15 @@ export default class RepairScreen extends React.Component {
                 return true;
             }
 	    }
+	//维修类型删除
+    deleteType(){
+            this.setState({
+                repairTypeId : "",
+                repairMatterId : "",
+                repairParentCn : "",
+                repairChildCn : "",
+            })
+    }
 
     submit(){
 
@@ -310,9 +319,10 @@ export default class RepairScreen extends React.Component {
                             <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>新增报修</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>this._setTypeVisible()} style={{width:60,flexDirection:'row'}}>
-                        <Text style={{color:"#666",fontSize:12}}>类型</Text>
-                    </TouchableOpacity>
+                    <View style={{width:60}}/>
+                    {/*<TouchableOpacity onPress={()=>this._setTypeVisible()} style={{width:60,flexDirection:'row'}}>*/}
+                        {/*<Text style={{color:"#666",fontSize:12}}>类型</Text>*/}
+                    {/*</TouchableOpacity>*/}
                     {/* <OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} 
                                 isShowModal={()=>this._setTypeVisible()} 
                                 modalVisible = {this.state.typeVisible}/> */}
@@ -325,17 +335,11 @@ export default class RepairScreen extends React.Component {
                 <Content >
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
                     <View style={{height:"1.5%"}}/>
-                    {this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&
-                        <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
-                            {this.state.repairParentCn}/{this.state.repairChildCn}
-                        </Text>
-                    }
-                    {
-                        this.state.isScan == true && 
-                        <Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>
-                            {this.state.equipmentName}
-                        </Text>
-                    }
+                    {/*{this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&*/}
+                        {/*<Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>*/}
+                            {/*{this.state.repairParentCn}/{this.state.repairChildCn}*/}
+                        {/*</Text>*/}
+                    {/*}*/}
                     <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', paddingLeft:10, marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}
@@ -343,9 +347,26 @@ export default class RepairScreen extends React.Component {
                                value={this.state.desc}
                                placeholder={"我的报修内容..."}
                     />
+                    <View style={{paddingBottom:5,paddingTop:5,flex:1,flexDirection:"row",paddingLeft:8,paddingRight:5,backgroundColor:"#fff",marginLeft: '1.5%',marginRight: '1.5%',justifyContent:"space-between"}}>
+                        {/*<View style={{flex:1}}/>*/}
+                        <RepairTypeMk
+                            repairType={this.state.repairParentCn+"/"+this.state.repairChildCn}
+                            deleteType={()=>this.deleteType()}
+                            selectType={()=>this._setTypeVisible()}
+                        />
+                        {this.state.isScan === true &&
+                        <View style={{flexDirection:"row",justifyContent:"flex-end",height:30,alignItems:"center",marginLeft: '1.5%',marginRight: '1.5%',backgroundColor:"#fff",}}>
+                            <Text style={{color:"#aaa",fontSize:14,alignItems:"center"}}>
+                                {"*"+this.state.equipmentName+"*"}
+                            </Text>
+                        </View>
+                        }
+                    </View>
                     <SoundRecoding show={() => this.setState({showVoice : true})}
                                    recordCallBack = {(record)=>this.recordCallBack(record)}
-                                   record={this.state.record}/>
+                                   record={this.state.record}
+
+                    />
                     <MultipleImagePicker
                         navigation={this.props.navigation}
                         imageCallback = {(images)=> this.imageCallback(images)}
@@ -354,9 +375,9 @@ export default class RepairScreen extends React.Component {
                     />
                     <View style={{borderColor: '#000', width: '100%',height: 1, border: 0.5, marginLeft: '1.5%', marginRight: '1.5%',}}/>
                     <Reporter deptName={this.state.deptName} name={this.state.reporter} phone={this.state.phone} adds={this.state.address} changAdds={()=>this.changeReporter()}/>
-                    <Recorde show = {this.state.showVoice} recordCallBack = {(record)=>this.recordCallBack(record)} />
 
                 </Content>
+                <Recorde show = {this.state.showVoice} recordCallBack = {(record)=>this.recordCallBack(record)} />
                 <MyFooter submit={() => this.submit()} value='提交'/>
 
             </Container>
@@ -365,6 +386,60 @@ export default class RepairScreen extends React.Component {
     }
 
 
+}
+class RepairTypeMk extends Component {
+    constructor(props){
+        super(props);
+    }
+    render() {
+            if(this.props.repairType !== "/"){
+            return (<View style={{
+                flexDirection: "row",
+                flexWrap: 'wrap',
+                backgroundColor: "#F9F9F9",
+                height: 30,
+                borderRadius: 15,
+                borderWidth: 1,
+                borderColor: "#D9D9D9",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginRight:3
+            }}>
+
+                <Text style={{color: "#61C0C5", textAlign: "center", fontSize: 14, marginLeft: 3, marginRight: 3}}>
+                    {"#"+this.props.repairType}
+                </Text>
+                <View style={{width: 1, backgroundColor: "#D9D9D9", height: 31}}/>
+                {this.props.readOnly !==true &&
+                <TouchableOpacity onPress={() => this.props.deleteType()}>
+                    <Text style={{color: "#FF0000", fontSize: 14, width: 20, textAlign: "center"}}>
+                        ×
+                    </Text>
+                </TouchableOpacity>
+                }
+            </View>)
+            }
+            if(this.props.repairType === "/"){
+                return (<View style={{
+                flexDirection: "row",
+                flexWrap: 'wrap',
+                backgroundColor: "#F9F9F9",
+                height: 30,
+                borderRadius: 15,
+                borderWidth: 1,
+                borderColor: "#D9D9D9",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginRight:3
+            }}>
+                <TouchableOpacity onPress={()=>this.props.selectType()}>
+                    <Text style={{color: "#8C8C8C", textAlign: "center", fontSize: 14, marginLeft: 3, marginRight: 3}}>
+                        #类型选择
+                    </Text>
+                </TouchableOpacity>
+            </View>)
+            }
+    }
 }
 
 

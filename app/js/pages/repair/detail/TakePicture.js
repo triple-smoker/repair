@@ -54,7 +54,7 @@ export default class TakePicture extends BaseComponent {
     if (this.state.isEditable) {
        captureRef(this.refs.capture_pic, {
             format: "jpg",
-            quality: 0.8,
+            quality: 0.1,
             result: "tmpfile",
             snapshotContentContainer: false
         }).then(
@@ -170,7 +170,7 @@ export default class TakePicture extends BaseComponent {
   //拍摄照片
   takePicture() {
     var that = this;
-    const options = { quality: 0.5, base64: true };
+    const options = { quality: 0.1, base64: true };
     this.camera.takePictureAsync()
       .then(function(data){
         //alert("拍照成功！图片保存地址：\n"+data.path);
