@@ -353,8 +353,6 @@ export default class CheckDetail extends BaseComponent {
                 db.transaction((tx)=>{
                         let sql = "update auto_percent set isUp ='1' where taskId="+ "'" +this.state.taskId+ "'" +" and equipmentId= "+"'"+this.state.equipmentId+"'";
                     tx.executeSql(sql,()=>{
-                            toastShort("数据已保存");
-                            this.goBack();
                             },(err)=>{
                                 console.log(err);
                             }
@@ -363,6 +361,8 @@ export default class CheckDetail extends BaseComponent {
                     console.log('transaction', error);
                 },()=>{
                     console.log('transaction insert data');
+                    toastShort("数据已保存");
+                    this.goBack();
                 });
             }
 

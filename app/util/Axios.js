@@ -120,7 +120,7 @@ function UpLoad(path) {
     }
 
 function getUserToken(){
-    AsyncStorage.getItem("logInfo", function (error, result) {
+    AsyncStorage.getItem("logMsg", function (error, result) {
         // console.log('uinfo: result = ' + result + ', error = ' + error);
         if (error) {
             console.log('读取失败')

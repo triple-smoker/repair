@@ -79,7 +79,7 @@ export default class Request {
 //  -H 'x-tenant-key: Uf2k7ooB77T16lMO4eEkRg=='
 
 static getUserToken(){
-    AsyncStorage.getItem("logInfo", function (error, result) {
+    AsyncStorage.getItem("logMsg", function (error, result) {
         // console.log('uinfo: result = ' + result + ', error = ' + error);
         if (error) {
             console.log('读取失败')

@@ -90,7 +90,7 @@ export default class CheckList extends BaseComponent {
     );
   }
   //跳转巡检三级页面
-  onPressItem(data,percent){
+  onPressItem(data,percent,fetchData){
       if(percent!=null && percent>0){
           toastShort("已完成");
       }else{
@@ -110,7 +110,11 @@ export default class CheckList extends BaseComponent {
                   taskId:this.state.taskId,
                   callback: (
                       () => {
-                          this._fetchData(0);
+                          this.getNetworkData(this.state.taskId);
+                          setTimeout(function(){
+                              fetchData(0);
+                              console.log(">>>>>>>>>>");
+                          },200)
                       })
               });
           });
@@ -118,7 +122,7 @@ export default class CheckList extends BaseComponent {
   }
 
   renderItem(data, i) {
-      return <CheckItem tabIndex={cachedResults.tabIndex} data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data,percent)=>this.onPressItem(data,percent)}/>
+      return <CheckItem tabIndex={cachedResults.tabIndex} fetchData={()=>this._fetchData()} data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data,percent,fetchData)=>this.onPressItem(data,percent,fetchData)}/>
 
   }
 //在线获取任务进度
@@ -149,6 +153,8 @@ export default class CheckList extends BaseComponent {
                         item.percentF = item.percentF===0 ? 0:item.percentF
                     })
                     SQLite.insertData(dataList,"auto_percent");
+                    console.log("插入数据");
+
                 }
             })
     }
@@ -216,6 +222,7 @@ export default class CheckList extends BaseComponent {
                                             itemTemp.forEach((itm)=>{
                                                 cachedResults.items.push(itm);
                                             })
+                                            console.log("加载数据");
                                             this.setState({
                                                 isLoadingTail: false,
                                                 isRefreshing: false,
@@ -439,7 +446,7 @@ class CheckItem extends Component {
         return (
             <View>
             {((cachedResults.tabIndex===0 && this.state.percent<1) || cachedResults.tabIndex===2) &&
-            <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data,this.state.percent)}} style={{flex:1, backgroundColor:'#f6f6f6',width:Dimens.screen_width,}}>
+            <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data,this.state.percent,this.props.fetchData)}} style={{flex:1, backgroundColor:'#f6f6f6',width:Dimens.screen_width,}}>
                 <View style={{flex:1, flexDirection:'row',height:80, width:Dimens.screen_width,
                     alignItems:'center', justifyContent:'center', textAlignVertical:'center',backgroundColor:"white"}}>
                     {/*<View style={{*/}

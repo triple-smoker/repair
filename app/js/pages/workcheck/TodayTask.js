@@ -130,10 +130,10 @@ export default class TodayTask extends BaseComponent {
 
             if(chenk.ITEM_FORMAT==="拍照型"){
                 Request.uploadFile(chenk.resultDesc, (result)=> {
-                    console.log('path')
-                    console.log(item.resultDesc)
-                    console.log('result')
-                    console.log(result)
+                    console.log('path');
+                    console.log("chenk+++++"+chenk.resultDesc);
+                    console.log('result');
+                    console.log(result);
                     if (result && result.code === 200) {
                         // console.log(result);
                         chenk.ITEM_FORMAT=null;
@@ -199,6 +199,8 @@ export default class TodayTask extends BaseComponent {
                 );
             },(error)=>{
                 console.log(error);
+            },()=>{
+                console.log("本地删除成功");
             });
         }
     }
@@ -243,6 +245,7 @@ export default class TodayTask extends BaseComponent {
     getNetworkData(taskId){
         Axios.GetAxiosUpPorter("http://47.102.197.221:8081/api/dailyTask/getReportListByTaskId?taskId="+taskId).then(
             (response)=>{
+                console.log("http://47.102.197.221:8081/api/dailyTask/getReportListByTaskId?taskId="+taskId)
                 var dataList = [];
                 if(Array.isArray(response) && response.length>0){
                     var sum = 0;

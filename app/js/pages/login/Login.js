@@ -209,6 +209,15 @@ export default class Login extends BaseComponent {
                     password: encodeURIComponent(password)
                 }
                 var logInfoString = JSON.stringify(logInfo);
+
+                AsyncStorage.setItem('logMsg', logInfo, function (error) {
+                    if (error) {
+                        console.log('error: save error');
+                    } else {
+                        console.log('save: logInfo = ' + logInfo);
+                    }
+                });
+
                 if(keepPsw){
                     AsyncStorage.setItem('logInfo', logInfoString, function (error) {
                         if (error) {

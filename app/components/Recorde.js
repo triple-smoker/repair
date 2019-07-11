@@ -59,6 +59,9 @@ class Recorde extends Component {
 
 
     async _stop() {
+        if(this.showImagetimer){
+            clearInterval(this.showImagetimer);
+        }
         if (!this.state.recording) {
             console.warn('Can\'t stop, not recording!');
             return;
@@ -85,7 +88,13 @@ class Recorde extends Component {
                     showImage : !this.state.showImage
                 }
             )
-        }, 800);
+            if(this.state.currentTime>=30){
+                this._stop();
+                this.setState({active : false});
+                this.setModalVisible();
+                clearInterval(this.showImagetimer);
+            }
+        }, 1000);
         if (this.state.recording) {
             console.warn('Already recording!');
             return;
@@ -131,22 +140,28 @@ class Recorde extends Component {
                     swipeDirection="down"
                     onBackdropPress={() => this.setModalVisible()}>
 
-                    <View style={{ bottom : '32%',flex: 1,flexDirection: 'row',alignItems: 'center',justifyContent: 'center',}}>
+                    <View style={{ flexDirection: 'row',alignItems: 'center',justifyContent: 'center',}}>
                         {!this.state.showImage ? null: <Image
-                            style={{marginLeft: 10, marginRight: 10}}
+                            style={{marginLeft: 0, marginRight: 10,height:60,resizeMode:'contain'}}
                             source={require('../image/duan.png')}/>}
                         <Image
-                            style={{marginLeft: 10, marginRight: 10}}
+                            style={{marginLeft: 30, marginRight: 30,height:90,resizeMode:'contain'}}
                             source={require('../image/chang.png')}/>
-                        <Text style={styles.duration} >0:{this.state.currentTime>9 ? this.state.currentTime : '0'+this.state.currentTime}</Text>
+                        <Text style={styles.duration} >{this.state.currentTime>9 ? this.state.currentTime : '0'+this.state.currentTime}</Text>
                         <Image
-                            style={{marginLeft: 10, marginRight: 10}}
+                            style={{marginLeft: 30, marginRight: 30,height:90,resizeMode:'contain'}}
                             source={require('../image/chang.png')}/>
                         {!this.state.showImage ? null: <Image
-                            style={{marginLeft: 10, marginRight: 10}}
+                            style={{marginLeft: 10, marginRight: 0,height:60,resizeMode:'contain'}}
                             source={require('../image/duan.png')}/> }
                     </View>
-
+                    <View style={{height:30,marginTop:20,marginBottom:5}}>
+                    {this.state.currentTime >=20 &&
+                        <Text style={{color:"#fff",fontSize: 20}}>您还可以录制{30-this.state.currentTime}秒</Text>
+                    }
+                    </View>
+                    <Text style={{color:"#900b05",fontSize: 16,fontWeight:"bold"}}>松开屏幕停止录音</Text>
+                    <View style={{height:"24%"}}/>
 
 
                 </Modal>
@@ -158,10 +173,10 @@ class Recorde extends Component {
                         <Image
                             style={{
                                 position: 'absolute',
-                                bottom:0,
-                                left:"12%",
-                                right:"12%",
-                                width:'75%',
+                                bottom:50,
+                                left:"20%",
+                                right:"20%",
+                                width:'60%',
                                 resizeMode:'contain'
                             }}
                             source={require('../image/azsh-1.png') }/>
@@ -177,7 +192,7 @@ class Recorde extends Component {
 const styles = StyleSheet.create({
     duration: {
         color: '#fff',
-        fontSize: 72,
+        fontSize: 120,
     },
     write: {
         color: '#fff',
