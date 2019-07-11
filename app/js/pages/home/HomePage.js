@@ -153,33 +153,36 @@ export default class HomePage extends Component {
                     }
                     console.log(">>>>>>>>>>>>")
                     console.log(sqLiteTimeTemp)
-                    //数据同步接口条用
-                    Axios.GetAxiosSQLite(sqLiteTimeTemp).then(
-                        (response)=>{
-                            if(Array.isArray(response.data)&&response.data.length>1){
-                                let key = 'sqLiteTimeTemp';
-                                //json转成字符串
-                                let jsonStr = JSON.stringify(response.data[0]);
-                                //存储
-                                AsyncStorage.setItem(key, jsonStr, function (error) {
+                    var timeStamp = new Date(new Date().setHours(8, 0, 0, 0)).getTime();
+                    if(sqLiteTimeTemp<=timeStamp){
+                        //数据同步接口条用
+                        Axios.GetAxiosSQLite(sqLiteTimeTemp).then(
+                            (response)=>{
+                                if(Array.isArray(response.data)&&response.data.length>1){
+                                    let key = 'sqLiteTimeTemp';
+                                    //json转成字符串
+                                    let jsonStr = JSON.stringify(response.data[0]);
+                                    //存储
+                                    AsyncStorage.setItem(key, jsonStr, function (error) {
 
-                                    if (error) {
-                                        console.log('存储失败')
-                                    }else {
-                                        console.log('存储完成')
-                                    }
-                                })
-                                var dates = response.data[1];
-                                for(var tableName in dates){
-                                    if(dates[tableName]!=null&&dates[tableName].length>0){
-                                        SQLite.insertData(dates[tableName],tableName);
-                                    }
+                                        if (error) {
+                                            console.log('存储失败')
+                                        }else {
+                                            console.log('存储完成')
+                                        }
+                                    })
+                                    var dates = response.data[1];
+                                    for(var tableName in dates){
+                                        if(dates[tableName]!=null&&dates[tableName].length>0){
+                                            SQLite.insertData(dates[tableName],tableName);
+                                        }
 
+                                    }
                                 }
+                                toastShort("本地数据同步成功");
                             }
-                            toastShort("本地数据同步成功");
-                        }
-                    );
+                        );
+                    }
 
                 }
             }.bind(this)

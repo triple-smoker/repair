@@ -91,7 +91,7 @@ export default class CheckList extends BaseComponent {
   }
   //跳转巡检三级页面
   onPressItem(data,percent,fetchData){
-      if(percent!=null && percent>0){
+      if(percent!=null && percent>=1){
           toastShort("已完成");
       }else{
           const {navigation} = this.props;
@@ -208,6 +208,7 @@ export default class CheckList extends BaseComponent {
                                                 itemTemp.forEach((itm)=>{
                                                     if(itm.equipment_id === itmN.equipment_id){
                                                         itm.showSpecial = 1;
+                                                        itm.MAN_CODE=itmN.MAN_CODE;
                                                         flag = 1;
                                                     }
                                                 })
@@ -425,7 +426,9 @@ class CheckItem extends Component {
                         var checkIm = results.rows.item(i);
                         // console.log(checkIm);
                         if(checkIm && checkIm.percentZ){
-                            percent = parseInt(parseFloat(checkIm.percentZ)*1);
+                            // console.log("占比"+checkIm.percentZ);
+                            percent = eval(checkIm.percentZ);
+                            // console.log("转换占比"+percent);
                             if(percent!=this.state.percent){
                                 this.setState({percent:percent,reportBy:(checkIm.reportBy===null? "":checkIm.reportBy)})
                             }
