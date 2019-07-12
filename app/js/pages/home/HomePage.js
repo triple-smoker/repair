@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Swiper from 'react-native-swiper';
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
-import Request, {GetRepairType,ScanMsg} from '../../http/Request';
+import Request, {AuthToken, GetRepairType, ScanMsg} from '../../http/Request';
 import Permissions from 'react-native-permissions';
 import OrderType from "../../../pages/publicTool/OrderType";
 import RNFetchBlob from '../../../util/RNFetchBlob';

@@ -48,6 +48,11 @@ export default class MinePage extends Component {
                    console.log('error: save error');
                 }
             });
+            AsyncStorage.setItem('logMsg', '', function (error) {
+                if (error) {
+                   console.log('error: save error');
+                }
+            });
 
     global.uinfo = null;
             AsyncStorage.setItem('uinfo', '', function (error) {
