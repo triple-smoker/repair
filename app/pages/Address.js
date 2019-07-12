@@ -35,6 +35,7 @@ class MyAddress extends Component {
         const AddName = navigation.getParam('reporter', '');
         const AddPhone = navigation.getParam('phone', '');
         const AddAdds = navigation.getParam('address', '');
+        const deptName = navigation.getParam('deptName', '');
         this.state = {
             AddName: AddName,
             AddPhone: AddPhone,
@@ -44,7 +45,7 @@ class MyAddress extends Component {
             noticeText: '',
             typeVisible:false,
             deptVisible:false,
-            deptName:null
+            deptName:deptName
 
         };
 
@@ -281,6 +282,7 @@ class MyAddress extends Component {
 
 class MyMessage extends Component {//地址输入模块
   render() {
+
     return (
         <Content>
             <Item ItemName={"报修人"} type={0} change = {( value) => this.props.changeName(value)} deptName={this.props.deptName} ItemValue={this.props.name} setDept={()=>this.props.setDept()}  />
@@ -304,7 +306,6 @@ const Item = ({ItemName , ItemValue, change,type,setType,setDept,deptName}) => (
             borderColor:'#bfbfbf',
             borderWidth:1,
             borderRadius:5,
-            borderWidth:1,
             }}> {deptName ?  deptName : '所在科室' } <Image resizeMode={'contain'} style={{width: 12, height: 12}} source={require('../res/repair/ico_seh.png')} /></Text>
         </TouchableOpacity> : null}
 

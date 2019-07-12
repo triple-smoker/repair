@@ -95,6 +95,7 @@ export default class RepairScreen extends React.Component {
 
                 }else {
                     let loginUserInfo = JSON.parse(result);
+                    console.log("++++++++++");
                     console.log(loginUserInfo)
                     if(loginUserInfo != null){
                         var reporter = loginUserInfo.userName;
@@ -115,11 +116,11 @@ export default class RepairScreen extends React.Component {
                                     reporter = info.userName;
                                     address = info.buildingName + info.floorName + info.roomName
                                 }
-
                                 this.setState({
                                     reporter: reporter,
                                     phone: loginUserInfo.telNo,
-                                    address: address
+                                    address: address,
+                                    deptName: loginUserInfo.deptAddresses[0].deptName
                                 });
                             }
                         });
@@ -272,6 +273,7 @@ export default class RepairScreen extends React.Component {
             reporter: this.state.reporter,
             phone: this.state.phone,
             address: this.state.address,
+            deptName: this.state.deptName,
             callback: (
                 (info) => {
                     console.log(info)
