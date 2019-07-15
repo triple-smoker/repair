@@ -386,7 +386,7 @@ export default class CheckDetail extends BaseComponent {
      * @param mediaType
      */
     pickSingleWithCamera(){
-        imagePos = 0;
+        // imagePos = 0;
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('TakePicture',{
@@ -402,7 +402,7 @@ export default class CheckDetail extends BaseComponent {
 /*
 * 每个任务项渲染
 * */
-var imagePos = -1;
+// var imagePos = -1;
 // var videoPos = "";
 class CheckItem extends Component {
     constructor(props){
@@ -421,12 +421,11 @@ class CheckItem extends Component {
     componentDidMount() {
         var that = this;
         this.eventListener = DeviceEventEmitter.addListener('Event_Take_Photo', (param) => {
-            console.log('componentDidMount Event_Take_Photo : ' + param + ", imagePos : " + imagePos );
-            if(imagePos === 0){
+            console.log('componentDidMount Event_Take_Photo : ' + param + ", imagePos : "  );
+            if(this.props.data.ITEM_FORMAT === "拍照型"){
                 that.setState({imagePath0:param,});
                 this.props.onPressFeedback(this.props.data,param);
             }
-            imagePos=-1;
             // that.uploadFile(param);
         });
 

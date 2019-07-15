@@ -154,7 +154,7 @@ export default class HomePage extends Component {
                     console.log(">>>>>>>>>>>>")
                     console.log(sqLiteTimeTemp)
                     var timeStamp = new Date(new Date().setHours(8, 0, 0, 0)).getTime();
-                    if(sqLiteTimeTemp<=timeStamp){
+                    // if(sqLiteTimeTemp<=timeStamp){
                         //数据同步接口条用
                         Axios.GetAxiosSQLite(sqLiteTimeTemp).then(
                             (response)=>{
@@ -182,7 +182,7 @@ export default class HomePage extends Component {
                                 toastShort("本地数据同步成功");
                             }
                         );
-                    }
+                    // }
 
                 }
             }.bind(this)
