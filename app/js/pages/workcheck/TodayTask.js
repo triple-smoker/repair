@@ -223,6 +223,7 @@ export default class TodayTask extends BaseComponent {
                 jobCode:data.JOB_CODE,
                 jobExecCode:data.JOB_EXEC_CODE,
                 dailyTaskCode:data.CODE,
+                checkType:this.state.checkType,
                 callback: (
                     () => {
                         this._fetchData(0);

@@ -56,6 +56,7 @@ export default class CheckList extends BaseComponent {
         jobExecCode:navigation.getParam('jobExecCode', ''),
         dailyTaskCode:navigation.getParam('dailyTaskCode', ''),
         taskId:navigation.getParam('taskId', ''),
+        checkType:navigation.getParam('checkType', ''),
         isLoadingTail: false, // loading?
         isRefreshing: false, // refresh?
         dataSource: new ListView.DataSource({
@@ -353,7 +354,12 @@ export default class CheckList extends BaseComponent {
               <Image style={{width:21,height:37}} source={require("../../../image/navbar_ico_back.png")}/>
           </TouchableHighlight>
           <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
-              <Text style={{color:'#555',fontSize:18,marginLeft:5, flex:1}}>巡检</Text>
+              {this.state.checkType === 1 &&
+              <Text style={{color: '#555', fontSize: 18, marginLeft: 5, flex: 1}}>巡检</Text>
+              }
+              {this.state.checkType === 2 &&
+              <Text style={{color: '#555', fontSize: 18, marginLeft: 5, flex: 1}}>保养</Text>
+              }
           </View>
           <TouchableOpacity onPress={()=>this.captrue()}>
               <Image style={{width:16,height:20,marginLeft:5,marginRight:10}} source={require('../../../res/repair/navbar_ico_sys.png')} />
