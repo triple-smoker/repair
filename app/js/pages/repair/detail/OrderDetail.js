@@ -624,7 +624,7 @@ export default class OrderDetail extends BaseComponent {
                         <Text onPress={()=>this.pauseOrder()} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>暂停</Text>
                         <Text onPress={()=>this.complete()} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>完工</Text>
                     </View>
-                 }else if(status === '13'){
+                 }else if(status === '13'&& global.permissions){
                     FooterTabItem =  <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
                         {/* <Text onPress={()=>this.pauseOrder()} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>暂停</Text> */}
                         <Text onPress={()=>this.complete()} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>完工</Text>

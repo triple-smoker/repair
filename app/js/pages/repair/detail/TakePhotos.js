@@ -252,7 +252,11 @@ export default class TakePhotos extends BaseComponent {
 
         {contentList}
 
-        <Text onPress={()=>this._onSure()} style={styles.button}>提交</Text>
+        {/*<Text onPress={()=>this._onSure()} style={styles.button}>提交</Text>*/}
+      <View style={{backgroundColor:'transparent', flexDirection:'row',textAlignVertical:'center',alignItems:'center',}}>
+          <Text onPress={()=>this._onSure()} style={{textAlignVertical:'center',backgroundColor:'#EFF0F1', color:'#333',fontSize:16, height:49, textAlign:'center', flex:1}}>跳过</Text>
+          <Text onPress={()=>this._onSure()} style={{textAlignVertical:'center',backgroundColor:'#98C3C5', color:'#fff',fontSize:16, height:49, textAlign:'center', flex:1}}>提交</Text>
+      </View>
       </View>
     )
 

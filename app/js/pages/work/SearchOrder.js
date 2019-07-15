@@ -503,7 +503,7 @@ export default class SearchOrder extends BaseComponent {
                     }
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
-                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.ownerName}   {data.telNo}</Text>
+                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.ownerName}</Text>
                         <TouchableOpacity onPress={()=>{that.callPhone(data.telNo)}} style={{marginLeft:10}}>
                             <Image source={require('../../../res/repair/list_call.png')} style={{width:20,height:20,}}/>
                         </TouchableOpacity>
