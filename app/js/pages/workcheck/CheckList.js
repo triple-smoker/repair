@@ -430,7 +430,7 @@ class CheckItem extends Component {
                     // console.log(len);
                     for(let i=0; i<len; i++){
                         var checkIm = results.rows.item(i);
-                        // console.log(checkIm);
+                        console.log(checkIm);
                         if(checkIm && checkIm.percentZ){
                             // console.log("占比"+checkIm.percentZ);
                             percent = eval(checkIm.percentZ);

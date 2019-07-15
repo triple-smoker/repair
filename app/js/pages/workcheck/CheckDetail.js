@@ -259,6 +259,7 @@ export default class CheckDetail extends BaseComponent {
 
         // var connected = false;
         NetInfo.fetch().then(state => {
+            console.log("网络监测："+state.isConnected);
             if(state.isConnected){
                 console.log("上传接口");
                 Loading.show();

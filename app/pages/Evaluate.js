@@ -104,7 +104,15 @@ class OrderEvaluate extends Component {//主页面
     //满意不满意原因
     chCause(cause){
         var causeList = this.state.causeIdList;
-        causeList.push(cause.causeId);
+        var temp = 0;
+        causeList.forEach((item)=>{
+            if(cause.causeId === item){
+                temp = 1;
+            }
+        })
+        if(temp === 0 ){
+            causeList.push(cause.causeId);
+        }
         this.setState({causeIdList:causeList})
     }
     //评价原因
