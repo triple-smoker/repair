@@ -130,6 +130,9 @@ export default class SearchOrder extends BaseComponent {
   }
 
   _fetchData(page) {
+      if(global.permissions === "3"){
+          return ;
+      }
     var that = this;
 
     if (page !== 0) { // 加载更多操作

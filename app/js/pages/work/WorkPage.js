@@ -164,6 +164,9 @@ export default class WorkPage extends BaseComponent {
 // }
 
   _fetchData(page) {
+     if(global.permissions === "3"){
+         return ;
+     }
      console.log('WP : _fetchData')
      console.log(this.state)
     var that = this;
@@ -489,7 +492,7 @@ export default class WorkPage extends BaseComponent {
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>恢复</Text>
                     <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
-    } else if (data.status === '13' && global.permissions) {
+    } else if (data.status === '13' && global.permissions==="1") {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
                     <Text onPress={()=>this.onPressItem(data,(page)=>this._fetchData(page))} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
@@ -497,7 +500,7 @@ export default class WorkPage extends BaseComponent {
                 </View>
     }
      else if (data.status === '20') {
-        if(global.permissions){
+        if(global.permissions==="1"){
             buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
                 <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>

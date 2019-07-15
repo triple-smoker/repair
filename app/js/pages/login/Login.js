@@ -266,11 +266,20 @@ export default class Login extends BaseComponent {
                 global.uinfo = result.data;
                 global.userId = global.uinfo.userId;
                 global.deptId = global.uinfo.deptAddresses[0].deptId;
-                var permissions = global.uinfo.permissions.indexOf("biz_repair_mgr") === -1 ? false : true;
-                global.permissions = permissions;
-                if(global.uinfo.workNumber==="40001"){
-                    global.permissions = true;
+                var permissions;
+                if(global.uinfo.roleType==="ROLE_FOREMAN"){
+                     permissions = "1";
                 }
+                if(global.uinfo.roleType==="ROLE_ENGINEER"){
+                     permissions = "2";
+                }
+                if(global.uinfo.roleType===null){
+                     permissions = "3";
+                }
+                global.permissions = permissions;
+                // if(global.uinfo.workNumber==="40001"){
+                //     global.permissions = true;
+                // }
                 //console.log('uinfo: data = ' + JSON.stringify(result.data));
                 AsyncStorage.setItem('uinfo', JSON.stringify(result.data), function (error) {
                     //console.log('uinfo: error' + error);
