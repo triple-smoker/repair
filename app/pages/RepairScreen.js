@@ -379,7 +379,7 @@ export default class RepairScreen extends React.Component {
                     <Reporter deptName={this.state.deptName} name={this.state.reporter} phone={this.state.phone} adds={this.state.address} changAdds={()=>this.changeReporter()}/>
 
                 </Content>
-                <Recorde show = {this.state.showVoice} recordCallBack = {(record)=>this.recordCallBack(record)} />
+                <Recorde show = {this.state.showVoice} disShow={()=>{this.setState({showVoice:false})}} recordCallBack = {(record)=>this.recordCallBack(record)} />
                 <MyFooter submit={() => this.submit()} value='提交'/>
 
             </Container>

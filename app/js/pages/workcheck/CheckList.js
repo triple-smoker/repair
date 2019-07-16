@@ -57,6 +57,7 @@ export default class CheckList extends BaseComponent {
         dailyTaskCode:navigation.getParam('dailyTaskCode', ''),
         taskId:navigation.getParam('taskId', ''),
         checkType:navigation.getParam('checkType', ''),
+        tableType:navigation.getParam('tableType', ''),
         isLoadingTail: false, // loading?
         isRefreshing: false, // refresh?
         dataSource: new ListView.DataSource({
@@ -123,7 +124,7 @@ export default class CheckList extends BaseComponent {
   }
 
   renderItem(data, i) {
-      return <CheckItem tabIndex={cachedResults.tabIndex} fetchData={()=>this._fetchData()} data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data,percent,fetchData)=>this.onPressItem(data,percent,fetchData)}/>
+      return <CheckItem tabIndex={cachedResults.tabIndex} fetchData={()=>this._fetchData()} tableType={this.state.tableType} data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data,percent,fetchData)=>this.onPressItem(data,percent,fetchData)}/>
 
   }
 //在线获取任务进度
@@ -172,6 +173,9 @@ export default class CheckList extends BaseComponent {
             var itemSpecial = [];
             //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
             var sql = checkSqLite.selectSecondCheckZero(this.state.jobCode);
+            if(this.state.tableType==="2"){
+                sql = checkSqLite.selectSecondCheckPlace(this.state.jobCode);
+            }
             db.transaction((tx)=>{
                 tx.executeSql(sql, [],(tx,results)=>{
                     var len = results.rows.length;
@@ -474,7 +478,24 @@ class CheckItem extends Component {
                                 特例
                             </Text>
                             }
-                            <Text style={{fontSize:17, color:'#666', marginLeft:0,marginTop:0, textDecorationLine:'underline'}}>{this.props.data.equipment_name}</Text>
+                            {this.props.tableType === "2" &&
+                                <Text style={{
+                                    fontSize: 17,
+                                    color: '#666',
+                                    marginLeft: 0,
+                                    marginTop: 0,
+                                    textDecorationLine: null
+                                }}>{this.props.data.equipment_name}</Text>
+                            }
+                            {this.props.tableType !== "2" &&
+                                <Text style={{
+                                    fontSize: 17,
+                                    color: '#666',
+                                    marginLeft: 0,
+                                    marginTop: 0,
+                                    textDecorationLine: 'underline'
+                                }}>{this.props.data.equipment_name}</Text>
+                            }
                         </View>
                         <Text style={{fontSize:13, color:'#aaa', marginLeft:0, marginTop:3, }}>{this.props.data.install_location}</Text>
                         <Text style={{fontSize:13, color:'#aaa', marginLeft:0, marginTop:3,}}>{moment(this.props.beginTime).format("MM\/DD HH:mm")+"—"+moment(this.props.endTime).format("MM\/DD HH:mm")}</Text>

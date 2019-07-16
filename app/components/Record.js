@@ -105,7 +105,7 @@ class Record extends Component{
     }
 
     activeImage(){
-        let icon = this.state.active ? require('../image/azsh-1.png') : require('../image/azsh-0.png');
+        let icon = this.state.active ? require('../image/azsh1.png') : require('../image/azsh0.png');
         return <Image
             style={{
                 top: -40,
@@ -157,7 +157,7 @@ class Record extends Component{
                             width:'75%',
                             resizeMode:'contain'
                         }}
-                        source={require('../image/azsh-1.png') }/>
+                        source={require('../image/azsh1.png') }/>
                 </TouchableNativeFeedback>
                 <Text style={styles.write}>最大录制时长一分钟</Text>
 

@@ -451,13 +451,13 @@ export default class HomePage extends Component {
         </TouchableOpacity>
 
         <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:10,paddingLeft:10,paddingRight:10,}}>
-            <Image source={require('../../../res/login/menu_ljyc.jpg')} style={{width:172,height:185,borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}/>
+            <Image source={require('../../../res/login/menu_ljyc_01.jpeg')} style={{width:172,height:185,borderBottomRightRadius: 15,borderBottomLeftRadius: 15,borderTopLeftRadius: 15,borderTopRightRadius: 15,}}/>
             <View style={{justifyContent:'center',alignItems:'center',marginLeft:10, }}>
                 <TouchableOpacity  onPress={()=>this.scan()}>
-                <Image source={require('../../../res/login/menu_ljbx.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,}}/>
+                <Image source={require('../../../res/login/menu_ljbx_01.jpeg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,}}/>
                 </TouchableOpacity>
                 <TouchableOpacity  onPress={()=>this.showModel()}>
-                    <Image source={require('../../../res/login/menu_ljdc.jpg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,marginTop:10,}}/>
+                    <Image source={require('../../../res/login/menu_ljdc_01.jpeg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,marginTop:10,}}/>
                 </TouchableOpacity>
             </View>
         </View>

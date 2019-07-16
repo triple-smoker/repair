@@ -20,11 +20,7 @@ import {
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
 import Request, {ScanDetails,GetUserAtWork} from '../../http/Request';
-import { toastShort } from '../../util/ToastUtil';
-import { toDate } from '../../util/DensityUtils';
-import BaseComponent from '../../base/BaseComponent'
-import Sound from "react-native-sound";
-import {Content,Accordion,} from "native-base";
+import BaseComponent from '../../base/BaseComponent';
 import AsyncStorage from '@react-native-community/async-storage';
 
 let ScreenWidth = Dimensions.get('window').width;
@@ -64,8 +60,9 @@ export default class MyPage extends BaseComponent {
                 console.log(userInfo)
 
                 Request.requestGet(GetUserAtWork + userInfo.userId,null,(result) => {
+                    // console.info("------------")
                     console.info(result)
-                    this.setState({
+                    that.setState({
                         atWork:result.data
                     })
                 })
@@ -86,6 +83,18 @@ export default class MyPage extends BaseComponent {
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('MySet',{
                 theme:this.theme,
+            })
+        });
+    }
+    gotoWorkPage(){
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('WorkManager',{
+                theme:this.theme,
+                callback: (
+                    () => {
+                        this.props.setHome();
+                    })
             })
         });
     }
@@ -221,7 +230,7 @@ export default class MyPage extends BaseComponent {
                     </View>
 
                     <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:0,paddingLeft:0,paddingRight:0,}}>
-                        <TouchableOpacity  onPress={()=>this.gotoPage(4)} style={{...styles.pageBox,borderRightWidth:1}}>
+                        <TouchableOpacity  onPress={()=>this.gotoWorkPage()} style={{...styles.pageBox,borderRightWidth:1}}>
                             <View  style={styles.touchSize}  >
                             <Image source={require('../../../res/login/gd.png')} style={{width:30,height:37,marginLeft:0, marginRight:0,}}/>
                             

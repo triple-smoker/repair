@@ -90,6 +90,12 @@ export default class MainPage extends BaseComponent {
             selectedTab: FLAG_TAB.flag_popularTab,
         })
     }
+    setMyHome(){
+        DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
+        this.setState({
+            selectedTab: FLAG_TAB.flag_trendingTab,
+        })
+    }
 
     onSelected(selectedTab) {
         if(selectedTab === "flag_favoriteTab"){
@@ -164,6 +170,18 @@ export default class MainPage extends BaseComponent {
                     <Component {...this.props} theme={this.state.theme} homeComponent={this} setHome={()=>setHome()}/>
                 </TabNavigator.Item>
                )
+            }else if(selectedTab === "flag_trendingTab"){
+                return (
+                    <TabNavigator.Item
+                        selected={this.state.selectedTab === selectedTab}
+                        title={title}
+                        selectedTitleStyle={styles.selectedTitleStyle}
+                        renderIcon={() => <Image style={styles.tabItemImageStyle} source={renderIcon}/>}
+                        renderSelectedIcon={() => <Image style={styles.tabItemImageStyle} source={renderIconSel}/>}
+                        onPress={() => this.onSelected(selectedTab)}>
+                        <Component {...this.props} theme={this.state.theme} homeComponent={this} setHome={()=>setHome()}/>
+                    </TabNavigator.Item>
+                )
             }else{
                 return (
                     <TabNavigator.Item
@@ -203,7 +221,7 @@ export default class MainPage extends BaseComponent {
                     {this._renderTab(HomePage, FLAG_TAB.flag_popularTab, '首页', require('../../../res/home/ic_tab_home_nor.png'), require('../../../res/home/ic_tab_home_sel.png'),()=>this.setHome())}
                     {/*{this._renderTab(WorkPage, FLAG_TAB.flag_favoriteTab, '工单', require('../../../res/home/ic_tab_gd_nor.png'), require('../../../res/home/ic_tab_gd_sel.png'))}*/}
                     {this._renderTab(WorkManager, FLAG_TAB.flag_favoriteTab, '工单', require('../../../res/home/ic_tab_gd_nor.png'), require('../../../res/home/ic_tab_gd_sel.png'),()=>this.setHome())}
-                    {this._renderTab(MinePage, FLAG_TAB.flag_myTab, '我的', require('../../../res/home/ic_tab_mine_nor.png'), require('../../../res/home/ic_tab_mine_sel.png'),()=>this.setHome())}
+                    {this._renderTab(MinePage, FLAG_TAB.flag_trendingTab, '我的', require('../../../res/home/ic_tab_mine_nor.png'), require('../../../res/home/ic_tab_mine_sel.png'),()=>this.setMyHome())}
                 </TabNavigator>
             </View>
         )

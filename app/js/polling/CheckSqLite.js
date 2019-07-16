@@ -59,6 +59,25 @@ export default class CheckSqLite extends Component {
             " t_base_equipment b, inspect_job_manager a where b.equipment_type_id = a.OBJ_ID" +
             " and a.OBJ_TYPE=0 and a.JOB_CODE = '"+jobCode+"' and a.status_cd=1";
     }
+    //巡检二级页面-场所
+    selectSecondCheckPlace(jobCode){
+        return " SELECT " +
+            " b.ID, " +
+            " b.PLACE_FLAG, " +
+            " b.PLACE_NAME as equipment_name, " +
+            " b.PLACE_ID as equipment_id, " +
+            " b.PLACE_TYPE_ID as equipment_type_id, " +
+            " b.PLACE_TYPE_NAME as install_location, " +
+            " a.MAN_CODE, " +
+            " a.OBJ_ID " +
+            " FROM " +
+            " t_base_place b, " +
+            " inspect_job_manager a " +
+            " WHERE " +
+            " b.PLACE_TYPE_ID = a.OBJ_ID " +
+            " AND a.JOB_CODE ='"+jobCode+"'" +
+            " AND a.status_cd = 1 AND b.STATUS_CD = 1";
+    }
     //巡检二级页面 type=1
     selectSecondCheckOne(jobCode){
         return "SELECT" +

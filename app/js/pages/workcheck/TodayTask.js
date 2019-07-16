@@ -224,6 +224,7 @@ export default class TodayTask extends BaseComponent {
                 jobExecCode:data.JOB_EXEC_CODE,
                 dailyTaskCode:data.CODE,
                 checkType:this.state.checkType,
+                tableType:data.TABLE_TYPE,
                 callback: (
                     () => {
                         this._fetchData(0);

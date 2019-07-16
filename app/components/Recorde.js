@@ -5,7 +5,7 @@ import {
     Text,
     View,
     TouchableHighlight,
-    Platform, Image, TouchableNativeFeedback, DeviceEventEmitter,
+    Platform, Image, TouchableNativeFeedback, DeviceEventEmitter,TouchableOpacity,
 } from 'react-native';
 
 import Sound from 'react-native-sound';
@@ -160,27 +160,35 @@ class Recorde extends Component {
                         <Text style={{color:"#fff",fontSize: 20}}>您还可以录制{30-this.state.currentTime}秒</Text>
                     }
                     </View>
-                    <Text style={{color:"#900b05",fontSize: 16,fontWeight:"bold"}}>松开屏幕停止录音</Text>
+                    <Text style={{color:"#f2f2f2",fontSize: 16,fontWeight:"bold"}}>松开屏幕停止录音</Text>
                     <View style={{height:"24%"}}/>
 
 
                 </Modal>
 
 
-                    {this.props.show ? <TouchableNativeFeedback
-                        onPressIn={() => {this._record(), this.setState({active : true}),this.setModalVisible()}}
-                        onPressOut={() => {this._stop(), this.setState({active : false}),this.setModalVisible()}}>
-                        <Image
-                            style={{
-                                position: 'absolute',
-                                bottom:50,
-                                left:"20%",
-                                right:"20%",
-                                width:'60%',
-                                resizeMode:'contain'
-                            }}
-                            source={require('../image/azsh-1.png') }/>
-                    </TouchableNativeFeedback>: null}
+                    {this.props.show ?
+                        <View style={{backgroundColor:"#fff",position:'absolute',borderTopLeftRadius: 10,borderTopRightRadius:10,bottom:0,height:170,width:"100%",justifyContent:"center",alignItems:"center"}}>
+                            <View style={{height:30,width:"100%",borderTopColor:"#ddd",borderTopWidth:1,backgroundColor:"#fff",borderTopLeftRadius: 10,borderTopRightRadius:10,flexDirection:"row",justifyContent:"flex-end"}}>
+                                <TouchableOpacity onPress={()=>this.props.disShow()}>
+                                    <Text style={{marginRight:20,marginTop:5,fontSize:18,textAlign:"center",width:80,height:40,}}>CLOSE</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <TouchableNativeFeedback style={{backgroundColor:"#fff"}}
+                                onPressIn={() => {this._record(), this.setState({active : true}),this.setModalVisible()}}
+                                onPressOut={() => {this._stop(), this.setState({active : false}),this.setModalVisible()}}>
+                                <Image
+                                    style={{
+                                        width:'60%',
+                                        marginTop:10,
+                                        marginBottom:10,
+                                        flex:1,
+                                        resizeMode:'contain'
+                                    }}
+                                    source={require('../image/azsh0.png') }/>
+                            </TouchableNativeFeedback>
+                        </View>
+                        : null}
 
 
 
