@@ -148,21 +148,10 @@ class Adds extends Component {//报修单共用组件
                             {this.getFirstImage(this.props.record.fileMap.imagesRequest,this.props.record.fileMap.videosRequest)}
                             <Button transparent style={{position: 'absolute',width:70,height:70}} onPress= {()=>this._setModalVisible()}/>
                             <View style={{position: 'absolute',left:40,top:5,backgroundColor:'#545658',height:20,paddingLeft:8,width:25,borderRadius:10}}><Text style={{color:'#fff'}}>{this.getLength(this.props.record.fileMap.imagesRequest,this.props.record.fileMap.videosRequest)}</Text></View>
-                                {this.props.record.status==='6' &&
-                                  <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>暂停中</Text>
-                                }
-                                {this.props.record.status==='11' &&
-                                  <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}>已取消</Text>
-                                }
-                                {this.props.record.status==='10' &&
-                                  <Text style={{color:'#e74949',alignItems:'center',marginLeft:10}}> 误报</Text>
-                                }
-                                {this.props.record.status==='9' &&
-                                  <Text style={{color:'#6de37e',alignItems:'center',marginLeft:10}}>已评价</Text>
-                                }
-                                {this.props.record.status==='13' &&
-                                  <Text style={{color:'#f0e292',alignItems:'center',marginLeft:10}}> 委外</Text>
-                                }
+                            <View style={{justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:70,}} >
+                                <Text style={{fontSize:12,color:'#909399',marginLeft:0,marginTop:5,textAlign:'center', paddingLeft:3, paddingRight:3, paddingTop:3, paddingBottom:3,
+                                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5,backgroundColor:'#f0f0f0'}}>{this.props.record.statusDesc}</Text>
+                            </View>
                         </Col>}
                         <Col>
                             <Row>
