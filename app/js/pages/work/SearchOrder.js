@@ -32,6 +32,7 @@ import { toastShort } from '../../util/ToastUtil';
 import Swiper from 'react-native-swiper';
 import VideoPreview from '../../../components/VideoPreview';
 import {Button, Col, Textarea} from "native-base";
+import {getVoicePlayer} from "../../../components/VoicePlayer";
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -153,7 +154,7 @@ export default class SearchOrder extends BaseComponent {
      params.set('page', cachedResults.nextPage);
      params.set('limit', '20');
      params.set('repairDeptId', global.uinfo.deptAddresses[0].deptId);
-     params.set('status', '1,2,3,5,6,8,9,10,11,20');
+     params.set('status', '1,2,3,5,6,8,9,10,11,13,20');
      if (cachedResults.typeIndex === 0) {
         params.set('ownerName', this.state.searchKey);
      } else if (cachedResults.typeIndex === 1) {
@@ -372,6 +373,10 @@ export default class SearchOrder extends BaseComponent {
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5,backgroundColor:'#f0f0f0'}}>{data.statusDesc}</Text>
 
     }
+    if(data.status === '13'){
+        statusDesc = <Text style={{fontSize:12,color:'#909399',marginLeft:0,marginTop:5,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+            borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5,backgroundColor:'#f0f0f0'}}>委外中</Text>
+    }
     if (data.status === '1') {
 
         buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}><Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
@@ -425,6 +430,27 @@ export default class SearchOrder extends BaseComponent {
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
                     <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
+    } else if (data.status === '13' && global.permissions==="1") {
+
+        buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
+            <Text onPress={()=>this.onPressItem(data,(page)=>this._fetchData(page))} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>完工</Text>
+        </View>
+    } else if (data.status === '20') {
+        if(global.permissions==="1"){
+            buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
+                <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
+                <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text>
+                <Text onPress={()=>this.arrangeWork(data,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>派工</Text></View>
+        }else{
+            buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
+                <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>抢单</Text></View>
+        }
+
     }
 
     if (this.state.tabIndex === 2) {
@@ -441,17 +467,17 @@ export default class SearchOrder extends BaseComponent {
               }
           }else if(data.fileMap.videosRequest && data.fileMap.videosRequest.length > 0){
               if(data.fileMap.videosRequest[0].filePath!=null){
-                uriImg = <View style={{width: 70, height: 70, backgroundColor:'#000000'}}>
-                            <Image 
-                                style={{
-                                    position: 'absolute',
-                                    top: 18,
-                                    left: 18,
-                                    width: 36,
-                                    height: 36,
-                                }} 
-                            source={require('../../../image/icon_video_play.png')}/>
-                      </View>
+                  uriImg = <View style={{width: 70, height: 70, backgroundColor:'#000000'}}>
+                      <Image
+                          style={{
+                              position: 'absolute',
+                              top: 18,
+                              left: 18,
+                              width: 36,
+                              height: 36,
+                          }}
+                          source={require('../../../image/icon_video_play.png')}/>
+                  </View>
               }
           }
 
@@ -459,7 +485,7 @@ export default class SearchOrder extends BaseComponent {
               if(data.fileMap.voicesRequest[0].filePath!=null){
                   var filePath = data.fileMap.voicesRequest[0].filePath;
                   voiceView = <TouchableOpacity onPress={()=>{that.onPlayVoice(filePath)}} style={{backgroundColor:'white'}}>
-                      <Image source={require('../../../res/repair/btn_voice.png')} style={{width:25,height:25,marginRight:5, }}/>
+                      <Image source={require('../../../image/voice_bf.png')} style={{width:25,height:25,marginRight:5, }}/>
                   </TouchableOpacity>
               }
           }
@@ -468,9 +494,9 @@ export default class SearchOrder extends BaseComponent {
     return (
       <TouchableOpacity onPress={()=>{that.onPressItem(data,(page)=>this._fetchData(page))}} style={{flex:1, backgroundColor:'white'}}>
           <View style={{marginLeft:0,}} >
-              <View style={{flexDirection:'row',}} >
-                <Text style={{fontSize:14,color:'#333',marginLeft:15,marginTop:3,}}>报修内容：{data.matterName}</Text>
+              <View style={{flexDirection:'row',paddingLeft:15}} >
                 {voiceView}
+                  <Text style={{fontSize:14,color:'#333',marginTop:3,}}>报修内容：{data.matterName}</Text>
               </View>
               <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:15, marginRight:15, backgroundColor:'#eeeeee'}}/>
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
@@ -495,7 +521,7 @@ export default class SearchOrder extends BaseComponent {
                     </View>
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修位置: </Text>
-                        <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,width:'60%'}}>{data.detailAddress}</Text>
+                        <Text style={{fontSize:13,color:'#333',marginLeft:8,marginTop:0,width:'60%'}}>{data.detailAddress}</Text>
                     </View>
                     {
                       data.isEquipment === 1 && 
@@ -524,15 +550,14 @@ export default class SearchOrder extends BaseComponent {
   }
 
   onPlayVoice(filePath) {
-    const s = new Sound(filePath, null, (e) => {
-                if (e) {
-                     toastShort('语音/视频播放失败');
-                    return;
-                }
-
-                // toastShort('开始播放');
-                s.play(() => s.release());
-      });
+      let voicePlayer = getVoicePlayer();
+      voicePlayer.voice(filePath,(result)=>{
+          if(result){
+              // toastShort('开始播放');
+          }else {
+              toastShort('语音/视频播放失败');
+          }
+      })
 
 }
 

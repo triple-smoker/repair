@@ -38,8 +38,8 @@ let cachedResults = {
     timeIndex: 0,
   };
   const worktabs = [
-    { title: '巡检' },
     { title: '维修' },
+    { title: '巡检' },
     { title: '保养' },
   ];
 export default class InterestList extends Component {
@@ -217,13 +217,14 @@ export default class InterestList extends Component {
                             tabBarUnderlineStyle={{backgroundColor:'#61C0C5'}}
                             initialPage={0}>
                             <View style={styles.main1}>
+                                { this.workListdom(list2) }
+                            </View>
+                            <View style={styles.main1}>
                             <ScrollView style={{ backgroundColor: '#fff' }}>
                                 {this.workListdom(list1)} 
                             </ScrollView>  
                             </View>
-                            <View style={styles.main1}>
-                                { this.workListdom(list2) }
-                            </View>
+
                             <View style={styles.main1}>
                                 {this.workListdom(list3)}
                             </View>

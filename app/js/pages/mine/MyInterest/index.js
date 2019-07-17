@@ -123,6 +123,7 @@ export default class MyInterest extends BaseComponent {
     //按导航栏 设置请求不同关注的接口
     setDesk(tab,index){
         var userdata = this.state.userData;
+        var url = "";
         if(index == 0){
             url = FollowWork + userdata.userId;
             // url = FollowList + '1/' + userdata.userId;
@@ -180,8 +181,11 @@ export default class MyInterest extends BaseComponent {
                     </View>
                     {
                         this.state.isDesk ? <TouchableOpacity onPress={()=>this.captrue()}>
-                                                <Image style={{width:21,height:21,marginLeft:5,marginRight:10}} source={require('../../../../res/repair/navbar_desk.png')} />
-                                            </TouchableOpacity> : <View style={{width:21,height:21,marginLeft:5,marginRight:10}}></View>
+                                                <View style={{width:25,height:25,borderRadius:1,alignItems:"center",justifyContent:"center",borderStyle:'dashed',borderColor:"#666",borderWidth:1,marginRight:12}}>
+                                                    <Image style={{width:21,height:21}} source={require('../../../../res/repair/navbar_desk.png')} />
+                                                </View>
+                                            </TouchableOpacity>
+                            : <View style={{width:21,height:21,marginLeft:5,marginRight:10}}></View>
                     }
                     
                     
