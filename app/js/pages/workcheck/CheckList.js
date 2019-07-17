@@ -122,9 +122,22 @@ export default class CheckList extends BaseComponent {
           });
       }
   }
+    goEquipmentDetal(equipment_id,equipment_name){
+      console.log(equipment_id);
+      console.log(equipment_name);
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('WorkManager',{
+                theme:this.theme,
+                equipmentId:equipment_id,
+                equipmentName:equipment_name,
+                isScan:true,
+            });
+        });
+    }
 
   renderItem(data, i) {
-      return <CheckItem tabIndex={cachedResults.tabIndex} fetchData={()=>this._fetchData()} tableType={this.state.tableType} data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data,percent,fetchData)=>this.onPressItem(data,percent,fetchData)}/>
+      return <CheckItem goEquipmentDetal={(equipment_id,equipment_name)=>this.goEquipmentDetal(equipment_id,equipment_name)} tabIndex={cachedResults.tabIndex} fetchData={()=>this._fetchData()} tableType={this.state.tableType} data={data} taskId={this.state.taskId} beginTime={this.state.beginTime} endTime={this.state.endTime} key={i} onPressItem = {(data,percent,fetchData)=>this.onPressItem(data,percent,fetchData)}/>
 
   }
 //在线获取任务进度
@@ -403,7 +416,6 @@ class CheckItem extends Component {
         }
     }
 
-
     render(){
         var processType = "0";
         var currentDate = new Date().getTime();
@@ -488,13 +500,15 @@ class CheckItem extends Component {
                                 }}>{this.props.data.equipment_name}</Text>
                             }
                             {this.props.tableType !== "2" &&
-                                <Text style={{
-                                    fontSize: 17,
-                                    color: '#666',
-                                    marginLeft: 0,
-                                    marginTop: 0,
-                                    textDecorationLine: 'underline'
-                                }}>{this.props.data.equipment_name}</Text>
+                                <TouchableOpacity onPress={()=>this.props.goEquipmentDetal(this.props.data.equipment_id,this.props.data.equipment_name)}>
+                                    <Text style={{
+                                        fontSize: 17,
+                                        color: '#666',
+                                        marginLeft: 0,
+                                        marginTop: 0,
+                                        textDecorationLine: 'underline'
+                                    }}>{this.props.data.equipment_name}</Text>
+                                </TouchableOpacity>
                             }
                         </View>
                         <Text style={{fontSize:13, color:'#aaa', marginLeft:0, marginTop:3, }}>{this.props.data.install_location}</Text>

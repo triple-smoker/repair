@@ -6,27 +6,14 @@ import {
     Text,
     View,
     Image,
-    DeviceEventEmitter,
     Dimensions,
-    InteractionManager,
-    TouchableOpacity,
     ScrollView,
-    Modal,
-    TextInput,
-    Linking,
-    ActivityIndicator,
-    Alert
 } from 'react-native';
 
-import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
 import Request, {ScanMsg,ScanDetails,Attr} from '../../http/Request';
-import { toastShort } from '../../util/ToastUtil';
 import { toDate } from '../../util/DensityUtils';
 import BaseComponent from '../../base/BaseComponent'
-import Sound from "react-native-sound";
-import {Content,Accordion,} from "native-base";
-import AsyncStorage from '@react-native-community/async-storage';
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
@@ -43,9 +30,6 @@ export default class ScanResult extends BaseComponent {
             repairId:props.navigation.state.params.repairId,
             equipmentId : equipmentId
         }
-    }
-    componentWillUnmount(){
-        // this.loadDetail();
     }
     componentDidMount() {
         this.loadDetail();
@@ -69,7 +53,7 @@ export default class ScanResult extends BaseComponent {
                     detaiData:result.data,
                 });
             } else {
-    
+
             }
         });            
     }
@@ -123,7 +107,8 @@ export default class ScanResult extends BaseComponent {
         var model = null;
         var brandImg = null;
         var ratedCapacity = null;
-        if (detaiData) {
+        var vardetailAddress = null;
+        if (detaiData && !Array.isArray(detaiData)) {
               vardetailAddress = detaiData.detailAddress;
               brand = detaiData.brand;
               equipmentId = detaiData.equipmentId;
@@ -254,6 +239,6 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
     },
     line:{
-        backgroundColor:'#eeeeee',height:1,marginTop:5,width:(Dimens.screen_width),marginTop:0,marginLeft:20,
+        backgroundColor:'#eeeeee',height:1,marginTop:5,width:(Dimens.screen_width),marginLeft:20,
     },
 });

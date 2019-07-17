@@ -3,25 +3,17 @@ import React, { Component } from 'react';
 import {
     View,
     Text,
-    BackAndroid,
     TouchableOpacity,
     Image,
-    StyleSheet,
-    InteractionManager,
-    TextInput,
-    Platform,
-    Modal,
-    Alert,
-    ScrollView, DeviceEventEmitter, BackHandler, TouchableHighlight
+    TouchableHighlight
 } from 'react-native';
 
-import Request, {ScanMsg,ScanDetails} from '../../http/Request';
+import Request, {ScanMsg} from '../../http/Request';
 import BaseComponent from '../../base/BaseComponent'
-import { Container, Header, Content, Tab, Tabs , TabHeading  } from 'native-base';
+import { Container, Tab, Tabs   } from 'native-base';
 import TodayTask from './TodayTask';
 import ScanResult from '../repair/ScanResult'
 import WorkPage from '../work/WorkPage';
-import TitleBar from '../../component/TitleBar';
 import {Loading} from '../../component/Loading'
 
 export default class CheckDetail extends BaseComponent {
@@ -30,7 +22,7 @@ export default class CheckDetail extends BaseComponent {
     };
     constructor(props){
         super(props);
-        const { navigation } = this.props;
+        // const { navigation } = this.props;
         // const isScan = navigation.getParam('isScan', '');
         // const scanId = navigation.getParam('scanId', '');
         // const equipmentId = navigation.getParam('equipmentId', '');
@@ -53,9 +45,9 @@ export default class CheckDetail extends BaseComponent {
         setTimeout(
             () => { 
              this.loadDetail()
-            }, 500)
-        
-       
+            }, 200)
+
+
     }
     loadDetail(type){
         const { navigation } = this.props;
@@ -147,7 +139,7 @@ export default class CheckDetail extends BaseComponent {
                     </Tab>
                     {
                         detailShow ? <Tab heading={'详情'} tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
-                                    <ScanResult equipmentId={this.state.equipmentId} navigation = {this.props.navigation}/> 
+                                    <ScanResult equipmentId={this.state.equipmentId} navigation = {this.props.navigation}/>
                                     </Tab>: null
                     }
                 </Tabs>
