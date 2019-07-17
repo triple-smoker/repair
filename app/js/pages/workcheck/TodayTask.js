@@ -538,10 +538,10 @@ class CheckItem extends Component {
                         {processType!=="2" &&
                         <Text style={{fontSize:13, color:'#999', marginLeft:0, marginRight:0,textAlign:'right',}}>{processTypeText}剩{timeLengthHours}时{timeLengthMinutes}分</Text>
                         }
-                        <Text style={{fontSize:12,borderWidth:1,borderColor:"#6DC5C9",width:36,height:16,textAlign:"center",color:"#6DC5C9",
-                            borderBottomRightRadius: 2,borderBottomLeftRadius: 2,borderTopLeftRadius: 2,borderTopRightRadius: 2,marginTop:2}}
-                        >+关注
-                        </Text>
+                        {/*<Text style={{fontSize:12,borderWidth:1,borderColor:"#6DC5C9",width:36,height:16,textAlign:"center",color:"#6DC5C9",*/}
+                            {/*borderBottomRightRadius: 2,borderBottomLeftRadius: 2,borderTopLeftRadius: 2,borderTopRightRadius: 2,marginTop:2}}*/}
+                        {/*>+关注*/}
+                        {/*</Text>*/}
                     </View>
                 }
                 {cachedResults.tabIndex === 1 &&
