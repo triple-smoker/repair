@@ -8,9 +8,7 @@ import {
     InteractionManager,
     TouchableOpacity,
     ScrollView,
-    Modal, Linking,
-    Alert,
-    NativeModules
+    Modal,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -19,14 +17,13 @@ import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
 import Request, {AuthToken, GetRepairType, ScanMsg} from '../../http/Request';
 import Permissions from 'react-native-permissions';
-import OrderType from "../../../pages/publicTool/OrderType";
-import RNFetchBlob from '../../../util/RNFetchBlob';
 
 import NfcManager, {Ndef} from 'react-native-nfc-manager';
 import {FLAG_TAB} from "../entry/MainPage";
 import SQLite from "../../polling/SQLite";
 import Axios from "../../../util/Axios";
 import { toastShort } from '../../util/ToastUtil';
+import {Loading} from "../../component/Loading";
 
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
@@ -48,79 +45,10 @@ export default class HomePage extends Component {
             customThemeVisible:false,
             theme:this.props.theme,
             modalVisible:false,
+            tag:null,
             // typeVisible:false,
         }
     }
-    //删除
-    _deleteData(){
-        // console.log('删除')
-        //
-        // //删除一条数据
-        // AsyncStorage.removeItem('token', function (error) {
-        //     if (error) {
-        //         alert('删除失败')
-        //     }else {
-        //         alert('删除完成')
-        //     }
-        // })
-        //
-        // //删除一条数据
-        // AsyncStorage.removeItem('fileVideoCache', function (error) {
-        //     if (error) {
-        //         // alert('删除失败')
-        //     }else {
-        //         // alert('删除完成')
-        //     }
-        // })
-        //
-        // RNFetchBlob.clearCache();
-    }
-    //
-    //
-    // loadUserInfo() {
-    //     console.log('loadUserInfo');
-    //     var that = this;
-    //     AsyncStorage.getItem('token', function (error, result) {
-    //         if (error) {
-    //             console.log('读取失败')
-    //         } else {
-    //            if (result && result.length) {
-    //                 global.access_token = result;
-    //                 console.log('access_token: result = ' + result);
-    //            } else {
-    //             const {navigation} = that.props;
-    //             InteractionManager.runAfterInteractions(() => {
-    //                 console.log('HP : loadUserInfo');
-    //                 navigation.navigate('Login',{theme:that.theme})
-    //
-    //                 });
-    //            }
-    //         }
-    //     });
-    //
-    //     AsyncStorage.getItem('uinfo', function (error, result) {
-    //         // console.log('uinfo: result = ' + result + ', error = ' + error);
-    //         if (error) {
-    //             console.log('读取失败')
-    //         } else {
-    //            if (result && result.length) {
-    //
-    //                 global.uinfo = JSON.parse(result);
-    //                 // console.log('global.uinfo.deptId: ' + result)
-    //            //     userId deptId单独存储
-    //                global.userId=global.uinfo.userId;
-    //                global.deptId=global.uinfo.deptAddresses[0].deptId;
-    //                var permissions = global.uinfo.permissions.indexOf("biz_repair_mgr")===-1? false:true;
-    //                global.permissions = permissions;
-    //            }
-    //
-    //         }
-    //     });
-    // }
-
-    // onAction(action, params) {
-    //     console.log('onAction : ' + action);
-    // }
     componentDidMount() {
         this.eventListener = DeviceEventEmitter.addListener('Event_Home', (param) => {
             console.log('componentDidMount Home : ' + param);
@@ -198,48 +126,6 @@ export default class HomePage extends Component {
         }
     }
 
-    // loadRepairTypes() {
-    //     var that = this;
-    //     Request.requestGet(GetRepairType, null, (result)=> {
-    //         if (result && result.code === 200) {
-    //             console.log('loadRepairTypes : ' + result)
-    //         } else if (result && result.code === 401) {
-    //             global.access_token = '';
-    //             AsyncStorage.setItem('token', '', function (error) {
-    //                 if (error) {
-    //                     console.log('error: save error');
-    //                 } else {
-    //
-    //                 }
-    //             });
-    //             global.uinfo = null;
-    //             AsyncStorage.setItem('uinfo', null, function (error) {
-    //                 if (error) {
-    //                     console.log('error: save error');
-    //                 } else {
-    //
-    //                 }
-    //             });
-    //             that.login();
-    //         }
-    //   });
-    // }
-    //
-    // login() {
-    //     // const {navigator} = this.props;
-    //     const {navigation} = this.props;
-    //     InteractionManager.runAfterInteractions(() => {
-    //         console.log('hp : login')
-    //             // navigator.push({
-    //             //     component: Login,
-    //             //     name: 'Login',
-    //             //     params:{
-    //             //         theme:this.theme
-    //             //     }
-    //             // });
-    //             navigation.navigate('Login', {theme:this.theme})
-    //         });
-    // }
 
     repair() {
         const { navigate } = this.props.navigation;
@@ -279,68 +165,62 @@ export default class HomePage extends Component {
     }
 
     //报修导航
-    newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn){
-        // this.setState({typeVisible: !this.state.typeVisible});
+    newRepair(){
         const { navigate } = this.props.navigation;
         navigate('Repair',{
-            // repairTypeId:repairTypeId,
-            // repairMatterId:repairMatterId,
-            // repairParentCn:repairParentCn,
-            // repairChildCn:repairChildCn,
             callback: (
                 () => {
 
                 })
         })
     }
-    // _setTypeVisible() {
-    //     this.setState({typeVisible: !this.state.typeVisible});
-    // }
-
-    // _parseText = (tag) => {
-    //     try {
-    //         if (Ndef.isType(tag.ndefMessage[0], Ndef.TNF_WELL_KNOWN, Ndef.RTD_TEXT)) {
-    //             return Ndef.text.decodePayload(tag.ndefMessage[0].payload);
-    //         }
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    //     return null;
-    // }
 
     _onTagDiscovered = tag => {
         console.log('Tag Discovered', tag);
-        this.setState({ tag });
-        //
-        // let text = this._parseText(tag);
-        // this.setState({parsedText: text});
+        this.setState({ tag:tag });
+        // const {navigation} = this.props;
+        // navigation.navigate('WorkManager',{
+        //     theme:this.theme,
+        //     scanId : tag.id,
+        //     // equipmentId : result.data.equipmentId,
+        //     // equipmentName: result.data.equipmentName,
+        //     isScan : true,
+        //     callback: (
+        //         () => {
+        //             this.setHome();
+        //         })
+        // })
+        // alert(tag.id);
+        this.showModel();
 
-        // Alert.alert(tag.id);
-        // console.log(tag.id)
-        const {navigation} = this.props;
-
-                navigation.navigate('WorkManager',{
-                    theme:this.theme,
-                    scanId : tag.id,
-                    // equipmentId : result.data.equipmentId,
-                    // equipmentName: result.data.equipmentName,
-                    isScan : true,
-                    callback: (
-                        () => {
-                            this.setHome();
-                        })
-                })    
-           
-        // Request.requestGet(ScanMsg + tag.id,null,(result) => {
-        //     if(result && result.code === 200){
-                
-        //         InteractionManager.runAfterInteractions(() => {
-                    
-                    
-        //         });
-        //     }
-        // }) 
     }
+    _onTagToEquiment(){
+        const {navigation} = this.props;
+        navigation.navigate('WorkManager',{
+            theme:this.theme,
+            scanId : this.state.tag.id,
+            isScan : true,
+            callback: (
+                () => {
+                    this.setHome();
+                })
+        })
+    }
+    _onTagToRepair(){
+        Loading.show()
+        Request.requestGet(ScanMsg + this.state.tag.id,null,(result) => {
+            Loading.hidden()
+            let { navigate } = this.props.navigation;
+            navigate('Repair',{
+                isScan : true,
+                equipmentId : result.data.equipmentId,
+                equipmentName: result.data.equipmentName,
+            })
+        })
+
+    }
+
+
     setHome(){
         DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
         this.setState({
@@ -368,30 +248,28 @@ export default class HomePage extends Component {
             })
     }
     _test(){
-        //1113722002746687489
-        //rfid_cod : 040A8A3A325E81 04C88A3A325E80
-        //qr_code : bf27a82f-85b2-4000-8dac-bec8257c6d3a
-        var rfid = '04C88A3A325E80';
-        var qrCode = 'bf27a82f-85b2-4000-8dac-bec8257c6d3a'
-        const {navigation} = this.props;
+        // this.showModel();
+        // var rfid = '04C88A3A325E80';
+        // var qrCode = 'bf27a82f-85b2-4000-8dac-bec8257c6d3a'
+        // const {navigation} = this.props;
+        //
+        // Request.requestGet(ScanMsg+qrCode,null,(result) => {
+        //     if(result && result.code === 200){
+        //
+        //         InteractionManager.runAfterInteractions(() => {
+        //             navigation.navigate('WorkManager',{
+        //                 theme:this.theme,
+        //                 scanId : rfid,
+        //                 isScan : true,
+        //                 callback: (
+        //                     () => {
+        //                         this.setHome();
+        //                     })
+        //             })
+        //         });
+        //     }
+        // })
 
-        Request.requestGet(ScanMsg+qrCode,null,(result) => {
-            if(result && result.code === 200){
-
-                InteractionManager.runAfterInteractions(() => {
-                    navigation.navigate('WorkManager',{
-                        theme:this.theme,
-                        scanId : rfid,
-                        isScan : true,
-                        callback: (
-                            () => {
-                                this.setHome();
-                            })
-                    })
-                });
-            }
-        })
-        
     }
     _sqlite(){
         const {navigation} = this.props;
@@ -456,7 +334,7 @@ export default class HomePage extends Component {
                 <TouchableOpacity  onPress={()=>this.scan()}>
                 <Image source={require('../../../res/login/menu_ljbx_01.jpeg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,}}/>
                 </TouchableOpacity>
-                <TouchableOpacity  onPress={()=>this.showModel()}>
+                <TouchableOpacity>
                     <Image source={require('../../../res/login/menu_ljdc_01.jpeg')} style={{width:172,height:87,borderBottomRightRadius: 10,borderBottomLeftRadius: 10,borderTopLeftRadius: 10,borderTopRightRadius: 10,marginTop:10,}}/>
                 </TouchableOpacity>
             </View>
@@ -477,7 +355,6 @@ export default class HomePage extends Component {
                 <Image source={require('../../../res/login/ico_pj.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
                 <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>报修单</Text>
                 </TouchableOpacity>
-                {/*<OrderType goToRepair={(repairTypeId,repairMatterId,repairParentCn,repairChildCn)=>this.newRepair(repairTypeId,repairMatterId,repairParentCn,repairChildCn)} isShowModal={()=>this._setTypeVisible()} modalVisible = {this.state.typeVisible}/>*/}
             </View>
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
                 <TouchableOpacity onPress={()=>this.takePicture()}>
@@ -487,7 +364,7 @@ export default class HomePage extends Component {
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                <TouchableOpacity onPress={()=>this._deleteData()} >
+                <TouchableOpacity>
                 <Image source={require('../../../res/login/ico_dc.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
                 <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>送餐</Text>
                 </TouchableOpacity>
@@ -516,7 +393,7 @@ export default class HomePage extends Component {
             </View>
 
             <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
-                <TouchableOpacity onPress={()=>this._test()} >
+                <TouchableOpacity onPress={()=>this._test()}>
                 <Image source={require('../../../res/login/ico_more.png')} style={{width:45,height:45,marginLeft:0, marginRight:0,}}/>
                 <Text style={{fontSize:12,color:'#333',marginLeft:0,marginTop:5,textAlign:'center',}}>更多</Text>
                 </TouchableOpacity>
@@ -530,22 +407,21 @@ export default class HomePage extends Component {
             animationType={"none"}
             transparent={true}
             visible={this.state.modalVisible}
-            onRequestClose={() => {}}
+            onRequestClose={() => {this.hideModel()}}
         >
 
         <View style={styles.modelStyle}>
-            <View style={[styles.gridStyle, {marginTop:74,}]}>
-                <Text style={{fontSize:15,color:'#333',marginLeft:0,marginTop:10,textAlign:'center',width:Dimens.screen_width-84}}>选择报修类别</Text>
-
+            <TouchableOpacity onPress={()=>this.hideModel()} style={{width:Dimens.screen_width,height:"50%"}}>
+            </TouchableOpacity>
+            <View style={styles.gridStyle}>
+                <TouchableOpacity onPress={()=>{this._onTagToRepair(),this.hideModel()}}>
+                    <Text style={{fontSize:20,fontWeight:"bold",color:'#333',height:50,borderBottomWidth:1,borderBottomColor:"#61C0C5",textAlign:'center',textAlignVertical:"center",width:Dimens.screen_width}}>NFC设备报修</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{this._onTagToEquiment(),this.hideModel()}}>
+                    <Text style={{fontSize:20,fontWeight:"bold",color:'#333',height:50,borderTopWidth:1,borderTopColor:"#61C0C5",textAlign:'center',textAlignVertical:"center",width:Dimens.screen_width}}>NFC设备查看</Text>
+                </TouchableOpacity>
             </View>
-
-            <View style={[styles.gridStyle, {marginTop:15,}]}>
-                <Text style={{fontSize:15,color:'#333',marginLeft:0,marginTop:10,textAlign:'center',width:Dimens.screen_width-84}}>快修入口</Text>
-
-
-            </View>
-            <TouchableOpacity onPress={()=>this.hideModel()} style={{width:Dimens.screen_width,height:28,marginTop:15,alignItems:'center',justifyContent:'center',textAlignVertical:'center',}}>
-                <Image source={require('../../../res/repair/mesbox_close.png')} style={{width:28,height:28,}}/>
+            <TouchableOpacity onPress={()=>this.hideModel()} style={{width:Dimens.screen_width,height:"50%"}}>
             </TouchableOpacity>
         </View>
         </Modal>
@@ -561,7 +437,7 @@ export default class HomePage extends Component {
     }
 
     showModel() {
-        //this.setState({modalVisible:true});
+        this.setState({modalVisible:true});
     }
 }
 
@@ -572,17 +448,14 @@ const styles = StyleSheet.create({
         flex: 1,
         width:Dimens.screen_width,
         height:Dimens.screen_height,
-        backgroundColor: 'rgba(0,0,0,0.6)',
+        backgroundColor: 'rgba(0,0,0,0.1)',
+        justifyContent:"center",
+        alignItems:"center",
     },
     gridStyle:{
-        marginLeft:42,
-        width:Dimens.screen_width-84,
-        height:230,
-        borderBottomRightRadius: 15,
-        borderBottomLeftRadius: 15,
-        borderTopLeftRadius: 15,
-        borderTopRightRadius:15,
-        backgroundColor: 'white',
+        width:Dimens.screen_width,
+        height:100,
+        backgroundColor: 'rgba(255,255,255,0.9)',
     },
     container: {
         flex: 1,

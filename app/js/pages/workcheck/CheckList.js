@@ -524,7 +524,7 @@ class CheckItem extends Component {
 
                             <View style={{flex:1, justifyContent:'center', flexDirection:'column',alignItems:"center"}}>
                                 {processType === "0" && this.state.percent <1 &&
-                                    <Text style={{fontSize:16, color:'#FE8900', marginLeft:0, marginRight:12,}}>待开始</Text>
+                                    <Text style={{fontSize:16, color:'#61C0C5', marginLeft:0, marginRight:12,}}>待处理</Text>
                                 }
                                 {processType === "1" && this.state.percent < 1 &&
                                     <Text style={{fontSize:16, color:'#61C0C5', marginLeft:0, marginRight:12,}}>进行中</Text>
