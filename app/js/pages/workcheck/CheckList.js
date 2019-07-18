@@ -127,11 +127,10 @@ export default class CheckList extends BaseComponent {
       console.log(equipment_name);
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('WorkManager',{
+            navigation.navigate('EquipmentDetail',{
                 theme:this.theme,
                 equipmentId:equipment_id,
                 equipmentName:equipment_name,
-                isScan:true,
             });
         });
     }
@@ -378,6 +377,7 @@ export default class CheckList extends BaseComponent {
               <Text style={{color: '#555', fontSize: 18, marginLeft: 5, flex: 1}}>保养</Text>
               }
           </View>
+          <View style={{width:19}}/>
           <TouchableOpacity onPress={()=>this.captrue()}>
               <Image style={{width:16,height:20,marginLeft:5,marginRight:10}} source={require('../../../res/repair/navbar_ico_sys.png')} />
           </TouchableOpacity>

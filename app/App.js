@@ -28,6 +28,8 @@ import WorkManager from './js/pages/workcheck/WorkManager';
 import store from './util/RouterStore.js'
 import SQLiteDemo from "./js/polling/SQLiteDemo";
 import Scan from './js/pages/scan/Scan';
+import EquipmentDetail from './js/pages/workcheck/EquipmentDetail';
+
 
 import WelcomePage from './js/pages/entry/WelcomePage'
 
@@ -45,6 +47,7 @@ const AppStack = createStackNavigator({
         CheckList : CheckList,
         CheckDetail : CheckDetail,
         SQLiteDemo : SQLiteDemo,
+        EquipmentDetail : EquipmentDetail,
         Scan : Scan,
         ...store
     },
