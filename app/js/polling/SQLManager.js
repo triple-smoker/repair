@@ -1,5 +1,61 @@
 import React, { Component } from 'react';
 
+const daily_task = {
+    ID:null,
+    CODE:null,
+    JOB_CODE:null,
+    JOB_EXEC_CODE:null,
+    EXEC_CODE_TYPE:null,
+    EXEC_START_TIME:null,
+    EXEC_END_TIME:null,
+    JOB_EXEC_TEAM_ID:null
+}
+const inspect_job = {
+    ID:null,
+    JOB_NAME:null,
+    STATUS_CD:null
+}
+const inspect_item_conf = {
+    ID:null,
+    ITEM_NAME:null,
+    ITEM_FORMAT:null,
+    ITEM_RESULT_SET:null,
+    ITEM_CODE:null,
+    STATUS_CD:null
+}
+const inspect_job_manager = {
+    ID:null,
+    JOB_NAME:null,
+    MAN_CODE:null,
+    STATUS_CD:null
+}
+const man_ref_item = {
+    ID:null,
+    TABLE_TYPE:null,
+    MAN_CODE:null,
+    ITEM_CODE:null,
+    STATUS_CD:null
+}
+const t_base_equipment = {
+    equipment_id:null,
+    install_location:null,
+    equipment_name:null,
+    equipment_type_id:null
+}
+const t_base_place = {
+    ID:null,
+    PLACE_FLAG:null,
+    PLACE_NAME:null,
+    PLACE_ID:null,
+    PLACE_TYPE_ID:null,
+    PLACE_TYPE_NAME:null,
+    STATUS_CD:null
+}
+
+
+
+
+
 
 
 class SQLManager extends Component {
