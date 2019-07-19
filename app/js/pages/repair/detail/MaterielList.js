@@ -543,14 +543,15 @@ renderTabItem(data, i) {
             animationType={"none"}
             transparent={true}
             visible={this.state.modalVisible}
-            onRequestClose={() => {}}
+            onRequestClose={()=>{this.onShowList()}}
         >
 
         <View style={styles.modelStyle}>
+					<TouchableOpacity style={{flex:1,width:"100%",backgroundColor:'rgba(0,0,0,0)'}} onPress={()=>{this.onShowList()}}/>
                     <View style={styles.topStyle}>
                         <Text style={{color:'#9b9b9b', marginLeft:10, flex:1}}>已选物料</Text>
                         <TouchableOpacity onPress={()=>this._clear()}  style={{flexDirection:'row', }}>
-                        <Image source={require('../../../../res/repair/ico_yb_xq.png')} style={{width:17,height:17,marginTop:5,}}/>
+                        <Image source={require('../../../../res/repair/ico_yb_xq.png')} style={{width:17,height:17,}}/>
                         <Text style={{color:'#9b9b9b', marginLeft:5, marginRight:10, }}>清空</Text>
                         </TouchableOpacity>
                     </View>
@@ -672,11 +673,11 @@ const styles = StyleSheet.create({
   },
  modelStyle:{
     width:Dimens.screen_width,
-    height:384,
+    height:Dimens.screen_height,
     color:'rgba(0, 0, 0, 0.6)',
     fontSize:18,
     textAlign:'center',
-    backgroundColor: '#5ec4c8',
+    backgroundColor: 'rgba(0,0,0,0)',
     alignItems:'center',
     justifyContent:'center',
     textAlignVertical:'center',

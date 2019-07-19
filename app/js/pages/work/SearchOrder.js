@@ -501,7 +501,7 @@ export default class SearchOrder extends BaseComponent {
               <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:15, marginRight:15, backgroundColor:'#eeeeee'}}/>
               <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center',}} >
               <TouchableOpacity onPress={()=>{this._setModalPictureVisible(data)}} >
-                  <View style={{marginLeft:15, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:70,}} >
+                  <View style={{marginLeft:15,paddingTop:3, justifyContent:'center', textAlignVertical:'center', alignItems:'center',width:70,}} >
                     {uriImg}
                     {statusDesc}
                   </View>

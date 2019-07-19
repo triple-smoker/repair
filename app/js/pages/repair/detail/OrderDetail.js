@@ -680,7 +680,7 @@ export default class OrderDetail extends BaseComponent {
                                 <View style={{height:1, width:Dimens.screen_width-30, marginTop:5, marginLeft:10, marginRight:10, backgroundColor:'#eeeeee'}}/>
                                 <View style={{marginLeft:0, marginTop:10, justifyContent:'center', textAlignVertical:'center', flexDirection:'row',}} >
                                     <TouchableOpacity onPress={()=>{this._setModalPictureVisible()}} >
-                                        <View style={{marginLeft:15, textAlignVertical:'center', alignItems:'center',width:70,marginTop:4}} >
+                                        <View style={{marginLeft:15,paddingTop:3, textAlignVertical:'center', alignItems:'center',width:70,marginTop:4}} >
                                             {uriImg}
                                         </View>
                                     </TouchableOpacity>
