@@ -387,7 +387,13 @@ export default class TodayTask extends BaseComponent {
     return (
       <View style={styles.container}>
           {sechBar}
-      <Text style={{backgroundColor:'#f6f6f6', color:'#999',fontSize:12,height:40, textAlignVertical:'center', textAlign:'center'}}>——  共 {cachedResults.items.length} 条巡检工单  ——</Text>
+      <Text style={{backgroundColor:'#f6f6f6', color:'#999',fontSize:12,height:40, textAlignVertical:'center', textAlign:'center'}}>
+          {this.state.checkType===1 &&
+              "——  共 "+cachedResults.items.length+" 条巡检工单  ——"}
+          {this.state.checkType===2 &&
+              "——  共 "+cachedResults.items.length+" 条保养工单  ——"}
+
+      </Text>
       <RefreshListView
           style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44*2-49}}
           onEndReachedThreshold={10}

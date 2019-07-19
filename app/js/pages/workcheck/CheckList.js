@@ -366,9 +366,9 @@ export default class CheckList extends BaseComponent {
     return (
       <View style={styles.container}>
       <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginBottom:5}}>
-          <TouchableHighlight style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
+          <TouchableOpacity style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
               <Image style={{width:21,height:37}} source={require("../../../image/navbar_ico_back.png")}/>
-          </TouchableHighlight>
+          </TouchableOpacity>
           <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
               {this.state.checkType === 1 &&
               <Text style={{color: '#555', fontSize: 18, marginLeft: 5, flex: 1}}>巡检</Text>

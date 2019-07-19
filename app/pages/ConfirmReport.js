@@ -213,7 +213,7 @@ class ConfirmReport extends Component {
                 }
             } , 1500);
 
-        setTimeout(
+        this.timeout = setTimeout(
             ()=>
             {
                 if(this.state.images.length !== this.state.imagesRequest.length + this.state.videosRequest.length){
@@ -222,8 +222,10 @@ class ConfirmReport extends Component {
                     clearInterval(this.timer)
 
                 }
-            }, 60*1000
+            }, 61*1000
         )
+
+
 
     }
 
@@ -237,6 +239,7 @@ class ConfirmReport extends Component {
     submit(){
 
         clearInterval(this.timer);
+        clearTimeout(this.timeout);
 
         let repRepairInfo = {
             repairTypeId : this.state.repairTypeId,

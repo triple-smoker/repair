@@ -181,11 +181,11 @@ class Adds extends Component {//报修单共用组件
                             }
 
                             {(this.props.record.repairUserMobile != '' && this.props.record.repairUserMobile!=null) &&
-                                <TouchableHighlight
-                                    style={{width:20,height:20,backgroundColor:'#fff',marginLeft:10}}
+                                <TouchableOpacity
+                                    style={{flex:1,height:20,backgroundColor:'#fff',marginLeft:10}}
                                     onPress={() => Linking.openURL(`tel:${this.props.record.repairUserMobile}`)}>
                                     <Image style={{width:20,height:20}} source={require("../../image/list_call.png")}/>
-                                </TouchableHighlight>
+                                </TouchableOpacity>
                             }
                             </Row>
                         </Col>
@@ -194,29 +194,16 @@ class Adds extends Component {//报修单共用组件
                     <Content>
                         <Row style={{justifyContent:'flex-end',paddingBottom:1,paddingTop:10}}>
                             {this.props.type!='4' &&(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
-                                <Button
-                                bordered
-                                style={{borderColor:'#fcb155',height:30,width:60,marginRight:10,justifyContent:'center',alignItems:'center'}}
-                                onPress= {()=>this.props.ShowModal(this.props.record.repairId)}
-                                >
-                                  <Text style={{color:'#fcb155',fontSize:12}}>催单</Text>
-                                </Button>
+                            <Text onPress={()=>this.props.ShowModal(this.props.record.repairId)}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                                borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>催单</Text>
                             }
                             {this.props.type!='4' &&(this.props.type===1 || this.props.record.status==='0' || this.props.record.status==='1' || this.props.record.status==='2' || this.props.record.status==='3' || this.props.record.status==='5' || this.props.record.status==='6' || this.props.record.status==='7' || this.props.record.status==='12' || this.props.record.status==='13' )&&
-                                <Button bordered
-                                    onPress= {()=>this._setCancelVisible()}
-                                    style={{borderColor:'#ededed',height:30,width:60,marginRight:10,justifyContent:'center',alignItems:'center'}}>
-                                  <Text style={{color:'#6b6b6b',fontSize:12}}>取消</Text>
-                                </Button>
+                            <Text onPress={()=>this._setCancelVisible()} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                                borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>取消</Text>
                             }
                             {this.props.type!='4' &&(this.props.type===2 || this.props.record.status==='8' )&&
-                                <Button
-                                bordered
-                                onPress={() => this.props.getEvaluate()}
-                                style={{borderColor:'#fcb155',height:30,width:60,marginRight:10,justifyContent:'center',alignItems:'center'}}
-                                >
-                                  <Text style={{color:'#fcb155',fontSize:12}}>评价</Text>
-                                </Button>
+                            <Text onPress={() => this.props.getEvaluate()}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                                borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>评价</Text>
                             }
                         </Row>
                         <Modal

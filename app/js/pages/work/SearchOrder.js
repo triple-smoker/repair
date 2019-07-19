@@ -16,7 +16,7 @@ import {
     Modal,
     DeviceEventEmitter,
     Linking, Dimensions,
-    ActivityIndicator
+    ActivityIndicator, TouchableHighlight
 } from 'react-native';
 
 
@@ -379,75 +379,75 @@ export default class SearchOrder extends BaseComponent {
     }
     if (data.status === '1') {
 
-        buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}><Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+        buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}><Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', textAlignVertical:"center",paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
         if (this.state.tabIndex === 0) {
                     buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text>
-                    <Text onPress={()=>this.arrangeWork(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.arrangeWork(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', textAlignVertical:"center",paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>派工</Text></View>
         }
 
     } else if (data.status === '2') {
-      buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}><Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+      buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}><Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
     } else if (data.status === '3') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text onPress={()=>this.gotoDetail(data)}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.gotoDetail(data)}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', textAlignVertical:"center",paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>拍照开始维修</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
     } else if (data.status === '4') {
 
     } else if (data.status === '5') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text onPress={()=>this.finishOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.finishOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>完工</Text>
-                    <Text onPress={()=>this.pauseOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.pauseOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>暂停</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
     } else if (data.status === '6') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text onPress={()=>this.resetOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.resetOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>恢复</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
     } else if (data.status === '7') {
 
       buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                    <Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
-                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                    <Text onPress={()=>this.transferOrder(data)} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text></View>
     } else if (data.status === '13' && global.permissions==="1") {
 
         buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-            <Text onPress={()=>this.onPressItem(data,(page)=>this._fetchData(page))} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+            <Text onPress={()=>this.onPressItem(data,(page)=>this._fetchData(page))} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                 borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>完工</Text>
         </View>
     } else if (data.status === '20') {
         if(global.permissions==="1"){
             buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>接单</Text>
-                <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                <Text onPress={()=>this.transferOrder(data,0,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>转单</Text>
-                <Text onPress={()=>this.arrangeWork(data,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                <Text onPress={()=>this.arrangeWork(data,(num)=>this._fetchData(num))} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>派工</Text></View>
         }else{
             buttons = <View style={{height:30, width:Dimens.screen_width, marginTop:10, backgroundColor:'white', flexDirection:'row',justifyContent:'flex-end',}}>
-                <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center', paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                <Text onPress={()=>this.pullOrder(data)} style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                     borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>抢单</Text></View>
         }
 
@@ -533,7 +533,7 @@ export default class SearchOrder extends BaseComponent {
                     <View style={{marginLeft:0, marginTop:3, flexDirection:'row',}} >
                         <Text style={{fontSize:13,color:'#999',marginLeft:0,marginTop:0,}}>报修人员：</Text>
                         <Text style={{fontSize:13,color:'#333',marginLeft:5,marginTop:0,}}>{data.ownerName}</Text>
-                        <TouchableOpacity onPress={()=>{that.callPhone(data.telNo)}} style={{marginLeft:10}}>
+                        <TouchableOpacity onPress={()=>{that.callPhone(data.telNo)}} style={{marginLeft:30}}>
                             <Image source={require('../../../res/repair/list_call.png')} style={{width:20,height:20,}}/>
                         </TouchableOpacity>
                     </View>
@@ -742,13 +742,8 @@ export default class SearchOrder extends BaseComponent {
       <View style={styles.container}>
 
         <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
-          <TouchableOpacity onPress={ ()=> {this.onBack()} }>
-                <View style={{alignItems: 'center', width: 30,}}>
-                    <Image
-                        style={styles.rightImage}
-                        source={require('../../../res/login/navbar_ico_back.png')}/>
-
-                </View>
+            <TouchableOpacity style={{width:40,height:44,justifyContent:"center",alignItems:"center"}} onPress={()=>this.onBack()}>
+                <Image style={{width:21,height:37}} source={require("../../../image/navbar_ico_back.png")}/>
             </TouchableOpacity>
           <TouchableOpacity onPress={()=>this.search()} style={{flex:1,height:30, marginLeft:10, marginRight:0,}}>
             <View style={{flex:1, height:30,backgroundColor:'#f0f0f0',justifyContent:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:10,
@@ -844,16 +839,23 @@ export default class SearchOrder extends BaseComponent {
         >
 
         <View style={styles.modelStyle}>
-            <View style={[styles.popupStyle1, {marginTop:(Dimens.screen_height-170)/2,backgroundColor:'#fbfbfb',}]}>
+            <TouchableOpacity onPress={()=>this.onChangeType(0)} style={{height:"35%",width:ScreenWidth}}/>
+            <View style={[styles.popupStyle1, {backgroundColor:'#fbfbfb',}]}>
                 <Text style={{fontSize:16,color:'#333',marginLeft:0,marginTop:10,textAlign:'center',width:Dimens.screen_width-80, height:40}}>请选择搜索条件</Text>
                 <View style={{backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-80),}} />
-                <Text onPress={()=>this.onChangeType(0)} style={{alignItems:'center',justifyContent:'center',textAlignVertical:'center',fontSize:14,color:'#333',marginLeft:0,textAlign:'center',marginTop:0,width:Dimens.screen_width-80, height:40}}>报修人姓名</Text>
+                <TouchableOpacity onPress={()=>this.onChangeType(0)} >
+                    <Text style={{alignItems:'center',justifyContent:'center',textAlignVertical:'center',fontSize:14,color:'#333',marginLeft:0,textAlign:'center',marginTop:0,width:Dimens.screen_width-80, height:40}}>报修人姓名</Text>
+                </TouchableOpacity>
                 <View style={{backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-80),}} />
-                <Text onPress={()=>this.onChangeType(1)} style={{alignItems:'center',justifyContent:'center',textAlignVertical:'center',fontSize:14,color:'#333',marginLeft:0,textAlign:'center',marginTop:0,width:Dimens.screen_width-80, height:40}}>维修人姓名</Text>
+                <TouchableOpacity onPress={()=>this.onChangeType(1)} >
+                    <Text style={{alignItems:'center',justifyContent:'center',textAlignVertical:'center',fontSize:14,color:'#333',marginLeft:0,textAlign:'center',marginTop:0,width:Dimens.screen_width-80, height:40}}>维修人姓名</Text>
+                </TouchableOpacity>
                 <View style={{backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-80),}} />
-                <Text onPress={()=>this.onChangeType(2)} style={{alignItems:'center',justifyContent:'center',textAlignVertical:'center',fontSize:14,color:'#333',marginLeft:0,textAlign:'center',marginTop:0,width:Dimens.screen_width-80, height:40}}>报修内容</Text>
-
+                <TouchableOpacity onPress={()=>this.onChangeType(2)} >
+                    <Text style={{alignItems:'center',justifyContent:'center',textAlignVertical:'center',fontSize:14,color:'#333',marginLeft:0,textAlign:'center',marginTop:0,width:Dimens.screen_width-80, height:40}}>报修内容</Text>
+                </TouchableOpacity>
             </View>
+            <TouchableOpacity onPress={()=>this.onChangeType(0)} style={{height:"65%",width:ScreenWidth}}/>
         </View>
     </Modal>
           <Modal
@@ -979,12 +981,13 @@ const styles = StyleSheet.create({
     popupStyle1:{
         marginLeft:40,
         width:Dimens.screen_width-80,
-        height:174,
         borderBottomRightRadius: 15,
         borderBottomLeftRadius: 15,
         borderTopLeftRadius: 15,
         borderTopRightRadius:15,
         backgroundColor: 'white',
+        alignItems:"center",
+        justifyContent:"center"
     },
     container: {
       flex: 1,
