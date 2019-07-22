@@ -376,10 +376,10 @@ export default class CheckList extends BaseComponent {
               <Text style={{color: '#555', fontSize: 18, marginLeft: 5, flex: 1}}>保养</Text>
               }
           </View>
-          <View style={{width:19}}/>
-          <TouchableOpacity onPress={()=>this.captrue()}>
-              <Image style={{width:16,height:20,marginLeft:5,marginRight:10}} source={require('../../../res/repair/navbar_ico_sys.png')} />
-          </TouchableOpacity>
+          <View style={{width:50}}/>
+          {/*<TouchableOpacity onPress={()=>this.captrue()}>*/}
+              {/*<Image style={{width:16,height:20,marginLeft:5,marginRight:10}} source={require('../../../res/repair/navbar_ico_sys.png')} />*/}
+          {/*</TouchableOpacity>*/}
       </View>
           <RefreshListView
               style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44*2-49}}

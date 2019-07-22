@@ -251,7 +251,7 @@ export default class WorkPage extends BaseComponent {
         }
     }
 
-    if(this.props.isScan == true){
+    if(this.props.isScan === true){
       params.set('equipmentId', this.props.equipmentId);
     }
     console.log(params);
