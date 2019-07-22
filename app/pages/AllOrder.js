@@ -10,7 +10,9 @@ import {
     Alert,
     RefreshControl,
     ScrollView,
-    ListView
+    ListView,
+    Platform,
+    BackHandler,
 } from 'react-native';
 import {  Footer,FooterTab,Item,Input,Button,Icon, Tabs, Tab , Col, Row, Container, Content, Header, Left, Body, Right, Text, List, ListItem, Thumbnail} from 'native-base';
 import Axios from '../util/Axios';
@@ -77,10 +79,29 @@ class AllOrder extends BaseComponent {
     componentDidMount() {
         cachedResults.tabIndex=0;
         this._fetchData(0);
+        //监听物理返回键
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener("back", this.onBackClicked);
+        }
     }
+    //卸载前移除物理监听
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener("back", this.onBackClicked);
+        }
+    }
+
     componentWillReceiveProps(){
         cachedResults.tabIndex=0;
         this._fetchData(0);
+    }
+
+    //BACK物理按键监听
+    onBackClicked = () => {
+        const { navigate } = this.props.navigation;
+        navigate('MainPage');
+        return true;
+
     }
     //报修单列表数据加载
     _fetchData(page) {

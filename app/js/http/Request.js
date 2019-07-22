@@ -338,8 +338,6 @@ static uploadFile(path, callback) {
         data:formData
     }).then((response)=>{
         callback(response)
-    }).then((responseText)=>{
-        callback(responseText);
     }).catch(
         error=>{
             callback(JSON.stringify(error))

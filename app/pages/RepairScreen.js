@@ -151,6 +151,27 @@ export default class RepairScreen extends React.Component {
             // that.uploadFile(param);
         });
     }
+    componentWillReceiveProps(nextProps){
+        setTimeout(
+            () => {
+                this.loadDetail()
+            }, 200)
+
+
+    }
+    loadDetail(){
+        const { navigation } = this.props;
+        let isScan = navigation.getParam('isScan', '');
+        let equipmentId = navigation.getParam('equipmentId', '');
+        let equipmentName = navigation.getParam('equipmentName', '');
+        if(isScan != null && isScan !== ''){
+            this.setState({
+                isScan : isScan,
+                equipmentId : equipmentId,
+                equipmentName : equipmentName,
+            })
+        }
+    }
     //报修类型
     _setTypeVisible() {
         this.setState({typeVisible: !this.state.typeVisible});

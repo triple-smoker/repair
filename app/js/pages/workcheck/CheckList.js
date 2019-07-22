@@ -115,8 +115,7 @@ export default class CheckList extends BaseComponent {
                           this.getNetworkData(this.state.taskId);
                           setTimeout(function(){
                               fetchData(0);
-                              console.log(">>>>>>>>>>");
-                          },200)
+                          },300)
                       })
               });
           });
@@ -160,7 +159,7 @@ export default class CheckList extends BaseComponent {
                             isUp:""}
                         dataList.push(data);
                     })
-                    console.log(">>>>>>>>>>>>>>>"+taskId);
+                    // console.log(">>>>>>>>>>>>>>>"+taskId);
                     console.log(dataList);
                     dataList.forEach((item)=>{
                         item.percentF = parseInt((sum/dataList.length)*100);
