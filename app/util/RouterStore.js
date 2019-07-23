@@ -67,5 +67,4 @@ export default {
     MyInterest : MyInterest,
     addFocus : addFocus,
     WorkManager : WorkManager,
-    findPsw: findPsw
 }

@@ -6,7 +6,7 @@ import {
     Image,
     StyleSheet,
     InteractionManager,
-    Linking
+    Linking, Platform, BackHandler
 } from 'react-native';
 
 import TitleBar from '../../component/TitleBar';
@@ -24,7 +24,25 @@ export default class findPsw extends BaseComponent {
             
         }
     }
-   
+    componentDidMount() {
+        //监听物理返回键
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener("back", this.onBackClicked);
+        }
+    }
+    //卸载前移除物理监听
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener("back", this.onBackClicked);
+        }
+    }
+    //BACK物理按键监听
+    onBackClicked = () => {
+        const { navigate } = this.props.navigation;
+        navigate('Login');
+        return true;
+    }
+
     goBack(){
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {

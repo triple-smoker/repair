@@ -32,6 +32,8 @@ import EquipmentDetail from './js/pages/workcheck/EquipmentDetail';
 
 
 import WelcomePage from './js/pages/entry/WelcomePage'
+//找回密码
+import findPsw from './js/pages/login/findPassWord'
 
 const AppStack = createStackNavigator({
         MainPage: MainPage,
@@ -61,6 +63,7 @@ const AppSwitchNavigator = createSwitchNavigator(
         Welcome: WelcomePage,
         App: AppStack,
         Auth: AuthStack,
+        findPsw: findPsw,
     },
     {
         initialRouteName: 'Welcome',
