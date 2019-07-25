@@ -46,10 +46,10 @@ export default class MyPage extends BaseComponent {
     componentWillReceiveProps(nextProps) {
         this.loadDetail();
     }
-    
+
     loadDetail() {
         var that = this;
-    
+
         AsyncStorage.getItem('uinfo',function (error, result) {
             if(error){
                 console.log(error)
@@ -58,14 +58,6 @@ export default class MyPage extends BaseComponent {
                 var userInfo =  JSON.parse(result);
                 that.setState({userData:userInfo});
                 console.log(userInfo)
-
-                Request.requestGet(GetUserAtWork + userInfo.userId,null,(result) => {
-                    if (result && result.code === 200) {
-                        that.setState({
-                            atWork:result.data
-                        })
-                    }
-                })
             }
         })
     }
@@ -86,19 +78,6 @@ export default class MyPage extends BaseComponent {
             })
         });
     }
-    gotoWorkPage(){
-        const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('WorkManager',{
-                theme:this.theme,
-                callback: (
-                    () => {
-                        this.props.setHome();
-                    })
-            })
-        });
-    }
-    /**导航栏（123。。。） */
     gotoPage(num){
         console.log('qu'+num)
         const {navigation} = this.props;
@@ -108,10 +87,10 @@ export default class MyPage extends BaseComponent {
                 page = ''
                 break;
             case 2:
-                page = ''
+                page = 'MyPerformance'
             break;
             case 3:
-                page = 'MyInterest'
+                page = ''
             break;
             case 4:
                 page = ''
@@ -132,7 +111,6 @@ export default class MyPage extends BaseComponent {
             })
         });
     }
-    /**跳到证照 */
     loogPapers(){
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
@@ -163,27 +141,27 @@ export default class MyPage extends BaseComponent {
                     lineHeight={0}
                     rightImgPress={this.gotoSet.bind(this)}
                 />
-                <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64, 
+                <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-40-64,
                     width:Dimens.screen_width,flex:1}}>
-                   <View style={styles.header}> 
+                   <View style={styles.header}>
                    </View>
                     <View style={styles.main}>
                         <View style={{flexDirection: 'row',justifyContent:'flex-start',alignItems: 'center',paddingLeft: 8,
                             paddingRight: 8,}}>
                             {headerImg ? <Image style={styles.images} source={{uri:headerImg}}/> : <Image style={styles.images} source={require('../../../res/repair/user_wx.png')}/> }
-                            
+
                             <Text style={{marginLeft:20,fontSize:15,color:'#333'}}>{userName}</Text>
                             { gender == 1 ? <Image style={{width:15,height:15,marginLeft:5}} source={require('../../../res/login/m.png')}/> : <Image style={{width:15,height:15,marginLeft:5}} source={require('../../../res/login/f.png')}/> }
-                            {this.state.atWork === true ? 
+                            {this.state.atWork === true ?
                                 <View style={{flexDirection: 'row',position:"absolute",top:-5,right:10,fontSize:14}}>
                                     <Image style={{width:20,height:20}} source={require('../../../image/clock_in_2.jpg')}/>
-                                    <Text> 已打卡</Text>    
+                                    <Text> 已打卡</Text>
                                 </View>                                :
                                 <View style={{flexDirection: 'row',position:"absolute",top:-5,right:10,fontSize:14}}>
                                     <Image style={{width:20,height:20}} source={require('../../../image/no_clock_in_2.jpg')}/>
-                                    <Text> 未打卡</Text>    
+                                    <Text> 未打卡</Text>
                                 </View>
-                                
+
                                 }
                         </View>
                         <View style={{flexDirection: 'row', justifyContent:'space-around',alignItems: 'center',paddingLeft: 8,
@@ -197,9 +175,12 @@ export default class MyPage extends BaseComponent {
                         </View>
                         <View style={{backgroundColor:'#61c0c5',paddingLeft: 8,height:35,marginTop:15,
                                 paddingRight: 8,}}>
-                            <TouchableOpacity onPress={()=>this.loogPapers()}>      
+                            <TouchableOpacity onPress={()=>this.loogPapers()}>
+                            <Text style={{lineHeight:30,color:'white'}}>证照</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={()=>this.loogPapers()}>
                             <Text style={{lineHeight:35,color:'#fff',fontWeight:'400',fontSize:14}}>证照</Text>
-                            </TouchableOpacity> 
+                            </TouchableOpacity>
                         </View>
                     </View>
                     <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:30,paddingLeft:0,paddingRight:0,}}>
@@ -208,7 +189,7 @@ export default class MyPage extends BaseComponent {
                             <Image source={require('../../../res/login/jf.png')} style={{width:39,height:39,marginLeft:0, marginRight:0,}}/>
                             </View>
                             <Text style={styles.pageTxt}>我的积分</Text>
-                            
+
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={()=>this.gotoPage(2)} style={{...styles.pageBox,borderRightWidth:1,borderBottomWidth:1}}>
@@ -216,24 +197,24 @@ export default class MyPage extends BaseComponent {
                             <Image source={require('../../../res/login/jx.png')} style={{width:34,height:34,marginLeft:0, marginRight:0,}}/>
                             </View>
                             <Text style={styles.pageTxt}>我的绩效</Text>
-                            
+
                         </TouchableOpacity>
                         <TouchableOpacity onPress={()=>this.gotoPage(3)} style={{...styles.pageBox,borderBottomWidth:1}}>
                             <View style={styles.touchSize}  >
                             <Image source={require('../../../res/login/gz.png')} style={{width:37,height:38,marginLeft:0, marginRight:0,}}/>
                             </View>
                             <Text style={styles.pageTxt}>我的关注</Text>
-                           
+
                         </TouchableOpacity>
 
-                        
+
                     </View>
 
                     <View style={{justifyContent:'center',flexDirection:'row',alignItems:'center',marginTop:0,paddingLeft:0,paddingRight:0,}}>
                         <TouchableOpacity  onPress={()=>this.gotoWorkPage()} style={{...styles.pageBox,borderRightWidth:1}}>
                             <View  style={styles.touchSize}  >
                             <Image source={require('../../../res/login/gd.png')} style={{width:30,height:37,marginLeft:0, marginRight:0,}}/>
-                            
+
                             </View>
                             <Text style={styles.pageTxt}>工单</Text>
                         </TouchableOpacity>
@@ -242,7 +223,7 @@ export default class MyPage extends BaseComponent {
                             <Image source={require('../../../res/login/notice.png')} style={{width:35,height:32,marginLeft:0, marginRight:0,}}/>
                             </View>
                             <Text style={styles.pageTxt}>通知</Text>
-                            
+
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={()=>this.gotoPage(6)} style={styles.pageBox}>
@@ -250,11 +231,11 @@ export default class MyPage extends BaseComponent {
                             <Image source={require('../../../res/login/cggn.png')} style={{width:32,height:34,marginLeft:0, marginRight:0,}}/>
                             </View>
                             <Text style={styles.pageTxt}>常规功能</Text>
-                            
+
                         </TouchableOpacity>
                     </View>
 
-                </ScrollView>    
+                </ScrollView>
             </View>
         )
     }
@@ -263,7 +244,7 @@ export default class MyPage extends BaseComponent {
 
 
 const styles = StyleSheet.create({
-   
+
     container: {
         flex: 1,
         backgroundColor: '#fcfcfc',
