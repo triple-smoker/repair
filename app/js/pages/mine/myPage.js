@@ -60,11 +60,11 @@ export default class MyPage extends BaseComponent {
                 console.log(userInfo)
 
                 Request.requestGet(GetUserAtWork + userInfo.userId,null,(result) => {
-                    // console.info("------------")
-                    console.info(result)
-                    that.setState({
-                        atWork:result.data
-                    })
+                    if (result && result.code === 200) {
+                        that.setState({
+                            atWork:result.data
+                        })
+                    }
                 })
             }
         })

@@ -39,7 +39,7 @@ export default class NotifService {
         });
     }
 
-    localNotif() {
+    localNotif(e) {
         this.lastId++;
         PushNotification.localNotification({
             /* Android Only Properties */
@@ -63,8 +63,8 @@ export default class NotifService {
             userInfo: null, // (optional) default: null (object containing additional notification data)
 
             /* iOS and Android properties */
-            title: "Local Notification", // (optional)
-            message: "My Notification Message", // (required)
+            title: e.title, // (optional)
+            message: e.content, // (required)
             playSound: false, // (optional) default: true
             soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
             number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
