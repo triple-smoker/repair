@@ -9,6 +9,7 @@ import {
     TextInput,
     ListView,
     Modal,
+    NativeModules
     // AsyncStorage,
 } from 'react-native';
 
@@ -277,6 +278,10 @@ export default class Login extends BaseComponent {
                      permissions = "3";
                 }
                 global.permissions = permissions;
+
+                NativeModules.MPush.bindAccount(global.userId,(callback)=>{
+                    console.info(callback)
+                });
                 // if(global.uinfo.workNumber==="40001"){
                 //     global.permissions = true;
                 // }
