@@ -413,7 +413,9 @@ class AllOrder extends BaseComponent {
         this.setState({tabIndex:index, dataSource: this.state.dataSource.cloneWithRows(cachedResults.items)});
         this._fetchData(0);
     }
-
+    gotoTop() {
+        this._listView.scrollTop();
+    }
 
     render() {
         return (
@@ -479,6 +481,9 @@ class AllOrder extends BaseComponent {
                     cachedResults={cachedResults}
                     ref={component => this._listView = component}
                 />
+                <TouchableOpacity onPress={()=>this.gotoTop()} style={styles.buttonTop}>
+                    <Image style={{width:35,height:35,}} source={require('../res/repair/ic_backtop.png')} />
+                </TouchableOpacity>
                 <Modal
                     animationType={"slide"}
                     transparent={true}
