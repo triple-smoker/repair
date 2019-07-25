@@ -14,9 +14,14 @@ import * as Dimens from '../../value/dimens';
 import Request, {ScanMsg,ScanDetails,Attr} from '../../http/Request';
 import { toDate } from '../../util/DensityUtils';
 import BaseComponent from '../../base/BaseComponent'
+import NetInfo from "@react-native-community/netinfo";
+import CheckSqLite from "../../polling/CheckSqLite";
+import SQLite from "../../polling/SQLite";
 
 let ScreenWidth = Dimensions.get('window').width;
 let ScreenHeight = Dimensions.get('window').height;
+let db;
+let checkSqLite = new CheckSqLite();
 export default class ScanResult extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -46,16 +51,47 @@ export default class ScanResult extends BaseComponent {
         // 1083394199443472386
         // var scanCode = "040A8A3A325E81"
         // var scanId = "1083394199443472386"
-        Request.requestGet(ScanDetails + this.props.equipmentId, null, (result)=> {
-            if (result && result.code === 200) {
-                console.log(result.data)
-                that.setState({
-                    detaiData:result.data,
-                });
-            } else {
+        NetInfo.fetch().then(state => {
+            console.log("当前网络连接：" + state.isConnected);
+            if (state.isConnected) {
+                Request.requestGet(ScanDetails + this.props.equipmentId, null, (result)=> {
+                    if (result && result.code === 200) {
+                        console.log(result.data)
+                        that.setState({
+                            detaiData:result.data,
+                        });
+                    } else {
 
+                    }
+                });
+
+            } else{
+                if(!db){
+                    db = SQLite.open();
+                }
+                let sql = checkSqLite.selectEquipmentDetail(this.props.equipmentId);
+                db.transaction((tx)=>{
+                    tx.executeSql(sql, [],(tx,results)=>{
+                        var len = results.rows.length;
+                        console.log(len);
+                        var detaiData = "";
+                        for(let i=0; i<len; i++){
+                            detaiData = results.rows.item(i);
+                            console.log(detaiData);
+                        }
+                        console.log("=======")
+                        let temp = [{filePath:""}];
+                        detaiData.fileList=temp;
+                        that.setState({
+                            detaiData:detaiData,
+                        });
+
+                    });
+                },(error)=>{
+                    console.log(error);
+                });
             }
-        });            
+        })
     }
         
     

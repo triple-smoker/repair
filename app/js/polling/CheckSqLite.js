@@ -101,6 +101,16 @@ export default class CheckSqLite extends Component {
             "mri.ITEM_CODE=b.ITEM_CODE " +
             "and mri.MAN_CODE='"+manCode+"'";
     }
+    //设备详情
+    selectEquipmentDetail(equipmentId){
+        return "select " +
+            "equipment_id as equipmentId,status,equipment_name as equipmentName,model, " +
+            "brand,rated_capacity as ratedCapacity,voltage_level as voltageLevel,threshold, " +
+            "size,weight,install_date as time1,start_use_date as time2, " +
+            "start_guarant_date as time3,end_guarant_date as time4 " +
+            "from  " +
+            "t_base_equipment where equipment_id='"+equipmentId+"'";
+    }
 
     //提交报表-建表
     // createAutoUp()
