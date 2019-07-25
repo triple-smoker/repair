@@ -65,6 +65,7 @@ export default class CheckDetail extends BaseComponent {
       equipmentName:navigation.getParam('equipmentName', ''),
       equipmentTypeId:navigation.getParam('equipmentTypeId', ''),
       taskId:navigation.getParam('taskId', ''),
+      tableType:navigation.getParam('tableType', ''),
       modalVisible:false,
       dateSource:[],
       personText:"",
@@ -115,12 +116,41 @@ export default class CheckDetail extends BaseComponent {
         this.props.navigation.state.params.callback()
         this.props.navigation.goBack();
   }
+
+    gotoRepair(item){
+        imagePos=-1;
+        var stateInfo = {
+            manCode:this.state.manCode,
+            jobCode:this.state.jobCode,
+            jobExecCode:this.state.jobExecCode,
+            dailyTaskCode:this.state.dailyTaskCode,
+            beginTime:this.state.beginTime,
+            endTime:this.state.endTime,
+            equipmentId:this.state.equipmentId,
+            equipmentName:this.state.equipmentName,
+            equipmentTypeId:this.state.equipmentTypeId,
+            taskId:this.state.taskId,
+            tableType:this.state.tableType,
+        }
+
+
+        const { navigate } = this.props.navigation;
+        InteractionManager.runAfterInteractions(() => {
+            navigate('Repair',{
+                tableType:this.state.tableType,
+                repairContent:item.ITEM_NAME,
+                replaceName:this.state.equipmentName,
+                stateInfo:stateInfo
+            })
+        });
+    }
+
   //单任务
   getItem(){
       var list = dateSourceItem;
       // console.log("___"+list);
       var listItem =  list === null ? null : list.map((item, index) =>
-          <CheckItem key={index} pickSingleWithCamera={()=>this.pickSingleWithCamera()} num={index+1} data={item} onPressFeedback={(dataString,resultString)=>{this.onPressFeedback(dataString,resultString)}}/>
+          <CheckItem key={index} gotoRepair={()=>this.gotoRepair(item)} pickSingleWithCamera={()=>this.pickSingleWithCamera()} num={index+1} data={item} onPressFeedback={(dataString,resultString)=>{this.onPressFeedback(dataString,resultString)}}/>
       );
       return listItem;
   }
@@ -387,7 +417,7 @@ export default class CheckDetail extends BaseComponent {
      * @param mediaType
      */
     pickSingleWithCamera(){
-        // imagePos = 0;
+        imagePos = 0;
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('TakePicture',{
@@ -403,7 +433,7 @@ export default class CheckDetail extends BaseComponent {
 /*
 * 每个任务项渲染
 * */
-// var imagePos = -1;
+var imagePos = -1;
 // var videoPos = "";
 class CheckItem extends Component {
     constructor(props){
@@ -423,7 +453,7 @@ class CheckItem extends Component {
         var that = this;
         this.eventListener = DeviceEventEmitter.addListener('Event_Take_Photo', (param) => {
             console.log('componentDidMount Event_Take_Photo : ' + param + ", imagePos : "  );
-            if(this.props.data.ITEM_FORMAT === "拍照型"){
+            if(this.props.data.ITEM_FORMAT === "拍照型" && imagePos===0){
                 that.setState({imagePath0:param,});
                 this.props.onPressFeedback(this.props.data,param);
             }
@@ -499,7 +529,7 @@ class CheckItem extends Component {
                 <View style={{backgroundColor:'white',flexDirection:'row', height:35,
                     alignItems:'center', justifyContent:'center', textAlignVertical:'center',}}>
                     <Text style={{fontSize:13, color:'#333', marginLeft:15,flex:1, }}>{this.props.num+"、"+this.props.data.ITEM_NAME}</Text>
-                    <TouchableOpacity  onPress={()=>{this.props.onPressFeedback()}}>
+                    <TouchableOpacity  onPress={()=>{this.props.gotoRepair()}}>
                         <View style={{backgroundColor:'white',flexDirection:'row',justifyContent:'center',alignItems:'center', marginRight:10, textAlignVertical:'center',borderWidth:1, borderColor:'#6DC5C9',
                             borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>
                             <Image source={require('../../../res/static/ic_feedback_deng.png')} style={{width:18,height:22, marginLeft:5,}}/>

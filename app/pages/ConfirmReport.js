@@ -52,6 +52,7 @@ class ConfirmReport extends Component {
         const isScan = navigation.getParam('isScan', '');
         const equipmentId = navigation.getParam('equipmentId', '');
         const equipmentName = navigation.getParam('equipmentName', '');
+        const stateInfo = navigation.getParam('stateInfo', '');
         this.state = {
             repairTypeId : repairTypeId,
             repairMatterId : repairMatterId,
@@ -68,6 +69,7 @@ class ConfirmReport extends Component {
             isScan : isScan,
             equipmentId : equipmentId,
             equipmentName : equipmentName,
+            stateInfo : stateInfo,
         }
 
 
@@ -279,7 +281,12 @@ class ConfirmReport extends Component {
                 console.log(res);
                 toastShort('提交成功');
                 const { navigate } = this.props.navigation;
-                navigate('AllOrder',{data:res});
+                if(this.state.stateInfo!==null && this.state.stateInfo!==""){
+                    navigate('CheckDetail',this.state.stateInfo)
+                }else{
+                    navigate('AllOrder',{data:res});
+                }
+
             }
         )
     }

@@ -110,6 +110,7 @@ export default class CheckList extends BaseComponent {
                   beginTime:this.state.beginTime,
                   endTime:this.state.endTime,
                   taskId:this.state.taskId,
+                  tableType:this.state.tableType,
                   callback: (
                       () => {
                           this.getNetworkData(this.state.taskId);

@@ -5,7 +5,16 @@ import Reporter from '../components/Reporter';
 import Notice from '../components/Notice';
 import SoundRecoding from '../components/SoundRecoding';
 import MyFooter from '../components/MyFooter';
-import {TextInput, Image, View, DeviceEventEmitter, TouchableOpacity, TouchableHighlight,ScrollView,} from "react-native";
+import {
+    TextInput,
+    Image,
+    View,
+    DeviceEventEmitter,
+    TouchableOpacity,
+    TouchableHighlight,
+    ScrollView,
+    Platform, BackHandler,
+} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import Recorde from "../components/Recorde";
 import OrderType from "./publicTool/OrderType";
@@ -67,6 +76,10 @@ export default class RepairScreen extends React.Component {
         const isScan = navigation.getParam('isScan', '');
         const equipmentId = navigation.getParam('equipmentId', '');
         const equipmentName = navigation.getParam('equipmentName', '');
+        const tableType = navigation.getParam('tableType', '');
+        const repairContent = navigation.getParam('repairContent', '');
+        const replaceName = navigation.getParam('replaceName', '');
+        const stateInfo = navigation.getParam('stateInfo', '');
         this.state = {
             repairTypeId : "",
             repairMatterId : "",
@@ -75,17 +88,22 @@ export default class RepairScreen extends React.Component {
             isScan : isScan,
             equipmentId : equipmentId,
             equipmentName : equipmentName,
+            tableType : tableType,
+            repairContent : repairContent,
+            replaceName : replaceName,
+            stateInfo : stateInfo,
             images: [],
             visibleModal: false,
             showNotice: false,
             showVoice: false,
             errorTxt:'',
-            desc : '',
+            desc : (tableType!==''&&tableType!=="2")?repairContent:'',
             record : {
                 filePath : '',
             },
             typeVisible:false,
-            deptName : ''
+            deptName : '',
+            address : (tableType!==''&&tableType==="2")?replaceName:'',
 
         }
 
@@ -119,7 +137,7 @@ export default class RepairScreen extends React.Component {
                                 this.setState({
                                     reporter: reporter,
                                     phone: loginUserInfo.telNo,
-                                    address: address,
+                                    address: (this.state.address==='')?address:this.state.address,
                                     deptName: loginUserInfo.deptAddresses[0].deptName
                                 });
                             }
@@ -157,6 +175,9 @@ export default class RepairScreen extends React.Component {
                 this.loadDetail()
             }, 200)
 
+
+    }
+    componentWillUnmount() {
 
     }
     loadDetail(){
@@ -262,11 +283,12 @@ export default class RepairScreen extends React.Component {
             voices : this.state.record,
             images: this.state.images,
             desc : this.state.desc,
+            stateInfo : this.state.stateInfo,
             reporter : {
                 reporter: this.state.reporter,
                 phone: this.state.phone,
                 address: this.state.address
-            }
+            },
         };
 
         if(this.state.isScan == true){
