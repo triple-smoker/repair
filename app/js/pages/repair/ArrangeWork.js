@@ -16,7 +16,7 @@ import {
 
 import TitleBar from '../../component/TitleBar';
 import * as Dimens from '../../value/dimens';
-import Request, {GetRepairList, RepairDetail, GetDeptListByType, GetUserListByDeptId, DispatchWork} from '../../http/Request';
+import Request, {GetRepairList, RepairDetail, GetDeptListByType, GetUserListByDeptId, DispatchWork,GetUserAtWorkByDeptId} from '../../http/Request';
 import { toastShort } from '../../util/ToastUtil';
 import BaseComponent from '../../base/BaseComponent'
 
@@ -44,6 +44,8 @@ export default class ArrangeWork extends BaseComponent {
             repairId:thisRepairId,
             deptList:[],
             userList:[],
+            userAtWorkList:[],
+            userAtWorkListMap:new Map(),
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
             if (r1 !== r2) {
@@ -86,7 +88,6 @@ export default class ArrangeWork extends BaseComponent {
     }
 
     Request.requestGet(GetUserListByDeptId+this.state.deptId, null, (result)=> {
-        console.log(result)
         if (result && result.code === 200) {
             that.state.dataMap.set(that.state.deptId, result.data);
             that.setState({userList:result.data});
@@ -94,6 +95,38 @@ export default class ArrangeWork extends BaseComponent {
 
         }
     });
+  }
+
+  getUserAtWorkListByDeptId(){
+    var that = this;
+    if (this.state.userAtWorkListMap.has(this.deptId)) {
+        var list = this.state.userAtWorkListMap.get(this.state.deptId);
+        that.setState({userList:list, });
+        return;
+    }
+
+    Request.requestGet(GetUserAtWorkByDeptId+this.state.deptId, null, (result)=> {
+        if (result && result.code === 200) {
+            that.state.userAtWorkListMap.set(this.state.deptId, result.data);
+            that.setState({userAtWorkList:result.data});
+            that.userListSortByAtWorkUser(this.state.deptId,this.state.userList,result.data);
+        }
+    });
+  }
+
+  //在线员工展示到员工列表上层
+  userListSortByAtWorkUser(deptId,userList,userAtWorkList){
+    var t = [];
+     for (var m = 0; m < userList.length; m++) {
+        for (var n = 0; n < userAtWorkList.length; n++) {
+            if(userList[m].userId == userAtWorkList[n].userId){
+                t = t.concat(userList.splice(m,1))
+            }
+        }
+    }
+    userList = t.concat(userList)
+    this.state.dataMap.set(deptId, userList);
+    this.setState({userList:userList, dataSource:this.state.dataSource.cloneWithRows(userList), });
   }
 
 
@@ -107,7 +140,8 @@ export default class ArrangeWork extends BaseComponent {
                 selectDeptName:detaiData.repairDeptName,
                 deptId:detaiData.repairDeptId
             });
-            this.getUserListByDeptId()
+            this.getUserListByDeptId();
+            this.getUserAtWorkListByDeptId();
         } else {
 
         }
@@ -424,11 +458,18 @@ export default class ArrangeWork extends BaseComponent {
             </TouchableOpacity>
         );
     } else {
+        var userAtWorkImage = <Image source={require('../../../image/no_online.png')} style={{width:18,height:18,marginRight:10}}/>;
+        this.state.userAtWorkList.find(item=>{
+            if(item.userId == data.userId){
+                userAtWorkImage = <Image source={require('../../../image/online.png')} style={{width:18,height:18,marginRight:10}}/>
+            }
+        })
         return (
             <TouchableOpacity onPress={()=>{that.onPressItem(data)}} style={{height:45,flex:1}}>
                 <View style={{flexDirection:'row',marginLeft:15,height:45,textAlignVertical:'center',alignItems: 'center',}} >
                 <Image source={this.state.selectUserData&&this.state.selectUserData.userId===data.userId ? require('../../../res/login/checkbox_pre.png') : require('../../../res/login/checkbox_nor.png')} style={{width:18,height:18}}/>
-                <Text style={{fontSize:14,color:'#777',marginLeft:15,}}>{data.userName}</Text>
+                <Text style={{fontSize:14,color:'#777',marginLeft:15,flex:1}}>{data.userName}</Text>
+                {userAtWorkImage}
                 </View>
             </TouchableOpacity>
         );

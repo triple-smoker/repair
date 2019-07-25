@@ -12,7 +12,8 @@ import {
     TextInput,
     Platform,
     ToastAndroid,
-    Switch
+    Switch,
+    NativeModules
 } from 'react-native';
 import RNFetchBlob from '../../../util/RNFetchBlob';
 import TitleBar from '../../component/TitleBar';
@@ -43,18 +44,23 @@ export default class MySet extends BaseComponent {
                     console.log('error: save error');
                 } 
             });
-            AsyncStorage.setItem('uinfo', '', function (error) {
-                if (error) {
-                    console.log('error: save error' + JSON.stringify(error));
-                } 
 
-            });
-            AsyncStorage.setItem('logMsg', '', function (error) {
+        AsyncStorage.setItem('uinfo', '', function (error) {
+            if (error) {
+                console.log('error: save error' + JSON.stringify(error));
+            } 
+
+        });
+        AsyncStorage.setItem('logMsg', '', function (error) {
                 if (error) {
                     console.log('error: save error' + JSON.stringify(error));
                 }
 
-            });
+        });
+
+        NativeModules.MPush.unbindAccount((callback)=>{
+            console.info(callback)
+        });
 
         const {navigation} = this.props;
                 InteractionManager.runAfterInteractions(() => {

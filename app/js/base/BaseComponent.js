@@ -105,12 +105,12 @@ export default class BaseComponent extends Component {
     }
     onMessage(e){
         console.log(this.notif);
-        this.notif.localNotif();
+        this.notif.localNotif(e);
         console.log("Message Received. Title:" + e.title + ", Content:" + e.content);
     }
     onNotification(e){
         console.log(this.notif);
-        this.notif.localNotif();
+        this.notif.localNotif(e);
         console.log("Notification Received.Title:" + e.title + ", Content:" + e.content);
     }
 

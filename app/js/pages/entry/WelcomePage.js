@@ -8,6 +8,7 @@ import {
     View,
     InteractionManager,
     Image,
+    NativeModules
 } from 'react-native'
 import ThemeDao from '../../dao/ThemeDao'
 import AsyncStorage from "@react-native-community/async-storage";
@@ -83,6 +84,10 @@ export default class WelcomePage extends Component {
                     // if(global.uinfo.workNumber==="40001"){
                     //     global.permissions = true;
                     // }
+                    
+                    NativeModules.MPush.bindAccount(global.userId,(callback)=>{
+                        console.info(callback)
+                    });
                 }
 
             }

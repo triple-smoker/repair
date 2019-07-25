@@ -34,6 +34,7 @@ import MySet from '../js/pages/mine/mySet';
 import MyData from '../js/pages/mine/myData';
 import PapersPage from '../js/pages/mine/PapersPage';
 import Inform from '../js/pages/mine/Inform';
+import MyPerformance from '../js/pages/mine/MyPerformance';
 import SystemInform from '../js/pages/mine/SystemInform';
 import MyInterest from '../js/pages/mine/MyInterest/index'
 //添加关注
@@ -63,6 +64,7 @@ export default {
     MyData : MyData,
     PapersPage : PapersPage,
     Inform : Inform,
+    MyPerformance : MyPerformance,
     SystemInform : SystemInform,
     MyInterest : MyInterest,
     addFocus : addFocus,

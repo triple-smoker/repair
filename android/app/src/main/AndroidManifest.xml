@@ -93,8 +93,8 @@
         <!-- Change the resource name to your App's accent color - or any other color you want -->
         <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
                     android:resource="@android:color/white"/>
-        <meta-data android:name="com.alibaba.app.appkey" android:value="27577447"/> <!-- 请填写你自己的- appKey -->
-        <meta-data android:name="com.alibaba.app.appsecret" android:value="1357bc0f62444ec7ea60d0c778085e67"/> <!-- 请填写你自己的appSecret -->
+        <meta-data android:name="com.alibaba.app.appkey" android:value="27699481"/> <!-- 请填写你自己的- appKey -->
+        <meta-data android:name="com.alibaba.app.appsecret" android:value="4b33d4c24aef26e70bf535bb0caf1c04"/> <!-- 请填写你自己的appSecret -->
     </application>
 
 
