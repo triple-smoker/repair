@@ -274,12 +274,13 @@ export default class HomePage extends Component {
 
     }
     _sqlite(){
-        const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('SQLiteDemo',{
-                theme:this.theme,
-            })
-        });
+        // const {navigation} = this.props;
+        // InteractionManager.runAfterInteractions(() => {
+        //     navigation.navigate('SQLiteDemo',{
+        //         theme:this.theme,
+        //     })
+        // });
+        this.getSqlite();
     }
 
     render() {
