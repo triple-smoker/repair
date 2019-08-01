@@ -90,7 +90,7 @@ export default class MyPage extends BaseComponent {
                 page = 'MyPerformance'
             break;
             case 3:
-                page = ''
+                page = 'MyInterest'
             break;
             case 4:
                 page = ''
