@@ -86,7 +86,8 @@ export default class SQLiteDemo extends Component{
                     console.log(sqLiteTimeTemp)
                     //数据同步接口条用
                     // var url = "/api/generaloperation/portal/batchSynchronization/ModulesName?time="+sqLiteTimeTemp+"&modulesName=xunjian";
-                    Axios.GetAxiosSQLite(sqLiteTimeTemp).then(
+                    let url = "/api/generaloperation/portal/batchSynchronization/ModulesName?time="+sqLiteTimeTemp+"&modulesName=xunjian";
+                    Axios.GetAxios(url).then(
                         (response)=>{
                             // console.log("++++++++");
                             // console.log(response);

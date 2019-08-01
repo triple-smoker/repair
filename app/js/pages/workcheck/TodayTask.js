@@ -225,6 +225,7 @@ export default class TodayTask extends BaseComponent {
                 dailyTaskCode:data.CODE,
                 checkType:this.state.checkType,
                 tableType:data.TABLE_TYPE,
+                verNbr:data.VER_NBR,
                 callback: (
                     () => {
                         this._fetchData(0);
@@ -245,13 +246,15 @@ export default class TodayTask extends BaseComponent {
   }
     //在线获取任务进度
     getNetworkData(taskId){
-        Axios.GetAxiosUpPorter("http://47.102.197.221:8081/api/dailyTask/getReportListByTaskId?taskId="+taskId).then(
+        let url = "/api/sfts/api/dailyTask/getReportListByTaskId?taskId="+taskId;
+        Axios.GetAxios(url).then(
             (response)=>{
-                console.log("http://47.102.197.221:8081/api/dailyTask/getReportListByTaskId?taskId="+taskId)
+                console.log(response);
+                // console.log("http://47.102.197.221:8081/api/dailyTask/getReportListByTaskId?taskId="+taskId)
                 var dataList = [];
-                if(Array.isArray(response) && response.length>0){
+                if(Array.isArray(response.data) && response.data.length>0){
                     var sum = 0;
-                    response.forEach((item)=>{
+                    response.data.forEach((item)=>{
                         // console.log(item);
                         if(item.completion === "已完成"){
                             sum++;

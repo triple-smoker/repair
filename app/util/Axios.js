@@ -67,6 +67,7 @@ function PostAxios(url = '', data = defaultData,headers={} ) {
 
 const getUrl = 'https://dev.jxing.com.cn';
 function GetAxios(url = '', data = defaultData, ) {
+    console.log(getUrl + url);
     return axios({
         method: 'GET',
         url : getUrl + url,
@@ -79,16 +80,16 @@ function GetAxios(url = '', data = defaultData, ) {
     })
 }
 
-function GetAxiosSQLite(sqLiteTimeTemp, data = defaultData, ) {
-console.log(">>>>>>");
-console.log('http://47.102.197.221:4008/portal/batchSynchronization/ModulesName?time='+sqLiteTimeTemp+"&modulesName=xunjian");
-    return axios({
-        method: 'GET',
-        url : 'http://47.102.197.221:4008/portal/batchSynchronization/ModulesName?time='+sqLiteTimeTemp+"&modulesName=xunjian",
-        data,
-
-    })
-}
+// function GetAxiosSQLite(sqLiteTimeTemp, data = defaultData, ) {
+// console.log(">>>>>>");
+// console.log('http://47.102.197.221:4008/portal/batchSynchronization/ModulesName?time='+sqLiteTimeTemp+"&modulesName=xunjian");
+//     return axios({
+//         method: 'GET',
+//         url : 'http://47.102.197.221:4008/portal/batchSynchronization/ModulesName?time='+sqLiteTimeTemp+"&modulesName=xunjian",
+//         data,
+//
+//     })
+// }
 function PostAxiosUpPorter(url = '' , data = defaultData, ) {
     return axios({
         method: 'POST',
@@ -96,12 +97,12 @@ function PostAxiosUpPorter(url = '' , data = defaultData, ) {
         data,
     })
 }
-function GetAxiosUpPorter(url = '') {
-    return axios({
-        method: 'POST',
-        url : url,
-    })
-}
+// function GetAxiosUpPorter(url = '') {
+//     return axios({
+//         method: 'POST',
+//         url : url,
+//     })
+// }
 
 
 function UpLoad(path) {
@@ -160,8 +161,8 @@ function getUserToken(){
 export default {
     PostAxios,
     GetAxios,
-    GetAxiosSQLite,
+    // GetAxiosSQLite,
     PostAxiosUpPorter,
-    GetAxiosUpPorter,
+    // GetAxiosUpPorter,
     UpLoad
 }

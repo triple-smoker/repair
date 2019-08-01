@@ -118,7 +118,7 @@ export default class CheckDetail extends BaseComponent {
   }
 
     gotoRepair(item){
-        imagePos=-1;
+        // imagePos=-1;
         var stateInfo = {
             manCode:this.state.manCode,
             jobCode:this.state.jobCode,
@@ -309,6 +309,7 @@ export default class CheckDetail extends BaseComponent {
                                 item.resultDesc = result.data.fileDownloadUri;
                                 Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
                                     (response)=>{
+                                        console.log("++++++++++++++");
                                         console.log(response);
                                         i++;
                                         if(i===dateSourceItemTemp.length){
@@ -346,6 +347,7 @@ export default class CheckDetail extends BaseComponent {
                                         item.resultDesc = result.data.fileDownloadUri;
                                         Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
                                             (response)=>{
+                                                console.log("++++++++++++++");
                                                 console.log(response);
                                                 i++;
                                                 if(i===dateSourceItemTemp.length){
@@ -365,6 +367,7 @@ export default class CheckDetail extends BaseComponent {
                         item.ITEM_FORMAT=null;
                         Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
                             (response)=>{
+                                console.log("++++++++++++++");
                                 console.log(response);
                                 i++;
                                 if(i===dateSourceItemTemp.length){
@@ -417,7 +420,7 @@ export default class CheckDetail extends BaseComponent {
      * @param mediaType
      */
     pickSingleWithCamera(){
-        imagePos = 0;
+        // imagePos = 0;
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('TakePicture',{
@@ -433,7 +436,7 @@ export default class CheckDetail extends BaseComponent {
 /*
 * 每个任务项渲染
 * */
-var imagePos = -1;
+// var imagePos = -1;
 // var videoPos = "";
 class CheckItem extends Component {
     constructor(props){
@@ -442,7 +445,8 @@ class CheckItem extends Component {
             causeChecked:"",
             stringText:"",
             imagePath0:null,
-            videoPos:""
+            videoPos:"",
+            imagePos:-1,
             // imageUrl0:null
         }
     }
@@ -453,9 +457,10 @@ class CheckItem extends Component {
         var that = this;
         this.eventListener = DeviceEventEmitter.addListener('Event_Take_Photo', (param) => {
             console.log('componentDidMount Event_Take_Photo : ' + param + ", imagePos : "  );
-            if(this.props.data.ITEM_FORMAT === "拍照型" && imagePos===0){
+            if(this.props.data.ITEM_FORMAT === "拍照型" && this.state.imagePos===0){
                 that.setState({imagePath0:param,});
                 this.props.onPressFeedback(this.props.data,param);
+                this.eventListener.remove();
             }
             // that.uploadFile(param);
         });
@@ -529,7 +534,7 @@ class CheckItem extends Component {
                 <View style={{backgroundColor:'white',flexDirection:'row', height:35,
                     alignItems:'center', justifyContent:'center', textAlignVertical:'center',}}>
                     <Text style={{fontSize:13, color:'#333', marginLeft:15,flex:1, }}>{this.props.num+"、"+this.props.data.ITEM_NAME}</Text>
-                    <TouchableOpacity  onPress={()=>{this.props.gotoRepair()}}>
+                    <TouchableOpacity  onPress={()=>{this.props.gotoRepair(),this.setState({imagePos:-1})}}>
                         <View style={{backgroundColor:'white',flexDirection:'row',justifyContent:'center',alignItems:'center', marginRight:10, textAlignVertical:'center',borderWidth:1, borderColor:'#6DC5C9',
                             borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>
                             <Image source={require('../../../res/static/ic_feedback_deng.png')} style={{width:18,height:22, marginLeft:5,}}/>
@@ -565,7 +570,7 @@ class CheckItem extends Component {
                 }
                 {this.props.data.ITEM_FORMAT === "拍照型"&&
                 <View style={{backgroundColor:'#ffffff',height:120}} >
-                    <TouchableOpacity onPress={()=>this.props.pickSingleWithCamera()}>
+                    <TouchableOpacity onPress={()=>{this.props.pickSingleWithCamera(),this.setState({imagePos:0})}}>
                         {imageSource0===null &&
                         <View style={{borderRadius:4,borderWidth:1,borderColor:"#61C0C5",borderStyle:'dotted',zIndex:10,width:81,height:80,alignItems:'center', justifyContent:'center', textAlignVertical:'center',marginLeft:15,marginTop:15,}} >
                             <Image source={require('../../../res/static/ic_add.png')} style={{width:26,height:27, }}/>
@@ -662,7 +667,6 @@ class CheckItem extends Component {
         borderBottomLeftRadius: 15,
         borderTopLeftRadius: 15,
         borderTopRightRadius:15, 
-        backgroundColor: 'white',
     },
     container: {
       flex: 1,

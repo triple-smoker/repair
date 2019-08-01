@@ -97,7 +97,7 @@ export default class RepairScreen extends React.Component {
             showNotice: false,
             showVoice: false,
             errorTxt:'',
-            desc : (tableType!==''&&tableType!=="2")?repairContent:'',
+            desc : (tableType!=='')?repairContent:'',
             record : {
                 filePath : '',
             },

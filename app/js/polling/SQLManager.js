@@ -124,7 +124,14 @@ class SQLManager extends Component {
             + 'CREATE_STAFF bigint(20) DEFAULT NULL ,'
             + 'CREATE_DATE datetime DEFAULT CURRENT_TIMESTAMP ,'
             + 'UPDATE_DATE datetime DEFAULT NULL ,'
-            + 'UPDATE_STAFF bigint(20) DEFAULT NULL) ';
+            + 'UPDATE_STAFF bigint(20) DEFAULT NULL ,'
+            + 'create_time varchar(255) DEFAULT NULL, '
+            + 'update_time varchar(255) DEFAULT NULL, '
+            + 'app_name varchar(255) DEFAULT NULL, '
+            + 'tenant_code varchar(255) DEFAULT NULL, '
+            + 'curr_user varchar(255) DEFAULT NULL, '
+            + 'customer_id varchar(255) DEFAULT NULL, '
+            + 'delete_flag varchar(255) DEFAULT NULL ) ';
         return createInspectJobSql;
     }
 //创建表sql（equipment_ref_item）
@@ -180,7 +187,14 @@ class SQLManager extends Component {
             + 'CREATE_STAFF  bigint(20) DEFAULT NULL, '
             + 'CREATE_DATE  datetime DEFAULT CURRENT_TIMESTAMP, '
             + 'UPDATE_STAFF  bigint(20) DEFAULT NULL , '
-            + 'UPDATE_DATE  datetime DEFAULT CURRENT_TIMESTAMP )';
+            + 'UPDATE_DATE  datetime DEFAULT CURRENT_TIMESTAMP,'
+            + 'create_time varchar(255) DEFAULT NULL, '
+            + 'update_time varchar(255) DEFAULT NULL, '
+            + 'app_name varchar(255) DEFAULT NULL, '
+            + 'tenant_code varchar(255) DEFAULT NULL, '
+            + 'curr_user varchar(255) DEFAULT NULL, '
+            + 'customer_id varchar(255) DEFAULT NULL, '
+            + 'delete_flag varchar(255) DEFAULT NULL ) ';
         return createInspectItemConfSql;
     }
 //创建表sql（inspect_job_manager）
@@ -202,7 +216,14 @@ class SQLManager extends Component {
             + 'CREATE_STAFF bigint(20) DEFAULT NULL ,'
             + 'CREATE_DATE datetime DEFAULT CURRENT_TIMESTAMP ,'
             + 'UPDATE_STAFF bigint(20) DEFAULT NULL ,'
-            + 'UPDATE_DATE datetime DEFAULT CURRENT_TIMESTAMP )';
+            + 'UPDATE_DATE datetime DEFAULT CURRENT_TIMESTAMP ,'
+            + 'create_time varchar(255) DEFAULT NULL, '
+            + 'update_time varchar(255) DEFAULT NULL, '
+            + 'app_name varchar(255) DEFAULT NULL, '
+            + 'tenant_code varchar(255) DEFAULT NULL, '
+            + 'curr_user varchar(255) DEFAULT NULL, '
+            + 'customer_id varchar(255) DEFAULT NULL, '
+            + 'delete_flag varchar(255) DEFAULT NULL ) ';
         return createInspectJobManagerSql;
     }
 //创建表sql（job_exec_time）
@@ -224,7 +245,14 @@ class SQLManager extends Component {
             + 'CREATE_STAFF bigint(20) DEFAULT NULL ,'
             + 'CREATE_DATE datetime DEFAULT CURRENT_TIMESTAMP ,'
             + 'UPDATE_DATE datetime DEFAULT CURRENT_TIMESTAMP ,'
-            + 'UPDATE_STAFF bigint(20) DEFAULT NULL)';
+            + 'UPDATE_STAFF bigint(20) DEFAULT NULL ,'
+            + 'create_time varchar(255) DEFAULT NULL, '
+            + 'update_time varchar(255) DEFAULT NULL, '
+            + 'app_name varchar(255) DEFAULT NULL, '
+            + 'tenant_code varchar(255) DEFAULT NULL, '
+            + 'curr_user varchar(255) DEFAULT NULL, '
+            + 'customer_id varchar(255) DEFAULT NULL, '
+            + 'delete_flag varchar(255) DEFAULT NULL ) ';
         return createJobExecTimeSql;
     }
 //创建表sql（man_ref_item）
@@ -291,7 +319,7 @@ class SQLManager extends Component {
             + 'TENANT_CODE varchar(50) DEFAULT NULL ,'
             + 'CURR_USER varchar(50) DEFAULT NULL ,'
             + 'CUSTOMER_ID bigint(20) DEFAULT NULL ,'
-            + 'DELETE_FLAG varchar(2) DEFAULT \'0\' )';
+            + 'DELETE_FLAG varchar(2) DEFAULT 0 )';
         return createTBaseBuildingSql;
     }
 //创建表sql（t_base_equipment_type）
@@ -307,6 +335,7 @@ class SQLManager extends Component {
             + 'app_name varchar(50) DEFAULT NULL,'
             + 'tenant_code varchar(20) DEFAULT NULL,'
             + 'curr_user varchar(50) DEFAULT NULL,'
+            + 'levels varchar(300) DEFAULT NULL,'
             + 'customer_id bigint(20) DEFAULT NULL,'
             + 'delete_flag varchar(2) DEFAULT 0)';
         return createTBaseEquipmentTypeSql;
@@ -360,6 +389,9 @@ class SQLManager extends Component {
             + 'tenant_code varchar(50) DEFAULT NULL,'
             + 'curr_user varchar(20) DEFAULT NULL,'
             + 'customer_id bigint(20) DEFAULT NULL,'
+            + 'qr_code varchar(200) DEFAULT NULL,'
+            + 'qr_code_url varchar(200) DEFAULT NULL,'
+            + 'rfid_code varchar(200) DEFAULT NULL,'
             + 'delete_flag varchar(2) DEFAULT NULL)';
         return createTBaseEquipmentSql;
     }
@@ -378,7 +410,7 @@ class SQLManager extends Component {
             + 'TENANT_CODE varchar(50) DEFAULT NULL ,'
             + 'CURR_USER varchar(50) DEFAULT NULL ,'
             + 'CUSTOMER_ID bigint(20) DEFAULT NULL ,'
-            + 'DELETE_FLAG varchar(2) DEFAULT \'0\' )';
+            + 'DELETE_FLAG varchar(2) DEFAULT 0 )';
         return createTBaseFloorSql;
     }
 //创建表sql（t_base_place）
@@ -396,12 +428,12 @@ class SQLManager extends Component {
             + 'BAR_CODE varchar(255) DEFAULT NULL ,'
             + 'VER_NBR varchar(255) DEFAULT NULL ,'
             + 'ACTION_TYPE varchar(255) DEFAULT NULL ,'
-            + 'STATUS_CD int(11) DEFAULT \'1\' ,'
+            + 'STATUS_CD int(11) DEFAULT 1 ,'
             + 'CREATE_TIME timestamp NULL DEFAULT CURRENT_TIMESTAMP ,'
             + 'CREATE_USER_ID bigint(20) DEFAULT NULL ,'
             + 'UPDATE_TIME timestamp NULL DEFAULT CURRENT_TIMESTAMP ,'
             + 'UPDATE_USER_ID bigint(20) DEFAULT NULL ,'
-            + 'DELETE_FLAG varchar(2) DEFAULT \'0\' )';
+            + 'DELETE_FLAG varchar(2) DEFAULT 0 )';
         return createTBasePlaceSql;
     }
 //创建表sql（t_base_room）
@@ -422,7 +454,7 @@ class SQLManager extends Component {
             + 'TENANT_CODE varchar(50) DEFAULT NULL ,'
             + 'CURR_USER varchar(50) DEFAULT NULL ,'
             + 'CUSTOMER_ID bigint(20) DEFAULT NULL ,'
-            + 'DELETE_FLAG varchar(2) DEFAULT \'0\' )';
+            + 'DELETE_FLAG varchar(2) DEFAULT 0 )';
         return createTBaseRoomSql;
     }
     //提交报表-建表

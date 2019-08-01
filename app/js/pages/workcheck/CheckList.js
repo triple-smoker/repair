@@ -58,6 +58,7 @@ export default class CheckList extends BaseComponent {
         taskId:navigation.getParam('taskId', ''),
         checkType:navigation.getParam('checkType', ''),
         tableType:navigation.getParam('tableType', ''),
+        verNbr:navigation.getParam('verNbr', ''),
         isLoadingTail: false, // loading?
         isRefreshing: false, // refresh?
         dataSource: new ListView.DataSource({
@@ -141,12 +142,13 @@ export default class CheckList extends BaseComponent {
   }
 //在线获取任务进度
     getNetworkData(taskId){
-        Axios.GetAxiosUpPorter("http://47.102.197.221:8081/api/dailyTask/getReportListByTaskId?taskId="+taskId).then(
+        let url = "/api/sfts/api/dailyTask/getReportListByTaskId?taskId="+taskId;
+        Axios.GetAxios(url).then(
             (response)=>{
                 var dataList = [];
-                if(Array.isArray(response) && response.length>0){
+                if(Array.isArray(response.data) && response.data.length>0){
                     var sum = 0;
-                    response.forEach((item)=>{
+                    response.data.forEach((item)=>{
                         console.log(item);
                         if(item.completion === "已完成"){
                             sum++;
@@ -184,9 +186,9 @@ export default class CheckList extends BaseComponent {
             var itemTemp = [];
             var itemSpecial = [];
             //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
-            var sql = checkSqLite.selectSecondCheckZero(this.state.jobCode);
+            var sql = checkSqLite.selectSecondCheckZero(this.state.jobCode,this.state.verNbr);
             if(this.state.tableType==="2"){
-                sql = checkSqLite.selectSecondCheckPlace(this.state.jobCode);
+                sql = checkSqLite.selectSecondCheckPlace(this.state.jobCode,this.state.verNbr);
             }
             db.transaction((tx)=>{
                 tx.executeSql(sql, [],(tx,results)=>{
@@ -196,7 +198,7 @@ export default class CheckList extends BaseComponent {
                         itemTemp.push(checkIm);
                     }
                 });
-                sql = checkSqLite.selectSecondCheckOne(this.state.jobCode);
+                sql = checkSqLite.selectSecondCheckOne(this.state.jobCode,this.state.verNbr);
                 tx.executeSql(sql, [],(tx,results)=>{
                     var len = results.rows.length;
                     // console.log(len)
@@ -207,7 +209,7 @@ export default class CheckList extends BaseComponent {
                             var equipmentIdList = checkIm.OBJ_ID.split(",");
                             var lenE = equipmentIdList.length;
                             for (let j=1;j<lenE;j++){
-                                var tempSql = checkSqLite.selectSecondCheckEquipment(equipmentIdList[j],this.state.jobCode);
+                                var tempSql = checkSqLite.selectSecondCheckEquipment(equipmentIdList[j],this.state.jobCode,this.state.verNbr);
                                 tx.executeSql(tempSql, [],(tx,results)=>{
                                     var lenTemp = results.rows.length;
                                     // console.log(lenTemp);
@@ -451,10 +453,10 @@ class CheckItem extends Component {
                             // console.log("占比"+checkIm.percentZ);
                             percent = eval(checkIm.percentZ);
                             // console.log("转换占比"+percent);
-                            if(percent!=this.state.percent){
+                            if(percent!==this.state.percent&&checkIm.equipmentId===this.props.data.equipmentId){
                                 this.setState({percent:percent,reportBy:(checkIm.reportBy===null? "":checkIm.reportBy)})
                             }
-                            if(checkIm.isUp!=this.state.isUp && checkIm.isUp==="1"){
+                            if(checkIm.isUp!==this.state.isUp && checkIm.isUp==="1"){
                                 this.setState({isUp:"1"})
                             }
                         }
@@ -546,7 +548,6 @@ class CheckItem extends Component {
 
                     </View>
                 </View>
-                {/*<View style={{backgroundColor: '#f2f2f2', height:5, width:Dimens.screen_width, marginTop:5, }}/>*/}
             </TouchableOpacity>
             }
 

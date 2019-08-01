@@ -81,11 +81,13 @@ export default class HomePage extends Component {
                     }
                     console.log(">>>>>>>>>>>>")
                     console.log(sqLiteTimeTemp)
-                    var timeStamp = new Date(new Date().setHours(8, 0, 0, 0)).getTime();
+                    // var timeStamp = new Date(new Date().setHours(8, 0, 0, 0)).getTime();
                     // if(sqLiteTimeTemp<=timeStamp){
                         //数据同步接口条用
-                        Axios.GetAxiosSQLite(sqLiteTimeTemp).then(
+                    let url = "/api/generaloperation/portal/batchSynchronization/ModulesName?time="+sqLiteTimeTemp+"&modulesName=xunjian";
+                    Axios.GetAxios(url,{}).then(
                             (response)=>{
+                                // console.log(response);
                                 if(Array.isArray(response.data)&&response.data.length>1){
                                     let key = 'sqLiteTimeTemp';
                                     //json转成字符串

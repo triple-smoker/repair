@@ -176,7 +176,7 @@ export default class SQLite extends Component {
     static insertData(jobData,tableName){
         // jobData = JSON.stringify(jobData);
         // jobData = JSON.parse(jobData);
-        // console.log("++++++++"+jobData);
+        // console.log("+++--+++++"+jobData);
         let len = jobData.length;
         if(len>0){
             if (!db) {
