@@ -34,7 +34,25 @@ class Adds extends Component {//报修单共用组件
            showText: false,
            cancelVisible: false,
            isPlaying: false,
+           isShowEye: false,
+           focusId:""
        };
+        this.getEysOne();
+    }
+    //获取关注情况
+    getEysOne(){
+        Axios.GetAxios("/api/opcs/follow/workFocusInfo/"+this.props.record.repairId).then(
+            (response)=>{
+                console.log(response);
+                if(response && response.code===200){
+                    if(response.data.records.length>0 && response.data.records[0].focusStatus === 1){
+                        this.setState({isShowEye:true,focusId:response.data.records[0].focusId})
+                    }else if(response.data.records.length>0 && response.data.records[0].focusStatus === 0){
+                        this.setState({isShowEye:false,focusId:response.data.records[0].focusId})
+                    }
+                }
+            }
+        );
     }
 
     _setModalVisible() {
@@ -117,6 +135,43 @@ class Adds extends Component {//报修单共用组件
             })
 
         }
+    }
+  //  添加关注
+    getEye(repairId,getEysOne){
+        var data ={
+            focusUserId:global.userId,
+            focusUserName:global.uinfo.userName,
+            sourceId:repairId,
+            focusType:1,
+            bizFlag:1
+        }
+        Axios.PostAxios("/api/opcs/follow/post",data).then(
+            (response)=>{
+                setTimeout(function(){
+                    toastShort('关注成功');
+                    // this.setState({showPause: false});
+                    // getRepairList();
+                    getEysOne();
+                },150)
+            }
+        )
+    }
+    killEye(getEysOne){
+        var data ={
+            focusId: this.state.focusId,
+            focusType: 1
+        }
+        Axios.PostAxios("/api/opcs/follow/off",data).then(
+            (response)=>{
+                console.log(response);
+                setTimeout(function(){
+                    toastShort('取消关注');
+                    // this.setState({showPause: false});
+                    // getRepairList();
+                    getEysOne();
+                },150)
+            }
+        )
     }
 
 
@@ -205,7 +260,15 @@ class Adds extends Component {//报修单共用组件
                             <Text onPress={() => this.props.getEvaluate()}  style={{ fontSize:13,color:'#FBA234',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
                                 borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#FBA234'}}>评价</Text>
                             }
-                        </Row>
+                            {this.props.type != '4' && (this.props.type === 2 || this.props.type === 1) && this.state.isShowEye === false &&
+                            <Text onPress={()=>this.getEye(this.props.record.repairId,()=>this.getEysOne())} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                                borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>关注</Text>
+                            }
+                            {this.props.type != '4' && (this.props.type === 2 || this.props.type === 1) && this.state.isShowEye === true &&
+                            <Text onPress={()=>this.killEye(()=>this.getEysOne())} style={{ fontSize:13,color:'#666666',marginRight:15,textAlign:'center',textAlignVertical:"center", paddingLeft:7, paddingRight:7, paddingTop:3, paddingBottom:3,
+                                borderBottomRightRadius: 5,borderBottomLeftRadius: 5,borderTopLeftRadius: 5,borderTopRightRadius:5, borderWidth:1, borderColor:'#666666'}}>已关注</Text>
+                            }
+                            </Row>
                         <Modal
                             animationType={"slide"}
                             transparent={true}
