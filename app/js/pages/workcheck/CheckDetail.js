@@ -12,7 +12,7 @@ import {
     Platform,
     Modal,
     ScrollView,
-    TouchableHighlight, DeviceEventEmitter,
+    TouchableHighlight, DeviceEventEmitter, BackHandler,
 } from 'react-native';
 
 
@@ -25,7 +25,7 @@ import md5 from "md5";
 import Axios from '../../../util/Axios';
 import NetInfo from '@react-native-community/netinfo';
 import { toastShort } from '../../util/ToastUtil';
-import {Loading} from "../../component/Loading";
+import Loading from 'react-native-easy-loading-view';
 import ImagePickers from 'react-native-image-picker';
 import Video from 'react-native-video';
 import Request, {RepairCommenced} from "../../http/Request";
@@ -77,7 +77,26 @@ export default class CheckDetail extends BaseComponent {
 
   componentDidMount() {
     this._fetchData();
+      //监听物理返回键
+      if (Platform.OS === 'android') {
+          BackHandler.addEventListener("back", this.onBackClicked);
+      }
   }
+    //卸载前移除物理监听
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener("back", this.onBackClicked);
+        }
+    }
+    //BACK物理按键监听
+    onBackClicked = () => {
+        Loading.dismiss();
+        clearTimeout(this.timeout);
+        const { navigate } = this.props.navigation;
+        this.props.navigation.state.params.callback()
+        this.props.navigation.goBack();
+        return true;
+    }
     //列表数据获取
     _fetchData(){
         if(!db){
@@ -112,6 +131,8 @@ export default class CheckDetail extends BaseComponent {
   // }
 
   goBack(){
+      clearTimeout(this.timeout);
+      Loading.dismiss();
         const { navigate } = this.props.navigation;
         this.props.navigation.state.params.callback()
         this.props.navigation.goBack();
@@ -183,6 +204,11 @@ export default class CheckDetail extends BaseComponent {
           {this.getItem()}
           <View style={{height:46}}/>
       </ScrollView>
+      <Loading
+          ref={(view)=>{Loading.loadingDidCreate(view)}} // 必须调用
+          top={86} // 如果需要在loading或者hud的时候可以点击导航上面的按钮，建议根据自己导航栏具体高度来设置。如果不需要点击可以不设置
+          offsetY={-150} // 默认loading 和 hud 会在 去掉top之后高度的中间，如果觉得位置不太合适，可以通着offsetY来调整
+      />
       <Text
             onPress={()=>this._onSure()}
             style={styles.button}>提交</Text>
@@ -292,7 +318,7 @@ export default class CheckDetail extends BaseComponent {
             console.log("网络监测："+state.isConnected);
             if(state.isConnected){
                 console.log("上传接口");
-                Loading.show();
+                Loading.showHud();
                 var i = 0;
                 dateSourceItemTemp.forEach((item)=>{
                     console.log(item);
@@ -314,14 +340,16 @@ export default class CheckDetail extends BaseComponent {
                                         i++;
                                         if(i===dateSourceItemTemp.length){
                                             toastShort("数据已上报");
-                                            Loading.hidden();
+                                            clearTimeout(this.timeout);
+                                            Loading.dismiss();
                                             this.goBack();
                                         }
 
                                     })
                             }else{
                                 toastShort("图片上传不成功，请重新尝试");
-                                Loading.hidden();
+                                clearTimeout(this.timeout);
+                                Loading.dismiss();
                                 return null;
                             }
                         });
@@ -351,13 +379,15 @@ export default class CheckDetail extends BaseComponent {
                                                 console.log(response);
                                                 i++;
                                                 if(i===dateSourceItemTemp.length){
-                                                    Loading.hidden();
+                                                    clearTimeout(this.timeout);
+                                                    Loading.dismiss();
                                                     toastShort("数据已上报");
                                                     this.goBack();
                                                 }
                                             })
                                     }else{
-                                        Loading.hidden();
+                                        clearTimeout(this.timeout);
+                                        Loading.dismiss();
                                         toastShort("视频上传不成功，请重新尝试");
                                         return null;
                                     }
@@ -371,7 +401,8 @@ export default class CheckDetail extends BaseComponent {
                                 console.log(response);
                                 i++;
                                 if(i===dateSourceItemTemp.length){
-                                    Loading.hidden();
+                                    clearTimeout(this.timeout);
+                                    Loading.dismiss();
                                     toastShort("数据已上报");
                                     this.goBack();
                                 }
@@ -379,6 +410,19 @@ export default class CheckDetail extends BaseComponent {
                     }
 
                 })
+
+                this.timeout = setTimeout(
+                    ()=>
+                    {
+                        if(i!==dateSourceItemTemp.length){
+                            Loading.dismiss();
+                            toastShort('提交失败，请检查后重试！');
+                            return null;
+                        }
+                    }, 61*1000
+                )
+
+
             }else{
                 SQLite.insertData(dateSourceItemTemp,"auto_up");
                 if (!db) {
@@ -468,7 +512,8 @@ class CheckItem extends Component {
     }
     componentWillUnmount() {
         // global.imageUrl0 = null;
-        Loading.hidden();
+        Loading.dismiss();
+        clearTimeout(this.timeout);
         if(this.eventListener){
             this.eventListener.remove();
         }
@@ -645,6 +690,7 @@ class CheckItem extends Component {
                 }
 
                 <View style={{width:Dimens.screen_width,height:5}} />
+
             </View>
         );
     }

@@ -452,8 +452,11 @@ class CheckItem extends Component {
                         if(checkIm && checkIm.percentZ){
                             // console.log("占比"+checkIm.percentZ);
                             percent = eval(checkIm.percentZ);
+                            if(checkIm.percentZ==="0/0"){
+                                percent=0;
+                            }
                             // console.log("转换占比"+percent);
-                            if(percent!==this.state.percent&&checkIm.equipmentId===this.props.data.equipmentId){
+                            if(percent!==this.state.percent&&checkIm.equipmentId===this.props.data.equipment_id){
                                 this.setState({percent:percent,reportBy:(checkIm.reportBy===null? "":checkIm.reportBy)})
                             }
                             if(checkIm.isUp!==this.state.isUp && checkIm.isUp==="1"){
