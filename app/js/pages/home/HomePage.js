@@ -274,13 +274,13 @@ export default class HomePage extends Component {
 
     }
     _sqlite(){
-        // const {navigation} = this.props;
-        // InteractionManager.runAfterInteractions(() => {
-        //     navigation.navigate('SQLiteDemo',{
-        //         theme:this.theme,
-        //     })
-        // });
-        this.getSqlite();
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('SQLiteDemo',{
+                theme:this.theme,
+            })
+        });
+        // this.getSqlite();
     }
 
     render() {
@@ -294,7 +294,7 @@ export default class HomePage extends Component {
           <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} style={{height:Dimens.screen_height-49-64, width:Dimens.screen_width,flex:1}}>
           <View style={styles.images}>
           <Swiper autoplay={true} loop = {true} style={styles.images} autoplayTimeout={4}
-          dot={<View style={{backgroundColor:'rgba(0,0,0,.2)', width: 6, height: 6,borderRadius: 3, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
+          dot={<View style={{backgroundColor:'rgba(0,0,0,0.2)', width: 6, height: 6,borderRadius: 3, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
           activeDot={<View style={{backgroundColor: 'black', width: 14, height: 6, borderRadius: 3, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
           paginationStyle={{
             bottom: 10

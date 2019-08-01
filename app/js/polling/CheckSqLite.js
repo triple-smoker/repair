@@ -141,10 +141,10 @@ export default class CheckSqLite extends Component {
         //     " AND a.JOB_CODE ='"+jobCode+"'" +
         //     " AND a.status_cd = 1 AND b.STATUS_CD = 1";
         return "SELECT"
-            +" b.ID,"
+            +" b.ID AS equipment_id,"
             +" b.PLACE_FLAG,"
             +" b.PLACE_NAME AS equipment_name,"
-            +" b.PLACE_ID AS equipment_id,"
+            +" b.PLACE_ID,"
             +" b.PLACE_TYPE_ID AS equipment_type_id,"
             +" b.PLACE_TYPE_NAME AS install_location,"
             +" a.MAN_CODE,"
