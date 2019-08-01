@@ -175,6 +175,18 @@ export default class RepairScreen extends React.Component {
                 this.loadDetail()
             }, 200)
 
+        this.setState({
+            repairTypeId : "",
+            repairMatterId : "",
+            repairParentCn : "",
+            repairChildCn : "",
+            voices : "",
+            images: [],
+            desc : "",
+            record : {
+                filePath : '',
+            },
+        });
 
     }
     componentWillUnmount() {
@@ -408,6 +420,7 @@ export default class RepairScreen extends React.Component {
                         }
                     </View>
                     <SoundRecoding show={() => this.setState({showVoice : true})}
+                                   recordFilepath = {this.state.record.filePath}
                                    recordCallBack = {(record)=>this.recordCallBack(record)}
                                    record={this.state.record}
 
