@@ -15,14 +15,12 @@ import {
     Dimensions,
     Modal,
 } from 'react-native';
-import BaseComponent from '../../../base/BaseComponent'
+import AsyncStorage from '@react-native-community/async-storage';
 import * as Dimens from '../../../value/dimens';
-import Request, {GetRepairList, RepairDetail} from '../../../http/Request';
-import Swiper from 'react-native-swiper';
-import {Content, Accordion, Col, Textarea, Button,} from "native-base";
+import Request, {GetRepairList,addFollow, RepairDetail} from '../../../http/Request';
 import {toDate} from '../../../util/DensityUtils'
 import { Tabs,Icon, SearchBar, TabBar } from '@ant-design/react-native';
-import RefreshListView from '../../../component/RefreshListView'
+import { toastShort } from '../../../util/ToastUtil';
 let ScreenWidth = Dimensions
   .get('window')
   .width;
@@ -69,7 +67,6 @@ export default class InterestList extends Component {
         }
     }
     componentDidMount() {
-        var that = this;
         this.loadData()
         
     }
@@ -77,64 +74,41 @@ export default class InterestList extends Component {
         this.loadData()
     }
     loadData(){
-       
+        var that = this;
+       const{ deptRecords} = this.props
+       AsyncStorage.getItem('uinfo',function (error, result) {
+        if(error){
+            console.log(error)
+            return
+        }else{
+            var userInfo =  JSON.parse(result);
+            that.setState({userData:userInfo}); 
+        }
+        })
     }
     //关注的科室列表
     deptList(item,i){
-        console.log('deptList--------------------------------')
-        return <View key={i} style={styles.list}>
-                        <Text style={{color:'#333333',fontWeight:'400',fontSize:15}}>{item.sourceName}</Text>
-                        <TouchableOpacity onPress={()=>this.followOff(item.focusId,2)}>
-                        <Text style={styles.rightT}>√已关注</Text>
-                        </TouchableOpacity>
-                    </View>
+        return <DeptList item={item} userData={this.state.userData}></DeptList>
     }
     //关注的设备列表
     eqpList(item,i){
-        return <View  key={i} style={styles.list}>
-            <View style={styles.leftT}>
-                <Text style={{color:'#333333',fontWeight:'bold',fontSize:15}}>{item.sourceName}</Text>
-                <Text style={{color:'#666',fontWeight:'400',fontSize:13}}>{item.installLocation}</Text>
-            </View>
-            <TouchableOpacity onPress={()=>this.followOff(item.focusId,3)}>
-            <Text style={styles.rightT}>√已关注</Text>
-            </TouchableOpacity>
-        </View>
+        return <EqpList item={item} gotoEqpDetail={()=>{this.gotoEqpDetail(item.sourceId,item.sourceName)}} userData={this.state.userData}></EqpList>
+       
     }
     //关注的用户列表dom
     userList(item,i){
-        return <View key={i} style={styles.list}>
-                <View style={styles.leftT2}>
-                    <View style={{position:'relative'}}>
-                        <Image style={{width:28,height:28,borderRadius:28}} source={require("../../../../image/user_wx.png")}/>
-                        {/* <Image style={{width:9,height:13,position:'absolute',right:0,bottom:0}} source={require("../../../../res/login/f.png")}/> */}
-                    </View>
-                
-                    <Text style={{marginLeft:5,color:'#333333',fontWeight:'400',fontSize:15}}>{item.sourceName}</Text>
-                
-                </View>
-                <TouchableOpacity onPress={()=>this.followOff(item.focusId,4)}>
-                    <Text style={styles.rightT}>√已关注</Text>
-                </TouchableOpacity>
-            </View>
+        return <UserList item={item} userData={this.state.userData}></UserList>
+        
     }
-    workListdom(item){
+    //工单里面列表dom
+    workListdom(item,type){
+        
         var list = null;
         if(item.length < 1){
             list = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无关注</Text>;
         }else{
             list=item.map((data,i)=>{
-                return <View key={i}  style={styles.list}>
-                        <TouchableOpacity onPress={()=>this.gotoDetail(data.sourceId)}>
-                        <View style={styles.leftT}>
-                            <Text style={{color:'#333333',fontWeight:'bold',fontSize:15}}>工单ID：{data.sourceId}</Text>
-                            <Text style={{color:'#666',fontWeight:'400',fontSize:13}}>{data.workDeptName}</Text>
-                        </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>this.followOff(data.focusId,1)}>
-                        <Text style={styles.rightT}>√已关注</Text>
-                        </TouchableOpacity>
-                    </View>
+                return <WorkListdom gotoDetail={()=>this.gotoDetail(data.sourceId)} bizFlag={type} item={data} userData={this.state.userData}></WorkListdom>                
             })
         }
 
@@ -145,9 +119,7 @@ export default class InterestList extends Component {
     workList(items){
         var list1=[]
         var list2=[]
-        var list3=[]
-        
-        //   console.log(items)
+        var list3=[]     
         items.map((item,i)=>{ 
             switch(item.bizFlag) {
                 case 2:
@@ -171,9 +143,6 @@ export default class InterestList extends Component {
     }
     // 根据工单id二次查询 有bug 先不搞
     workChildList(item,index){
-    
-        
-        
             var listt = new Array();
             item.map((data)=>{
                 var id = data.sourceId
@@ -196,20 +165,7 @@ export default class InterestList extends Component {
             //  },200)   
        
     }
-    //去工单详情
-    gotoDetail(id) {
-        const {navigation} = this.props;
-            InteractionManager.runAfterInteractions(() => {
-
-                    navigation.navigate('OrderDetail',{
-                            repairId:id,
-                            theme:this.theme,
-                            noFooter:true
-                        })
-            });
-      }
     LIstDom(newWorkList){
-        console.log(newWorkList)
             var list1 = newWorkList.get('list1')
             var list2 = newWorkList.get('list2')
             var list3 = newWorkList.get('list3')
@@ -217,16 +173,16 @@ export default class InterestList extends Component {
                             tabBarUnderlineStyle={{backgroundColor:'#61C0C5'}}
                             initialPage={0}>
                             <View style={styles.main1}>
-                                { this.workListdom(list2) }
+                                { this.workListdom(list2,1) }
                             </View>
                             <View style={styles.main1}>
                             <ScrollView style={{ backgroundColor: '#fff' }}>
-                                {this.workListdom(list1)} 
+                                {this.workListdom(list1,2)} 
                             </ScrollView>  
                             </View>
 
                             <View style={styles.main1}>
-                                {this.workListdom(list3)}
+                                {this.workListdom(list3,3)}
                             </View>
                     
                         </Tabs>
@@ -283,6 +239,29 @@ export default class InterestList extends Component {
         
         
     }
+    //去工单详情
+    gotoDetail(id) {
+        const {navigation} = this.props;
+            InteractionManager.runAfterInteractions(() => {
+                    navigation.navigate('OrderDetail',{
+                            repairId:id,
+                            theme:this.theme,
+                            noFooter:true
+                        })
+            }); 
+      }
+
+      //去工单详情
+    gotoEqpDetail(id,name) {
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('EquipmentDetail',{
+                theme:this.theme,
+                equipmentId:id,
+                equipmentName:name,
+            });
+        });
+      } 
     _renderSeparatorView(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
         return (
           <View key={`${sectionID}-${rowID}`} style={styles.separator} />
@@ -328,15 +307,7 @@ export default class InterestList extends Component {
             videoItemRef.setVideoCurrentTime();
         }
       }
-      followOff(focusId,focusType){
-        var params = {'focusId':focusId,'focusType':focusType }  
-        Request.requestPost('api/opcs/follow/off', params, (result)=> {
-            console.log(result)
-            if (result && result.code == 200) {
-                  this.props.updateData()
-            }
-        });   
-      }
+      
     render() {
         var ViewList = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无关注</Text>;
         var deptRecords = null;
@@ -388,7 +359,7 @@ export default class InterestList extends Component {
           // ----
         if(this.props.deptRecords && this.props.deptRecords.length>0){
             deptRecords = this.props.deptRecords
-            
+           
             ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
                         style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
                 {deptRecords.map((item,i)=>{
@@ -398,7 +369,7 @@ export default class InterestList extends Component {
             
         }else if(this.props.eqpRecords && this.props.eqpRecords.length>0){
             eqpRecords = this.props.eqpRecords
-       
+          
             ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
                         style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
                     {eqpRecords.map((item,i)=>{
@@ -407,6 +378,7 @@ export default class InterestList extends Component {
             </ScrollView> 
         }else if(this.props.userRecords && this.props.userRecords.length>0){
             userRecords = this.props.userRecords
+         
             ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
                         style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
                 { userRecords.map((item,i)=>{
@@ -415,7 +387,7 @@ export default class InterestList extends Component {
             </ScrollView>
         }else if(this.props.workRecords && this.props.workRecords.length>0){
             workRecords = this.props.workRecords
-           
+         
             var newWorkList = this.workList(workRecords)
             ViewList = this.LIstDom(newWorkList)
             // this.setState({
@@ -477,7 +449,293 @@ export default class InterestList extends Component {
 
 }
 
+class DeptList extends Component{
+    constructor(props){
+        super(props);
+        this.state={ 
+            item:{},
+            ifT:true
+        }
+    }
+    componentDidMount() {
+        var that = this;
+        that.loadData()  
+    }
+    
+    loadData(){
+       const{ item} = this.props
+        this.setState({
+            item:item
+        })
+    }
+    followOff(focusId,focusType){
+        var params = {'focusId':focusId,'focusType':focusType }  
+        Request.requestPost('api/opcs/follow/off', params, (result)=> {
+            console.log(this.state)
+            if (result && result.code == 200) {
+                this.setState({
+                    ifT:false
+                })
+            }else{
+                return
+            }
+        });   
+    }
+    addFoucus(userData,data,type){
+        var sourceId = data.sourceId;
+        var sourceName = data.sourceName;
+        var focusType = null;
+        
+        if(type == 1){
+         
+            focusType = 2;
+        }else if(type ==2){
+          
+            focusType = 4;
+        }
+        
+        var params = {focusUserId:userData.userId,focusUserName:userData.userName,
+                        sourceId:sourceId,sourceName:sourceName,focusType:focusType}
+        Request.requestPost(addFollow,params,(res)=>{
+            if(res && res.code == 200){
+                this.setState({
+                    ifT:true
+                })
+                toastShort('关注成功')
+            }
+        })
+    } 
+    render(){
+        const {item,ifT} = this.state;
+        const {userData} = this.props
+        return(
+            <View key={item.sourceId} style={styles.list}>
+                <Text style={{color:'#6DC5C9',fontWeight:'400',fontSize:16}}>{item.sourceName}</Text>             
+                {ifT ?<TouchableOpacity onPress={()=>this.followOff(item.focusId,2)}>
+                        <Text style={styles.rightT}>√已关注</Text></TouchableOpacity>:
+                     <TouchableOpacity onPress={()=>this.addFoucus(userData,item,1)}>
+                        <Text style={styles.rightT}>+关注</Text></TouchableOpacity>}    
+            </View>
+        )
+    }
+}
+class UserList extends Component{
+    constructor(props){
+        super(props);
+        this.state={ 
+            item:{},
+            ifT:true
+        }
+    }
+    componentDidMount() {
+        var that = this;
+        that.loadData()  
+    }
+    
+    loadData(){
+       const{ item} = this.props
+        this.setState({
+            item:item
+        })
+    }
+    followOff(focusId,focusType){
+        var params = {'focusId':focusId,'focusType':focusType }  
+        Request.requestPost('api/opcs/follow/off', params, (result)=> {
+            console.log(this.state)
+            if (result && result.code == 200) {
+                this.setState({
+                    ifT:false
+                })
+            }else{
+                return
+            }
+        });   
+    }
+    addFoucus(userData,data,type){
+        var sourceId = data.sourceId;
+        var sourceName = data.sourceName;
+        var focusType = null;
+        
+        if(type == 1){
+         
+            focusType = 2;
+        }else if(type ==2){
+          
+            focusType = 4;
+        }
+        
+        var params = {focusUserId:userData.userId,focusUserName:userData.userName,
+                        sourceId:sourceId,sourceName:sourceName,focusType:focusType}
+        Request.requestPost(addFollow,params,(res)=>{
+            if(res && res.code == 200){
+                this.setState({
+                    ifT:true
+                })
+                toastShort('关注成功')
+            }
+        })
+    } 
+    render(){
+        const {item,ifT} = this.state;
+        const {userData} = this.props
+        return(
+            <View key={item.sourceId} style={styles.list}>
+                <View style={styles.leftT2}>
+                    <View style={{position:'relative'}}>
+                        <Image style={{width:40,height:40,borderRadius:28}} source={require("../../../../image/user_wx.png")}/>
+                        {/* <Image style={{width:9,height:13,position:'absolute',right:0,bottom:0}} source={require("../../../../res/login/f.png")}/> */}
+                    </View>
+                    
+                    <Text style={{marginLeft:5,color:'#6DC5C9',fontWeight:'400',fontSize:16}}>{item.sourceName}</Text>
+                
+                </View>
+                {ifT ?<TouchableOpacity onPress={()=>this.followOff(item.focusId,4)}>
+                        <Text style={styles.rightT}>√已关注</Text></TouchableOpacity>:
+                     <TouchableOpacity onPress={()=>this.addFoucus(userData,item,2)}>
+                        <Text style={styles.rightT}>+关注</Text></TouchableOpacity>}  
+            </View>
+        )
+    }
+}
 
+class EqpList extends Component{
+    constructor(props){
+        super(props);
+        this.state={ 
+            item:{},
+            ifT:true
+        }
+    }
+    componentDidMount() {
+        var that = this;
+        that.loadData()  
+    }
+    
+    loadData(){
+       const{ item} = this.props
+        this.setState({
+            item:item
+        })
+    }
+    followOff(focusId,focusType){
+        var params = {'focusId':focusId,'focusType':focusType }  
+        Request.requestPost('api/opcs/follow/off', params, (result)=> {
+            console.log(this.state)
+            if (result && result.code == 200) {
+                this.setState({
+                    ifT:false
+                })
+            }else{
+                return
+            }
+        });   
+    }
+    addFoucus(userData,data,type){
+        var sourceId = data.sourceId;
+        var sourceName = data.sourceName;
+        var focusType = null;
+        
+        
+        
+        var params = {focusUserId:userData.userId,focusUserName:userData.userName,
+                        sourceId:sourceId,sourceName:sourceName,focusType:type}
+        Request.requestPost(addFollow,params,(res)=>{
+            if(res && res.code == 200){
+                this.setState({
+                    ifT:true
+                })
+                toastShort('关注成功')
+            }
+        })
+    } 
+    render(){
+        const {item,ifT} = this.state;
+        const {userData} = this.props
+        return(
+            <View key={item.sourceId} style={styles.list}>
+                <TouchableOpacity onPress={()=>{this.props.gotoEqpDetail()}}>
+                <View style={styles.leftT}>
+                    <Text style={{color:'#6DC5C9',fontWeight:'bold',fontSize:16,marginBottom:5}}>{item.sourceName}</Text>
+                    <Text style={{color:'#666',fontWeight:'400',fontSize:12}}>{item.installLocation}</Text>
+                </View>
+                </TouchableOpacity>
+                {ifT ?<TouchableOpacity onPress={()=>this.followOff(item.focusId,3)}>
+                            <Text style={styles.rightT}>√已关注</Text>
+                        </TouchableOpacity>:
+                     <TouchableOpacity onPress={()=>this.addFoucus(userData,item,3)}>
+                        <Text style={styles.rightT}>+关注</Text></TouchableOpacity>}  
+            </View>
+        )
+    }
+}
+
+class WorkListdom extends Component{
+    constructor(props){
+        super(props);
+        this.state={ 
+            item:{},
+            ifT:true
+        }
+    }
+    componentDidMount() {
+        var that = this;
+        that.loadData()  
+    }
+    
+    loadData(){
+       const{ item} = this.props
+        this.setState({
+            item:item
+        })
+    }
+    followOff(focusId,focusType){
+        var params = {'focusId':focusId,'focusType':focusType }  
+        Request.requestPost('api/opcs/follow/off', params, (result)=> {
+            console.log(this.state)
+            if (result && result.code == 200) {
+                this.setState({
+                    ifT:false
+                })
+            }else{
+                return
+            }
+        });   
+    }
+    addFoucus(userData,data,type){
+        var sourceId = data.sourceId;
+        var sourceName = data.sourceName;
+        var params = {focusUserId:userData.userId,focusUserName:userData.userName,
+                        sourceId:sourceId,sourceName:sourceName,focusType:type,bizFlag:this.props.bizFlag}
+        Request.requestPost(addFollow,params,(res)=>{
+            if(res && res.code == 200){
+                this.setState({
+                    ifT:true
+                })
+                toastShort('关注成功')
+            }
+        })
+    } 
+    
+    render(){
+        const {item,ifT} = this.state;
+        const {userData} = this.props
+        return(
+            <View key={item.sourceId} style={styles.list}>
+                 <TouchableOpacity onPress={()=>this.props.gotoDetail()}>
+                    <View style={styles.leftT}>
+                        <Text style={{color:'#333333',fontWeight:'bold',fontSize:15,}}>ID：{item.sourceId}</Text>
+                        <Text style={{color:'#666',fontWeight:'400',fontSize:13}}>{item.workDeptName}</Text>
+                    </View>
+                </TouchableOpacity>
+                {ifT ?<TouchableOpacity onPress={()=>this.followOff(item.focusId,1)}>
+                        <Text style={styles.rightT}>√已关注</Text>
+                        </TouchableOpacity>:
+                     <TouchableOpacity onPress={()=>this.addFoucus(userData,item,1)}>
+                        <Text style={styles.rightT}>+关注</Text></TouchableOpacity>}  
+            </View>
+        )
+    }
+}
 const styles = StyleSheet.create({
     container1: {
         flex: 1,
@@ -489,7 +747,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     list:{
-        height:45,
+        height:60,
         width:ScreenWidth,
         paddingLeft: 30,
         paddingRight: 30,
@@ -513,20 +771,21 @@ const styles = StyleSheet.create({
         alignItems:'center',
     },
     rightT:{
-        paddingLeft:2,
-        paddingRight:2,
-        height:20,
+        paddingLeft:4,
+        paddingRight:4,
+        height:25,
+        width:60,
         backgroundColor:'rgba(255,255,255,1)',
         borderColor: 'rgba(153,153,153,1)',
         borderWidth: 1,
         borderRadius:3,
         fontSize: 14,
         color:'#909090',
-        lineHeight:20,
+        lineHeight:25,
         textAlign:'center'
     },
     main1:{
-        backgroundColor: '#fff',  
+        backgroundColor: '#f0f0f0',  
         paddingTop: 5,
         flex:2,
       }
