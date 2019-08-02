@@ -401,7 +401,8 @@ export default class TransferOrder extends BaseComponent {
         var items = this.state.deptList;
         console.log(JSON.stringify(data))
         this.setState({dataSourceDept:this.state.dataSourceDept.cloneWithRows(items), 
-            selectDeptData:data,selectDeptName:data.deptName});
+            selectDeptData:data,selectDeptName:data.deptName,selectUserData:null,selectUserName:null
+        });
         // this.timer = setTimeout(() => {
             that.getUserListByDeptId(data);
             that.getUserAtWorkListByDeptId(data);

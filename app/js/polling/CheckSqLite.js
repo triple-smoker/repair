@@ -19,7 +19,7 @@ import React, { Component } from 'react';
 export default class CheckSqLite extends Component {
 
     //巡检首页
-    selectFirstCheck(deptId,newDateString){
+    selectFirstCheck(deptId,newDateString,equipmentId){
         // return "SELECT"
         //     +" distinct(dt.id),dt.JOB_CODE,dt.job_exec_code,dt.code,dt.exec_start_time,dt.exec_end_time,dt.exec_code_type,"
         //     +" dt.JOB_EXEC_TEAM_ID,ij.JOB_NAME,mri.TABLE_TYPE"
@@ -31,7 +31,33 @@ export default class CheckSqLite extends Component {
         //     +" dt.exec_end_time >= '"+newDateString+"'"
         //     +" AND dt.JOB_EXEC_TEAM_ID LIKE '%"+deptId+"%' AND mri.TABLE_TYPE in(0,1,2) and ij.status_cd =1 and ijm.status_cd=1 and "
         //     +" mri.status_cd=1 order by dt.exec_end_time asc";
-        return "SELECT"
+        return (equipmentId !== null && equipmentId !=="")? "SELECT"
+            +" DISTINCT(dt.id),"
+            +" dt.JOB_CODE,"
+            +" dt.job_exec_code,"
+            +" dt.CODE,"
+            +" dt.exec_start_time,"
+            +" dt.exec_end_time,"
+            +" dt.exec_code_type,"
+            +" dt.JOB_EXEC_TEAM_ID,"
+            +" ij.JOB_NAME,"
+            +" mri.TABLE_TYPE,"
+            +" ij.VER_NBR"
+            +" FROM"
+            +" daily_task AS dt"
+            +" LEFT OUTER JOIN job_exec_time AS jet ON dt.job_exec_code = jet.JOB_EXEC_CODE"
+            +" LEFT OUTER JOIN inspect_job AS ij ON jet.VER_NBR = ij.VER_NBR"
+            +" LEFT OUTER JOIN inspect_job_manager AS ijm ON ij.JOB_CODE = ijm.JOB_CODE"
+            +" LEFT OUTER JOIN man_ref_item AS mri ON ijm.MAN_CODE = mri.MAN_CODE"
+            +" WHERE"
+            +" dt.exec_end_time >= '"+newDateString+"'"
+            +" AND dt.JOB_EXEC_TEAM_ID LIKE '%"+deptId+"%'"
+            +" AND mri.TABLE_TYPE IN (0, 1, 2)"
+            +" AND ijm.OBJ_ID LIKE '%"+equipmentId+"%'"
+            +" ORDER BY"
+            +" dt.exec_end_time ASC"
+            :
+            "SELECT"
             +" DISTINCT(dt.id),"
             +" dt.JOB_CODE,"
             +" dt.job_exec_code,"
@@ -57,7 +83,7 @@ export default class CheckSqLite extends Component {
             +" dt.exec_end_time ASC";
     }
     //保养首页
-    selectFirstCheckKeep(deptId,newDateString){
+    selectFirstCheckKeep(deptId,newDateString,equipmentId){
         // return "SELECT"
         //     +" distinct(dt.id),dt.JOB_CODE,dt.job_exec_code,dt.code,dt.exec_start_time,dt.exec_end_time,dt.exec_code_type,"
         //     +" dt.JOB_EXEC_TEAM_ID,ij.JOB_NAME,mri.TABLE_TYPE"
@@ -69,7 +95,33 @@ export default class CheckSqLite extends Component {
         //     +" dt.exec_end_time >= '"+newDateString+"'"
         //     +" AND dt.JOB_EXEC_TEAM_ID LIKE '%"+deptId+"%' AND mri.TABLE_TYPE=3 and ij.status_cd =1 and ijm.status_cd=1 and "
         //     +" mri.status_cd=1 order by dt.exec_end_time asc";
-        return "SELECT"
+        return (equipmentId !== null && equipmentId !=="")? "SELECT"
+            +" DISTINCT(dt.id),"
+            +" dt.JOB_CODE,"
+            +" dt.job_exec_code,"
+            +" dt.CODE,"
+            +" dt.exec_start_time,"
+            +" dt.exec_end_time,"
+            +" dt.exec_code_type,"
+            +" dt.JOB_EXEC_TEAM_ID,"
+            +" ij.JOB_NAME,"
+            +" mri.TABLE_TYPE,"
+            +" ij.VER_NBR"
+            +" FROM"
+            +" daily_task AS dt"
+            +" LEFT OUTER JOIN job_exec_time AS jet ON dt.job_exec_code = jet.JOB_EXEC_CODE"
+            +" LEFT OUTER JOIN inspect_job AS ij ON jet.VER_NBR = ij.VER_NBR"
+            +" LEFT OUTER JOIN inspect_job_manager AS ijm ON ij.JOB_CODE = ijm.JOB_CODE"
+            +" LEFT OUTER JOIN man_ref_item AS mri ON ijm.MAN_CODE = mri.MAN_CODE"
+            +" WHERE"
+            +" dt.exec_end_time >= '"+newDateString+"'"
+            +" AND dt.JOB_EXEC_TEAM_ID LIKE '%"+deptId+"%'"
+            +" AND mri.TABLE_TYPE=3"
+            +" AND ijm.OBJ_ID LIKE '%"+equipmentId+"%'"
+            +" ORDER BY"
+            +" dt.exec_end_time ASC"
+            :
+            "SELECT"
             +" DISTINCT(dt.id),"
             +" dt.JOB_CODE,"
             +" dt.job_exec_code,"

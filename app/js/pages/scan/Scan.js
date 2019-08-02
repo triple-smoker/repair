@@ -80,7 +80,8 @@ class Scan extends Component {
                             this.props.navigation.state.params.callback({
                                 isScan : true,
                                 equipmentId : response.data.detail.equipmentId,
-                                equipmentName: response.data.detail.equipmentName
+                                equipmentName: response.data.detail.equipmentName,
+                                equipmentTypeId: response.data.detail.equipmentTypeId
                             });
                             navigate(this.state.targetRouteName,{});
                         }else{

@@ -32,6 +32,7 @@ export default class CheckDetail extends BaseComponent {
             scanId : null,
             equipmentId : null,
             equipmentName : null,
+            equipmentType : null
         }
     }
     componentDidMount() {
@@ -54,26 +55,29 @@ export default class CheckDetail extends BaseComponent {
         var isScan = navigation.getParam('isScan', '');
         var scanId = navigation.getParam('scanId', '');
 		if(scanId != null && scanId !== ''){
-			this.setState({    
-			    isScan : isScan,
-			    scanId : scanId,    
-			})
-			this.loadScanMsg(scanId)
-		}
-        
-        
-        
-        
-    }
-    loadScanMsg(id){
-        Loading.show()
-        Request.requestGet(ScanMsg + id,null,(result) => {
-            Loading.hidden()
-            this.setState({
-                 equipmentId : result.data.equipmentId,
-                 equipmentName: result.data.equipmentName, 
+			// this.setState({
+			//     isScan : isScan,
+			//     scanId : scanId,
+			// })
+			// this.loadScanMsg(scanId)
+            Loading.show()
+            Request.requestGet(ScanMsg + scanId,null,(result) => {
+                console.log("+++++++");
+                console.log(result);
+                Loading.hidden()
+                this.setState({
+                    equipmentId : result.data.equipmentId,
+                    equipmentName: result.data.equipmentName,
+                    equipmentTypeId: result.data.equipmentTypeId,
+                    isScan : isScan,
+                    scanId : scanId,
+                })
             })
-        })
+		}
+
+
+
+
     }
     goBack(){
         const { navigate } = this.props.navigation;
@@ -89,6 +93,7 @@ export default class CheckDetail extends BaseComponent {
                     isScan : data.isScan,
                     equipmentId : data.equipmentId,
                     equipmentName : data.equipmentName,
+                    equipmentTypeId: data.equipmentTypeId,
                     scanId : null
                 })
             })
@@ -103,7 +108,6 @@ export default class CheckDetail extends BaseComponent {
             detailShow = true;
             pageName = this.state.equipmentName;
         }
-
         return (
             <Container>
                 <View style={{height:44,backgroundColor:'white',justifyContent:'center', textAlignVertical:'center', flexDirection:'row',alignItems:'center', marginLeft:0, marginRight:0, marginTop:0,}}>
@@ -133,10 +137,10 @@ export default class CheckDetail extends BaseComponent {
                         <WorkPage isScan={this.state.isScan} equipmentId={this.state.equipmentId} navigation = {this.props.navigation}/>
                     </Tab>
                     <Tab heading='巡检' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#fff'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
-                        <TodayTask isScan={this.state.isScan} equipmentId={this.state.equipmentId}  navigation = {this.props.navigation} checkType={1}/>
+                        <TodayTask isScan={this.state.isScan} equipmentId={this.state.equipmentTypeId}  navigation = {this.props.navigation} checkType={1}/>
                     </Tab>
                     <Tab heading='保养' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#fff'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
-                        <TodayTask isScan={this.state.isScan} equipmentId={this.state.equipmentId}  navigation = {this.props.navigation} checkType={2}/>
+                        <TodayTask isScan={this.state.isScan} equipmentId={this.state.equipmentTypeId}  navigation = {this.props.navigation} checkType={2}/>
                     </Tab>
                     {
                         detailShow ? <Tab heading={'详情'} tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#62c0c5'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>

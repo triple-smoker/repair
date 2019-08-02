@@ -64,7 +64,10 @@ export default class TodayTask extends BaseComponent {
             }
             return true//r1.isSelected !== r2.isSelected;
         }
+
       }),
+        isScan:(this.props.isScan)?this.props.isScan:false,
+        equipmentId:(this.props.equipmentId)?this.props.equipmentId:"",
 
     };
       // 每60000毫秒对状态做一次操作
@@ -88,10 +91,17 @@ export default class TodayTask extends BaseComponent {
         // this.getdata && clearInterval(this.getdata);
         // this.pushData && clearInterval(this.pushData);
     }
-    // componentWillReceiveProps(){
-    //     cachedResults.tabIndex = 0;
-    //     this._fetchData(0);
-    // }
+    componentWillReceiveProps(props){
+        cachedResults.tabIndex = 0;
+        var isScan = false;
+        var equipmentId = "";
+        if(props.isScan=== true){
+            equipmentId = props.equipmentId;
+            isScan = true;
+        }
+        this._fetchData(0,isScan,equipmentId);
+        this.setState({isScan:isScan,equipmentId:equipmentId});
+    }
   //获取auto_up表中的信息进行网络添加
     _pushData(){
         NetInfo.fetch().then(state => {
@@ -296,7 +306,7 @@ export default class TodayTask extends BaseComponent {
         this._fetchData(0);
     }
     //请求数据
-    _fetchData(page) {
+    _fetchData(page,isScan,equipmentId) {
         this._pushData();
         if(!db){
             db = SQLite.open();
@@ -305,11 +315,26 @@ export default class TodayTask extends BaseComponent {
        if(cachedResults.tabIndex === 0){
            var timeStamp = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
            var sql = "";
+
+           console.log("++++");
+           console.log(this.state.equipmentId);
+           console.log(this.state.isScan);
            if(this.state.checkType===1){
-               sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp);
+               if(this.state.equipmentId!==""||equipmentId){
+                   var eid = (this.state.equipmentId!=="")?this.state.equipmentId:equipmentId
+                   sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp,eid);
+               }else{
+                   sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp,"");
+               }
            }
            if(this.state.checkType===2){
-               sql = checkSqLite.selectFirstCheckKeep(global.deptId,timeStamp);
+               if(this.state.equipmentId!==""||equipmentId){
+                   var eid = (this.state.equipmentId!=="")?this.state.equipmentId:equipmentId
+                   sql = checkSqLite.selectFirstCheckKeep(global.deptId,timeStamp,eid);
+               }else{
+                   sql = checkSqLite.selectFirstCheckKeep(global.deptId,timeStamp,"");
+               }
+
            }
 
            db.transaction((tx)=>{
@@ -331,11 +356,19 @@ export default class TodayTask extends BaseComponent {
                console.log(error);
            });
        }else if(cachedResults.tabIndex === 1){
-           var sql = checkSqLite.selectFirstCheck(global.deptId);
+           var timeStamp = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
+           var sql = "";
+           if(this.state.checkType===1){
+               sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp,equipmentId);
+           }
+           if(this.state.checkType===2){
+               sql = checkSqLite.selectFirstCheckKeep(global.deptId,timeStamp,equipmentId);
+           }
+
            db.transaction((tx)=>{
                tx.executeSql(sql, [],(tx,results)=>{
                    var len = results.rows.length;
-                   // console.log(len)
+                   // console.log(len);
                    for(let i=0; i<len; i++){
                        var checkIm = results.rows.item(i);
                        // console.log(checkIm);

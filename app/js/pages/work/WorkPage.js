@@ -74,7 +74,7 @@ export default class WorkPage extends BaseComponent {
         }
       }),
       isLoadingTail: false, // loading?
-      isRefreshing: false // refresh?
+      isRefreshing: false, // refresh?
     }
   }
 
@@ -90,12 +90,12 @@ export default class WorkPage extends BaseComponent {
 
       //DeviceEventEmitter.emit('Event_Home', 'Event_Home');
   }
-  componentWillReceiveProps(){
+  componentWillReceiveProps(props){
     // console.log(nextProps)
     // if(nextProps.navigation.state != this.props.navigation.state){
       this.setState({tabIndex:0});
       cachedResults.tabIndex = 0;
-        this._fetchData(0);
+        this._fetchData(0,props.isScan,props.equipmentId);
     // }
   }
 
@@ -163,12 +163,11 @@ export default class WorkPage extends BaseComponent {
 //     return (''+myyear + mymonth + myweekday);
 // }
 
-  _fetchData(page) {
+  _fetchData(page,isScan,equipmentId) {
      if(global.permissions === "3"){
          return ;
      }
      console.log('WP : _fetchData')
-     console.log(this.state)
     var that = this;
 
     if (page !== 0) { // 加载更多操作
@@ -250,9 +249,8 @@ export default class WorkPage extends BaseComponent {
            params.set('endCreate', today);
         }
     }
-
-    if(this.props.isScan === true){
-      params.set('equipmentId', this.props.equipmentId);
+    if(isScan === true){
+      params.set('equipmentId', equipmentId);
     }
     console.log(params);
 
