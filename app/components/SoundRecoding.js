@@ -79,7 +79,7 @@ class SoundRecoding extends Component {
                 {this.props.readOnly ? null : this.recordButtom()}
 
 
-                {this.state.filepath==='' ? null :
+                {this.state.filepath==='' || this.props.recordFilepath===""  ? null :
                     <TouchableNativeFeedback style={{left: 1}} onPress={() => {this.play()}}>
                         <View style={{ marginLeft: '1.5%'}}>
                             <VoiceImage play = {this.state.play}/>
@@ -91,7 +91,7 @@ class SoundRecoding extends Component {
                                 source={require('../image/df1.png')}/>
                         </View>
                     </TouchableNativeFeedback>}
-                {this.props.readOnly || this.state.filepath===''  ? null :
+                {this.props.readOnly || this.state.filepath==='' || this.props.recordFilepath==="" ? null :
                     <TouchableNativeFeedback style={{
                         marginLeft: 5, flexDirection: 'row',
                         justifyContent: 'center',

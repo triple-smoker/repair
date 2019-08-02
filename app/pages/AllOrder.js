@@ -358,7 +358,7 @@ class AllOrder extends BaseComponent {
     _setOrderItemNew(record){
         var ty = cachedResults.tabIndex+1;
         return (
-            <OrderItem  getRepairList={()=>this._fetchData(0)}  type={ty} getEvaluate={()=>this.getEvaluate(record,()=>this._fetchData(0))} record={record} ShowModal = {(repairId) => this._setModalVisible(repairId)}/>
+            <OrderItem getRepairList={()=>this._fetchData(0)}  type={ty} getEvaluate={()=>this.getEvaluate(record,()=>this._fetchData(0))} record={record} ShowModal = {(repairId) => this._setModalVisible(repairId)}/>
         );
     }
 

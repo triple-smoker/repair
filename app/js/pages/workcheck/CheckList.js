@@ -13,7 +13,7 @@ import {
     ToastAndroid,
     ListView,
     Modal,
-    ScrollView, TouchableHighlight, Dimensions
+    ScrollView, TouchableHighlight, Dimensions, BackHandler
 } from 'react-native';
 
 
@@ -25,6 +25,7 @@ import CheckSqLite from "../../polling/CheckSqLite";
 import moment from "moment";
 import Axios from "../../../util/Axios";
 import {toastShort} from "../../util/ToastUtil";
+import Loading from "react-native-easy-loading-view";
 
 let cachedResults = {
   nextPage: 1, // 下一页
@@ -81,6 +82,24 @@ export default class CheckList extends BaseComponent {
     componentDidMount() {
         cachedResults.tabIndex = 0;
         this._fetchData(0);
+
+        //监听物理返回键
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener("back", this.onBackClicked);
+        }
+    }
+    //卸载前移除物理监听
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener("back", this.onBackClicked);
+        }
+    }
+    //BACK物理按键监听
+    onBackClicked = () => {
+        const { navigate } = this.props.navigation;
+        this.props.navigation.state.params.callback()
+        this.props.navigation.goBack();
+        return true;
     }
     // componentWillReceiveProps(){
     //     cachedResults.tabIndex = 0;

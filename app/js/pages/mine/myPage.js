@@ -58,6 +58,14 @@ export default class MyPage extends BaseComponent {
                 var userInfo =  JSON.parse(result);
                 that.setState({userData:userInfo});
                 console.log(userInfo)
+
+                Request.requestGet(GetUserAtWork + userInfo.userId,null,(result) => {
+                    // console.info("------------")
+                    console.info(result)
+                    that.setState({
+                        atWork:result.data
+                    })
+                })
             }
         })
     }
@@ -78,6 +86,19 @@ export default class MyPage extends BaseComponent {
             })
         });
     }
+    gotoWorkPage(){
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('WorkManager',{
+                theme:this.theme,
+                callback: (
+                    () => {
+                        this.props.setHome();
+                    })
+            })
+        });
+    }
+    /**导航栏（123。。。） */
     gotoPage(num){
         console.log('qu'+num)
         const {navigation} = this.props;

@@ -421,7 +421,7 @@ class SQLManager extends Component {
             + 'PLACE_ID bigint(20) DEFAULT NULL ,'
             + 'PLACE_NAME varchar(255) DEFAULT NULL ,'
             + 'PLACE_FLAG varchar(20) DEFAULT NULL ,'
-            + 'PLACE_TYPE_ID bigint(20) DEFAULT NULL ,'
+            + 'PLACE_TYPE_ID varchar(255) DEFAULT NULL ,'
             + 'PLACE_TYPE_NAME varchar(255) DEFAULT NULL ,'
             + 'AREA_ID bigint(20) DEFAULT NULL ,'
             + 'AREA_NAME varchar(255) DEFAULT NULL ,'
