@@ -310,11 +310,8 @@ export default class InterestList extends Component {
       
     render() {
         var ViewList = <Text style={{textAlignVertical:'center',backgroundColor:'white', color:'#999',fontSize:14, height:50, textAlign:'center',}}>暂无关注</Text>;
-        var deptRecords = null;
-        var eqpRecords = null;
-        var userRecords = null;
-        var workRecords =null;
        
+        const {deptRecords,eqpRecords,userRecords,workRecords} = this.props
           // -----
           var i = 0;
           var j = 0;
@@ -357,8 +354,8 @@ export default class InterestList extends Component {
               listItems = <View style={{width:"100%",height:"100%",backgroundColor:'#222',justifyContent:'center',alignItems:"center"}}><Text style={{color:'#666',fontSize:16}}>暂无图片</Text></View>
           }
           // ----
-        if(this.props.deptRecords && this.props.deptRecords.length>0){
-            deptRecords = this.props.deptRecords
+        if(deptRecords){
+            
            
             ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
                         style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
@@ -367,8 +364,7 @@ export default class InterestList extends Component {
                 })}
             </ScrollView> 
             
-        }else if(this.props.eqpRecords && this.props.eqpRecords.length>0){
-            eqpRecords = this.props.eqpRecords
+        }else if(eqpRecords){
           
             ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
                         style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
@@ -376,8 +372,7 @@ export default class InterestList extends Component {
                         return this.eqpList(item,i)
                     })}
             </ScrollView> 
-        }else if(this.props.userRecords && this.props.userRecords.length>0){
-            userRecords = this.props.userRecords
+        }else if(userRecords){
          
             ViewList = <ScrollView horizontal={false} indicatorStyle={'white'} showsVerticalScrollIndicator={true} 
                         style={{height:Dimens.screen_height-40-64,width:Dimens.screen_width,flex:1}}>
@@ -385,63 +380,14 @@ export default class InterestList extends Component {
                     return this.userList(item,i)
                 })}
             </ScrollView>
-        }else if(this.props.workRecords && this.props.workRecords.length>0){
-            workRecords = this.props.workRecords
+        }else if(workRecords){
          
             var newWorkList = this.workList(workRecords)
-            ViewList = this.LIstDom(newWorkList)
-            // this.setState({
-            //     repairListData:list2,
-            //     dataSource:this.state.dataSource.cloneWithRows(list2),
-            // })
-            // this.workChildList(newWorkList.get('list2'),2)
-            // var ServiceList = <ListView
-            //                 initialListSize={1}
-            //                 dataSource={this.state.dataSource}
-            //                 renderRow={(item) => this.LIstDom(item)}
-            //                 style={{backgroundColor: 'white', flex: 1, height: 219,}}
-            //                 onEndReachedThreshold={10}
-            //                 enableEmptySections={true}
-            //                 renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
-            //                     this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)
-            //                 }
-            //             />
-            // onChange={(tab,index)=>{this.setTab(tab,index)}}
-            
-          
-              
-             
-            
+            ViewList = this.LIstDom(newWorkList)    
         }
         return (
-        <View style={styles.container1}>
-           
+        <View style={styles.container1}>        
             {ViewList}
-            {/* <Modal
-              animationType={"slide"}
-              transparent={true}
-              visible={this.state.modalPictureVisible}
-              onRequestClose={() =>this.setState({modalPictureVisible:false})}
-          >
-              <View style={stylesImage.container2}>
-                  <TouchableOpacity style={{height:ScreenHeight/2}} onPress={() => this.setState({modalPictureVisible:false})}>
-                  </TouchableOpacity>
-                  <View style={{width:ScreenWidth,height:ScreenHeight,alignItems:'center',backgroundColor:'rgba(0, 0, 0, 0.5)',justifyContent:'center'}}>
-                      <Swiper
-                          style={{width:ScreenWidth,height:ScreenHeight}}
-                          onMomentumScrollEnd={(e, state, context) => (console.log('index:', state.index),this.setVideoCurrentTime(state.index))}
-                          dot={<View style={{backgroundColor: 'rgba(0,0,0,0.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
-                          activeDot={<View style={{backgroundColor: '#000', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />}
-                          paginationStyle={{
-                              bottom: -23, left: null, right: 10
-                          }} loop>
-                          {listItems}
-                      </Swiper>
-                  </View>
-                  <TouchableOpacity style={{height:ScreenHeight/2}} onPress={() => this.setState({modalPictureVisible:false})}>
-                  </TouchableOpacity>
-              </View>
-          </Modal>            */}
         </View>
 
     )
