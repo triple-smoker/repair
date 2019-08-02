@@ -212,27 +212,30 @@ export default class TodayTask extends BaseComponent {
     );
   }
   //跳转到二级页面
-  onPressItem(data){
-        const {navigation} = this.props;
-        InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('CheckList',{
-                theme:this.theme,
-                taskId:data.ID,
-                beginTime:data.EXEC_START_TIME,
-                endTime:data.EXEC_END_TIME,
-                jobCode:data.JOB_CODE,
-                jobExecCode:data.JOB_EXEC_CODE,
-                dailyTaskCode:data.CODE,
-                checkType:this.state.checkType,
-                tableType:data.TABLE_TYPE,
-                verNbr:data.VER_NBR,
-                callback: (
-                    () => {
-                        this._fetchData(0);
-                    })
-            });
-        });
-
+  onPressItem(data,processType){
+      if(processType==="0"){
+            toastShort("暂未开始");
+      }else{
+          const {navigation} = this.props;
+          InteractionManager.runAfterInteractions(() => {
+              navigation.navigate('CheckList',{
+                  theme:this.theme,
+                  taskId:data.ID,
+                  beginTime:data.EXEC_START_TIME,
+                  endTime:data.EXEC_END_TIME,
+                  jobCode:data.JOB_CODE,
+                  jobExecCode:data.JOB_EXEC_CODE,
+                  dailyTaskCode:data.CODE,
+                  checkType:this.state.checkType,
+                  tableType:data.TABLE_TYPE,
+                  verNbr:data.VER_NBR,
+                  callback: (
+                      () => {
+                          this._fetchData(0);
+                      })
+              });
+          });
+      }
   }
 
   renderItem(data,i) {
@@ -241,7 +244,7 @@ export default class TodayTask extends BaseComponent {
               this.getNetworkData(data.ID);
           }
       });
-      return <CheckItem data={data} key={i} onPressItem = {(data)=>this.onPressItem(data)}/>
+      return <CheckItem data={data} key={i} onPressItem = {(data,processType)=>this.onPressItem(data,processType)}/>
 
   }
     //在线获取任务进度
@@ -494,7 +497,7 @@ class CheckItem extends Component {
             console.log(error);
         });
         return (
-            <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data)}} >
+            <TouchableOpacity onPress={()=>{this.props.onPressItem(this.props.data,processType)}} >
                 <View style={{flex:1, backgroundColor:'white',flexDirection:'row',height:80,
                     alignItems:'center', justifyContent:'center', textAlignVertical:'center',}}>
                 {/*{cachedResults.tabIndex === 0 &&*/}

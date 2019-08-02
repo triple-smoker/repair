@@ -487,7 +487,7 @@ class CheckItem extends Component {
         super(props);
         this.state={
             causeChecked:"",
-            stringText:"",
+            stringText:(this.props.data.ITEM_FORMAT === "文本型")?this.props.data.ITEM_RESULT_SET:"",
             imagePath0:null,
             videoPos:"",
             imagePos:-1,
