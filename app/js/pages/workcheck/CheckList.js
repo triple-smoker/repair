@@ -524,14 +524,15 @@ class CheckItem extends Component {
                                 }}>{this.props.data.equipment_name}</Text>
                             }
                             {this.props.tableType !== "2" &&
-                                <TouchableOpacity onPress={()=>this.props.goEquipmentDetal(this.props.data.equipment_id,this.props.data.equipment_name)}>
+                                <TouchableOpacity style={{flexDirection:'row',alignItems:"center"}} onPress={()=>this.props.goEquipmentDetal(this.props.data.equipment_id,this.props.data.equipment_name)}>
                                     <Text style={{
                                         fontSize: 17,
                                         color: '#666',
                                         marginLeft: 0,
                                         marginTop: 0,
-                                        textDecorationLine: 'underline'
+                                        textDecorationLine: null
                                     }}>{this.props.data.equipment_name}</Text>
+                                    <Image style={{width:15,height:15,marginTop:0,marginLeft:3}} source={require("../../../image/i.png")}/>
                                 </TouchableOpacity>
                             }
                         </View>

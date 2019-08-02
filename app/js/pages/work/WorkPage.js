@@ -75,6 +75,8 @@ export default class WorkPage extends BaseComponent {
       }),
       isLoadingTail: false, // loading?
       isRefreshing: false, // refresh?
+        isScan:(this.props.isScan)?this.props.isScan:false,
+        equipmentId:(this.props.equipmentId)?this.props.equipmentId:"",
     }
   }
 
@@ -91,12 +93,15 @@ export default class WorkPage extends BaseComponent {
       //DeviceEventEmitter.emit('Event_Home', 'Event_Home');
   }
   componentWillReceiveProps(props){
-    // console.log(nextProps)
-    // if(nextProps.navigation.state != this.props.navigation.state){
-      this.setState({tabIndex:0});
+      var isScan = false;
+      var equipmentId = "";
+      if(props.isScan=== true){
+          equipmentId = props.equipmentId;
+          isScan = true;
+      }
+      this.setState({tabIndex:0,isScan:isScan,equipmentId:equipmentId});
       cachedResults.tabIndex = 0;
         this._fetchData(0,props.isScan,props.equipmentId);
-    // }
   }
 
     submit() {
@@ -249,9 +254,14 @@ export default class WorkPage extends BaseComponent {
            params.set('endCreate', today);
         }
     }
-    if(isScan === true){
-      params.set('equipmentId', equipmentId);
-    }
+
+    // if(isScan === true){
+    //   params.set('equipmentId', equipmentId);
+    // }
+      if(this.state.equipmentId!==""||equipmentId){
+          var eid = (this.state.equipmentId!=="")?this.state.equipmentId:equipmentId
+          params.set('equipmentId', eid);
+      }
     console.log(params);
 
     Request.requestGetWithKey(GetRepairList, params, (result, key)=> {

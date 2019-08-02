@@ -358,11 +358,26 @@ export default class TodayTask extends BaseComponent {
        }else if(cachedResults.tabIndex === 1){
            var timeStamp = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
            var sql = "";
+
+           console.log("++++");
+           console.log(this.state.equipmentId);
+           console.log(this.state.isScan);
            if(this.state.checkType===1){
-               sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp,equipmentId);
+               if(this.state.equipmentId!==""||equipmentId){
+                   var eid = (this.state.equipmentId!=="")?this.state.equipmentId:equipmentId
+                   sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp,eid);
+               }else{
+                   sql = checkSqLite.selectFirstCheck(global.deptId,timeStamp,"");
+               }
            }
            if(this.state.checkType===2){
-               sql = checkSqLite.selectFirstCheckKeep(global.deptId,timeStamp,equipmentId);
+               if(this.state.equipmentId!==""||equipmentId){
+                   var eid = (this.state.equipmentId!=="")?this.state.equipmentId:equipmentId
+                   sql = checkSqLite.selectFirstCheckKeep(global.deptId,timeStamp,eid);
+               }else{
+                   sql = checkSqLite.selectFirstCheckKeep(global.deptId,timeStamp,"");
+               }
+
            }
 
            db.transaction((tx)=>{
