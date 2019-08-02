@@ -126,6 +126,7 @@ export default class HomePage extends Component {
         if(this.eventListener){
             this.eventListener.remove();
         }
+        NfcManager.unregisterTagEvent();
     }
 
 
