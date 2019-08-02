@@ -58,6 +58,14 @@ export default class MyPage extends BaseComponent {
                 var userInfo =  JSON.parse(result);
                 that.setState({userData:userInfo});
                 console.log(userInfo)
+
+                Request.requestGet(GetUserAtWork + userInfo.userId,null,(result) => {
+                    // console.info("------------")
+                    console.info(result)
+                    that.setState({
+                        atWork:result.data
+                    })
+                })
             }
         })
     }
@@ -78,6 +86,19 @@ export default class MyPage extends BaseComponent {
             })
         });
     }
+    gotoWorkPage(){
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('WorkManager',{
+                theme:this.theme,
+                callback: (
+                    () => {
+                        this.props.setHome();
+                    })
+            })
+        });
+    }
+    /**导航栏（123。。。） */
     gotoPage(num){
         console.log('qu'+num)
         const {navigation} = this.props;
@@ -177,9 +198,6 @@ export default class MyPage extends BaseComponent {
                                 paddingRight: 8,}}>
                             <TouchableOpacity onPress={()=>this.loogPapers()}>
                             <Text style={{lineHeight:30,color:'white'}}>我的证照</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={()=>this.loogPapers()}>
-                            <Text style={{lineHeight:35,color:'#fff',fontWeight:'400',fontSize:14}}>我的证照</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
