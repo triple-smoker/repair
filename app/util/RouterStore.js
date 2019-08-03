@@ -36,6 +36,7 @@ import PapersPage from '../js/pages/mine/PapersPage';
 import Inform from '../js/pages/mine/Inform';
 import MyPerformance from '../js/pages/mine/MyPerformance';
 import SystemInform from '../js/pages/mine/SystemInform';
+import workOrderInform from '../js/pages/mine/workOrderInform';
 import MyInterest from '../js/pages/mine/MyInterest/index'
 //添加关注
 import addFocus from '../js/pages/mine/MyInterest/addFocus'
@@ -66,6 +67,7 @@ export default {
     Inform : Inform,
     MyPerformance : MyPerformance,
     SystemInform : SystemInform,
+    workOrderInform: workOrderInform,
     MyInterest : MyInterest,
     addFocus : addFocus,
     WorkManager : WorkManager,

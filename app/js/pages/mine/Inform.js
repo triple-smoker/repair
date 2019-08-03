@@ -33,6 +33,7 @@ export default class Inform extends BaseComponent {
         this.state={
             theme:this.props.theme,
             userData:null,
+            workOrderNotify: []
         }
     }
     componentDidMount() {
@@ -53,12 +54,42 @@ export default class Inform extends BaseComponent {
                 that.setState({userData:userInfo});
                 console.log(userInfo)
             }
-        })
+        });
+
+        AsyncStorage.getItem(global.userId, function (error, result) {
+            if (error) {
+                console.log('读取失败')
+            } else {
+                result = JSON.parse(result);
+                console.info("!")
+                console.info(result)
+                if(result != null){
+                    that.setState({workOrderNotify:result});
+                }
+            }
+        });
+    }
+
+    lookInform(){
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('SystemInform',{theme:this.theme})
+        });
+    }
+
+    workOrderNotify(){
+        console.info("workOrderInform");
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('workOrderInform',{
+                theme:this.theme,
+                workOrderNotify:this.state.workOrderNotify
+            });
+        });
     }
     
-    
     render() {
-        var  userData = this.state. userData;
+        var userData = this.state.userData;
         if (userData) {
             var headerImg = userData.headImgId;
             var workNumber = userData.workNumber;
@@ -67,6 +98,7 @@ export default class Inform extends BaseComponent {
             var gender = userData.gender;
             var telNo = userData.telNo;
         }
+        
         return (
           <View style={styles.container}>
             <TitleBar
@@ -97,23 +129,18 @@ export default class Inform extends BaseComponent {
             </View>
             <View style={styles.input_center_bg}>
                 <Text style={{color:'#404040',fontSize:15}}>工单提醒</Text>
-                <View style={{flexDirection:'row'}}>
-                    <Text style={styles.ball}>82</Text>
-                    <Image style={{width:9,height:15,marginLeft:5}} source={require('../../../res/login/ic_arrow.png')}/>
-                </View>
-               
+                <TouchableOpacity onPress={()=>{this.workOrderNotify()}}>
+                    <View style={{flexDirection:'row'}}>
+                        <Text style={styles.ball}>{this.state.workOrderNotify.length}</Text>
+                        <Image style={{width:9,height:15,marginLeft:5}} source={require('../../../res/login/ic_arrow.png')}/>
+                    </View>
+                </TouchableOpacity>
             </View>
       
         </View>
         )
     }
-lookInform(){
-    console.log('123')
-    const {navigation} = this.props;
-    InteractionManager.runAfterInteractions(() => {
-            navigation.navigate('SystemInform',{theme:this.theme})
-        });
-}
+
 }
 const styles = StyleSheet.create({
 

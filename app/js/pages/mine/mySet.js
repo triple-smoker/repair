@@ -89,6 +89,14 @@ export default class MySet extends BaseComponent {
             }
         })
 
+        AsyncStorage.removeItem(global.userId, function (error) {
+            if (error) {
+                // alert('删除失败')
+            }else {
+                // alert('删除完成')
+            }
+        })
+
         RNFetchBlob.clearCache();
     }
     /**跳转个人信息 */

@@ -7,6 +7,7 @@ import {
 
 // import {ACTION_HOME} from '../pages/entry/MainPage'
 import NotifService from '../../components/NotifService';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 export default class BaseComponent extends Component {
@@ -105,6 +106,7 @@ export default class BaseComponent extends Component {
     }
     onMessage(e){
         console.log(this.notif);
+        this.saveNotifyMessage(e);
         this.notif.localNotif(e);
         console.log("Message Received. Title:" + e.title + ", Content:" + e.content);
     }
@@ -178,5 +180,37 @@ export default class BaseComponent extends Component {
 
   routeTo(page) {
     routeTo(this.props.navigator, page)
+  }
+
+  saveNotifyMessage(e){
+    console.info(global.userId)
+    AsyncStorage.getItem(global.userId, function (error, result) {
+        if (error) {
+            console.log('读取失败')
+        } else {
+            console.info("xxx")
+            result = JSON.parse(result);
+            console.info(result)
+            let notifyData = {
+                "title" : e.title,
+                "content" : e.content,
+                "notifyDate" : new Date().format("yyyy-MM-dd hh:mm:ss")
+            }
+            let resultData = result || [];
+
+            resultData.push(notifyData);
+            console.info(resultData)
+            AsyncStorage.setItem(global.userId,JSON.stringify(resultData),function (error) {
+                if (error) {
+                    console.log('存储失败')
+                    console.info(error)
+                }else {
+                    console.log('存储完成')
+                }
+            })
+                
+        }
+    });
+
   }
 }
