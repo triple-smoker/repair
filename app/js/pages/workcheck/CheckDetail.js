@@ -161,7 +161,10 @@ export default class CheckDetail extends BaseComponent {
                 tableType:this.state.tableType,
                 repairContent:item.ITEM_NAME,
                 replaceName:this.state.equipmentName,
-                stateInfo:stateInfo
+                stateInfo:stateInfo,
+                isScan:(this.state.tableType!=="2")?true:false,
+                equipmentId:this.state.equipmentId,
+                equipmentName:this.state.equipmentName,
             })
         });
     }
