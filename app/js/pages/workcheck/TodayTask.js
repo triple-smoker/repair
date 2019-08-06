@@ -168,14 +168,14 @@ export default class TodayTask extends BaseComponent {
                     .then((data) => {
                         Request.uploadFile(data.source, (result)=> {
                             console.log('path')
-                            console.log(item.resultDesc)
+                            console.log(chenk.resultDesc)
                             console.log('result')
                             console.log(result)
                             if (result && result.code === 200) {
                                 // console.log(result);
-                                item.ITEM_FORMAT=null;
-                                item.resultDesc = result.data.fileDownloadUri;
-                                Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
+                                chenk.ITEM_FORMAT=null;
+                                chenk.resultDesc = result.data.fileDownloadUri;
+                                Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",chenk).then(
                                     (response)=>{
                                         console.log(response);
                                         this.deleteLocal(response,chenk);
