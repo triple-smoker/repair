@@ -582,7 +582,7 @@ export default class Login extends BaseComponent {
                             autoFocus={true}
                             onChangeText={(text) => {
                                 username = text;
-                                this.setState({username:text});
+                                // this.setState({username:text});
                             }}
                             defaultValue= {this.state.username}
                             onFocus={(event) => this._onFocus(0)}
@@ -610,7 +610,7 @@ export default class Login extends BaseComponent {
                             secureTextEntry={true}
                             onChangeText={(text) => {
                                 password = text;
-                                this.setState({password:text});
+                                // this.setState({password:text});
                             }}
                             defaultValue={this.state.password}
                             onFocus={(event) => this._onFocus(1)}
