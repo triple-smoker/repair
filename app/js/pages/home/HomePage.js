@@ -24,6 +24,7 @@ import SQLite from "../../polling/SQLite";
 import Axios from "../../../util/Axios";
 import { toastShort } from '../../util/ToastUtil';
 import {Loading} from "../../component/Loading";
+import {aesEncrypt} from "../../util/CipherUtils";
 
 const bannerImgs=[
 require('../../../res/default/banner_01.jpg'),
@@ -70,53 +71,63 @@ export default class HomePage extends Component {
         }
         //建表
         // sqLite.createTable();
-        AsyncStorage.getItem('sqLiteTimeTemp',function (error, result) {
+        AsyncStorage.getItem("hospitalInfo", function (error, result) {
+            if (error) {
+                console.log("读取失败");
+            } else {
+                if (result) {
+                    var hospitalInfo = JSON.parse(result);
+                    if (hospitalInfo && hospitalInfo.selectZuHuData && hospitalInfo.selectYuanQuData) {
+                        var tenantKey = hospitalInfo.selectZuHuData.tenantKey;
+                        var tenantKeyAes = aesEncrypt(tenantKey);
+                        AsyncStorage.getItem('sqLiteTimeTemp'+tenantKeyAes,function (error, result) {
 
-                if (error) {
-                    // alert('读取失败')
-                }else {
-                    var sqlTime = JSON.parse(result);
-                    if(sqlTime != null && sqlTime != ""){
-                        sqLiteTimeTemp = sqlTime;
-                    }
-                    console.log(">>>>>>>>>>>>")
-                    console.log(sqLiteTimeTemp)
-                    // var timeStamp = new Date(new Date().setHours(8, 0, 0, 0)).getTime();
-                    // if(sqLiteTimeTemp<=timeStamp){
-                        //数据同步接口条用
-                    let url = "/api/generaloperation/portal/batchSynchronization/ModulesName?time="+sqLiteTimeTemp+"&modulesName=xunjian";
-                    Axios.GetAxios(url,{}).then(
-                            (response)=>{
-                                // console.log(response);
-                                if(Array.isArray(response.data)&&response.data.length>1){
-                                    let key = 'sqLiteTimeTemp';
-                                    //json转成字符串
-                                    let jsonStr = JSON.stringify(response.data[0]);
-                                    //存储
-                                    AsyncStorage.setItem(key, jsonStr, function (error) {
-
-                                        if (error) {
-                                            console.log('存储失败')
-                                        }else {
-                                            console.log('存储完成')
-                                        }
-                                    })
-                                    var dates = response.data[1];
-                                    for(var tableName in dates){
-                                        if(dates[tableName]!=null&&dates[tableName].length>0){
-                                            SQLite.insertData(dates[tableName],tableName);
-                                        }
-
-                                    }
+                            if (error) {
+                                // alert('读取失败')
+                            }else {
+                                var sqlTime = JSON.parse(result);
+                                if(sqlTime != null && sqlTime != ""){
+                                    sqLiteTimeTemp = sqlTime;
                                 }
-                                toastShort("本地数据同步成功");
-                            }
-                        );
-                    // }
+                                console.log(">>>>>>>>>>>>")
+                                console.log(sqLiteTimeTemp)
+                                //数据同步接口条用
+                                let url = "/api/generaloperation/portal/batchSynchronization/ModulesName?time="+sqLiteTimeTemp+"&modulesName=xunjian";
+                                Axios.GetAxios(url,{}).then(
+                                    (response)=>{
+                                        // console.log(response);
+                                        if(Array.isArray(response.data)&&response.data.length>1){
+                                            let key = 'sqLiteTimeTemp'+tenantKeyAes;
+                                            //json转成字符串
+                                            let jsonStr = JSON.stringify(response.data[0]);
+                                            //存储
+                                            AsyncStorage.setItem(key, jsonStr, function (error) {
 
+                                                if (error) {
+                                                    console.log('存储失败')
+                                                }else {
+                                                    console.log('存储完成')
+                                                }
+                                            })
+                                            var dates = response.data[1];
+                                            for(var tableName in dates){
+                                                if(dates[tableName]!=null&&dates[tableName].length>0){
+                                                    SQLite.insertData(dates[tableName],tableName);
+                                                }
+
+                                            }
+                                        }
+                                        toastShort("本地数据同步成功");
+                                    }
+                                );
+                            }
+                        }.bind(this))
+                    }
                 }
-            }.bind(this)
-        )
+            }
+        })
+
+
     }
 
 
@@ -275,13 +286,13 @@ export default class HomePage extends Component {
 
     }
     _sqlite(){
-        // const {navigation} = this.props;
-        // InteractionManager.runAfterInteractions(() => {
-        //     navigation.navigate('SQLiteDemo',{
-        //         theme:this.theme,
-        //     })
-        // });
-        this.getSqlite();
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('SQLiteDemo',{
+                theme:this.theme,
+            })
+        });
+        // this.getSqlite();
     }
 
     render() {

@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import SQLiteStorage from 'react-native-sqlite-storage';
 import SQLManager from './SQLManager'
+import AsyncStorage from "@react-native-community/async-storage";
+import {aesEncrypt} from "../util/CipherUtils";
 
 SQLiteStorage.DEBUG(true);
-var database_name = "sfts.db";//数据库文件
+var database_name = "dev";//数据库文件
 var database_version = "1.0";//版本号
 var database_displayname = "MySQLite";
 var database_size = -1;
@@ -27,18 +29,36 @@ export default class SQLite extends Component {
 
     //打开数据库
     static open(){
-        db = SQLiteStorage.openDatabase(
-            database_name,
-            database_version,
-            database_displayname,
-            database_size,
-            ()=>{
-                this._successCB('open');
-            },
-            (err)=>{
-                this._errorCB('open',err);
-            });
-        return db;
+        var that = this;
+        AsyncStorage.getItem("hospitalInfo", function (error, result) {
+            if (error) {
+                console.log("读取失败");
+            } else {
+                if (result) {
+                    var hospitalInfo = JSON.parse(result);
+                    if (hospitalInfo && hospitalInfo.selectZuHuData && hospitalInfo.selectYuanQuData) {
+                        var tenantKey = hospitalInfo.selectZuHuData.tenantKey;
+                        var tenantKeyAes = aesEncrypt(tenantKey);
+                        db = SQLiteStorage.openDatabase(
+                            database_name+tenantKeyAes+".db",
+                            database_version,
+                            database_displayname+tenantKeyAes,
+                            database_size,
+                            ()=>{
+                                that._successCB('open');
+                            },
+                            (err)=>{
+                                that._errorCB('open',err);
+                            });
+                        return db;
+                    }else{
+                        return null;
+                    }
+                }else{
+                    return null;
+                }
+            }
+        })
     }
 
     //创建表

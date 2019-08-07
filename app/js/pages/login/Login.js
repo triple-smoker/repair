@@ -290,8 +290,6 @@ export default class Login extends BaseComponent {
     }
 
     logout(){
-        username='';
-        password='';
         global.access_token = null;
         global.deptId = null;
         global.userId = null;
