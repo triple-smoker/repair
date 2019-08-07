@@ -6,12 +6,16 @@ import {Toast} from "../component/Toast";
 import AsyncStorage from "@react-native-community/async-storage";
 // https://dev.jxing.com.cn/ http://10.144.4.2:9999/
 export const HOST = 'https://dev.jxing.com.cn/';
-export const XTenantKey = 'Uf2k7ooB77T16lMO4eEkRg==';
-export const HospitalId = '1055390940066893827';
+// export const XTenantKey = 'Uf2k7ooB77T16lMO4eEkRg==';
+// export const XTenantKey = global.xTenantKey;
+// export const HospitalId = '1055390940066893827';
+// export const HospitalId = global.hospitalId;
 
 export const AuthToken     = 'api/auth/oauth/token';
 export const GetUserInfo   = 'api/admin/user/login';
 export const GetUserAddress  = 'api/basic/user/address/'
+export const GetZuHu  = 'api/opcs/tenant/list_for_client'
+export const GetYuanQuById  = 'api/opcs/tenant/info/'
 
 export const userOnWork = 'api/opcs/user/on_work/'; //员工打卡上班
 export const userOffWork = 'api/opcs/user/off_work/'; //员工打卡下班
@@ -114,6 +118,29 @@ static getUserToken(){
         }
     })
 }
+static requestGetZuHu(action,param, callback) {
+    var url = HOST + action;
+
+    var headers = {
+        'x-tenant-key': param,
+    };
+    console.log('url: ' + url + ', headers: ' + JSON.stringify(headers));
+    var fetchOptions = {
+        method: 'GET',
+        headers: headers,
+    };
+    fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .then((responseText) => {
+            callback(responseText);
+        })
+        .catch(error=>{
+            console.log('error: ' + JSON.stringify(error));
+
+            callback(JSON.stringify(error));
+        });
+}
+
 static requestGet(action, params, callback) {
 	var url = HOST + action;
 	var strParams = '';
@@ -130,13 +157,16 @@ static requestGet(action, params, callback) {
     //     key:'token'
     // });
     var token = global.access_token;
+	// console.log("++++++++");
+	// console.log(XTenantKey);
+	// console.log(HospitalId);
     var headers = {
     			'Authorization': 'Basic anhjbG91ZDpqeGNsb3Vk',
     			'cache-control': 'no-cache',
 				'Accept': 'application/json',
 				'Content-Type':"application/json",
-				'x-tenant-key': XTenantKey,
-				'hospitalId'  : HospitalId,
+				'x-tenant-key': global.xTenantKey,
+				'hospitalId'  : global.hospitalid,
 			};
     if (token && token.length) {
         headers['Authorization'] = 'Bearer ' + token;
@@ -160,7 +190,7 @@ static requestGet(action, params, callback) {
      .catch(error=>{
          console.log('error: ' + JSON.stringify(error));
 
-         callback(JSON.stringify(error));
+         // callback(JSON.stringify(error));
  	});//.done()
 }
 static requestGetWithKey(action, params, callback, key) {
@@ -184,8 +214,8 @@ static requestGetWithKey(action, params, callback, key) {
     			'cache-control': 'no-cache',
 				'Accept': 'application/json',
 				'Content-Type':"application/json",
-				'x-tenant-key': XTenantKey,
-				'hospitalId'  : HospitalId,
+                'x-tenant-key': global.xTenantKey,
+                'hospitalId'  : global.hospitalid,
 			};
     if (token && token.length) {
         headers['Authorization'] = 'Bearer ' + token;
@@ -222,8 +252,8 @@ static requestPost(action, params, callback) {
                 'cache-control': 'no-cache',
                 'Accept': 'application/json',
                 'Content-Type':"application/json",
-                'x-tenant-key': XTenantKey,
-                'hospitalId'  : HospitalId,
+                'x-tenant-key': global.xTenantKey,
+                'hospitalId'  : global.hospitalid,
             };
     if (token && token.length) {
         headers['Authorization'] = 'Bearer ' + token;
@@ -259,8 +289,8 @@ static requestPost(action, params, callback) {
                 'cache-control': 'no-cache',
                 'Accept': 'application/json',
                 'Content-Type':"application/json",
-                'x-tenant-key': XTenantKey,
-                'hospitalId'  : HospitalId,
+                'x-tenant-key': global.xTenantKey,
+                'hospitalId'  : global.hospitalid,
             };
     if (token && token.length) {
         headers['Authorization'] = 'Bearer ' + token;

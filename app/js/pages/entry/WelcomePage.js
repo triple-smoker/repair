@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import ThemeDao from '../../dao/ThemeDao'
 import AsyncStorage from "@react-native-community/async-storage";
+import {aesEncrypt} from "../../util/CipherUtils";
 
 
 export default class WelcomePage extends Component {
@@ -58,6 +59,22 @@ export default class WelcomePage extends Component {
                 }
             }
         });
+        AsyncStorage.getItem("hospitalInfo", function (error, result) {
+            if (error) {
+                console.log("读取失败");
+            } else {
+                if (result) {
+                    var hospitalInfo = JSON.parse(result);
+                    if (hospitalInfo && hospitalInfo.selectZuHuData && hospitalInfo.selectYuanQuData) {
+                        var tenantKey = hospitalInfo.selectZuHuData.tenantKey;
+                        var tenantKeyAes = aesEncrypt(tenantKey);
+                        tenantKeyAes = encodeURIComponent(tenantKeyAes);
+                        global.hospitalId = hospitalInfo.selectYuanQuData.hospitalId;
+                        global.xTenantKey = tenantKeyAes;
+                    }
+                }
+            }
+        })
 
         AsyncStorage.getItem('uinfo', function (error, result) {
             // console.log('uinfo: result = ' + result + ', error = ' + error);

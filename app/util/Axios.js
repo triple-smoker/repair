@@ -12,8 +12,10 @@ axios.interceptors.request.use(
         console.log(apiToken);
         // 添加响应头等等设置
         let headers = {
-            'hospitalId': '1055390940066893827',
-            'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+            // 'hospitalId': '1055390940066893827',
+            'hospitalId': global.hospitalId,
+            // 'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+            'x-tenant-key':global.xTenantKey,
             'Authorization': `Bearer ${apiToken}`,
             // 'Authorization': `Bearer 89db0128-fd66-47d5-be0a-b327a339bae8`,
         };

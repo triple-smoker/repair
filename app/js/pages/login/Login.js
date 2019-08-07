@@ -17,9 +17,12 @@ import AsyncStorage from '@react-native-community/async-storage';
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
 import Pop from 'rn-global-modal'
-import Request, {AuthToken, GetUserInfo} from '../../http/Request';
+import Request, {AuthToken, GetUserInfo, GetZuHu ,GetYuanQuById} from '../../http/Request';
 import {Toast} from '../../component/Toast'
 import {aesEncrypt,aesEncryptWithKey} from '../../util/CipherUtils';
+import Axios from '../../../util/Axios';
+import {toastShort} from "../../util/ToastUtil";
+
 
 let tempTypeIds = [1, 2, 3, 4];
 
@@ -112,13 +115,65 @@ export default class Login extends BaseComponent {
             selectIndex: '-1',
             modalVisible: false,
             username:null,
-            password:null
+            password:null,
+            zuhuList:[],
+            yuanquList:[],
+            dataSourceZuHu:new ListView.DataSource({
+                rowHasChanged: (r1, r2)=> {
+                    if (r1 !== r2) {
+                    } else {
+                        console.log("相等=");
+                    }
+                    return true//r1.isSelected !== r2.isSelected;
+                }
+            }),
+            dataSourceYuanQu:new ListView.DataSource({
+                rowHasChanged: (r1, r2)=> {
+                    if (r1 !== r2) {
+                    } else {
+                        console.log("相等=");
+                    }
+                    return true//r1.isSelected !== r2.isSelected;
+                }
+            }),
+            selectZuHuData:null,
+            selectYuanQuData:null,
+            selectZuHuName:null,
+            selectZuHuNameTemp:"",
+            selectYuanQuName:null,
+            selectYuanQuNameTemp:"",
+            dataMap:new Map(),
         }
 
     }
 
     componentDidMount(){
         this.loadData();
+        this.loadZuHu();
+        this.getHospitalInfo();
+    }
+    getHospitalInfo(){
+        var that = this;
+        AsyncStorage.getItem("hospitalInfo", function (error, result) {
+            if (error) {
+                console.log("读取失败");
+            } else {
+                if (result) {
+                    var hospitalInfo = JSON.parse(result);
+                    if (hospitalInfo && hospitalInfo.selectZuHuData && hospitalInfo.selectYuanQuData) {
+                        that.setState({
+                            selectZuHuName:hospitalInfo.selectZuHuData.tenantName,
+                            selectYuanQuName:hospitalInfo.selectYuanQuData.hospitalName,
+                        });
+                        var tenantKey = hospitalInfo.selectZuHuData.tenantKey;
+                        var tenantKeyAes = aesEncrypt(tenantKey);
+                        tenantKeyAes = encodeURIComponent(tenantKeyAes);
+                        global.hospitalId = hospitalInfo.selectYuanQuData.hospitalId;
+                        global.xTenantKey = tenantKeyAes;
+                    }
+                }
+            }
+        })
     }
     loadData(){
         var that = this;
@@ -129,8 +184,6 @@ export default class Login extends BaseComponent {
             }else{
                 var logininfo =  JSON.parse(res);
                 if(logininfo){
-                    // password = logininfo.password
-                    // username = logininfo.username
                     that.setState({
                         username:username,
                         password:password
@@ -140,6 +193,16 @@ export default class Login extends BaseComponent {
             }
         })
       
+    }
+    loadZuHu(){
+        var params = new Map();
+        params.set('isGetZuHu', true);
+        Request.requestGetZuHu(GetZuHu, "Uf2k7ooB77T16lMO4eEkRg==" ,(result)=> {
+            console.log(result)
+            if(result.data&&Array.isArray(result.data)){
+                this.setState({zuhuList:result.data});
+            }
+        });
     }
     _onFocus(index) {
 
@@ -192,81 +255,143 @@ export default class Login extends BaseComponent {
          Toast.show('密码不能为空');
          return;
      }
-     var keepPsw = this.state.keepPsw;
-     var psw = aesEncrypt(password);
-     console.log('password: ' + password + ', psw加密: ' + psw);
-     var that = this;
-     var params = new Map();
-     params.set('username', username);
-     params.set('password', encodeURIComponent(psw));
-     global.access_token = null;
-     Request.requestGet(AuthToken, params, (result)=> {
+    var that = this;
+    AsyncStorage.getItem("hospitalInfo", function (error, result) {
+        if (error) {
+            console.log("读取失败");
+            return;
+        } else {
+            if (result) {
 
-            console.log(result)
+                var hospitalInfo = JSON.parse(result);
+                if(hospitalInfo&&hospitalInfo.selectZuHuData&&hospitalInfo.selectYuanQuData){
+                var tenantKey = hospitalInfo.selectZuHuData.tenantKey;
+                var tenantKeyAes = aesEncrypt(tenantKey);
+                tenantKeyAes = encodeURIComponent(tenantKeyAes);
+                global.hospitalId = hospitalInfo.selectYuanQuData.hospitalId;
+                global.xTenantKey = tenantKeyAes;
 
-            if (result && result.access_token) {
-                var logInfo = {
-                    username: username,
-                    password: encodeURIComponent(password)
-                }
-                var logMsg = {
-                    username: username,
-                    password: encodeURIComponent(psw)
-                }
-                var logInfoString = JSON.stringify(logInfo);
-                var logMsgString = JSON.stringify(logMsg);
+                 var keepPsw = that.state.keepPsw;
+                 var psw = aesEncrypt(password);
+                 console.log('password: ' + password + ', psw加密: ' + psw);
+                 var params = new Map();
+                 params.set('username', username);
+                 params.set('password', encodeURIComponent(psw));
+                 global.access_token = null;
+                 Request.requestGet(AuthToken, params, (result)=> {
 
-                AsyncStorage.setItem('logMsg', logMsgString, function (error) {
-                    if (error) {
-                        console.log('error: save error');
-                    } else {
-                        console.log('save: logMsg = ' + logMsgString);
-                    }
-                });
+                        console.log(result)
 
-                if(keepPsw){
-                    AsyncStorage.setItem('logInfo', logInfoString, function (error) {
-                        if (error) {
-                            console.log('error: save error');
+                        if (result && result.access_token) {
+                            var logInfo = {
+                                username: username,
+                                password: encodeURIComponent(password)
+                            }
+                            var logMsg = {
+                                username: username,
+                                password: encodeURIComponent(psw)
+                            }
+                            var logInfoString = JSON.stringify(logInfo);
+                            var logMsgString = JSON.stringify(logMsg);
+
+                            AsyncStorage.setItem('logMsg', logMsgString, function (error) {
+                                if (error) {
+                                    console.log('error: save error');
+                                } else {
+                                    console.log('save: logMsg = ' + logMsgString);
+                                }
+                            });
+
+                            if(keepPsw){
+                                AsyncStorage.setItem('logInfo', logInfoString, function (error) {
+                                    if (error) {
+                                        console.log('error: save error');
+                                    } else {
+                                        console.log('save: logInfo = ' + logInfo);
+                                    }
+                                });
+                            }else{
+                                AsyncStorage.setItem('logInfo', '', function (error) {
+                                    if (error) {
+                                        console.log('error: save error');
+                                    }
+                                });
+                            }
+                            global.access_token = result.access_token;
+                            AsyncStorage.setItem('token', result.access_token, function (error) {
+                                if (error) {
+                                    console.log('error: save error');
+                                } else {
+                                    console.log('save: access_token = ' + result.access_token);
+                                }
+                            });
+                            that.fetchUserInfo();
                         } else {
-                            console.log('save: logInfo = ' + logInfo);
+
+                            Toast.show('用户名或密码错误');
                         }
+
                     });
                 }else{
-                    AsyncStorage.setItem('logInfo', '', function (error) {
-                        if (error) {
-                            console.log('error: save error');
-                        }
-                    });
+                    Toast.show('请选择院区');
+                    return;
                 }
-                global.access_token = result.access_token;
-                AsyncStorage.setItem('token', result.access_token, function (error) {
-                    if (error) {
-                        console.log('error: save error');
-                    } else {
-                        console.log('save: access_token = ' + result.access_token);
-                    }
-                });
-                Toast.show('登录成功');
-                that.fetchUserInfo();
-            } else {
-                
-                Toast.show('用户名或密码错误');
+            }else{
+                Toast.show('请选择院区');
+                return;
+            }
+        }
+    })
+
+    }
+
+    logout(){
+        username='';
+        password='';
+        global.access_token = null;
+        global.deptId = null;
+        global.userId = null;
+        global.permissions = null;
+        global.uinfo = null;
+        AsyncStorage.setItem('token', '', function (error) {
+            if (error) {
+                console.log('error: save error');
+            }
+        });
+
+        AsyncStorage.setItem('uinfo', '', function (error) {
+            if (error) {
+                console.log('error: save error' + JSON.stringify(error));
             }
 
         });
+        AsyncStorage.setItem('logMsg', '', function (error) {
+            if (error) {
+                console.log('error: save error' + JSON.stringify(error));
+            }
 
+        });
+        this.setState({keepPsw:false,username:"",password:""});
     }
 
     fetchUserInfo() {
         var that = this;
         Request.requestGet(GetUserInfo, null, (result) => {
-            //console.log('result.code: ' + result.code + ', is 200: ' + (result.code === 200));
+            console.log(result);
+            console.log('result.code: ' + result.code + ', is 200: ' + (result.code === 200));
             if (result && result.code === 200) {
 
                 global.uinfo = result.data;
-                global.userId = global.uinfo.userId;
-                global.deptId = global.uinfo.deptAddresses[0].deptId;
+                if(result.data&&result.data.userId){global.userId = result.data.userId;}else{
+                    Toast.show('请完善后勤基础资料');
+                    this.logout();
+                    return;
+                }
+                if(result.data&&result.data.deptAddresses.length>0){global.deptId = global.uinfo.deptAddresses[0].deptId;}else{
+                    Toast.show('请完善后勤基础资料');
+                    this.logout();
+                    return;
+                }
                 var permissions;
                 if(global.uinfo.roleType==="ROLE_FOREMAN"){
                      permissions = "1";
@@ -278,24 +403,17 @@ export default class Login extends BaseComponent {
                      permissions = "3";
                 }
                 global.permissions = permissions;
-
                 NativeModules.MPush.bindAccount(global.userId,(callback)=>{
                     console.info(callback)
                 });
-                // if(global.uinfo.workNumber==="40001"){
-                //     global.permissions = true;
-                // }
-                //console.log('uinfo: data = ' + JSON.stringify(result.data));
+                Toast.show('登录成功');
                 AsyncStorage.setItem('uinfo', JSON.stringify(result.data), function (error) {
-                    //console.log('uinfo: error' + error);
                     if (error) {
                         console.log('error: save error' + JSON.stringify(error));
                     } else {
                         console.log('save: uinfo = ' + JSON.stringify(result.data));
                     }
-
                     const {navigation} = that.props;
-                    // navigation.goBack()
                     InteractionManager.runAfterInteractions(() => {
                         navigation.navigate('App', {theme: this.theme})
                     });
@@ -307,12 +425,33 @@ export default class Login extends BaseComponent {
 
     _hide() {
         Pop.hide();
-
         this.setState({modalVisible: false});
+    }
+    submit() {
+        if(this.state.selectZuHuData!==null&&this.state.selectYuanQuData!==null){
+            Pop.hide();
+            this.setState({modalVisible: false,selectZuHuName:this.state.selectZuHuNameTemp,selectYuanQuName:this.state.selectYuanQuNameTemp});
+            var hospitalInfo = {
+                selectZuHuData:this.state.selectZuHuData,
+                selectYuanQuData:this.state.selectYuanQuData
+            }
+            var tenantKey = hospitalInfo.selectZuHuData.tenantKey;
+            var tenantKeyAes = aesEncrypt(tenantKey);
+            tenantKeyAes = encodeURIComponent(tenantKeyAes);
+            global.hospitalId = hospitalInfo.selectYuanQuData.hospitalId;
+            global.xTenantKey = tenantKeyAes
+            AsyncStorage.setItem('hospitalInfo', JSON.stringify(hospitalInfo), function (error) {
+                if (error) {
+                    console.log('error: hospitalInfo error' + JSON.stringify(error));
+                } else {
+                    console.log('save: hospitalInfo = ' + JSON.stringify(hospitalInfo));
+                }
+            });
+        }
     }
 
     _pressSelect() {
-        this.setState({modalVisible: true, dataSource: this.state.dataSource.cloneWithRows(this.state.storeLists)});
+        this.setState({modalVisible: true, dataSourceZuHu: this.state.dataSourceZuHu.cloneWithRows(this.state.zuhuList)});
 
         //Pop.show(popView, {animationType: 'slide-up', maskClosable: true, onMaskClose: ()=>{}});
     }
@@ -338,23 +477,6 @@ export default class Login extends BaseComponent {
         }
 
         this.setState({modalVisible: true, dataSource: this.state.dataSource.cloneWithRows(items), storeLists: items});
-    }
-
-//进行渲染数据
-    renderContent(dataSource) {
-        return (
-            <ListView
-                initialListSize={1}
-                dataSource={dataSource}
-                renderRow={(item) => this.renderItem(item)}
-                style={{backgroundColor: 'white', flex: 1, height: 219,}}
-                onEndReachedThreshold={10}
-                enableEmptySections={true}
-                renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
-                    this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)
-                }
-            />
-        );
     }
 
 
@@ -383,47 +505,78 @@ export default class Login extends BaseComponent {
         );
     }
 
-//渲染每一项的数据
-    renderItemEx(data) {
+    renderItemLeft(data) {
+        var that = this;
+        var color = this.state.selectZuHuData&&this.state.selectZuHuData.tenantId===data.tenantId ? '#444' : '#999';
+        var img = null;
+        if (this.state.selectZuHuData&&this.state.selectZuHuData.tenantId===data.tenantId) {
+            img = <Image source={require('../../../res/login/ic_arrow.png')} style={{width:6,height:11,marginLeft:15,marginRight:15,}}/>
+        }
         return (
-            <View key={data.id}>
-                <TouchableOpacity onPress={() => {
-                    this.onPressItem(data)
-                }}>
-                    <View style={{flexDirection: 'row', marginLeft: 8, marginTop: 8, marginBottom: 8}}>
-                        <Image source={require('../../../res/images/ic_store_lv_item.png')}
-                               style={{width: 130, height: 115}}/>
-                        <View style={{marginLeft: 8, width: (Dimens.screen_width - 149)}}>
-                            <Text style={{fontSize: 15, color: 'black'}}>{data.name}</Text>
-                            <View style={{flexDirection: 'row', marginTop: 3}}>
-                                {
-                                    tempTypeIds.map((typeId) => {
-                                        const typeView = (<Image key={typeId}
-                                                                 source={require('../../../res/images/ic_store_star.png')}
-                                                                 style={{
-                                                                     width: 10,
-                                                                     height: 10,
-                                                                     marginLeft: 3,
-                                                                     marginTop: 3
-                                                                 }}/>);
-                                        return typeView;
-                                    })
-                                }
-                                <Text style={{fontSize: 12, color: '#777', marginLeft: 3}}>{data.comment}条评论</Text>
-                            </View>
-                            <Text style={{fontSize: 12, color: '#777', marginTop: 3}}>{data.tag}</Text>
-                            <View style={{flexDirection: 'row'}}>
-                                <Text style={{fontSize: 12, color: '#777', marginTop: 3}}>{data.location}</Text>
-                            </View>
-                            <View style={{flexDirection: 'row'}}>
-                                <Text style={{fontSize: 12, color: '#777', marginTop: 3}}>{data.remark}</Text>
-                            </View>
-                        </View>
+            <View key={data.tenantId}>
+                <TouchableOpacity onPress={()=>{this.onPressItemLeft(data)}} style={{height:45,flex:1,backgroundColor: '#f6f6f6',}}>
+                    <View style={{flexDirection:'row',marginLeft:10,height:45,textAlignVertical:'center',alignItems: 'center',}} >
+
+                        <Text style={{fontSize:14,color:color,marginLeft:15,flex:1}}>{data.tenantName}</Text>
+                        {img}
                     </View>
                 </TouchableOpacity>
-                <Image source={require('../../../res/images/ic_short_bar.png')}/>
+
             </View>
         );
+    }
+    onPressItemLeft(data){
+        var that = this;
+        var items = this.state.zuhuList;
+        console.log(JSON.stringify(data))
+        this.setState({dataSourceZuHu:this.state.dataSourceZuHu.cloneWithRows(items),
+            selectZuHuData:data,selectZuHuNameTemp:data.tenantName,selectYuanQuData:null,selectYuanQuNameTemp:""
+        });
+        that.getYuanQuListByZuHuId(data);
+    }
+    getYuanQuListByZuHuId(data) {
+        var that = this;
+        if (this.state.dataMap.has(data.tenantId)) {
+            var list = this.state.dataMap.get(data.tenantId);
+            that.setState({yuanquList:list, dataSourceYuanQu:that.state.dataSourceYuanQu.cloneWithRows(list), });
+            return;
+        }
+        var tenantKey = data.tenantKey;
+        var tenantKeyAes = aesEncrypt(tenantKey);
+        tenantKeyAes = encodeURIComponent(tenantKeyAes);
+        Request.requestGetZuHu(GetYuanQuById+tenantKeyAes,tenantKeyAes, (result)=> {
+            console.log(result);
+            if (result && result.code === 200) {
+                if(result.data&&Array.isArray(result.data.hospitalList)){
+                    this.state.dataMap.set(data.tenantId, result.data.hospitalList);
+                    this.setState({yuanquList:result.data.hospitalList, dataSourceYuanQu:this.state.dataSourceYuanQu.cloneWithRows(result.data.hospitalList), });
+                }else{
+                    this.setState({yuanquList:[], dataSourceYuanQu:this.state.dataSourceYuanQu.cloneWithRows([]), });
+                }
+            }else{
+                this.setState({yuanquList:[], dataSourceYuanQu:this.state.dataSourceYuanQu.cloneWithRows([]), });
+            }
+        });
+    }
+
+    renderItemRight(data) {
+        var that = this;
+        return (
+            <View key={data.hospitalId}>
+                <TouchableOpacity onPress={()=>{that.onPressItemRight(data)}} style={{height:45,flex:1}}>
+                    <View style={{flexDirection:'row',marginLeft:10,height:45,textAlignVertical:'center',alignItems: 'center',}} >
+                        <Image source={this.state.selectYuanQuData&&this.state.selectYuanQuData.hospitalId===data.hospitalId ? require('../../../res/login/checkbox_pre.png') : require('../../../res/login/checkbox_nor.png')} style={{width:18,height:18}}/>
+                        <Text style={{fontSize:14,color:'#777',marginLeft:15,flex:1}}>{data.hospitalName}</Text>
+                    </View>
+                </TouchableOpacity>
+
+            </View>
+        );
+    }
+    onPressItemRight(data){
+        var items = this.state.yuanquList;
+        this.setState({dataSourceYuanQu:this.state.dataSourceYuanQu.cloneWithRows(items),
+            selectYuanQuData:data,selectYuanQuNameTemp:data.hospitalName});
     }
 
 
@@ -444,13 +597,6 @@ export default class Login extends BaseComponent {
             <TouchableOpacity
                 style={styles.TouchableOpacityLeftText}
                 onPress={() => this._pressSelect()}>
-                <Text style={{
-                    fontSize: 14,
-                    color: '#999999',
-                    height: 25,
-                    textAlignVertical: 'center',
-                    textAlign: 'center',
-                }}>全院</Text>
                 <Text
                     style={{
                         borderTopLeftRadius: 6,
@@ -458,7 +604,8 @@ export default class Login extends BaseComponent {
                         borderBottomRightRadius: 6,
                         borderBottomLeftRadius: 6,
                         fontSize: 14,
-                        marginLeft: 6,
+                        marginLeft: 0,
+                        marginRight: 6,
                         color: '#5ec4c8',
                         backgroundColor: '#ffffff',
                         alignItems: 'center',
@@ -470,6 +617,14 @@ export default class Login extends BaseComponent {
                         height: 25,
                         textAlign: 'center',
                     }}>切换</Text>
+                <Text style={{
+                    fontSize: 14,
+                    color: '#999999',
+                    height: 25,
+                    textAlignVertical: 'center',
+                    textAlign: 'center',
+                }}>{(this.state.selectZuHuName===null||this.state.selectZuHuName==="" ? "医院":this.state.selectZuHuName)+"/"+(this.state.selectZuHuName===null||this.state.selectYuanQuName==="" ? "院区":this.state.selectYuanQuName)}</Text>
+
 
             </TouchableOpacity>
 
@@ -493,7 +648,7 @@ export default class Login extends BaseComponent {
                         <Text style={{
                             fontSize: 18,
                             color: Dimens.color_text_33
-                        }}>登录</Text>
+                        }}> </Text>
 
                         {image}
                     </View>
@@ -522,6 +677,7 @@ export default class Login extends BaseComponent {
                             autoFocus={true}
                             onChangeText={(text) => {
                                 username = text;
+                                this.setState({username:text});
                             }}
                             defaultValue= {this.state.username}
                             onFocus={(event) => this._onFocus(0)}
@@ -549,6 +705,7 @@ export default class Login extends BaseComponent {
                             secureTextEntry={true}
                             onChangeText={(text) => {
                                 password = text;
+                                this.setState({password:text});
                             }}
                             defaultValue={this.state.password}
                             onFocus={(event) => this._onFocus(1)}
@@ -644,84 +801,35 @@ export default class Login extends BaseComponent {
                     animationType={"none"}
                     transparent={true}
                     visible={this.state.modalVisible}
-                    onRequestClose={() => {
-                    }}
+                    onRequestClose={() =>this.setState({modalVisible:false})}
                 >
-                    <View style={{
-                        top: 0,
-                        height: Dimens.screen_height,
-                        width: Dimens.screen_width,
-                        backgroundColor: 'rgba(0,0,0,0.5)',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}><View style={{height: 300, width: '60%', backgroundColor: 'transparent'}}>
-                        <Text style={{
-                            borderTopLeftRadius: 10,
-                            borderTopRightRadius: 10,
-                            borderBottomRightRadius: 0,
-                            borderBottomLeftRadius: 0,
-                            fontSize: 15,
-                            color: '#777777',
-                            backgroundColor: '#ffffff',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            textAlignVertical: 'center',
-                            height: 40,
-                            textAlign: 'center',
-                        }}>选择院区</Text>
-                        <View style={{backgroundColor: '#eeeeee', height: 1}}/>
-                        <View style={{height: 219,}}>
+                    <View style={{top:0,height:Dimens.screen_height,width:Dimens.screen_width,backgroundColor: 'rgba(0,0,0,0.5)',alignItems:'center',justifyContent:'center',}}>
+                        <View style={stylesDept.bottomStyle}>
+                            <View style={stylesDept.topStyle}>
+                                <Text onPress={()=>this._hide()} style={{color:'#9b9b9b', marginLeft:10, flex:1}}>取消</Text>
+                                <Text onPress={()=>this.submit()} style={{color:'#9b9b9b', marginRight:10, }}>确定</Text>
+                            </View>
+                            <View style={{flexDirection:'row', height:300,}}>
+                                <ListView
+                                    initialListSize={1}
+                                    dataSource={this.state.dataSourceZuHu}
+                                    renderRow={(item) => this.renderItemLeft(item)}
+                                    style={{backgroundColor:'white',flex:1,height:300,width:Dimens.screen_width/3,}}
+                                    onEndReachedThreshold={10}
+                                    enableEmptySections={true}
+                                    renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}/>
 
-                            <ListView
-                                initialListSize={1}
-                                dataSource={this.state.dataSource}
-                                renderRow={(item) => this.renderItem(item)}
-                                style={{backgroundColor: 'white', flex: 1, height: 219,}}
-                                onEndReachedThreshold={10}
-                                enableEmptySections={true}
-                                renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
-                                    this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)
-                                }
-                            />
-                        </View>
-                        <View style={{
-                            height: 40,
-                            flexDirection: 'row',
-                            borderBottomRightRadius: 10,
-                            borderBottomLeftRadius: 10,
-                            backgroundColor: '#f5f5f5',
-                        }}>
-                            <Text onPress={() => {
-                                this._hide()
-                            }}
-                                  style={{
-                                      fontSize: 15,
-                                      color: '#777777',
-                                      flex: 1,
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      textAlignVertical: 'center',
-                                      height: 40,
-                                      textAlign: 'center',
-                                  }}>取消</Text>
-                            <Text onPress={() => {
-                                this._hide()
-                            }}
-                                  style={{
-                                      fontSize: 15,
-                                      color: '#777777',
-                                      flex: 1,
-                                      borderBottomRightRadius: 10,
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      textAlignVertical: 'center',
-                                      height: 40,
-                                      backgroundColor: '#eaeaea',
-                                      textAlign: 'center',
-                                  }}>确定</Text>
-                        </View>
+                                <ListView
+                                    initialListSize={1}
+                                    dataSource={this.state.dataSourceYuanQu}
+                                    renderRow={(item) => this.renderItemRight(item)}
+                                    style={{backgroundColor:'white',flex:1,height:300,width:Dimens.screen_width*2/3,}}
+                                    onEndReachedThreshold={10}
+                                    enableEmptySections={true}
+                                    renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}/>
 
-                    </View>
+                            </View>
+                        </View>
                     </View>
                 </Modal>
             </View>
@@ -822,6 +930,75 @@ const styles = StyleSheet.create({
         height: 0.5,
         backgroundColor: '#eee'
     }
+});
+const stylesDept = StyleSheet.create({
+    modelStyle:{
+        flex: 1,
+        width:Dimens.screen_width,
+        height:Dimens.screen_height,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+    },
+    popupStyle:{
+        marginLeft:40,
+        width:Dimens.screen_width-80,
+        height:390,
+        backgroundColor: 'white',
+        borderBottomRightRadius: 15,
+        borderBottomLeftRadius: 15,
+        borderTopLeftRadius: 15,
+        borderTopRightRadius:15,
+    },
+    container: {
+        flex: 1,
+        backgroundColor: '#f6f6f6',
+    },
+    line:{
+        backgroundColor:'#eeeeee',height:1,width:(Dimens.screen_width-15),marginTop:0,marginLeft:15,
+    },
+    button:{
+        width:Dimens.screen_width,
+        height:50,
+        color:'#ffffff',
+        fontSize:18,
+        textAlign:'center',
+        backgroundColor: '#5ec4c8',
+        alignItems:'center',
+        justifyContent:'center',
+        textAlignVertical:'center',
+        // position: 'absolute',
+        // bottom: 0,
+        // left: 0,
+        // right: 0,
+        alignSelf: 'center'
+    },
+
+    bottomStyle:{
+        width:Dimens.screen_width,
+        height:335,
+        textAlign:'center',
+        backgroundColor: '#fff',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        alignSelf: 'center'
+    },
+    topStyle: {
+        flexDirection:'row',
+        fontSize:14,
+        backgroundColor: '#EFF0F1',
+        width:Dimens.screen_width,
+        height:35,
+        alignItems:'center',
+        justifyContent:'center',
+        textAlignVertical:'center',
+    },
+
+    separator: {
+        height: 0.5,
+        backgroundColor: '#eee'
+    }
+
 });
 
 
