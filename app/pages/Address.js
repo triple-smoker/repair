@@ -54,19 +54,13 @@ class MyAddress extends Component {
                 if (error) {
                     // alert('读取失败')
                 }else {
-                    console.log('------------------------');
                     console.log(result);
                     let porterList = JSON.parse(result);
                     this.getHistory(porterList);
-
                     // alert('读取完成')
                 }
             }.bind(this)
         )
-
-        console.log('++++++++++++++++++++++++++++++++++++prop')
-        console.log(this.props)
-
       }
 
       getHistory(porterList){

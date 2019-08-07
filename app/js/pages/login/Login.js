@@ -24,61 +24,6 @@ import Axios from '../../../util/Axios';
 import {toastShort} from "../../util/ToastUtil";
 
 
-let tempTypeIds = [1, 2, 3, 4];
-
-const STORE_DATA = {
-    "api": "GetStoreList",
-    "v": "1.0",
-    "code": "0",
-    "msg": "success",
-    "data": [{
-        "id": 1,
-        "name": "四川Brunch",
-        "star": 4,
-        "comment": 45,
-        "tag": "中国餐馆,四川菜,重辣",
-        "location": "6.6km",
-        "remark": "每日有优惠",
-        "isSelected": 0,
-    }, {
-        "id": 2,
-        "name": "聚星楼",
-        "star": 4,
-        "comment": 45,
-        "tag": "中国餐馆,四川菜,重辣",
-        "location": "6.6km",
-        "remark": "每日有优惠",
-        "isSelected": 0,
-    }, {
-        "id": 3,
-        "name": "四川川二娃",
-        "star": 4,
-        "comment": 45,
-        "tag": "中国餐馆,四川菜,重辣",
-        "location": "6.6km",
-        "remark": "每日有优惠",
-        "isSelected": 0,
-    }, {
-        "id": 4,
-        "name": "韩国大烤肉",
-        "star": 4,
-        "comment": 45,
-        "tag": "中国餐馆,四川菜,重辣",
-        "location": "6.6km",
-        "remark": "每日有优惠",
-        "isSelected": 0,
-    }, {
-        "id": 5,
-        "name": "釜山料理",
-        "star": 4,
-        "comment": 45,
-        "tag": "中国餐馆,四川菜,重辣",
-        "location": "6.6km",
-        "remark": "每日有优惠",
-        "isSelected": 0,
-    }
-    ]
-};
 
 var username = '';
 var password = '';
@@ -111,7 +56,6 @@ export default class Login extends BaseComponent {
                     return true//r1.isSelected !== r2.isSelected;
                 }
             }),
-            storeLists: STORE_DATA.data,
             selectIndex: '-1',
             modalVisible: false,
             username:null,
@@ -463,47 +407,8 @@ export default class Login extends BaseComponent {
         );
     }
 
-    //点击列表每一项响应按钮
-    onPressItem(data) {
-        var items = this.state.storeLists;
-        for (var i = 0; i < items.length; i++) {
-            var item = items[i];
-            if (item.id === data.id) {
-                item.isSelected = 1;
-            } else {
-                item.isSelected = 0;
-            }
-
-        }
-
-        this.setState({modalVisible: true, dataSource: this.state.dataSource.cloneWithRows(items), storeLists: items});
-    }
 
 
-    renderItem(data) {
-        var that = this;
-        return (
-            <View key={data.id}>
-                <TouchableOpacity onPress={() => {
-                    that.onPressItem(data)
-                }} style={{height: 45, flex: 1}}>
-                    <View style={{
-                        flexDirection: 'row',
-                        marginLeft: 20,
-                        height: 45,
-                        textAlignVertical: 'center',
-                        alignItems: 'center',
-                    }}>
-                        <Image
-                            source={data.isSelected === 0 ? require('../../../res/login/checkbox_nor.png') : require('../../../res/login/checkbox_pre.png')}
-                            style={{width: 18, height: 18}}/>
-                        <Text style={{fontSize: 14, color: '#777', marginLeft: 15,}}>{data.name}</Text>
-                    </View>
-                </TouchableOpacity>
-
-            </View>
-        );
-    }
 
     renderItemLeft(data) {
         var that = this;
