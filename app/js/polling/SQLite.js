@@ -30,35 +30,51 @@ export default class SQLite extends Component {
     //打开数据库
     static open(){
         var that = this;
-        AsyncStorage.getItem("hospitalInfo", function (error, result) {
-            if (error) {
-                console.log("读取失败");
-            } else {
-                if (result) {
-                    var hospitalInfo = JSON.parse(result);
-                    if (hospitalInfo && hospitalInfo.selectZuHuData && hospitalInfo.selectYuanQuData) {
-                        var tenantKey = hospitalInfo.selectZuHuData.tenantKey;
-                        var tenantKeyAes = aesEncrypt(tenantKey);
-                        db = SQLiteStorage.openDatabase(
-                            database_name+tenantKeyAes+".db",
-                            database_version,
-                            database_displayname+tenantKeyAes,
-                            database_size,
-                            ()=>{
-                                that._successCB('open');
-                            },
-                            (err)=>{
-                                that._errorCB('open',err);
-                            });
-                        return db;
+        if(global.xTenantKey){
+            db = SQLiteStorage.openDatabase(
+                database_name+global.xTenantKey+".db",
+                database_version,
+                database_displayname+xTenantKey,
+                database_size,
+                ()=>{
+                    that._successCB('open');
+                },
+                (err)=>{
+                    that._errorCB('open',err);
+                });
+            return db;
+        }else{
+            AsyncStorage.getItem("hospitalInfo", function (error, result) {
+                if (error) {
+                    console.log("读取失败");
+                } else {
+                    if (result) {
+                        var hospitalInfo = JSON.parse(result);
+                        if (hospitalInfo && hospitalInfo.selectZuHuData && hospitalInfo.selectYuanQuData) {
+                            var tenantKey = hospitalInfo.selectZuHuData.tenantKey;
+                            var tenantKeyAes = aesEncrypt(tenantKey);
+                            tenantKeyAes = encodeURIComponent(tenantKeyAes);
+                            db = SQLiteStorage.openDatabase(
+                                database_name+tenantKeyAes+".db",
+                                database_version,
+                                database_displayname+tenantKeyAes,
+                                database_size,
+                                ()=>{
+                                    that._successCB('open');
+                                },
+                                (err)=>{
+                                    that._errorCB('open',err);
+                                });
+                            return db;
+                        }else{
+                            return null;
+                        }
                     }else{
                         return null;
                     }
-                }else{
-                    return null;
                 }
-            }
-        })
+            })
+        }
     }
 
     //创建表

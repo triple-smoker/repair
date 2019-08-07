@@ -122,19 +122,23 @@ class TypeMd extends Component {
             var id = null;
             var step = this.state.step
             var placeType = this.state.placeType
-            if(step == 1){
-                if(placeType == 1){
+            var publictxt = "";
+              if(data.publicType === '1'){
+                  publictxt = ' （室外）'
+              }
+            if(step === 1){
+                if(placeType === 1){
                     name = data.buildingName
                     id = data.buildingId
-                }else if(placeType == 2){
+                }else if(placeType === 2){
                     name = data.inpatientWardName
                     id = data.inpatientWardId
                 }
                 
-            }else if(step == 2){
+            }else if(step === 2){
                 name = data.floorName
                 id = data.floorId
-            }else if(step == 3){
+            }else if(step === 3){
                 name = data.roomName
                 id = data.roomId
             }
@@ -145,7 +149,7 @@ class TypeMd extends Component {
                 <TouchableOpacity onPress={()=>{this.onPressItemLeft(data,step)}} style={{height:40,flex:1,backgroundColor: '#f2f2f2',}}>
                     <View style={{flexDirection:'row',marginLeft:10,height:40,textAlignVertical:'center',alignItems: 'center',}} >
                         <Text style={{fontSize:13,color:'#404040',marginLeft:15,flex:1}}>
-                            {name}
+                            {name+publictxt}
                         </Text>
                     </View>
                 </TouchableOpacity>
