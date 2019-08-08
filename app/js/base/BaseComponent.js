@@ -182,15 +182,13 @@ export default class BaseComponent extends Component {
     routeTo(this.props.navigator, page)
   }
 
-  saveNotifyMessage(e){
-    console.info(global.userId)
-    AsyncStorage.getItem(global.userId, function (error, result) {
+  async saveNotifyMessage(e){
+    // console.info(global.userId)
+    await AsyncStorage.getItem(global.userId, function (error, result) {
         if (error) {
             console.log('读取失败')
         } else {
-            console.info("xxx")
             result = JSON.parse(result);
-            console.info(result)
             let notifyData = {
                 "title" : e.title,
                 "content" : e.content,
@@ -199,11 +197,12 @@ export default class BaseComponent extends Component {
             let resultData = result || [];
 
             resultData.push(notifyData);
+            console.info("----saveNotifyMessage----")
             console.info(resultData)
             AsyncStorage.setItem(global.userId,JSON.stringify(resultData),function (error) {
                 if (error) {
                     console.log('存储失败')
-                    console.info(error)
+                    console.log(error)
                 }else {
                     console.log('存储完成')
                 }

@@ -29,7 +29,7 @@ export default class workOrderInform extends BaseComponent {
         super(props);
         console.info(this.props)
         const { navigation } = this.props;
-        const workOrderNotify = navigation.getParam('workOrderNotify', null);
+        const workOrderNotify = navigation.getParam('workOrderNotify', []);
         console.info(workOrderNotify)
         this.state={
             theme : this.props.theme,
@@ -51,8 +51,9 @@ export default class workOrderInform extends BaseComponent {
     }
 
     loadDataSourceByWorkOrderNotify(){
+        var dataSource = this.state.workOrderNotify.reverse();
         this.setState({
-            dataSource:this.state.dataSource.cloneWithRows(this.state.workOrderNotify),
+            dataSource:this.state.dataSource.cloneWithRows(dataSource),
         });
     }
 
