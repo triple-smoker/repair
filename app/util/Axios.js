@@ -19,6 +19,7 @@ axios.interceptors.request.use(
             'Authorization': `Bearer ${apiToken}`,
             // 'Authorization': `Bearer 89db0128-fd66-47d5-be0a-b327a339bae8`,
         };
+        console.log(headers);
         if (config.headers) {
             config.headers = {
                 ...headers,

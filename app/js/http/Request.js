@@ -153,20 +153,14 @@ static requestGet(action, params, callback) {
 		url = url + strParams.substr(1, strParams.length) + '&grant_type=password&scope=server';
 	}
 
-    // let token = await global.storage.load({
-    //     key:'token'
-    // });
     var token = global.access_token;
-	// console.log("++++++++");
-	// console.log(XTenantKey);
-	// console.log(HospitalId);
     var headers = {
     			'Authorization': 'Basic anhjbG91ZDpqeGNsb3Vk',
     			'cache-control': 'no-cache',
 				'Accept': 'application/json',
 				'Content-Type':"application/json",
 				'x-tenant-key': global.xTenantKey,
-				'hospitalId'  : global.hospitalid,
+				'hospitalId'  : global.hospitalId,
 			};
     if (token && token.length) {
         headers['Authorization'] = 'Bearer ' + token;
@@ -215,7 +209,7 @@ static requestGetWithKey(action, params, callback, key) {
 				'Accept': 'application/json',
 				'Content-Type':"application/json",
                 'x-tenant-key': global.xTenantKey,
-                'hospitalId'  : global.hospitalid,
+                'hospitalId'  : global.hospitalId,
 			};
     if (token && token.length) {
         headers['Authorization'] = 'Bearer ' + token;
@@ -253,7 +247,7 @@ static requestPost(action, params, callback) {
                 'Accept': 'application/json',
                 'Content-Type':"application/json",
                 'x-tenant-key': global.xTenantKey,
-                'hospitalId'  : global.hospitalid,
+                'hospitalId'  : global.hospitalId,
             };
     if (token && token.length) {
         headers['Authorization'] = 'Bearer ' + token;
@@ -290,7 +284,7 @@ static requestPost(action, params, callback) {
                 'Accept': 'application/json',
                 'Content-Type':"application/json",
                 'x-tenant-key': global.xTenantKey,
-                'hospitalId'  : global.hospitalid,
+                'hospitalId'  : global.hospitalId,
             };
     if (token && token.length) {
         headers['Authorization'] = 'Bearer ' + token;
@@ -315,27 +309,6 @@ static requestPost(action, params, callback) {
     .catch(error=>{
         callback(JSON.stringify(error));
     });//.done();
- }
-
- static requestHttpEx(action, params, callback) {
- 	fetch(HOST+action, {
- 		method:'POST',
- 		header:{
- 			'Accept':"application/json",
- 			'Content-Type':"application/json",
- 			'x-tenant-key': XTenantKey,
- 			'hospitalId'  : '',
- 		},
- 		body:JSON.stringify(data)
- 	})
- 	.then(response=>response.json())
- 	.then(result=>{
- 		callback(JSON.stringify(result));
-
- 	})
- 	.catch(error=>{
- 		callback(JSON.stringify(error));
- 	})
  }
 
 static uploadFile(path, callback) {
