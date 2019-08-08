@@ -141,7 +141,8 @@ export default class Login extends BaseComponent {
     loadZuHu(){
         var params = new Map();
         params.set('isGetZuHu', true);
-        Request.requestGetZuHu(GetZuHu, "Uf2k7ooB77T16lMO4eEkRg==" ,(result)=> {
+        // var param = "Uf2k7ooB77T16lMO4eEkRg==";
+        Request.requestGetZuHu(GetZuHu,null  ,(result)=> {
             console.log(result)
             if(result.data&&Array.isArray(result.data)){
                 this.setState({zuhuList:result.data});
