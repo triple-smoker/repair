@@ -207,7 +207,7 @@ export default class CheckSqLite extends Component {
             +" WHERE"
             +" b.PLACE_TYPE_ID = a.OBJ_ID"
             +" AND a.JOB_CODE = '"+jobCode+"'"
-            "AND a.VER_NBR = '"+verNbr+"'";
+            +" AND a.VER_NBR = '"+verNbr+"'";
     }
     //巡检二级页面 type=1
     selectSecondCheckOne(jobCode,verNbr){
@@ -249,10 +249,8 @@ export default class CheckSqLite extends Component {
     }
     //巡检三级页面
     selectThirdCheck(manCode){
-        return "select b.ID,b.ITEM_NAME,b.ITEM_FORMAT,b.ITEM_RESULT_SET,b.ITEM_CODE " +
+        return "select b.ID,b.ITEM_NAME,b.ITEM_FORMAT,b.ITEM_RESULT_SET,b.ITEM_CODE,b.ITEM_LEVEL " +
             "from inspect_item_conf b, man_ref_item mri where " +
-            "mri.STATUS_CD=1 and " +
-            "b.STATUS_CD=1 and " +
             "mri.ITEM_CODE=b.ITEM_CODE " +
             "and mri.MAN_CODE='"+manCode+"'";
     }
