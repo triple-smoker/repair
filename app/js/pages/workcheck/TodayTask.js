@@ -12,7 +12,7 @@ import {
     Platform,
     ToastAndroid,
     ListView,
-    Modal, TouchableHighlight, Dimensions,
+    Modal, TouchableHighlight, Dimensions, DeviceEventEmitter,
 } from 'react-native';
 
 
@@ -43,6 +43,7 @@ let cachedResults = {
 let ScreenWidth = Dimensions.get('window').width;
 var db;
 var checkSqLite = new CheckSqLite();
+var notifNum = 0;
 export default class TodayTask extends BaseComponent {
   constructor(props){
     super(props);
@@ -129,8 +130,26 @@ export default class TodayTask extends BaseComponent {
                 },(error)=>{
                     console.log(error);
                 });
-
-
+            }else{
+                if(!db){
+                    db = SQLite.open();
+                }
+                let sql = "select * from auto_up";
+                var itemList = [];
+                db.transaction((tx)=>{
+                    tx.executeSql(sql, [],(tx,results)=>{
+                        let len = results.rows.length;
+                        console.log("需要上传的报表数量："+len);
+                        if(len>0){
+                            if(notifNum%3===0){
+                                DeviceEventEmitter.emit("localMessage");
+                                notifNum++;
+                            }
+                        }
+                    });
+                },(error)=>{
+                    console.log(error);
+                });
             }
         });
     }

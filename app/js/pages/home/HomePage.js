@@ -292,7 +292,7 @@ export default class HomePage extends Component {
         //         theme:this.theme,
         //     })
         // });
-        this.getSqlite();
+        // this.getSqlite();
     }
 
     render() {

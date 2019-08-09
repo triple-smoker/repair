@@ -21,6 +21,38 @@ import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
 import AsyncStorage from '@react-native-community/async-storage';
 import { toastShort } from '../../util/ToastUtil';
+import SQLite from "../../polling/SQLite";
+import {aesEncrypt} from "../../util/CipherUtils";
+import Axios from "../../../util/Axios";
+
+
+
+const tabs = [
+    "inspect_job",
+    "equipment_ref_item",
+    "inspect_equipment_type_conf",
+    "inspect_item_conf",
+    "inspect_job_manager",
+    "job_exec_time",
+    "man_ref_item",
+    "t_base_equipment_type",
+    "t_base_equipment",
+    "daily_report",
+    "daily_task",
+    "r_building_floor",
+    "r_floor_room",
+    "t_base_building",
+    "t_base_place",
+    "t_base_room",
+    "t_base_floor",
+    "t_base_equipment",
+    "t_base_equipment",
+    "t_base_equipment",
+    // "auto_up",
+    "auto_percent",
+]
+
+var db;
 export default class MySet extends BaseComponent {
     static navigationOptions = {
         header: null,
@@ -57,6 +89,23 @@ export default class MySet extends BaseComponent {
                 }
 
         });
+        AsyncStorage.setItem('reporterInfoHistory', '', function (error) {
+                if (error) {
+                    console.log('error: save error' + JSON.stringify(error));
+                }
+
+        });
+        AsyncStorage.setItem('searchItemHistory', '', function (error) {
+                if (error) {
+                    console.log('error: save error' + JSON.stringify(error));
+                }
+
+        });
+        AsyncStorage.setItem(global.userId, '', function (error) {
+                if (error) {
+                    console.log('error: save error' + JSON.stringify(error));
+                }
+        });
 
         NativeModules.MPush.unbindAccount((callback)=>{
             console.info(callback)
@@ -69,35 +118,36 @@ export default class MySet extends BaseComponent {
     }
     //del
     _deleteData(){
-        console.log('删除')
 
         //删除一条数据
-        AsyncStorage.removeItem('token', function (error) {
+        AsyncStorage.setItem('fileVideoCache',"", function (error) {
             if (error) {
-                toastShort('删除失败')
-            }else {
-                toastShort('删除完成')
+                console.log('error: save error' + JSON.stringify(error));
             }
         })
-
-        //删除一条数据
-        AsyncStorage.removeItem('fileVideoCache', function (error) {
+        AsyncStorage.setItem('reporterInfoHistory', '', function (error) {
             if (error) {
-                // alert('删除失败')
-            }else {
-                // alert('删除完成')
+                console.log('error: save error' + JSON.stringify(error));
+            }
+
+        });
+        AsyncStorage.setItem('searchItemHistory', '', function (error) {
+            if (error) {
+                console.log('error: save error' + JSON.stringify(error));
+            }
+
+        });
+
+        AsyncStorage.setItem(global.userId,"", function (error) {
+            if (error) {
+                console.log('error: save error' + JSON.stringify(error));
             }
         })
-
-        AsyncStorage.removeItem(global.userId, function (error) {
-            if (error) {
-                // alert('删除失败')
-            }else {
-                // alert('删除完成')
-            }
-        })
-
         RNFetchBlob.clearCache();
+
+        toastShort("清除缓存");
+
+
     }
     /**跳转个人信息 */
     lookData(){
@@ -105,6 +155,88 @@ export default class MySet extends BaseComponent {
         InteractionManager.runAfterInteractions(() => {
                 navigation.navigate('MyData',{theme:this.theme})
             });
+    }
+    deleteSqlite(){
+        AsyncStorage.setItem('sqLiteTimeTemp'+decodeURIComponent(global.xTenantKey), '', function (error) {
+            if (error) {
+                console.log('error: save error' + JSON.stringify(error));
+            }
+
+        });
+
+        if(!db){
+            db = SQLite.open();
+        }
+        tabs.forEach((tabName)=>{
+            SQLite.dropTable(tabName);
+        })
+    }
+
+    getSqlite(){
+        var sqLiteTimeTemp = "0"
+        //开启数据库
+        if(!db){
+            db = SQLite.open();
+        }
+        //建表
+        // sqLite.createTable();
+        AsyncStorage.getItem("hospitalInfo", function (error, result) {
+            if (error) {
+                console.log("读取失败");
+            } else {
+                if (result) {
+                    var hospitalInfo = JSON.parse(result);
+                    if (hospitalInfo && hospitalInfo.selectZuHuData && hospitalInfo.selectYuanQuData) {
+                        var tenantKey = hospitalInfo.selectZuHuData.tenantKey;
+                        var tenantKeyAes = aesEncrypt(tenantKey);
+                        AsyncStorage.getItem('sqLiteTimeTemp'+tenantKeyAes,function (error, result) {
+
+                            if (error) {
+                                // alert('读取失败')
+                            }else {
+                                var sqlTime = JSON.parse(result);
+                                if(sqlTime != null && sqlTime != ""){
+                                    sqLiteTimeTemp = sqlTime;
+                                }
+                                console.log(">>>>>>>>>>>>")
+                                console.log(sqLiteTimeTemp)
+                                //数据同步接口条用
+                                let url = "/api/generaloperation/portal/batchSynchronization/ModulesName?time="+sqLiteTimeTemp+"&modulesName=xunjian";
+                                Axios.GetAxios(url,{}).then(
+                                    (response)=>{
+                                        // console.log(response);
+                                        if(Array.isArray(response.data)&&response.data.length>1){
+                                            let key = 'sqLiteTimeTemp'+tenantKeyAes;
+                                            //json转成字符串
+                                            let jsonStr = JSON.stringify(response.data[0]);
+                                            //存储
+                                            AsyncStorage.setItem(key, jsonStr, function (error) {
+
+                                                if (error) {
+                                                    console.log('存储失败')
+                                                }else {
+                                                    console.log('存储完成')
+                                                }
+                                            })
+                                            var dates = response.data[1];
+                                            for(var tableName in dates){
+                                                if(dates[tableName]!=null&&dates[tableName].length>0){
+                                                    SQLite.insertData(dates[tableName],tableName);
+                                                }
+
+                                            }
+                                        }
+                                        toastShort("本地数据同步成功");
+                                    }
+                                );
+                            }
+                        }.bind(this))
+                    }
+                }
+            }
+        })
+
+
     }
 
     render() {
@@ -160,6 +292,23 @@ export default class MySet extends BaseComponent {
             </View>
 
             <View style={styles.input_center_bg}>
+                <TouchableOpacity onPress={()=>this.getSqlite()}>
+                    <View style={styles.case}>
+                        <Text style={{fontSize:16}}>
+                            离线数据同步
+                        </Text>
+                        <Image style={{height:15,width:8}} source={require('../../../res/login/ic_arrow.png')}/>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.deleteSqlite()}>
+                    <View style={styles.case}>
+                        <Text style={{fontSize:16}}>
+                            清除离线数据
+                        </Text>
+                        <Image style={{height:15,width:8}} source={require('../../../res/login/ic_arrow.png')}/>
+                    </View>
+                </TouchableOpacity>
+                <View style={styles.line} />
                 <TouchableOpacity onPress={()=>this._deleteData()}> 
                 <View style={styles.case}>
                     <Text style={{fontSize:16}}>
@@ -179,7 +328,6 @@ export default class MySet extends BaseComponent {
             
                 </View>
             </View>
-
        <Text
          onPress={()=>this.logout()} style={styles.button}
         style={{

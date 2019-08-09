@@ -28,6 +28,7 @@ export default class BaseComponent extends Component {
         DeviceEventEmitter.addListener('onMessage', this.onMessage.bind(this));
         DeviceEventEmitter.addListener('onInit', this.onInit.bind(this));
         DeviceEventEmitter.addListener('onNotification', this.onNotification);
+        DeviceEventEmitter.addListener('localMessage', this.localMessage.bind(this));
         this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
         console.log('new notif')
         console.log(this.notif)
@@ -109,6 +110,13 @@ export default class BaseComponent extends Component {
         this.saveNotifyMessage(e);
         this.notif.localNotif(e);
         console.log("Message Received. Title:" + e.title + ", Content:" + e.content);
+    }
+    localMessage(){
+        var e = {
+            title:"数据待上报",
+            content:"你本地有未上报的信息，请尽快请求网络上报数据"
+        }
+        this.notif.localNotif(e);
     }
     onNotification(e){
         console.log(this.notif);
