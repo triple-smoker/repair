@@ -496,6 +496,9 @@ class CheckItem extends Component {
             imagePos:-1,
             // imageUrl0:null
         }
+        if(this.state.stringText!==""){
+            this.props.onPressFeedback(this.props.data,this.state.stringText);
+        }
     }
     getCaues(causeNmae){
         this.setState({causeChecked:causeNmae})

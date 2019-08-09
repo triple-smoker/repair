@@ -114,7 +114,7 @@ export default class BaseComponent extends Component {
     localMessage(){
         var e = {
             title:"数据待上报",
-            content:"你本地有未上报的信息，请尽快请求网络上报数据"
+            content:"您尚有未上报的任务信息，请开启网络"
         }
         this.notif.localNotif(e);
     }
