@@ -321,8 +321,8 @@ static uploadFile(path, callback) {
     var headers = {
                 'Authorization': 'Basic anhjbG91ZDpqeGNsb3Vk',
                 'Content-Type':"multipart/form-data",
-                'x-tenant-key': XTenantKey,
-                'hospitalId'  : HospitalId,
+                'x-tenant-key': global.xTenantKey,
+                'hospitalId'  : global.hospitalId,
             };
     if (token && token.length) {
         headers['Authorization'] = 'Bearer ' + token;
