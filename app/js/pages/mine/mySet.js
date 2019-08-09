@@ -300,6 +300,7 @@ export default class MySet extends BaseComponent {
                         <Image style={{height:15,width:8}} source={require('../../../res/login/ic_arrow.png')}/>
                     </View>
                 </TouchableOpacity>
+                <View style={styles.line} />
                 <TouchableOpacity onPress={()=>this.deleteSqlite()}>
                     <View style={styles.case}>
                         <Text style={{fontSize:16}}>
