@@ -335,7 +335,7 @@ export default class Login extends BaseComponent {
                     this.logout();
                     return;
                 }
-                var permissions;
+                var permissions = "3";
                 if(global.uinfo.roleType==="ROLE_FOREMAN"){
                      permissions = "1";
                 }
