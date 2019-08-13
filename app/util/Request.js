@@ -42,7 +42,7 @@ axios.interceptors.request.use(
         const apiToken = global.access_token;
         // 添加响应头等等设置
         let headers = {
-            'hospitalId': '1055390940066893827',
+            'hospitalId': global.hospitalId,
             'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
             'Authorization': `Bearer ${apiToken}`,
         };

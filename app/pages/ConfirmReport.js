@@ -98,7 +98,7 @@ class ConfirmReport extends Component {
             method:'POST',
             headers:{
                 'Content-Type':'multipart/form-data',
-                'hospitalId': '1055390940066893827',
+                'hospitalId': global.hospitalId,
                 'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
                 'Authorization': `Bearer ${apiToken}`,
             },

@@ -87,7 +87,7 @@ class TypeMd extends Component {
         var url1 = 'api/basic/baseBuilding/list' 
         var url2 = 'api/basic/baseInpatientWard/list'
         var params = new Map();
-        params.set('hospitalId', '1055390940066893827');
+        params.set('hospitalId', global.hospitalId);
         if(type == 1){
             Request.requestGet(url1,params,(res)=>{
                 console.log('resssssssssssssssssssss')
