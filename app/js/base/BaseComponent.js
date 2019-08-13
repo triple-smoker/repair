@@ -8,7 +8,7 @@ import {
 // import {ACTION_HOME} from '../pages/entry/MainPage'
 import NotifService from '../../components/NotifService';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import Sound from 'react-native-sound';
 
 export default class BaseComponent extends Component {
 
@@ -110,6 +110,27 @@ export default class BaseComponent extends Component {
         this.saveNotifyMessage(e);
         this.notif.localNotif(e);
         console.log("Message Received. Title:" + e.title + ", Content:" + e.content);
+        this._showYy();
+    }
+    //语音播放
+    async _showYy(){
+        var whoosh = new Sound('xiaoxi_a.mp3', Sound.MAIN_BUNDLE, (error) => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            // loaded successfully
+            console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+
+            // Play the sound with an onEnd callback
+            whoosh.play((success) => {
+                if (success) {
+                    console.log('successfully finished playing');
+                } else {
+                    console.log('playback failed due to audio decoding errors');
+                }
+            });
+        });
     }
     localMessage(){
         var e = {
