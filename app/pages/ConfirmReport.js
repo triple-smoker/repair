@@ -99,7 +99,7 @@ class ConfirmReport extends Component {
             headers:{
                 'Content-Type':'multipart/form-data',
                 'hospitalId': global.hospitalId,
-                'x-tenant-key':'Uf2k7ooB77T16lMO4eEkRg==',
+                'x-tenant-key':global.xTenantKey,
                 'Authorization': `Bearer ${apiToken}`,
             },
             data:formData,
