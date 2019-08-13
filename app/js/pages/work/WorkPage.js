@@ -77,7 +77,8 @@ export default class WorkPage extends BaseComponent {
       isRefreshing: false, // refresh?
         isScan:(this.props.isScan)?this.props.isScan:false,
         equipmentId:(this.props.equipmentId)?this.props.equipmentId:"",
-    }
+        routerNameUnity:(this.props.routerNameUnity===1)?1:0,
+    };
   }
 
 
@@ -99,9 +100,9 @@ export default class WorkPage extends BaseComponent {
           equipmentId = props.equipmentId;
           isScan = true;
       }
-      this.setState({tabIndex:0,isScan:isScan,equipmentId:equipmentId});
-      cachedResults.tabIndex = 0;
-        this._fetchData(0,props.isScan,props.equipmentId);
+      this.setState({tabIndex:(props.navigation.state.params.routerNameUnity===1)?1:0,isScan:isScan,equipmentId:equipmentId});
+      (props.navigation.state.params.routerNameUnity===1)?cachedResults.tabIndex=1:cachedResults.tabIndex = 0;
+      this._fetchData(0,props.isScan,props.equipmentId);
   }
 
     submit() {

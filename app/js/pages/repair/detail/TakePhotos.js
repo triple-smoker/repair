@@ -181,7 +181,8 @@ export default class TakePhotos extends BaseComponent {
                     const {navigation} = this.props;
                     InteractionManager.runAfterInteractions(() => {
                         navigation.navigate('WorkManager',{
-                                theme:this.theme
+                                theme:this.theme,
+                                routerNameUnity:1
                                 })
                     });
                 } else {

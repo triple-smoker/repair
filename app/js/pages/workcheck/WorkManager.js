@@ -22,17 +22,19 @@ export default class CheckDetail extends BaseComponent {
     };
     constructor(props){
         super(props);
-        // const { navigation } = this.props;
+        const { navigation } = this.props;
         // const isScan = navigation.getParam('isScan', '');
         // const scanId = navigation.getParam('scanId', '');
         // const equipmentId = navigation.getParam('equipmentId', '');
         // const equipmentName = navigation.getParam('equipmentName', '');
+        var routerNameUnity = navigation.getParam('routerNameUnity', 0);
         this.state = {
             isScan : null,
             scanId : null,
             equipmentId : null,
             equipmentName : null,
-            equipmentType : null
+            equipmentType : null,
+            routerNameUnity : routerNameUnity,
         }
     }
     componentDidMount() {
@@ -71,6 +73,7 @@ export default class CheckDetail extends BaseComponent {
                     equipmentTypeId: result.data.equipmentTypeId,
                     isScan : isScan,
                     scanId : scanId,
+                    routerNameUnity : navigation.getParam('routerNameUnity', 0),
                 })
             })
 		}
@@ -133,7 +136,7 @@ export default class CheckDetail extends BaseComponent {
                     rightStyle={{width:16,height:20}}
                 /> */}
                 <Tabs>
-                    <Tab heading='维修' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#fff'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
+                    <Tab heading='维修' tabStyle={{backgroundColor:'#fff'}} routerNameUnity={this.state.routerNameUnity} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#fff'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
                         <WorkPage isScan={this.state.isScan} equipmentId={this.state.equipmentId} navigation = {this.props.navigation}/>
                     </Tab>
                     <Tab heading='巡检' tabStyle={{backgroundColor:'#fff'}} activeTabStyle={{backgroundColor:'#fff',borderBottomWidth:2,borderColor:'#fff'}} textStyle={{color:'#999',fontWeight:"300"}} activeTextStyle={{color:'#62c0c5',fontWeight:'300'}}>
