@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Container, Content , Text} from 'native-base';
+import {Container, Content , Text , Button} from 'native-base';
 import MultipleImagePicker from "../components/MultipleImagePicker";
 import Reporter from '../components/Reporter';
 import Notice from '../components/Notice';
@@ -104,7 +104,6 @@ export default class RepairScreen extends React.Component {
             typeVisible:false,
             deptName : '',
             address : (tableType!==''&&tableType==="2")?replaceName:'',
-
         }
 
 
@@ -363,7 +362,9 @@ export default class RepairScreen extends React.Component {
         const { navigate } = this.props.navigation;
         this.props.navigation.goBack();
     }
-
+    changeDesc(descText){
+        this.setState({desc:descText});
+    }
     render() {
         return (
             <Container style={{backgroundColor: "#EEEEEE"}}>
@@ -392,6 +393,7 @@ export default class RepairScreen extends React.Component {
                 <Content >
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
                     <View style={{height:"1.5%"}}/>
+                    <QuicklyContent changeDesc={(descText)=>this.changeDesc(descText)}/>
                     {/*{this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&*/}
                         {/*<Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>*/}
                             {/*{this.state.repairParentCn}/{this.state.repairChildCn}*/}
@@ -400,7 +402,7 @@ export default class RepairScreen extends React.Component {
                     <TextInput style={{textAlignVertical: 'top', backgroundColor: "#ffffff" , marginLeft: '1.5%', paddingLeft:10, marginRight: '1.5%',}}
                                multiline = {true}
                                numberOfLines = {4}
-                               onChangeText={(text) => this.setState({desc : text})}
+                               onChangeText={(text) => {this.setState({desc : text})}}
                                value={this.state.desc}
                                placeholder={"我的报修内容..."}
                     />
@@ -444,6 +446,82 @@ export default class RepairScreen extends React.Component {
     }
 
 
+}
+class QuicklyContent extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            causeList : [],
+        }
+    }
+    componentDidMount(){
+        this.getCauseList();
+    }
+    getCauseList(){
+        this.setState({
+            causeList:[
+                {
+                    causeId:"1",
+                    causeCtn:"方式",
+                    showType:false
+                },{
+                    causeId:"2",
+                    causeCtn:"快捷式",
+                    showType:false
+                },{
+                    causeId:"3",
+                    causeCtn:"快捷方式",
+                    showType:false
+                },{
+                    causeId:"4",
+                    causeCtn:"方式",
+                    showType:false
+                },{
+                    causeId:"5",
+                    causeCtn:"快捷式",
+                    showType:false
+                },{
+                    causeId:"6",
+                    causeCtn:"快捷方式",
+                    showType:false
+                },
+            ]
+        })
+    }
+    //取消原因按钮渲染
+    _getCauseItem(){
+        let causeList = this.state.causeList;
+        let listItems =(  causeList === null ? null : causeList.map((cause, index) =>
+            <Button key={index} onPress={()=>this.changeCause(cause,(descText)=>this.props.changeDesc(descText))}  style={{borderColor:(cause.showType===false)?'#efefef':'#7db4dd',backgroundColor:(cause.showType===false)?'#fff':'#ddeaf3',borderWidth:1,marginRight:15,paddingLeft:10,paddingRight:10,height:30,marginTop:8}}>
+                <Text style={{color:(cause.showType===false)?'#a1a1a3':'#70a1ca'}}>{cause.causeCtn}</Text>
+            </Button>
+        ))
+        return listItems;
+    }
+    //取消原因变更
+    changeCause(visible,changeDesc){
+        let causeList = this.state.causeList;
+        causeList.forEach(function(cause){
+            if(cause.causeId === visible.causeId){
+                cause.showType=!cause.showType;
+                if(cause.showType){
+                    changeDesc(cause.causeCtn);
+                }else{
+                    changeDesc("");
+                }
+            }else{
+                cause.showType=false;
+            }
+        });
+        this.setState({causeList:causeList});
+    }
+    render() {
+        return (
+            <View style={{flexDirection:'row',flexWrap:'wrap',paddingBottom:8,marginLeft: '1.5%',marginRight: '1.5%',}}>
+                {this._getCauseItem()}
+            </View>
+            )
+    }
 }
 class RepairTypeMk extends Component {
     constructor(props){
