@@ -269,10 +269,21 @@ export default class CheckDetail extends BaseComponent {
   //确认提交
   _onSure() {
         // console.log(dateSourceItem);
-      if(this.state.person!==1){
-          toastShort("请完善您的上报单！");
-          return null;
-      }
+      // if(this.state.person!==1){
+      //     toastShort("请完善您的上报单！");
+      //     return null;
+      // }
+
+      /*
+      * 检查项只能单独提交，所以多一次循环进行判断
+      * 如果前提条件未完善，一次都不进行提交
+      * */
+      dateSourceItem.forEach((item)=>{
+          if(item.NOT_NULL===0&&item.resultString===null){
+                  toastShort("请完成必填项！");
+                  return null;
+          }
+      })
       var dateSourceItemTemp = [];
         dateSourceItem.forEach((item)=>{
             // console.log(item);
@@ -584,7 +595,14 @@ class CheckItem extends Component {
             <View>
                 <View style={{backgroundColor:'white',flexDirection:'row', height:35,
                     alignItems:'center', justifyContent:'center', textAlignVertical:'center',}}>
-                    <Text style={{fontSize:13, color:'#333', marginLeft:15,flex:1, }}>{this.props.num+"、"+this.props.data.ITEM_NAME}</Text>
+                    <Text style={{fontSize:13, color:'#333', marginLeft:15,flex:1, }}>
+                        {this.props.num+"、"+this.props.data.ITEM_NAME}
+                        {this.props.data.NOT_NULL===0&&
+                            <Text style={{color:"red"}}>
+                                {" *"}
+                            </Text>
+                        }
+                    </Text>
                     <TouchableOpacity  onPress={()=>{this.props.gotoRepair(),this.setState({imagePos:-1})}}>
                         <View style={{backgroundColor:'white',flexDirection:'row',justifyContent:'center',alignItems:'center', marginRight:10, textAlignVertical:'center',borderWidth:1, borderColor:'#6DC5C9',
                             borderBottomRightRadius:5,borderBottomLeftRadius:5,borderTopLeftRadius:5,borderTopRightRadius:5, paddingLeft:5, paddingRight:5}}>

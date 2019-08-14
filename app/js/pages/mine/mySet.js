@@ -170,6 +170,7 @@ export default class MySet extends BaseComponent {
         tabs.forEach((tabName)=>{
             SQLite.dropTable(tabName);
         })
+        toastShort("清除离线数据");
     }
 
     getSqlite(){

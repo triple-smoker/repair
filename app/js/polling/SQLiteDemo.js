@@ -145,17 +145,18 @@ export default class SQLiteDemo extends Component{
 
 
     dropTable(){
+        AsyncStorage.setItem('sqLiteTimeTemp'+decodeURIComponent(global.xTenantKey), '', function (error) {
+            if (error) {
+                console.log('error: save error' + JSON.stringify(error));
+            }
+
+        });
+
+        if(!db){
+            db = SQLite.open();
+        }
         tabs.forEach((tabName)=>{
             SQLite.dropTable(tabName);
-        })
-        //存储
-        AsyncStorage.setItem("sqLiteTimeTemp", "", function (error) {
-
-            if (error) {
-                console.log('存储失败')
-            }else {
-                console.log('存储完成')
-            }
         })
         // sqLite.dropTable("inspect_job");
         // sqLite.dropTable("equipment_ref_item");
