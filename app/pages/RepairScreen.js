@@ -362,8 +362,11 @@ export default class RepairScreen extends React.Component {
         const { navigate } = this.props.navigation;
         this.props.navigation.goBack();
     }
-    changeDesc(descText){
-        this.setState({desc:descText});
+    changeDesc(descText,typeData){
+        this.setState({desc:descText,repairTypeId : typeData.repairTypeId,
+            repairMatterId : typeData.repairMatterId,
+            repairParentCn : typeData.repairParentCn,
+            repairChildCn : typeData.repairChildCn,});
     }
     render() {
         return (
@@ -393,7 +396,7 @@ export default class RepairScreen extends React.Component {
                 <Content >
                     {this.state.showNotice ? <Notice text = {this.state.errorTxt} /> : null}
                     <View style={{height:"1.5%"}}/>
-                    <QuicklyContent changeDesc={(descText)=>this.changeDesc(descText)}/>
+                    <QuicklyContent changeDesc={(descText,typeData)=>this.changeDesc(descText,typeData)}/>
                     {/*{this.state.repairParentCn !=null && this.state.repairParentCn != "" && this.state.repairChildCn !=null && this.state.repairChildCn != "" &&*/}
                         {/*<Text style={{backgroundColor:"#fff",flex:1,color:"#aaa", paddingLeft:10,marginLeft:'1.5%',fontSize:14,alignItems:"center",height:20}}>*/}
                             {/*{this.state.repairParentCn}/{this.state.repairChildCn}*/}
@@ -462,28 +465,64 @@ class QuicklyContent extends Component {
             causeList:[
                 {
                     causeId:"1",
-                    causeCtn:"方式",
-                    showType:false
+                    causeCtn:"快捷",
+                    showType:false,
+                    typeData:{
+                        repairTypeId : "",
+                        repairMatterId : "",
+                        repairParentCn : "父类①",
+                        repairChildCn : "子类①",
+                    }
                 },{
                     causeId:"2",
-                    causeCtn:"快捷式",
-                    showType:false
+                    causeCtn:"快捷方",
+                    showType:false,
+                    typeData:{
+                        repairTypeId : "",
+                        repairMatterId : "",
+                        repairParentCn : "父类②",
+                        repairChildCn : "子类②",
+                    }
                 },{
                     causeId:"3",
                     causeCtn:"快捷方式",
-                    showType:false
+                    showType:false,
+                    typeData:{
+                        repairTypeId : "",
+                        repairMatterId : "",
+                        repairParentCn : "父类③",
+                        repairChildCn : "子类③",
+                    }
                 },{
                     causeId:"4",
-                    causeCtn:"方式",
-                    showType:false
+                    causeCtn:"方式方式",
+                    showType:false,
+                    typeData:{
+                        repairTypeId : "",
+                        repairMatterId : "",
+                        repairParentCn : "父类④",
+                        repairChildCn : "子类④",
+                    }
                 },{
                     causeId:"5",
-                    causeCtn:"快捷式",
-                    showType:false
+                    causeCtn:"快捷方",
+                    showType:false,
+                    typeData:{
+                        repairTypeId : "",
+                        repairMatterId : "",
+                        repairParentCn : "父类⑤",
+                        repairChildCn : "子类⑤",
+                    }
                 },{
                     causeId:"6",
-                    causeCtn:"快捷方式",
-                    showType:false
+                    causeCtn:"快捷",
+                    showType:false,
+                    typeData:{
+                        repairTypeId : "",
+                        repairMatterId : "",
+                        repairParentCn : "父类⑥",
+                        repairChildCn : "子类⑥",
+                    }
                 },
             ]
         })
@@ -492,7 +531,7 @@ class QuicklyContent extends Component {
     _getCauseItem(){
         let causeList = this.state.causeList;
         let listItems =(  causeList === null ? null : causeList.map((cause, index) =>
-            <Button key={index} onPress={()=>this.changeCause(cause,(descText)=>this.props.changeDesc(descText))}  style={{borderColor:(cause.showType===false)?'#efefef':'#7db4dd',backgroundColor:(cause.showType===false)?'#fff':'#ddeaf3',borderWidth:1,marginRight:15,paddingLeft:10,paddingRight:10,height:30,marginTop:8}}>
+            <Button key={index} onPress={()=>this.changeCause(cause,(descText,typeData)=>this.props.changeDesc(descText,typeData))}  style={{borderColor:(cause.showType===false)?'#efefef':'#7db4dd',backgroundColor:(cause.showType===false)?'#fff':'#ddeaf3',borderWidth:1,marginRight:15,paddingLeft:10,paddingRight:10,height:30,marginTop:8}}>
                 <Text style={{color:(cause.showType===false)?'#a1a1a3':'#70a1ca'}}>{cause.causeCtn}</Text>
             </Button>
         ))
@@ -505,9 +544,12 @@ class QuicklyContent extends Component {
             if(cause.causeId === visible.causeId){
                 cause.showType=!cause.showType;
                 if(cause.showType){
-                    changeDesc(cause.causeCtn);
+                    changeDesc(cause.causeCtn,cause.typeData);
                 }else{
-                    changeDesc("");
+                    changeDesc("",{repairTypeId : "",
+                        repairMatterId : "",
+                        repairParentCn : "",
+                        repairChildCn : ""});
                 }
             }else{
                 cause.showType=false;
