@@ -62,6 +62,9 @@ export default class HomePage extends Component {
         this._startDetection();
         this.getSqlite();
     }
+    componentWillReceiveProps(){
+        this.getSqlite();
+    }
 
     getSqlite(){
         var sqLiteTimeTemp = "0"
@@ -117,7 +120,7 @@ export default class HomePage extends Component {
 
                                             }
                                         }
-                                        toastShort("本地数据同步成功");
+                                        // toastShort("本地数据同步成功");
                                     }
                                 );
                             }

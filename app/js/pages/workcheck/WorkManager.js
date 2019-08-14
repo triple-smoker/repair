@@ -5,7 +5,8 @@ import {
     Text,
     TouchableOpacity,
     Image,
-    TouchableHighlight
+    TouchableHighlight,
+    DeviceEventEmitter
 } from 'react-native';
 
 import Request, {ScanMsg} from '../../http/Request';
@@ -39,18 +40,15 @@ export default class CheckDetail extends BaseComponent {
     }
     componentDidMount() {
         this.loadDetail()
-        // DeviceEventEmitter.emit('NAVIGATOR_ACTION', false);
-        // if (Platform.OS === 'android' && this.props.setHome != null) {
-        //     BackHandler.addEventListener("back", this.onBackClicked);
-        // }
     }
+    // componentWillUnmount() {
+    //     DeviceEventEmitter.emit('NAVIGATOR_ACTION', true);
+    // }
     componentWillReceiveProps(nextProps){
         setTimeout(
             () => { 
              this.loadDetail()
             }, 200)
-
-
     }
     loadDetail(type){
         const { navigation } = this.props;

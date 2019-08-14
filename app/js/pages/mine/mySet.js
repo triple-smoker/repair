@@ -61,9 +61,31 @@ export default class MySet extends BaseComponent {
         super(props);
         this.state={
             theme:this.props.theme,
-            pushStatus:false
+            pushStatus:true
         }
     }
+    componentDidMount() {
+        var that = this;
+        AsyncStorage.getItem("pushStatus", function (error, result) {
+            if (error) {
+                console.log("读取失败");
+            } else {
+                var pushStatus = JSON.parse(result);
+                if(pushStatus){
+                    that.setState({
+                        pushStatus:(pushStatus===0)? true:false
+                    })
+                }else{
+                    that.setState({
+                        pushStatus:true
+                    })
+                }
+
+            }
+        })
+    }
+
+
     /** 退出*/
     logout() {
         global.access_token = null;
@@ -351,11 +373,19 @@ export default class MySet extends BaseComponent {
     )
 }
 
-onChange(val) {
-    this.setState({
-        pushStatus : val
-    })
-    console.log(this.state.pushStatus)
+onChange() {
+        var that = this;
+        var pushStatus = (!that.state.pushStatus)?"0":"1";
+        AsyncStorage.setItem("pushStatus", pushStatus , function (error) {
+            if (error) {
+                console.log('error: save error' + JSON.stringify(error));
+            }else{
+                that.setState({
+                    pushStatus : !that.state.pushStatus
+                })
+            }
+
+        });
   }
   
 }

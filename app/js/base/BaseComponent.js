@@ -110,7 +110,20 @@ export default class BaseComponent extends Component {
         this.saveNotifyMessage(e);
         this.notif.localNotif(e);
         console.log("Message Received. Title:" + e.title + ", Content:" + e.content);
-        this._showYy();
+        var that = this;
+        AsyncStorage.getItem("pushStatus", function (error, result) {
+            if (error) {
+                console.log("读取失败");
+            } else {
+                var pushStatus = JSON.parse(result);
+                if(pushStatus&&pushStatus===1){
+                    return null;
+                }else{
+                    that._showYy();
+                }
+            }
+        })
+
     }
     //语音播放
     async _showYy(){
