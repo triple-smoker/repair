@@ -13,9 +13,10 @@ export const HOST = 'https://dev.jxing.com.cn/';
 
 export const AuthToken     = 'api/auth/oauth/token';
 export const GetUserInfo   = 'api/admin/user/login';
-export const GetUserAddress  = 'api/basic/user/address/'
-export const GetZuHu  = 'api/opcs/tenant/list_for_client'
-export const GetYuanQuById  = 'api/opcs/tenant/info/'
+export const GetUserAddress  = 'api/basic/user/address/';
+export const GetZuHu  = 'api/opcs/tenant/list_for_client';//获取租户
+export const GetYuanQuById  = 'api/opcs/tenant/info/';//获取院区
+export const GetQuicklyRepair  = 'api/repair/repRepairType/getRepairMatterByUserId/';//高频报修
 
 export const userOnWork = 'api/opcs/user/on_work/'; //员工打卡上班
 export const userOffWork = 'api/opcs/user/off_work/'; //员工打卡下班

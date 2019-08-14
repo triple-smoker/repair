@@ -19,7 +19,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 import Recorde from "../components/Recorde";
 import OrderType from "./publicTool/OrderType";
 import RepairType from "./publicTool/RepairType"
-import Request, { GetUserAddress } from "../js/http/Request";
+import Request, { GetUserAddress,GetQuicklyRepair } from "../js/http/Request";
+import Axios from "../util/Axios";
 
 export default class RepairScreen extends React.Component {
 
@@ -461,73 +462,64 @@ class QuicklyContent extends Component {
         this.getCauseList();
     }
     getCauseList(){
-        this.setState({
-            causeList:[
-                {
-                    causeId:"1",
-                    causeCtn:"快捷",
-                    showType:false,
-                    typeData:{
-                        repairTypeId : "",
-                        repairMatterId : "",
-                        repairParentCn : "父类①",
-                        repairChildCn : "子类①",
+        Request.requestGet(GetQuicklyRepair + global.userId, null, (result) => {
+            if (result && result.code === 200) {
+                let url="/api/repair/repRepairType/list";
+                Axios.GetAxios(url).then(
+                    (response) => {
+                        if (response&&response.data&&Array.isArray(response.data)){
+                            let types = response.data;
+                            let causeList = [];
+                            if(result.data&&Array.isArray(result.data)){
+                                result.data.forEach((item)=>{
+                                    types.forEach((type)=>{
+                                        if(item.typeParentId===type.repairTypeId){
+                                            if(type.childrenList&&Array.isArray(type.childrenList)){
+                                                type.childrenList.forEach((child)=>{
+                                                    if(child.repairTypeId===item.repairTypeId){
+                                                        causeList.push({
+                                                            causeId:item.sort,
+                                                            causeCtn:item.matterName,
+                                                            showType:false,
+                                                            typeData:{
+                                                                repairTypeId : item.repairTypeId,
+                                                                repairParentId : item.typeParentId,
+                                                                repairParentCn : type.repairTypeCtn,
+                                                                repairChildCn : child.repairTypeCtn,
+                                                            }
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    })
+                                })
+                                this.setState({
+                                    causeList:causeList
+                                });
+                            }
+                        }
                     }
-                },{
-                    causeId:"2",
-                    causeCtn:"快捷方",
-                    showType:false,
-                    typeData:{
-                        repairTypeId : "",
-                        repairMatterId : "",
-                        repairParentCn : "父类②",
-                        repairChildCn : "子类②",
-                    }
-                },{
-                    causeId:"3",
-                    causeCtn:"快捷方式",
-                    showType:false,
-                    typeData:{
-                        repairTypeId : "",
-                        repairMatterId : "",
-                        repairParentCn : "父类③",
-                        repairChildCn : "子类③",
-                    }
-                },{
-                    causeId:"4",
-                    causeCtn:"方式方式",
-                    showType:false,
-                    typeData:{
-                        repairTypeId : "",
-                        repairMatterId : "",
-                        repairParentCn : "父类④",
-                        repairChildCn : "子类④",
-                    }
-                },{
-                    causeId:"5",
-                    causeCtn:"快捷方",
-                    showType:false,
-                    typeData:{
-                        repairTypeId : "",
-                        repairMatterId : "",
-                        repairParentCn : "父类⑤",
-                        repairChildCn : "子类⑤",
-                    }
-                },{
-                    causeId:"6",
-                    causeCtn:"快捷",
-                    showType:false,
-                    typeData:{
-                        repairTypeId : "",
-                        repairMatterId : "",
-                        repairParentCn : "父类⑥",
-                        repairChildCn : "子类⑥",
-                    }
-                },
-            ]
-        })
+                ).then();
+            }
+        });
+        // this.setState({
+        //     causeList:[
+        //         {
+        //             causeId:"1",
+        //             causeCtn:"快捷",
+        //             showType:false,
+        //             typeData:{
+        //                 repairTypeId : "",
+        //                 repairMatterId : "",
+        //                 repairParentCn : "父类①",
+        //                 repairChildCn : "子类①",
+        //             }
+        //         }
+        //     ]
+        // })
     }
-    //取消原因按钮渲染
+    //高频按钮渲染
     _getCauseItem(){
         let causeList = this.state.causeList;
         let listItems =(  causeList === null ? null : causeList.map((cause, index) =>
@@ -537,7 +529,7 @@ class QuicklyContent extends Component {
         ))
         return listItems;
     }
-    //取消原因变更
+    //高频按钮变更
     changeCause(visible,changeDesc){
         let causeList = this.state.causeList;
         causeList.forEach(function(cause){
