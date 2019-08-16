@@ -139,6 +139,7 @@ export default class MainPage extends BaseComponent {
     }
     onMessage(e){
         console.log(this.notif);
+        e.content = JSON.parse(e.content);
         this.saveNotifyMessage(e);
         this.notif.localNotif(e);
         console.log("Message Received. Title:" + e.title + ", Content:" + e.content.msg);
@@ -165,7 +166,7 @@ export default class MainPage extends BaseComponent {
     localMessage(){
         var e = {
             title:"数据待上报",
-            content:"您尚有未上报的任务信息，请开启网络"
+            content:{msg:"您尚有未上报的任务信息，请开启网络"}
         }
         this.notif.localNotif(e);
         this._showYy(2)
@@ -226,7 +227,7 @@ export default class MainPage extends BaseComponent {
                 let notifyData = {
                     "messageId" : e.messageId,
                     "title" : e.title,
-                    "content" : e.content,
+                    "content" : e.content.msg,
                     "recordAlreadyRead": 0,
                     "notifyDate" : new Date().format("yyyy-MM-dd hh:mm:ss")
                 }
