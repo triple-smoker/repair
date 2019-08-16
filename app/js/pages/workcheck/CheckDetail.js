@@ -87,6 +87,7 @@ export default class CheckDetail extends BaseComponent {
         if (Platform.OS === 'android') {
             BackHandler.removeEventListener("back", this.onBackClicked);
         }
+        db=null;
     }
     //BACK物理按键监听
     onBackClicked = () => {
@@ -126,9 +127,6 @@ export default class CheckDetail extends BaseComponent {
 
     }
 
-  // componentWillUnmount() {
-  //
-  // }
 
   goBack(){
       clearTimeout(this.timeout);
@@ -278,12 +276,16 @@ export default class CheckDetail extends BaseComponent {
       * 检查项只能单独提交，所以多一次循环进行判断
       * 如果前提条件未完善，一次都不进行提交
       * */
-      dateSourceItem.forEach((item)=>{
-          if(item.NOT_NULL===0&&item.resultString===null){
-                  toastShort("请完成必填项！");
-                  return null;
+      for (let i=0 ;i<dateSourceItem.length ;i++  ){
+          if(dateSourceItem[i].NOT_NULL===0&&(dateSourceItem[i].resultString===null||dateSourceItem[i].resultString==="")){
+              toastShort("请完成必填项！");
+              return null;
           }
-      })
+      }
+      //
+      // dateSourceItem.forEach((item)=>{
+      //
+      // })
       var dateSourceItemTemp = [];
         dateSourceItem.forEach((item)=>{
             // console.log(item);

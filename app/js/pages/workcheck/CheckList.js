@@ -93,6 +93,7 @@ export default class CheckList extends BaseComponent {
         if (Platform.OS === 'android') {
             BackHandler.removeEventListener("back", this.onBackClicked);
         }
+        db=null;
     }
     //BACK物理按键监听
     onBackClicked = () => {

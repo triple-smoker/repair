@@ -84,6 +84,9 @@ export default class MySet extends BaseComponent {
             }
         })
     }
+    componentWillUnmount() {
+        db=null;
+    }
 
 
     /** 退出*/
@@ -128,7 +131,7 @@ export default class MySet extends BaseComponent {
                     console.log('error: save error' + JSON.stringify(error));
                 }
         });
-
+        SQLite.close();
         NativeModules.MPush.unbindAccount((callback)=>{
             console.info(callback)
         });

@@ -65,6 +65,14 @@ export default class HomePage extends Component {
     componentWillReceiveProps(){
         this.getSqlite();
     }
+    componentWillUnmount() {
+        db=null;
+        this.timer &&  (this.timer);
+        if(this.eventListener){
+            this.eventListener.remove();
+        }
+        NfcManager.unregisterTagEvent();
+    }
 
     getSqlite(){
         var sqLiteTimeTemp = "0"
@@ -132,17 +140,6 @@ export default class HomePage extends Component {
 
 
     }
-
-
-    componentWillUnmount() {
-        //DeviceEventEmitter.removeAllListeners();
-        this.timer &&  (this.timer);
-        if(this.eventListener){
-            this.eventListener.remove();
-        }
-        NfcManager.unregisterTagEvent();
-    }
-
 
     repair() {
         const { navigate } = this.props.navigation;

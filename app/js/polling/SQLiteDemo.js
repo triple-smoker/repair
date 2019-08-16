@@ -133,7 +133,7 @@ export default class SQLiteDemo extends Component{
                 }
             }.bind(this)
         )
-
+        db=null;
 
 
 

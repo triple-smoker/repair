@@ -22,12 +22,13 @@ import {Toast} from '../../component/Toast'
 import {aesEncrypt,aesEncryptWithKey} from '../../util/CipherUtils';
 import Axios from '../../../util/Axios';
 import {toastShort} from "../../util/ToastUtil";
+import SQLite from "../../polling/SQLite";
 
 
 
 var username = '';
 var password = '';
-
+var db;
 export default class Login extends BaseComponent {
 
     static navigationOptions = {
@@ -95,6 +96,9 @@ export default class Login extends BaseComponent {
         this.loadData();
         this.loadZuHu();
         this.getHospitalInfo();
+    }
+    componentWillUnmount() {
+        db=null;
     }
     getHospitalInfo(){
         var that = this;
@@ -383,6 +387,7 @@ export default class Login extends BaseComponent {
             tenantKeyAes = encodeURIComponent(tenantKeyAes);
             global.hospitalId = hospitalInfo.selectYuanQuData.hospitalId;
             global.xTenantKey = tenantKeyAes
+            db = SQLite.open();
             AsyncStorage.setItem('hospitalInfo', JSON.stringify(hospitalInfo), function (error) {
                 if (error) {
                     console.log('error: hospitalInfo error' + JSON.stringify(error));

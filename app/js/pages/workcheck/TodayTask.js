@@ -89,8 +89,7 @@ export default class TodayTask extends BaseComponent {
 
   }
     componentWillUnmount() {
-        // this.getdata && clearInterval(this.getdata);
-        // this.pushData && clearInterval(this.pushData);
+      db=null;
     }
     componentWillReceiveProps(props){
         cachedResults.tabIndex = 0;
