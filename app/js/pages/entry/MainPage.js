@@ -52,6 +52,7 @@ export default class MainPage extends BaseComponent {
             selectedTab:selectedTab,
             isShow: true,
         }
+        this.isPlaying=false;
     }
 
     componentDidMount() {
@@ -150,7 +151,7 @@ export default class MainPage extends BaseComponent {
                 if(pushStatus&&pushStatus===1){
                     return null;
                 }else{
-                    that._showYy();
+                    that._showYy(1);
                 }
             }
         })
@@ -167,6 +168,7 @@ export default class MainPage extends BaseComponent {
             content:"您尚有未上报的任务信息，请开启网络"
         }
         this.notif.localNotif(e);
+        this._showYy(2)
     }
     
     onNotification(e){
@@ -176,8 +178,20 @@ export default class MainPage extends BaseComponent {
     }
 
     //语音播放
-    async _showYy(){
-        var whoosh = new Sound('xiaoxi_a.mp3', Sound.MAIN_BUNDLE, (error) => {
+    async _showYy(type){
+        if(this.isPlaying){
+            return null;
+        }
+        this.isPlaying = true;
+        let soutUil = "";
+        if(type===1){
+            soutUil ="xiaoxi_gongdan.mp3";
+        }else if(type===2){
+            soutUil ="xiaoxi_tixing.mp3";
+        }else if(type===3){
+            soutUil ="xiaoxi_yujing.mp3";
+        }
+        var whoosh = new Sound(soutUil, Sound.MAIN_BUNDLE, (error) => {
             if (error) {
                 console.log('failed to load the sound', error);
                 return;
@@ -189,8 +203,10 @@ export default class MainPage extends BaseComponent {
             whoosh.play((success) => {
                 if (success) {
                     console.log('successfully finished playing');
+                    this.isPlaying = false;
                 } else {
                     console.log('playback failed due to audio decoding errors');
+                    this.isPlaying = false;
                 }
             });
         });
