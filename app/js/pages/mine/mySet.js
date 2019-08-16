@@ -163,7 +163,7 @@ export default class MySet extends BaseComponent {
 
         });
 
-        AsyncStorage.setItem(global.userId,"", function (error) {
+        AsyncStorage.setItem(global.tenant_code + global.userId,"", function (error) {
             if (error) {
                 console.log('error: save error' + JSON.stringify(error));
             }

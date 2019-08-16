@@ -267,6 +267,7 @@ export default class Login extends BaseComponent {
                                 });
                             }
                             global.access_token = result.access_token;
+                            global.tenant_code = result.tenant_code;
                             AsyncStorage.setItem('token', result.access_token, function (error) {
                                 if (error) {
                                     console.log('error: save error');
@@ -350,7 +351,7 @@ export default class Login extends BaseComponent {
                      permissions = "3";
                 }
                 global.permissions = permissions;
-                NativeModules.MPush.bindAccount(global.userId,(callback)=>{
+                NativeModules.MPush.bindAccount(global.tenant_code + global.userId,(callback)=>{
                     console.info(callback)
                 });
                 Toast.show('登录成功');

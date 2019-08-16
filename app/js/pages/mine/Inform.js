@@ -33,7 +33,8 @@ export default class Inform extends BaseComponent {
         this.state={
             theme:this.props.theme,
             userData:null,
-            workOrderNotify: []
+            workOrderNotify: [],
+            unReadWorkOrderNotifyTotal: 0
         }
     }
     componentDidMount() {
@@ -56,15 +57,23 @@ export default class Inform extends BaseComponent {
             }
         });
 
-        AsyncStorage.getItem(global.userId, function (error, result) {
+        AsyncStorage.getItem(global.tenant_code + global.userId, function (error, result) {
             if (error) {
                 console.log('读取失败')
             } else {
                 result = JSON.parse(result);
-                console.info("!")
-                console.info(result)
-                if(result != null){
-                    that.setState({workOrderNotify:result});
+                var resultData = result || [];
+                console.info("工单消息")
+                console.info(resultData)
+                let unRead = 0;
+                if(resultData.length > 0){
+                    resultData.forEach(item => {
+                        if(item.recordAlreadyRead === 0){
+                            unRead++;
+                        }
+                    });
+                    that.setState({workOrderNotify:resultData});
+                    that.setState({unReadWorkOrderNotifyTotal:unRead});
                 }
             }
         });

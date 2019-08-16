@@ -64,6 +64,7 @@ export default class NotifService {
             userInfo: null, // (optional) default: null (object containing additional notification data)
 
             /* iOS and Android properties */
+            messageId: e.messageId,
             title: e.title, // (optional)
             message: e.content, // (required)
             playSound: false, // (optional) default: true

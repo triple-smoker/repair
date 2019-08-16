@@ -6,6 +6,7 @@ import android.util.Log;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -51,12 +52,20 @@ public class PushModule extends ReactContextBaseJavaModule {
         PushServiceFactory.getCloudPushService().bindAccount(account, new CommonCallback() {
             @Override
             public void onSuccess(String s) {
-                callback.invoke("bind account success");
+                WritableMap params = Arguments.createMap();
+                params.putBoolean("success", true);
+                params.putString("result", "bind account success");
+                callback.invoke(params);
+                // callback.invoke("bind account success");
             }
 
             @Override
             public void onFailed(String s, String s1) {
-                callback.invoke("bind account failed. errorCode:" + s + ", errorMsg:" + s1);
+                WritableMap params = Arguments.createMap();
+                params.putBoolean("success", false);
+                params.putString("result", "bind account failed. errorCode:" + s + ", errorMsg:" + s1);
+                callback.invoke(params);
+                // callback.invoke("bind account failed. errorCode:" + s + ", errorMsg:" + s1);
             }
         });
     }

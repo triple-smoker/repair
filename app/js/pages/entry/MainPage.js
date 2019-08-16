@@ -4,6 +4,7 @@ import {
     StyleSheet,
     View,
     Image,
+    Alert,
     DeviceEventEmitter, InteractionManager
 } from 'react-native';
 
@@ -20,6 +21,10 @@ import WorkPage from '../work/WorkPage'
 import ThemeDao from '../../dao/ThemeDao'
 import MinePage from '../mine/myPage'
 import WorkManager from '../workcheck/WorkManager'
+import NotifService from '../../../components/NotifService';
+import AsyncStorage from '@react-native-community/async-storage';
+import Sound from 'react-native-sound';
+
 
 //需要导出的常量
 export const ACTION_HOME = {A_SHOW_TOAST:'showToast',A_RESTART:'restart',A_THEME:'theme'};
@@ -54,6 +59,14 @@ export default class MainPage extends BaseComponent {
         super.componentDidMount();
         this.listener = DeviceEventEmitter.addListener('ACTION_HOME',(action,params)=>this.onAction(action,params));
         this.listener = DeviceEventEmitter.addListener('NAVIGATOR_ACTION',(isShow)=>this.setState({isShow : isShow}));
+        DeviceEventEmitter.addListener('onMessage', this.onMessage.bind(this));
+        DeviceEventEmitter.addListener('onInit', this.onInit.bind(this));
+        DeviceEventEmitter.addListener('onNotification', this.onNotification.bind(this));
+        DeviceEventEmitter.addListener('onAppInitOnMessage', this.onAppInitOnMessage.bind(this));
+        DeviceEventEmitter.addListener('localMessage', this.localMessage.bind(this));
+        this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
+        console.log('new notif')
+        console.log(this.notif)
     }
 
     onAction(action,params){
@@ -104,6 +117,151 @@ export default class MainPage extends BaseComponent {
         this.setState({
             selectedTab: selectedTab,
         })
+    }
+
+    onRegister(token) {
+        // Alert.alert("Registered !", JSON.stringify(token));
+        console.log(token);
+        this.setState({ registerToken: token.token, gcmRegistered: true });
+    }
+
+    onNotif(notif) {
+        console.log(notif);
+        Alert.alert(notif.title, notif.message);
+        this.setNotifyMessageToAlreadyRead(notif);
+    }
+
+    onInit (e){
+        console.log('--------------');
+        console.log(e);
+        // alert("Message Init. Title:");
+    }
+    onMessage(e){
+        console.log(this.notif);
+        this.saveNotifyMessage(e);
+        this.notif.localNotif(e);
+        console.log("Message Received. Title:" + e.title + ", Content:" + e.content.msg);
+        var that = this;
+        AsyncStorage.getItem("pushStatus", function (error, result) {
+            if (error) {
+                console.log("读取失败");
+            } else {
+                var pushStatus = JSON.parse(result);
+                if(pushStatus&&pushStatus===1){
+                    return null;
+                }else{
+                    that._showYy();
+                }
+            }
+        })
+    }
+    onAppInitOnMessage(e){
+        console.log(this.notif);
+        this.notif.localNotif(e);
+        console.log("Message Received. Title:" + e.title + ", Content:" + e.content);
+    }
+
+    localMessage(){
+        var e = {
+            title:"数据待上报",
+            content:"您尚有未上报的任务信息，请开启网络"
+        }
+        this.notif.localNotif(e);
+    }
+    
+    onNotification(e){
+        console.log(this.notif);
+        this.notif.scheduleNotif(e);
+        console.log("Notification Received.Title:" + e.title + ", Content:" + e.content);
+    }
+
+    //语音播放
+    async _showYy(){
+        var whoosh = new Sound('xiaoxi_a.mp3', Sound.MAIN_BUNDLE, (error) => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            // loaded successfully
+            console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+
+            // Play the sound with an onEnd callback
+            whoosh.play((success) => {
+                if (success) {
+                    console.log('successfully finished playing');
+                } else {
+                    console.log('playback failed due to audio decoding errors');
+                }
+            });
+        });
+    }
+
+    async saveNotifyMessage(e){
+        // console.info(global.userId)
+        await AsyncStorage.getItem(global.tenant_code + global.userId, function (error, result) {
+            if (error) {
+                console.log('读取失败')
+            } else {
+
+                let temp = {"casecode":"repair_reminder","level":0,"focus":1,"triggerType":"normal","msg":"您关注的设备有新动态","extra":null}
+
+
+                result = JSON.parse(result);
+                let notifyData = {
+                    "messageId" : e.messageId,
+                    "title" : e.title,
+                    "content" : e.content,
+                    "recordAlreadyRead": 0,
+                    "notifyDate" : new Date().format("yyyy-MM-dd hh:mm:ss")
+                }
+                let resultData = result || [];
+    
+                var cacheMaxLength = 10;
+                if(resultData.length >= cacheMaxLength){
+                    let deleteLength = resultData.length - 10 + 1;
+                    resultData.splice(0,deleteLength);
+                }
+                resultData.push(notifyData);
+                console.info("----saveNotifyMessage----")
+                console.info(resultData);
+
+                AsyncStorage.setItem(global.tenant_code + global.userId,JSON.stringify(resultData),function (error) {
+                    if (error) {
+                        console.log('存储失败')
+                        console.log(error)
+                    }else {
+                        console.log('存储完成')
+                    }
+                })
+                    
+            }
+        });
+    }
+    
+    async setNotifyMessageToAlreadyRead(e){
+        await AsyncStorage.getItem(global.tenant_code + global.userId, function (error, result) {
+            if (error) {
+                console.log('读取失败')
+            } else {
+                result = JSON.parse(result);
+                
+                let resultData = result || [];
+                resultData.find(item => {
+                    if(item.messageId === e.messageId){
+                        item.recordAlreadyRead = 1;
+                    }
+                })
+                console.info(resultData)
+                AsyncStorage.setItem(global.tenant_code + global.userId,JSON.stringify(resultData),function (error) {
+                    if (error) {
+                        console.log('存储失败')
+                        console.log(error)
+                    }else {
+                        console.log('存储完成')
+                    }
+                })
+            }
+        });
     }
 
 
