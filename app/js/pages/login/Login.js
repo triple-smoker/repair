@@ -715,8 +715,9 @@ export default class Login extends BaseComponent {
                     <View style={{top:0,height:Dimens.screen_height,width:Dimens.screen_width,backgroundColor: 'rgba(0,0,0,0.5)',alignItems:'center',justifyContent:'center',}}>
                         <View style={stylesDept.bottomStyle}>
                             <View style={stylesDept.topStyle}>
-                                <Text onPress={()=>this._hide()} style={{color:'#9b9b9b', marginLeft:10, flex:1}}>取消</Text>
-                                <Text onPress={()=>this.submit()} style={{color:'#9b9b9b', marginRight:10, }}>确定</Text>
+                                <Text onPress={()=>this._hide()} style={{color:'#9b9b9b', marginLeft:10}}>取消</Text>
+                                <View style={{flex:1}}/>
+                                <Text onPress={()=>this.submit()} style={{color:'#9b9b9b', marginRight:10}}>确定</Text>
                             </View>
                             <View style={{flexDirection:'row', height:300,}}>
                                 <ListView
