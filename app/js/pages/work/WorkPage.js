@@ -894,7 +894,7 @@ search() {
       </View>
 
       {actionBar}
-      <Text style={{backgroundColor:'#f6f6f6', color:'#999',fontSize:12,height:40, textAlignVertical:'center', textAlign:'center'}}>——  共 {cachedResults.total} 条报修工单  ——</Text>
+      <Text style={{backgroundColor:'#f6f6f6', color:'#999',fontSize:12,height:40, textAlignVertical:'center', textAlign:'center'}}>——  共 {cachedResults.total} 条维修工单  ——</Text>
       <RefreshListView
           style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44*2-49}}
           onEndReachedThreshold={10}

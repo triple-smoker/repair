@@ -339,6 +339,7 @@ class ConfirmReport extends Component {
                         name={this.state.report.reporter}
                         phone={this.state.report.phone}
                         adds={this.state.report.address}
+                        deptName={this.state.report.deptName}
                         readOnly = {true}
                     />
                     <MultipleImagePicker

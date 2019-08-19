@@ -134,7 +134,8 @@ export default class Login extends BaseComponent {
                 if(logininfo){
                     that.setState({
                         username:username,
-                        password:password
+                        password:password,
+                        keepPsw:((username!==null&&username!=="")&&(password!==null&&password!==""))?true:false
                     })
                 }
                 

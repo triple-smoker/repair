@@ -97,6 +97,7 @@ class TypeMd extends Component {
                     buildList:data,
                     step:1,
                     placeType:1,
+                    isNoneShow:false,
                     dataSource:this.state.dataSource.cloneWithRows(data),
                 })   
             })
@@ -107,6 +108,7 @@ class TypeMd extends Component {
                     buildList:data,
                     step:1,
                     placeType:2,
+                    isNoneShow:false,
                     dataSource:this.state.dataSource.cloneWithRows(data),
                 })   
             })
@@ -298,13 +300,13 @@ class TypeMd extends Component {
             var buildingName = null;
             var floorName = null;
             var roomName = null;
-            var stepTxt = '楼宇'
+            var stepTxt = "";
             var step = this.state.step;
             var color1 = null;
             var color2 =null;
             var isNoneShow = this.state.isNoneShow
             if(step == 1){
-                stepTxt = '楼宇'
+                stepTxt = (this.state.placeType===1)?'楼宇':'病区';
                 buildingName = this.state.buildingName
                 color1 = '#fff';
             }else if(step == 2){

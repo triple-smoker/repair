@@ -299,7 +299,8 @@ export default class RepairScreen extends React.Component {
             reporter : {
                 reporter: this.state.reporter,
                 phone: this.state.phone,
-                address: this.state.address
+                address: this.state.address,
+                deptName : this.state.deptName
             },
         };
 
