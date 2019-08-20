@@ -300,6 +300,8 @@ const Item = ({ItemName , ItemValue, change,type,setType,setDept,deptName}) => (
             borderColor:'#bfbfbf',
             borderWidth:1,
             borderRadius:5,
+            paddingLeft: 3,
+            paddingRight: 3,
             }}> {deptName ?  deptName : '所在科室' } <Image resizeMode={'contain'} style={{width: 12, height: 12}} source={require('../res/repair/ico_seh.png')} /></Text>
         </TouchableOpacity> : null}
 

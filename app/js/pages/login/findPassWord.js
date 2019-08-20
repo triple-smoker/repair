@@ -71,9 +71,9 @@ export default class findPsw extends BaseComponent {
 
                 />
                <Image source={require('../../../res/login/service.png')} style={styles.headerImg}/>
-                <View style={{height:Dimens.screen_height-20-44-300-40,flexDirection:'column',justifyContent:'flex-start',alignItems:'center',alignContent:'center'}}>
+                <View style={{height:Dimens.screen_height-20-44-300-40,width:Dimens.screen_width,flexDirection:'column',justifyContent:'flex-start',alignItems:'center',alignContent:'center'}}>
                     <TouchableOpacity onPress={()=>{this.callPhone(400823823)}}>
-                    <Text style={{marginTop:40,color:'#6DC5C9',fontSize:25,fontWeight:'bold',textDecorationLine:'underline'}}>400-823-823</Text>
+                    <Text style={{marginTop:40,color:'#6DC5C9',width:Dimens.screen_width,textAlign:"center",fontSize:25,fontWeight:'bold',textDecorationLine:'underline'}}>400-823-823</Text>
                    </TouchableOpacity>
                     <View style={{marginTop:20,flexDirection:'row',justifyContent:'center',alignItems:'center',alignContent:'center'}}>
                     <Image source={require('../../../res/login/service_min.png')} style={{width:20,height:20}}/><Text style={{fontWeight:'400',fontSize:14,color:'#8C8C8C'}}>服务热线</Text>

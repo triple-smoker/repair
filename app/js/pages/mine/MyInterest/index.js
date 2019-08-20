@@ -181,7 +181,7 @@ export default class MyInterest extends BaseComponent {
                     </View>
                     {
                         this.state.isDesk ? <TouchableOpacity onPress={()=>this.captrue()}>
-                                                <View style={{width:25,height:25,borderRadius:1,alignItems:"center",justifyContent:"center",borderStyle:'dashed',borderColor:"#666",borderWidth:1,marginRight:12}}>
+                                                <View style={{width:25,height:25,borderRadius:1,alignItems:"center",justifyContent:"center",borderStyle:'dashed',borderColor:"#666",borderWidth:0,marginRight:12}}>
                                                     <Image style={{width:21,height:21}} source={require('../../../../res/repair/navbar_desk.png')} />
                                                 </View>
                                             </TouchableOpacity>
