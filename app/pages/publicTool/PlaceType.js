@@ -421,7 +421,7 @@ class TypeMd extends Component {
                                     initialListSize={1}
                                     dataSource={this.state.dataSource}
                                     renderRow={(item) => this.renderItemLeft(item)}
-                                    style={{backgroundColor:'#EFF0F1',flex:1,height:300,width:Dimens.screen_width/3,}}
+                                    style={{backgroundColor:'#f2f2f2',flex:1,height:300,width:Dimens.screen_width/3,}}
                                     onEndReachedThreshold={10}
                                     enableEmptySections={true}
                                     renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}/>

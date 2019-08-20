@@ -318,7 +318,8 @@ static uploadFile(path, callback) {
     var pos = path.lastIndexOf("/");
     let file = {type:'multipart/form-data', uri: path, name:path.substr(pos+1)};
     formData.append("file", file);
-    var url = HOST+'api/opcs/oss/upload';
+             var url = HOST+'api/opcs/oss/upload';
+    https://dev.jxing.com.cn/api/opcs/oss/upload
     var token = global.access_token;
     var headers = {
                 'Authorization': 'Basic anhjbG91ZDpqeGNsb3Vk',
