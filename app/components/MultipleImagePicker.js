@@ -254,11 +254,11 @@ class MultipleImagePicker extends BaseComponent {
 
 const RenderModal = (props) => {
     return (
-        <TouchableNativeFeedback onPress={() =>props.onPress()}>
-            <ListItem style={{backgroundColor:"#fff",height:25,width:100}}>
-                <Text style={{width:100,textAlign: "center"}}>{props.item}</Text>
-            </ListItem>
-        </TouchableNativeFeedback >
+        <TouchableOpacity onPress={() =>props.onPress()}>
+            <View style={{alignContent:"center",justifyContent:"center",backgroundColor:"#fff",height:27,alignItems:"center"}}>
+                <Text style={{paddingLeft:10,paddingRight:10,borderBottomColor:"#bbb",borderBottomWidth:1,textAlign: "center"}}>{props.item}</Text>
+            </View>
+        </TouchableOpacity >
     )
 };
 
