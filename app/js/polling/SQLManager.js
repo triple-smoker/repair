@@ -81,7 +81,12 @@ class SQLManager extends Component {
             + 'ITEM_RESULT_SET text DEFAULT NULL ,'
             + 'REPORT_BY varchar(64) DEFAULT NULL ,'
             + 'CREATE_TIME datetime DEFAULT NULL ,'
-            + 'UPDATE_TIME datetime DEFAULT NULL )';
+            + 'UPDATE_TIME datetime DEFAULT NULL ,'
+            + 'app_name varchar(255) DEFAULT NULL, '
+            + 'tenant_code varchar(255) DEFAULT NULL, '
+            + 'curr_user varchar(255) DEFAULT NULL, '
+            + 'customer_id varchar(255) DEFAULT NULL, '
+            + 'delete_flag varchar(255) DEFAULT NULL ) ';
         return createDailyReportSql;
     }
 
@@ -102,7 +107,15 @@ class SQLManager extends Component {
             + 'GENERATE_DATE datetime DEFAULT CURRENT_TIMESTAMP ,'
             + 'FLAG tinyint(3) DEFAULT NULL ,'
             + 'ORIGIN_ACTION tinyint(3) DEFAULT NULL ,'
-            + 'VERSION varchar(64) DEFAULT NULL )';
+            + 'VERSION varchar(64) DEFAULT NULL ,'
+            + 'create_time varchar(255) DEFAULT NULL, '
+            + 'update_time varchar(255) DEFAULT NULL, '
+            + 'app_name varchar(255) DEFAULT NULL, '
+            + 'tenant_code varchar(255) DEFAULT NULL, '
+            + 'curr_user varchar(255) DEFAULT NULL, '
+            + 'customer_id varchar(255) DEFAULT NULL, '
+            + 'delete_flag varchar(255) DEFAULT NULL ) ';
+        ;
         return createDailyTaskSql;
     }
 
