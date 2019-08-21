@@ -146,7 +146,7 @@ export default class WelcomePage extends Component {
                                                 messageRecord.push(message);
                                                 DeviceEventEmitter.emit("onAppInitOnMessage",message);
                                             });
-                                            var cacheMaxLength = 10;
+                                            var cacheMaxLength = 50;
                                             var localStorageRecordMaxLength = cacheMaxLength - messageRecord.length;
                                             if(resultData.length > localStorageRecordMaxLength){
                                                 let deleteLength = resultData.length - localStorageRecordMaxLength;

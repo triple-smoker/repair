@@ -9,7 +9,8 @@ import {
     TextInput,
     ListView,
     Modal,
-    NativeModules
+    NativeModules,
+    DeviceEventEmitter
     // AsyncStorage,
 } from 'react-native';
 
@@ -390,9 +391,11 @@ export default class Login extends BaseComponent {
                                                 "createTime" : new Date(e.createTime).format("yyyy-MM-dd hh:mm:ss")
                                             }
                                             messageRecord.push(message);
-                                            DeviceEventEmitter.emit("onAppInitOnMessage",message);
+                                            setTimeout(()=>{
+                                                DeviceEventEmitter.emit("onAppInitOnMessage",message);
+                                            },500)
                                         });
-                                        var cacheMaxLength = 10;
+                                        var cacheMaxLength = 50;
                                         var localStorageRecordMaxLength = cacheMaxLength - messageRecord.length;
                                         if(resultData.length > localStorageRecordMaxLength){
                                             let deleteLength = resultData.length - localStorageRecordMaxLength;

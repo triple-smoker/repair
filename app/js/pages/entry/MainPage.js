@@ -231,7 +231,7 @@ export default class MainPage extends BaseComponent {
                     "createTime" : new Date().format("yyyy-MM-dd hh:mm:ss")
                 }
                 let resultData = result || [];
-                var cacheMaxLength = 10;
+                var cacheMaxLength = 50;
                 if(resultData.length >= cacheMaxLength){
                     let deleteLength = resultData.length - cacheMaxLength + 1;
                     resultData.splice(0,deleteLength);
