@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
 import Pop from 'rn-global-modal'
-import Request, {AuthToken, GetUserInfo, GetZuHu ,GetYuanQuById} from '../../http/Request';
+import Request, {AuthToken, GetUserInfo, GetZuHu ,GetYuanQuById,messageRecordList} from '../../http/Request';
 import {Toast} from '../../component/Toast'
 import {aesEncrypt,aesEncryptWithKey} from '../../util/CipherUtils';
 import Axios from '../../../util/Axios';
@@ -354,6 +354,72 @@ export default class Login extends BaseComponent {
                 global.permissions = permissions;
                 NativeModules.MPush.bindAccount(global.tenant_code + global.userId,(callback)=>{
                     console.info(callback)
+                    if(callback.success === true){
+                        AsyncStorage.getItem(global.tenant_code + global.userId, function (error, result) {
+                            if (error) {
+                                console.log('读取失败')
+                            } else {
+                            
+                                result = JSON.parse(result);
+                                var resultData = result || [];
+                                console.info(resultData)
+
+                                let lastMsgRecordId = -1;
+                                
+                                resultData.forEach(item =>{
+                                    if(eval(item.recordId - lastMsgRecordId) > 0){
+                                        lastMsgRecordId = item.recordId;
+                                    }
+                                });
+
+                                let params = {userId:global.userId, lastMsgRecordId:lastMsgRecordId,page:0,rows:10};
+                                console.log(params);
+
+                                Request.requestPost(messageRecordList, params, (messageResult)=> {
+                                    if (messageResult && messageResult.code === 200) {
+                                        if(messageResult.data.records.length === 0){
+                                            return;
+                                        }
+                                        var messageRecord = [];
+                                        messageResult.data.records.forEach(e=>{
+                                            let message = {
+                                                "recordId": e.recordId,
+                                                "title" : e.title,
+                                                "content" : JSON.parse(e.content),
+                                                "recordAlreadyRead": e.recordAlreadyRead,
+                                                "createTime" : new Date(e.createTime).format("yyyy-MM-dd hh:mm:ss")
+                                            }
+                                            messageRecord.push(message);
+                                            DeviceEventEmitter.emit("onAppInitOnMessage",message);
+                                        });
+                                        var cacheMaxLength = 10;
+                                        var localStorageRecordMaxLength = cacheMaxLength - messageRecord.length;
+                                        if(resultData.length > localStorageRecordMaxLength){
+                                            let deleteLength = resultData.length - localStorageRecordMaxLength;
+                                            if(messageRecord.length > cacheMaxLength){
+                                                messageRecord.splice(cacheMaxLength - 1,messageRecord.length - cacheMaxLength);
+                                                resultData = [];
+                                            }
+                                            resultData.splice(0,deleteLength);
+                                        }
+                                        resultData = resultData.concat(messageRecord);
+                                        console.info("----bindAccount After saveNotifyMessage----")
+                                        console.info(resultData)
+                        
+                                        AsyncStorage.setItem(global.tenant_code + global.userId,JSON.stringify(resultData),function (error) {
+                                            if (error) {
+                                                console.log('存储失败')
+                                                console.log(error)
+                                            }else {
+                                                console.log('存储完成')
+                                            }
+                                        });
+                                    }
+                                });
+                                
+                            }
+                        });
+                    }
                 });
                 Toast.show('登录成功');
                 AsyncStorage.setItem('uinfo', JSON.stringify(result.data), function (error) {

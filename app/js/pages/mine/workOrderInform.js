@@ -4,36 +4,39 @@ import React, { Component } from 'react';
 import {
     View,
     Text,
-    BackAndroid,
-    TouchableOpacity,
-    Image,
     StyleSheet,
-    InteractionManager,
-    TextInput,
+    TouchableOpacity,
+    ListView,
     Platform,
-    ToastAndroid,
-    Switch,
-    ListView
+    BackHandler
 } from 'react-native';
-import RNFetchBlob from '../../../util/RNFetchBlob';
+import NetInfo from '@react-native-community/netinfo';
 import TitleBar from '../../component/TitleBar';
 import BaseComponent from '../../base/BaseComponent'
 import * as Dimens from '../../value/dimens';
-import AsyncStorage from '@react-native-community/async-storage';
+import RefreshListView from '../../component/RefreshListView';
+import Request, {messageRecordList} from '../../http/Request';
 
+
+let cachedResults = {
+    nextPage: 1, // 下一页
+    items: [], // listview 数据(视频列表)
+    total: 0, // 总数
+    pages: 0
+};
 export default class workOrderInform extends BaseComponent {
     static navigationOptions = {
         header: null,
     };
     constructor(props){
         super(props);
-        console.info(this.props)
         const { navigation } = this.props;
         const workOrderNotify = navigation.getParam('workOrderNotify', []);
         console.info(workOrderNotify)
         this.state={
             theme : this.props.theme,
             workOrderNotify : workOrderNotify,
+            isConnected: false,
             dataSource : new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
@@ -43,45 +46,148 @@ export default class workOrderInform extends BaseComponent {
                     return true//r1.isSelected !== r2.isSelected;
                 }
             }),
+            isLoadingTail: false,
+            isRefreshing: false
         }
     }
 
     componentDidMount(){
-        this.loadDataSourceByWorkOrderNotify();
+        this.loadDataSource();
+
+        //监听物理返回键
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener("back", this.onBackClicked);
+        }
     }
 
-    loadDataSourceByWorkOrderNotify(){
-        var dataSource = this.state.workOrderNotify.reverse();
-        this.setState({
-            dataSource:this.state.dataSource.cloneWithRows(dataSource),
+    //卸载前移除物理监听
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener("back", this.onBackClicked);
+        }
+    }
+
+    //BACK物理按键监听
+    onBackClicked = () => {
+        this.props.navigation.state.params.callback();
+        this.props.navigation.goBack();
+        return true;
+    }
+
+    loadDataSource(){
+        var that = this;
+        NetInfo.fetch().then(state => {
+            console.info("网络：" + state.isConnected)
+            if(state.isConnected){
+                that.setState({
+                    isConnected : true
+                });
+                that._fetchData(0);
+            }else{
+                var dataSource = that.state.workOrderNotify.reverse();
+                that.setState({
+                    isLoadingTail: false,
+                    isRefreshing: false,
+                    dataSource: that.state.dataSource.cloneWithRows(dataSource),
+                    isConnected : false
+                });
+                cachedResults.items = dataSource;
+            }
         });
     }
 
+    _fetchData(page){
+        if(!this.state.isConnected){
+            return;
+        }
+        var that = this;
+
+        if (page !== 0) { // 加载更多操作
+            this.setState({
+                isLoadingTail: true
+            });
+
+            cachedResults.nextPage = page;
+        } else { // 刷新操作
+            this.setState({
+                isRefreshing: true
+            });
+            // 初始 nextPage
+            cachedResults.nextPage = 1;
+        }
+        let params = {
+            userId: global.userId,
+            page: cachedResults.nextPage,
+            rows: 10
+        };
+        console.log(params);
+
+        Request.requestPost(messageRecordList, params, (result)=> {
+            console.info(result);
+            if (result && result.code === 200) {
+                var items = [];
+                cachedResults.total = 0;
+                if (result.data.current&&result.data.current !== 1) { // 加载更多操作
+                    items = cachedResults.items.slice();
+                    if (result.data&&result.data.records) {//&& result.data.records.length > 0
+                        items = items.concat(result.data.records);
+                        cachedResults.total = result.data.total;
+                        cachedResults.pages = result.data.pages;
+                        cachedResults.nextPage = result.data.current + 1;
+                    } else {
+        
+                    }
+                }else { // 刷新操作
+
+                    if (result.data&&result.data.records) {
+                        items = result.data.records;
+                        cachedResults.total = result.data.total;
+                        cachedResults.pages = result.data.pages;
+                        cachedResults.nextPage = result.data.current + 1;
+                    } else {
+        
+                    }
+                }
+      
+                cachedResults.items = items; // 视频列表数据
+                
+                if (page !== 0) { // 加载更多操作
+                    that.setState({
+                      isLoadingTail: false,
+                      isRefreshing: false,
+                      dataSource: that.state.dataSource.cloneWithRows(cachedResults.items)
+                    });
+                  } else { // 刷次操作
+                    that.setState({
+                      isLoadingTail: false,
+                      isRefreshing: false,
+                      dataSource: that.state.dataSource.cloneWithRows(cachedResults.items)
+                    });
+                  }
+            } else {
+                if (page !== 0) { // 上拉加载更多操作
+                  this.setState({
+                    isRefreshing: false,
+                    isLoadingTail: false,
+                  });
+                } else {
+                  this.setState({ // 刷新操作
+                    isRefreshing: false,
+                    isLoadingTail: false,
+                  });
+                }
+            }
+        });
+    }
+
+    onPressItem(data){
+        data.recordAlreadyRead = 1;
+    }
     
     renderWorkOrderMessage(data){
-        console.info("renderWorkOrderMessage")
-        console.info(data)
+        // var tipStatus = <View style={{position:'absolute',top:0,right:-7,height:5,width:5,borderRadius:5,backgroundColor:'red'}}></View>;
         return (
-            <View style={styles.input_center_bg}>
-                <View style={styles.title}>
-                    <View style={{position:'relative'}}>
-                        <Text style={{fontSize:16,color:'#404040'}}>
-                            {data.title}
-                        </Text>
-                        <View style={{position:'absolute',top:0,right:-7,height:5,width:5,borderRadius:5,backgroundColor:'red'}}></View>
-                    </View>
-                
-                    <Text style={{fontSize:14,color:'#7f7f7f'}}>
-                        {data.notifyDate}
-                    </Text>
-                </View>
-                <View style={styles.line} />
-                <View style={styles.content}>
-                    <Text style={{fontSize:15,color:'#404040'}}>
-                        {data.content}
-                    </Text>
-                </View>
-            </View>
+             <PreMessage data={data} isConnected={this.state.isConnected} workOrderNotify={this.state.workOrderNotify} />
         )
     }
 
@@ -98,10 +204,10 @@ export default class workOrderInform extends BaseComponent {
                 centerText={'工单通知'}
                 isShowLeftBackIcon={true}
                 navigation={this.props.navigation}
-                leftPress={() => this.naviGoBack(this.props.navigation)}
+                leftPress={() => (this.naviGoBack(this.props.navigation),this.props.navigation.state.params.callback())}
             />
 
-            <ListView
+            {/* <ListView
                 initialListSize={1}
                 dataSource={this.state.dataSource}
                 renderRow={(item) => this.renderWorkOrderMessage(item)}
@@ -109,6 +215,22 @@ export default class workOrderInform extends BaseComponent {
                 onEndReachedThreshold={10}
                 enableEmptySections={true}
                 renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}
+            /> */}
+            <RefreshListView
+                style={{flex:1, width:Dimens.screen_width,height:Dimens.screen_height-44}}
+                onEndReachedThreshold={10}
+                dataSource={this.state.dataSource}
+                // 渲染item(子组件)
+                renderRow={this.renderWorkOrderMessage.bind(this)}
+                // 是否可以刷新
+                isRefreshing={this.state.isRefreshing}
+                // 是否可以加载更多
+                isLoadingTail={this.state.isLoadingTail}
+                // 请求数据
+                fetchData={this._fetchData.bind(this)}
+                // 缓存列表数据
+                cachedResults={cachedResults}
+                ref={component => this._listView = component} 
             />
 
            </View>
@@ -122,6 +244,63 @@ onChange(val) {
   }
 }
 
+
+class PreMessage extends Component{
+    constructor(props){
+        super(props);
+        const{ data, isConnected, workOrderNotify} = this.props
+        this.state={ 
+            data: data,
+            isConnected: isConnected,
+            workOrderNotify: workOrderNotify,
+            alreadyReadFlag : false
+        }
+    }
+
+    onPressItem(){
+        this.setState({
+            alreadyReadFlag: true
+        })
+    }
+
+    render(){
+        var tipStatus = null;
+
+        if(this.state.isConnected){
+            this.state.workOrderNotify.find(element => {
+                if(element.recordAlreadyRead === 0 && element.recordId == this.state.data.recordId && !this.state.alreadyReadFlag){
+                    tipStatus = <View style={{position:'absolute',top:0,right:-7,height:5,width:5,borderRadius:5,backgroundColor:'red'}}></View>;
+                }
+            });
+        }else if(this.state.data.recordAlreadyRead === 0 && !this.state.alreadyReadFlag){
+            tipStatus = <View style={{position:'absolute',top:0,right:-7,height:5,width:5,borderRadius:5,backgroundColor:'red'}}></View>;
+        }
+
+        return(
+            <TouchableOpacity onPress={()=>this.onPressItem()} style={{flex:1, backgroundColor:'white'}}>
+                <View style={styles.input_center_bg}>
+                    <View style={styles.title}>
+                        <View style={{flexDirection: 'row',justifyContent:'flex-start'}}>
+                            <Text style={{fontSize:16,color:'#404040'}}>
+                                {this.state.data.title}
+                            </Text>
+                            {tipStatus}
+                        </View>
+                        <Text style={{fontSize:14,color:'#7f7f7f'}}>
+                            {this.state.isConnected === true ? new Date(this.state.data.createTime).format("yyyy-MM-dd hh:mm:ss") : this.state.data.createTime}
+                        </Text>
+                    </View>
+                    <View style={styles.line} />
+                    <View style={styles.content}>
+                        <Text style={{fontSize:15,color:'#404040'}}>
+                            {this.state.isConnected === true ? JSON.parse(this.state.data.content).msg : this.state.data.content.msg}
+                        </Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+}
 
 const styles = StyleSheet.create({
 
@@ -153,7 +332,6 @@ const styles = StyleSheet.create({
         height:45,
         marginLeft:0,
         marginRight:0,
-        paddingTop:15,
         paddingLeft: 10,
         paddingRight: 10,
     },

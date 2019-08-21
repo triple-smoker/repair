@@ -58,7 +58,8 @@ export const baseUser = 'api/basic/baseUser';//修改用户信息
 export const Attr =  'api/basic/eqp/attr/';//设备属性
 
 export const baseOptCert = 'api/basic/baseOptCert/';
-export const messageRecordList = '/api/msgmanage/record/getList';//消息推送记录
+export const messageRecordList = 'api/msgmanage/record/getList';//消息推送记录
+
 // 获取我的关注
 export const FollowList = 'api/opcs/follow/list/';
 /**关注的 工单 科室 设备 用户 */ 
@@ -318,8 +319,7 @@ static uploadFile(path, callback) {
     var pos = path.lastIndexOf("/");
     let file = {type:'multipart/form-data', uri: path, name:path.substr(pos+1)};
     formData.append("file", file);
-             var url = HOST+'api/opcs/oss/upload';
-    https://dev.jxing.com.cn/api/opcs/oss/upload
+    var url = HOST+'api/opcs/oss/upload';
     var token = global.access_token;
     var headers = {
                 'Authorization': 'Basic anhjbG91ZDpqeGNsb3Vk',

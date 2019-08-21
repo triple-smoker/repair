@@ -49,7 +49,7 @@ export default class NotifService {
             autoCancel: true, // (optional) default: true
             largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
             smallIcon: "ic_notification", // (optional) default: "ic_notification" with fallback for "ic_launcher"
-            bigText: e.content, // (optional) default: "message" prop
+            bigText: e.content.msg, // (optional) default: "message" prop
             subText: null, // (optional) default: none
             color: "red", // (optional) default: system default
             vibrate: true, // (optional) default: true
@@ -64,8 +64,8 @@ export default class NotifService {
             userInfo: null, // (optional) default: null (object containing additional notification data)
 
             /* iOS and Android properties */
-            messageId: e.messageId,
             title: e.title, // (optional)
+            content: e.content,
             message: e.content.msg, // (required)
             playSound: false, // (optional) default: true
             soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)

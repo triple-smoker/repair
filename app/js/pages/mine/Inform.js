@@ -1,5 +1,3 @@
-
-
 import React, { Component } from 'react';
 import {
     View,
@@ -63,7 +61,7 @@ export default class Inform extends BaseComponent {
             } else {
                 result = JSON.parse(result);
                 var resultData = result || [];
-                console.info("工单消息")
+                console.info(global.tenant_code+global.userId)
                 console.info(resultData)
                 let unRead = 0;
                 if(resultData.length > 0){
@@ -87,13 +85,32 @@ export default class Inform extends BaseComponent {
     }
 
     workOrderNotify(){
-        console.info("workOrderInform");
         const {navigation} = this.props;
         InteractionManager.runAfterInteractions(() => {
             navigation.navigate('workOrderInform',{
                 theme:this.theme,
-                workOrderNotify:this.state.workOrderNotify
-            });
+                workOrderNotify: this.state.workOrderNotify,
+                callback:(()=>{
+
+                    if(this.state.unReadWorkOrderNotifyTotal > 0){
+                        let workOrderNotify = this.state.workOrderNotify;
+                        workOrderNotify.find(item => {
+                            if(item.recordAlreadyRead === 0){
+                                item.recordAlreadyRead = 1;
+                            }
+                        });
+                        this.setState({unReadWorkOrderNotifyTotal:0});
+                        AsyncStorage.setItem(global.tenant_code + global.userId,JSON.stringify(workOrderNotify),function (error) {
+                            if (error) {
+                                console.log('存储失败')
+                                console.log(error)
+                            }else {
+                                console.log('存储完成')
+                            }
+                        });
+                    }
+                })
+            })
         });
     }
     
@@ -136,16 +153,15 @@ export default class Inform extends BaseComponent {
                 </View>
                
             </View>
-            <View style={styles.input_center_bg}>
-                <Text style={{color:'#404040',fontSize:15}}>工单提醒</Text>
-                <TouchableOpacity onPress={()=>{this.workOrderNotify()}}>
-                    <View style={{flexDirection:'row'}}>
-                        <Text style={styles.ball}>{this.state.workOrderNotify.length}</Text>
-                        <Image style={{width:9,height:15,marginLeft:5}} source={require('../../../res/login/ic_arrow.png')}/>
-                    </View>
-                </TouchableOpacity>
-            </View>
-      
+            <TouchableOpacity onPress={()=>{this.workOrderNotify()}}>
+                <View style={styles.input_center_bg}>
+                    <Text style={{color:'#404040',fontSize:15}}>工单提醒</Text>
+                        <View style={{flexDirection:'row'}}>
+                            {this.state.unReadWorkOrderNotifyTotal > 0 ? <Text style={styles.ball}>{this.state.unReadWorkOrderNotifyTotal}</Text> : null}
+                            <Image style={{width:9,height:15,marginLeft:5}} source={require('../../../res/login/ic_arrow.png')}/>
+                        </View>
+                </View>
+            </TouchableOpacity>
         </View>
         )
     }

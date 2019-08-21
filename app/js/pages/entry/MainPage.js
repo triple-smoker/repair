@@ -139,6 +139,7 @@ export default class MainPage extends BaseComponent {
     }
     onMessage(e){
         console.log(this.notif);
+        console.info(e);
         e.content = JSON.parse(e.content);
         this.saveNotifyMessage(e);
         this.notif.localNotif(e);
@@ -160,7 +161,7 @@ export default class MainPage extends BaseComponent {
     onAppInitOnMessage(e){
         console.log(this.notif);
         this.notif.localNotif(e);
-        console.log("Message Received. Title:" + e.title + ", Content:" + e.content);
+        console.log("Message Received. Title:" + e.title + ", Content:" + e.content.msg);
     }
 
     localMessage(){
@@ -220,22 +221,19 @@ export default class MainPage extends BaseComponent {
                 console.log('读取失败')
             } else {
 
-                let temp = {"casecode":"repair_reminder","level":0,"focus":1,"triggerType":"normal","msg":"您关注的设备有新动态","extra":null}
-
-
                 result = JSON.parse(result);
                 let notifyData = {
-                    "messageId" : e.messageId,
+                    "recordId" : e.content.extra.recordId,
                     "title" : e.title,
-                    "content" : e.content.msg,
+                    "content" : e.content,
+                    "message": e.content.msg,
                     "recordAlreadyRead": 0,
-                    "notifyDate" : new Date().format("yyyy-MM-dd hh:mm:ss")
+                    "createTime" : new Date().format("yyyy-MM-dd hh:mm:ss")
                 }
                 let resultData = result || [];
-    
                 var cacheMaxLength = 10;
                 if(resultData.length >= cacheMaxLength){
-                    let deleteLength = resultData.length - 10 + 1;
+                    let deleteLength = resultData.length - cacheMaxLength + 1;
                     resultData.splice(0,deleteLength);
                 }
                 resultData.push(notifyData);
@@ -250,7 +248,6 @@ export default class MainPage extends BaseComponent {
                         console.log('存储完成')
                     }
                 })
-                    
             }
         });
     }
@@ -263,8 +260,10 @@ export default class MainPage extends BaseComponent {
                 result = JSON.parse(result);
                 
                 let resultData = result || [];
+                console.info("setNotifyMessageToAlreadyRead")
+                console.info(e);
                 resultData.find(item => {
-                    if(item.messageId === e.messageId){
+                    if(item.recordId === e.content.extra.recordId){
                         item.recordAlreadyRead = 1;
                     }
                 })
