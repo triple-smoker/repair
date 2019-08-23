@@ -161,6 +161,7 @@ export default class MainPage extends BaseComponent {
     onAppInitOnMessage(e){
         console.log(this.notif);
         this.notif.localNotif(e);
+        this._showYy(1);
         console.log("Message Received. Title:" + e.title + ", Content:" + e.content.msg);
     }
 
