@@ -93,13 +93,13 @@ function GetAxios(url = '', data = defaultData, ) {
 //
 //     })
 // }
-function PostAxiosUpPorter(url = '' , data = defaultData, ) {
-    return axios({
-        method: 'POST',
-        url : url,
-        data,
-    })
-}
+// function PostAxiosUpPorter(url = '' , data = defaultData, ) {
+//     return axios({
+//         method: 'POST',
+//         url : url,
+//         data,
+//     })
+// }
 // function GetAxiosUpPorter(url = '') {
 //     return axios({
 //         method: 'POST',
@@ -165,7 +165,7 @@ export default {
     PostAxios,
     GetAxios,
     // GetAxiosSQLite,
-    PostAxiosUpPorter,
+    // PostAxiosUpPorter,
     // GetAxiosUpPorter,
     UpLoad
 }

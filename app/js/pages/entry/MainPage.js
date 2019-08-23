@@ -64,7 +64,7 @@ export default class MainPage extends BaseComponent {
         DeviceEventEmitter.addListener('onInit', this.onInit.bind(this));
         DeviceEventEmitter.addListener('onNotification', this.onNotification.bind(this));
         DeviceEventEmitter.addListener('onAppInitOnMessage', this.onAppInitOnMessage.bind(this));
-        DeviceEventEmitter.addListener('localMessage', this.localMessage.bind(this));
+        DeviceEventEmitter.addListener('localMessage', (e)=>this.localMessage(e));
         this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
         console.log('new notif')
         console.log(this.notif)
@@ -164,11 +164,11 @@ export default class MainPage extends BaseComponent {
         console.log("Message Received. Title:" + e.title + ", Content:" + e.content.msg);
     }
 
-    localMessage(){
-        var e = {
-            title:"数据待上报",
-            content:{msg:"您尚有未上报的任务信息，请开启网络"}
-        }
+    localMessage(e){
+        // var e = {
+        //     title:"数据待上报",
+        //     content:{msg:"您尚有未上报的任务信息，请开启网络"}
+        // }
         this.notif.localNotif(e);
         this._showYy(2)
     }

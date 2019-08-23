@@ -101,6 +101,14 @@ export default class WelcomePage extends Component {
                         permissions = "3";
                     }
                     global.permissions = permissions;
+                    AsyncStorage.getItem("localNotifiTime", function (error, result) {
+                        if (error) {
+                            console.log('读取失败')
+                        } else {
+                            result = JSON.parse(result);
+                            global.localNotifiTime = result;
+                        }
+                    })
                     // if(global.uinfo.workNumber==="40001"){
                     //     global.permissions = true;
                     // }

@@ -112,7 +112,7 @@ export default class SQLiteDemo extends Component{
                                     if(dates[tableName]!=null&&dates[tableName].length>0){
 
                                         // console.log("=="+dataJson);
-                                        SQLite.insertData(dates[tableName],tableName);
+                                        SQLite.insertData(dates[tableName],tableName,()=>{console.log("插入数据")});
                                         // console.log(dates[tableName]);
                                         // if(tableName==="inspect_job_manager"){
                                         //     this.setState({

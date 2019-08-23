@@ -325,7 +325,6 @@ export default class CheckDetail extends BaseComponent {
                 "status": "1",
                 "ITEM_FORMAT":item.ITEM_FORMAT,
             }
-            console.log(requestN);
             dateSourceItemTemp.push(requestN);
         })
 
@@ -349,11 +348,13 @@ export default class CheckDetail extends BaseComponent {
                                 // console.log(result);
                                 item.ITEM_FORMAT=null;
                                 item.resultDesc = result.data.fileDownloadUri;
-                                Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
+                                Axios.PostAxios("/api/daily/daily/report",item).then(
                                     (response)=>{
                                         console.log("++++++++++++++");
                                         console.log(response);
-                                        i++;
+                                        if(response&&response.code&&response.code===200){
+                                            i++;
+                                        }
                                         if(i===dateSourceItemTemp.length){
                                             toastShort("数据已上报");
                                             clearTimeout(this.timeout);
@@ -389,11 +390,13 @@ export default class CheckDetail extends BaseComponent {
                                         // console.log(result);
                                         item.ITEM_FORMAT=null;
                                         item.resultDesc = result.data.fileDownloadUri;
-                                        Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
+                                        Axios.PostAxios("/api/daily/daily/report",item).then(
                                             (response)=>{
                                                 console.log("++++++++++++++");
                                                 console.log(response);
-                                                i++;
+                                                if(response&&response.code&&response.code===200){
+                                                    i++;
+                                                }
                                                 if(i===dateSourceItemTemp.length){
                                                     clearTimeout(this.timeout);
                                                     Loading.dismiss();
@@ -411,11 +414,13 @@ export default class CheckDetail extends BaseComponent {
                             });
                     }else{
                         item.ITEM_FORMAT=null;
-                        Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",item).then(
+                        Axios.PostAxios("/api/daily/daily/report",item).then(
                             (response)=>{
                                 console.log("++++++++++++++");
                                 console.log(response);
-                                i++;
+                                if(response&&response.code&&response.code===200){
+                                    i++;
+                                }
                                 if(i===dateSourceItemTemp.length){
                                     clearTimeout(this.timeout);
                                     Loading.dismiss();
@@ -440,7 +445,7 @@ export default class CheckDetail extends BaseComponent {
 
 
             }else{
-                SQLite.insertData(dateSourceItemTemp,"auto_up");
+                SQLite.insertData(dateSourceItemTemp,"auto_up",()=>{console.log("插入数据")});
                 if (!db) {
                     this.open();
                 }

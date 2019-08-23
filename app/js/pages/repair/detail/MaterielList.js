@@ -1,16 +1,16 @@
 
 import React, { Component } from 'react';
 import {
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    DeviceEventEmitter,
-    ScrollView,
-    TouchableOpacity,
-    ListView,
-    Modal,
-    InteractionManager
+	StyleSheet,
+	Text,
+	View,
+	Image,
+	DeviceEventEmitter,
+	ScrollView,
+	TouchableOpacity,
+	ListView,
+	Modal,
+	InteractionManager, TextInput
 } from 'react-native';
 
 import TitleBar from '../../../component/TitleBar';
@@ -18,6 +18,7 @@ import * as Dimens from '../../../value/dimens';
 import Request, {GetRepairList, GetMaterialTypeTree, QueryMaterialListByTypeId, SaveMaterial} from '../../../http/Request';
 import { toastShort } from '../../../util/ToastUtil';
 import BaseComponent from '../../../base/BaseComponent'
+import Input from "@ant-design/react-native/es/input-item/Input";
 
 
 export default class MaterielList extends BaseComponent {
@@ -35,6 +36,7 @@ export default class MaterielList extends BaseComponent {
             dataLists:[],
             theme:this.props.theme,
             repairId:props.navigation.state.params.repairId,
+            type:props.navigation.state.params.type,
             tabList: [],
   			carList: [],
   			dataSource: new ListView.DataSource({
@@ -54,6 +56,8 @@ export default class MaterielList extends BaseComponent {
                
             return true//r1.isSelected !== r2.isSelected;
             }}),
+			outSide : (props.navigation.state.params.type)? true:false,
+			stringText : ""
     	}
 
     	
@@ -155,7 +159,6 @@ export default class MaterielList extends BaseComponent {
        			var list = [];
        			var item = tabList[0];
     			var cateList = map.get(item.materialTypeId).childrenList;
-    			console.log(tabList);
       			for (var i = 0; i < cateList.length; i++) {
       				var item = cateList[i];
 					let entity = {materialTypeId:item.materialTypeId, selected:0, materialTypeName:item.materialTypeName, parentId:item.parentId};
@@ -223,7 +226,7 @@ export default class MaterielList extends BaseComponent {
       	list.push(entity);
       }
     
-    this.setState({cateSource:this.state.cateSource.cloneWithRows(list), tabList:items, cateLists:list});
+    this.setState({cateSource:this.state.cateSource.cloneWithRows(list), tabList:items, cateLists:list,outSide:false});
 }
 
 renderTabItem(data, i) {
@@ -475,6 +478,9 @@ renderTabItem(data, i) {
 			var item = carList[i];
 			totalPrice = totalPrice + item.nCount*item.unitPrice;
   		}
+	if(this.state.type&&this.state.stringText!==""){
+		totalPrice = totalPrice+eval(this.state.stringText);
+	}
 
   	var tabViews = this.state.tabList.map((item, i)=>this.renderTabItem(item,i));
     return (
@@ -486,44 +492,84 @@ renderTabItem(data, i) {
            />
          <View style={{height:40,width:Dimens.screen_width,}}>
         <ScrollView keyboardDismissMode={'on-drag'} style={styles.scrollViewStyle} horizontal={true} showsHorizontalScrollIndicator={false}>
-          {tabViews}
+			{this.state.type &&
+				<TouchableOpacity onPress={()=>this.setState({outSide:true})} style = {styles.itemStyle}>
+					<View style = {{backgroundColor: '#ccc',
+						height:40,
+						alignItems:'center',
+						justifyContent:'center',
+						textAlignVertical:'center'}}>
+						<Text style={{color:'#777',fontSize:13, textAlign:'center', textAlignVertical:'center', flex:1, marginLeft:5,marginRight:10,}}>外部耗材</Text>
+						<View style={{backgroundColor:'#ccc', height:0, marginLeft:5,marginRight:10, width:60}}/>
+					</View>
+				</TouchableOpacity>
+			}
+			{tabViews}
         </ScrollView>
          </View>
                 
         <View style={styles.line}/>
+		  {!this.state.outSide &&
+			<View style={{width:Dimens.screen_width, flex:1, flexDirection:'row',}}>
+				<View style={{width:Dimens.screen_width/3,}}>
+				<ListView
+					initialListSize={1}
+					dataSource={this.state.cateSource}
+					renderRow={(item) => this.renderCateItem(item)}
+					style={{backgroundColor:'#f6f6f6', width:Dimens.screen_width/3,}}
+					onEndReachedThreshold={10}
+					enableEmptySections={true}
+					renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView2(sectionID, rowID, adjacentRowHighlighted)}/>
+				</View>
+				<View style={{width:Dimens.screen_width*2/3, flex:1, }}>
+				<TouchableOpacity onPress={()=>{this.onShowList()}} style={{height:40, width:Dimens.screen_width*2/3}}>
+				<View style={{backgroundColor:'#fff', flexDirection:'row', justifyContent:'flex-end', height:40, alignItems:'center', width:Dimens.screen_width*2/3}}>
+					<Image source={require('../../../../res/repair/ico_sx.png')}
+					style={{width:18,height:14,marginRight:5,}}/>
+					<Text style={{fontSize:14, color:'#777', marginLeft:0, marginRight:10, }}>筛选</Text>
+				</View>
+				</TouchableOpacity>
+				<View style={{backgroundColor:'#f6f6f6',width:Dimens.screen_width*2/3, height:1, }}/>
+				<ListView
+					initialListSize={1}
+					dataSource={this.state.productSource}
+					renderRow={(item) => this.renderProductItem(item)}
+					style={{backgroundColor:'#fff', width:Dimens.screen_width*2/3,flex:1}}
+					onEndReachedThreshold={10}
+					enableEmptySections={true}
+					renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView1(sectionID, rowID, adjacentRowHighlighted)}/>
 
-        <View style={{width:Dimens.screen_width, flex:1, flexDirection:'row',}}>
-            <View style={{width:Dimens.screen_width/3,}}>
-        	<ListView
-                initialListSize={1}
-                dataSource={this.state.cateSource}
-                renderRow={(item) => this.renderCateItem(item)}
-                style={{backgroundColor:'#f6f6f6', width:Dimens.screen_width/3,}}
-                onEndReachedThreshold={10}
-                enableEmptySections={true}
-                renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView2(sectionID, rowID, adjacentRowHighlighted)}/>
-            </View>
-            <View style={{width:Dimens.screen_width*2/3, flex:1, }}>
-            <TouchableOpacity onPress={()=>{this.onShowList()}} style={{height:40, width:Dimens.screen_width*2/3}}>
-            <View style={{backgroundColor:'#fff', flexDirection:'row', justifyContent:'flex-end', height:40, alignItems:'center', width:Dimens.screen_width*2/3}}>
-            	<Image source={require('../../../../res/repair/ico_sx.png')} 
-                style={{width:18,height:14,marginRight:5,}}/>
-                <Text style={{fontSize:14, color:'#777', marginLeft:0, marginRight:10, }}>筛选</Text>
-            </View>
-            </TouchableOpacity>
-            <View style={{backgroundColor:'#f6f6f6',width:Dimens.screen_width*2/3, height:1, }}/>
-            <ListView
-                initialListSize={1}
-                dataSource={this.state.productSource}
-                renderRow={(item) => this.renderProductItem(item)}
-                style={{backgroundColor:'#fff', width:Dimens.screen_width*2/3,flex:1}}
-                onEndReachedThreshold={10}
-                enableEmptySections={true}
-                renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView1(sectionID, rowID, adjacentRowHighlighted)}/>
-                
-             </View>
-        </View>
-
+				 </View>
+			</View>
+		  }
+		  {this.state.outSide &&
+			  <View style={{width:Dimens.screen_width, flex:1, flexDirection:'row',backgroundColor:"#fff",justifyContent:"center",}}>
+				  <Text style={{fontSize:20,marginTop:10,backgroundColor:"#fff",height:30,marginLeft:5}}>
+					  外部耗材费用：
+				  </Text>
+				  <TextInput
+					  style={{paddingVertical: 0,borderWidth:1,borderColor:"#ccc",flex:1,marginTop:10, textAlignVertical:'top', textAlign:'left',backgroundColor: 'white',fontSize: 14,height:30, marginLeft:15, paddingLeft:8,paddingRight:8,paddingTop:5,paddingBottom:5,}}
+					  placeholder={"请输入外部耗材费用"}
+					  placeholderTextColor="#aaaaaa"
+					  underlineColorAndroid="transparent"
+					  multiline = {true}
+					  value={this.state.stringText}
+					  autoFocus={false}
+					  rowSpan={1}
+					  maxLength={5}
+					  keyboardType='numeric'
+					  onChangeText={(text) => {
+						  let newText = text.replace(/[^(\-|\.?)\d]+/, '');
+						  let newTextString = newText.replace(/[0-9][\-]/,'')
+						  let newTextStringTo = newTextString.replace(/^(\.)/,'')
+						  this.setState({stringText: newTextStringTo})
+					  }}
+				  />
+				  <Text style={{fontSize:20,marginTop:10,backgroundColor:"#fff",height:30,marginRight:15,}}>
+					  ￥
+				  </Text>
+			  </View>
+		  }
 
 	<View style={styles.bottomStyle}>
 		<TouchableOpacity onPress={()=>{this.onShowList()}} style={{height:49,flex:1}}>
@@ -560,11 +606,32 @@ renderTabItem(data, i) {
                         initialListSize={1}
                         dataSource={this.state.dataSource}
                         renderRow={(item) => this.renderItem(item)}
-                        style={{backgroundColor:'white',flex:1,height:300,width:Dimens.screen_width,}}
+                        style={{backgroundColor:'white',flex:1,height:250,width:Dimens.screen_width,}}
                         onEndReachedThreshold={10}
                         enableEmptySections={true}
                         renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>this._renderSeparatorView(sectionID, rowID, adjacentRowHighlighted)}
                         />
+			{(this.state.type && this.state.stringText!=="") &&
+				<View style={{width:Dimens.screen_width,
+					height:40,
+					color:'#bbb',
+					fontSize:18,
+					textAlign:'center',
+					backgroundColor: '#fff',
+					alignItems:'center',
+					justifyContent:'center',
+					textAlignVertical:'center',
+					borderColor:"#777",
+					borderTopWidth:1,
+					flexDirection:'row',}}>
+					<Text style={{fontSize:14,marginLeft:20,flex:1}}>
+						外部耗材费用
+					</Text>
+					<Text style={{marginRight:20}}>
+						{this.state.stringText+"￥"}
+					</Text>
+				</View>
+			}
 
                 <View style={styles.bottomStyle2}>
 				<TouchableOpacity onPress={()=>{this.onShowList()}} style={{height:49,flex:1}}>

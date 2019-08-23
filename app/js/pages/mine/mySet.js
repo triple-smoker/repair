@@ -96,6 +96,7 @@ export default class MySet extends BaseComponent {
         global.userId = null;
         global.permissions = null;
         global.uinfo = null;
+        global.localNotifiTime = null;
             AsyncStorage.setItem('token', '', function (error) {
                 if (error) {
                     console.log('error: save error');
@@ -106,6 +107,12 @@ export default class MySet extends BaseComponent {
             if (error) {
                 console.log('error: save error' + JSON.stringify(error));
             } 
+
+        });
+        AsyncStorage.setItem('localNotifiTime', '', function (error) {
+            if (error) {
+                console.log('error: save error' + JSON.stringify(error));
+            }
 
         });
         AsyncStorage.setItem('logMsg', '', function (error) {
@@ -232,22 +239,23 @@ export default class MySet extends BaseComponent {
                                     (response)=>{
                                         // console.log(response);
                                         if(Array.isArray(response.data)&&response.data.length>1){
-                                            let key = 'sqLiteTimeTemp'+tenantKeyAes;
-                                            //json转成字符串
-                                            let jsonStr = JSON.stringify(response.data[0]);
-                                            //存储
-                                            AsyncStorage.setItem(key, jsonStr, function (error) {
-
-                                                if (error) {
-                                                    console.log('存储失败')
-                                                }else {
-                                                    console.log('存储完成')
-                                                }
-                                            })
                                             var dates = response.data[1];
                                             for(var tableName in dates){
                                                 if(dates[tableName]!=null&&dates[tableName].length>0){
-                                                    SQLite.insertData(dates[tableName],tableName);
+                                                    SQLite.insertData(dates[tableName],tableName,()=>{
+                                                        let key = 'sqLiteTimeTemp'+tenantKeyAes;
+                                                        //json转成字符串
+                                                        let jsonStr = JSON.stringify(response.data[0]);
+                                                        //存储
+                                                        AsyncStorage.setItem(key, jsonStr, function (error) {
+
+                                                            if (error) {
+                                                                console.log('存储失败')
+                                                            }else {
+                                                                console.log('存储完成')
+                                                            }
+                                                        })
+                                                    });
                                                 }
 
                                             }

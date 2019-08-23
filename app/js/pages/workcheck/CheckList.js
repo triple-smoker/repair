@@ -188,7 +188,7 @@ export default class CheckList extends BaseComponent {
                         item.percentF = parseInt((sum/dataList.length)*100);
                         item.percentF = item.percentF===0 ? 0:item.percentF
                     })
-                    SQLite.insertData(dataList,"auto_percent");
+                    SQLite.insertData(dataList,"auto_percent",()=>{console.log("插入数据")});
                     console.log("插入数据");
 
                 }
@@ -366,6 +366,15 @@ export default class CheckList extends BaseComponent {
         this._fetchData(0);
     }
 
+    addOption() {
+        const {navigation} = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            navigation.navigate('MaterielList',{
+                theme:this.theme,
+                type:true})
+        });
+    }
+
   render() {
       var tabBar = <View style={{backgroundColor:'white', height:49, justifyContent:'center', flexDirection:'row', bottom:0}}>
           <TouchableOpacity onPress={()=>{this.onPressTabItem(0)}} style={{alignItems:'center',textAlignVertical:'center', height:49, justifyContent:'center',flex:1}}>
@@ -399,7 +408,13 @@ export default class CheckList extends BaseComponent {
               <Text style={{color: '#555', fontSize: 18, marginLeft: 5, flex: 1}}>保养</Text>
               }
           </View>
-          <View style={{width:50}}/>
+          <View style={{width:50}}>
+              {this.state.checkType === 2 &&
+                  <TouchableOpacity onPress={()=>this.addOption()} style={{backgroundColor:"#fff",width:50,height:44}}>
+                    <Text style={{color: '#555', fontSize: 18, marginLeft: 5, flex: 1}}>物料</Text>
+                  </TouchableOpacity>
+              }
+          </View>
           {/*<TouchableOpacity onPress={()=>this.captrue()}>*/}
               {/*<Image style={{width:16,height:20,marginLeft:5,marginRight:10}} source={require('../../../res/repair/navbar_ico_sys.png')} />*/}
           {/*</TouchableOpacity>*/}

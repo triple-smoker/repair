@@ -303,6 +303,7 @@ export default class Login extends BaseComponent {
         global.userId = null;
         global.permissions = null;
         global.uinfo = null;
+        global.localNotifiTime = null;
         AsyncStorage.setItem('token', '', function (error) {
             if (error) {
                 console.log('error: save error');
@@ -316,6 +317,12 @@ export default class Login extends BaseComponent {
 
         });
         AsyncStorage.setItem('logMsg', '', function (error) {
+            if (error) {
+                console.log('error: save error' + JSON.stringify(error));
+            }
+
+        });
+        AsyncStorage.setItem('localNotifiTime', '', function (error) {
             if (error) {
                 console.log('error: save error' + JSON.stringify(error));
             }
@@ -353,6 +360,14 @@ export default class Login extends BaseComponent {
                      permissions = "3";
                 }
                 global.permissions = permissions;
+                AsyncStorage.getItem("localNotifiTime", function (error, result) {
+                    if (error) {
+                        console.log('读取失败')
+                    } else {
+                        result = JSON.parse(result);
+                        global.localNotifiTime = result;
+                    }
+                })
                 NativeModules.MPush.bindAccount(global.tenant_code + global.userId,(callback)=>{
                     console.info(callback)
                     if(callback.success === true){

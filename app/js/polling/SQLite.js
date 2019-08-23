@@ -209,7 +209,7 @@ export default class SQLite extends Component {
     }
 
     //新增数据
-    static insertData(jobData,tableName){
+    static insertData(jobData,tableName,callback){
         // jobData = JSON.stringify(jobData);
         // jobData = JSON.parse(jobData);
         // console.log("+++--+++++"+jobData);
@@ -235,6 +235,8 @@ export default class SQLite extends Component {
                 this._errorCB('transaction', error);
             },()=>{
                 this._successCB('transaction insert data');
+                    console.log("---------");
+                    callback();
             });
         }
 

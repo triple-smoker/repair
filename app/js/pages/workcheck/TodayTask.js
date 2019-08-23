@@ -28,6 +28,7 @@ import {Loading} from "../../component/Loading";
 import Request from "../../http/Request";
 import {toastShort} from "../../util/ToastUtil";
 import {ProcessingManager} from "react-native-video-processing";
+import AsyncStorage from "@react-native-community/async-storage";
 
 /*
 * 每日任务列表
@@ -141,7 +142,11 @@ export default class TodayTask extends BaseComponent {
                         console.log("需要上传的报表数量："+len);
                         if(len>0){
                             if(notifNum%3===0){
-                                DeviceEventEmitter.emit("localMessage");
+                                var e = {
+                                    title:"数据待上报",
+                                    content:{msg:"您尚有未上报的任务信息，请开启网络"}
+                                }
+                                DeviceEventEmitter.emit("localMessage",e);
                                 notifNum++;
                             }
                         }
@@ -166,7 +171,7 @@ export default class TodayTask extends BaseComponent {
                         // console.log(result);
                         chenk.ITEM_FORMAT=null;
                         chenk.resultDesc = result.data.fileDownloadUri;
-                        Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",chenk).then(
+                        Axios.PostAxios("/api/daily/daily/report",chenk).then(
                             (response)=>{
                                 console.log(response);
                                 this.deleteLocal(response,chenk);
@@ -193,7 +198,7 @@ export default class TodayTask extends BaseComponent {
                                 // console.log(result);
                                 chenk.ITEM_FORMAT=null;
                                 chenk.resultDesc = result.data.fileDownloadUri;
-                                Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",chenk).then(
+                                Axios.PostAxios("/api/daily/daily/report",chenk).then(
                                     (response)=>{
                                         console.log(response);
                                         this.deleteLocal(response,chenk);
@@ -203,7 +208,7 @@ export default class TodayTask extends BaseComponent {
                     });
             }else{
                 chenk.ITEM_FORMAT=null;
-                Axios.PostAxiosUpPorter("http://47.102.197.221:5568/daily/report",chenk).then(
+                Axios.PostAxios("/api/daily/daily/report",chenk).then(
                     (response)=>{
                         console.log(response);
                         this.deleteLocal(response,chenk);
@@ -306,7 +311,7 @@ export default class TodayTask extends BaseComponent {
                         // percent =  parseInt((sum/dataList.length)*ScreenWidth);
                         // console.log("************"+sum+"/"+dataList.length);
                     })
-                    SQLite.insertData(dataList,"auto_percent");
+                    SQLite.insertData(dataList,"auto_percent",()=>{console.log("插入数据")});
                 }
             })
     }
@@ -501,6 +506,27 @@ class CheckItem extends Component {
             percent:0
         }
     }
+    getNotification(){
+        var currentDate = new Date().getTime();
+        if((currentDate-global.localNotifiTime)>(4*60*60*1000)){
+            var e = {
+                title:"巡检/保养 工单超时",
+                content:{msg:"您有巡检/保养的工单超时，注意查看"}
+            }
+            DeviceEventEmitter.emit("localMessage",e);
+            global.localNotifiTime = currentDate;
+            AsyncStorage.setItem("localNotifiTime",JSON.stringify(currentDate),function (error) {
+                if (error) {
+                    console.log('存储失败')
+                    console.log(error)
+                }else {
+                    console.log('存储完成')
+                }
+            });
+        };
+
+
+    }
 
 
 
@@ -553,6 +579,9 @@ class CheckItem extends Component {
                             percent = parseInt(checkIm.percentF);
                             if(this.state.percent != percent) {
                                 this.setState({percent: percent})
+                            }
+                            if(percent<100&&processType==="2"){
+                                this.getNotification();
                             }
                         }
                     }

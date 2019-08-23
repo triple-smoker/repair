@@ -253,7 +253,7 @@ class ConfirmReport extends Component {
             inpatientWardId: "1078214053129289730",
             matterName: this.state.desc,
             isUrgent:0,
-            hopeRepairTime: "2019-01-10",
+            hopeRepairTime: null,
             detailAdress: this.state.report.address,
             deptId: global.deptId,
             telNo: this.state.report.phone,
