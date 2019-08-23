@@ -66,6 +66,7 @@ export default class CheckDetail extends BaseComponent {
       equipmentTypeId:navigation.getParam('equipmentTypeId', ''),
       taskId:navigation.getParam('taskId', ''),
       tableType:navigation.getParam('tableType', ''),
+      verNbr:navigation.getParam('verNbr', ''),
       modalVisible:false,
       dateSource:[],
       personText:"",
@@ -104,7 +105,7 @@ export default class CheckDetail extends BaseComponent {
             db = SQLite.open();
         }
         dateSourceItem = [];
-        var sql = checkSqLite.selectThirdCheck(this.state.manCode);
+        var sql = checkSqLite.selectThirdCheck(this.state.manCode,this.state.verNbr);
         db.transaction((tx)=>{
             tx.executeSql(sql, [],(tx,results)=>{
                 var len = results.rows.length;
@@ -150,6 +151,7 @@ export default class CheckDetail extends BaseComponent {
             equipmentTypeId:this.state.equipmentTypeId,
             taskId:this.state.taskId,
             tableType:this.state.tableType,
+            verNbr:this.state.verNbr
         }
 
 

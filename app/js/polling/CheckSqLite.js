@@ -192,10 +192,11 @@ export default class CheckSqLite extends Component {
             +" AND a.OBJ_TYPE = 1";
     }
     //巡检三级页面
-    selectThirdCheck(manCode){
+    selectThirdCheck(manCode,verNbr){
         return "select b.ID,b.ITEM_NAME,b.ITEM_FORMAT,b.ITEM_RESULT_SET,b.ITEM_CODE,b.ITEM_LEVEL,mri.not_null " +
             "from inspect_item_conf b, man_ref_item mri where " +
             "mri.ITEM_CODE=b.ITEM_CODE " +
+            "and b.STATUS_CD=1 " +
             "and mri.MAN_CODE='"+manCode+"'";
     }
     //设备详情

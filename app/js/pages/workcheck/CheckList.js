@@ -132,6 +132,7 @@ export default class CheckList extends BaseComponent {
                   endTime:this.state.endTime,
                   taskId:this.state.taskId,
                   tableType:this.state.tableType,
+                  verNbr:this.state.verNbr,
                   callback: (
                       () => {
                           this.getNetworkData(this.state.taskId);
@@ -400,18 +401,18 @@ export default class CheckList extends BaseComponent {
           <TouchableOpacity style={{width:50,height:44,alignItems:"center",justifyContent:"center"}} onPress={()=>this.goBack()}>
               <Image style={{width:21,height:37}} source={require("../../../image/navbar_ico_back.png")}/>
           </TouchableOpacity>
-          <View style={{flex:1,justifyContent:'center',alignItems:'center',height:30,fontWeight:"600"}}>
+          <View style={{flex:1,justifyContent:'center',alignItems:'center',alignContent: "center",height:30,fontWeight:"600"}}>
               {this.state.checkType === 1 &&
               <Text style={{color: '#555', fontSize: 18, marginLeft: 5, flex: 1}}>巡检</Text>
               }
               {this.state.checkType === 2 &&
-              <Text style={{color: '#555', fontSize: 18, marginLeft: 5, flex: 1}}>保养</Text>
+              <Text style={{color: '#555', fontSize: 18, marginLeft: 5,textAlign:"center",textAlignVertical:"center", flex: 1}}>保养</Text>
               }
           </View>
           <View style={{width:50}}>
               {this.state.checkType === 2 &&
-                  <TouchableOpacity onPress={()=>this.addOption()} style={{backgroundColor:"#fff",width:50,height:44}}>
-                    <Text style={{color: '#555', fontSize: 18, marginLeft: 5, flex: 1}}>物料</Text>
+                  <TouchableOpacity onPress={()=>this.addOption()} style={{backgroundColor:"#fff",width:50,height:44,alignItems:"center",justifyContent:"center",alignContent:"center"}}>
+                      <Image style={{width:23,height:37}} resizeMode={'contain'} source={require("../../../image/btn_wuliao.jpg")}/>
                   </TouchableOpacity>
               }
           </View>
