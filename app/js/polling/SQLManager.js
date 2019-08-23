@@ -443,10 +443,14 @@ class SQLManager extends Component {
             + 'VER_NBR varchar(255) DEFAULT NULL ,'
             + 'ACTION_TYPE varchar(255) DEFAULT NULL ,'
             + 'STATUS_CD int(11) DEFAULT 1 ,'
-            + 'CREATE_TIME timestamp NULL DEFAULT CURRENT_TIMESTAMP ,'
+            + 'CREATE_TIME datetime NULL DEFAULT NULL ,'
             + 'CREATE_USER_ID bigint(20) DEFAULT NULL ,'
-            + 'UPDATE_TIME timestamp NULL DEFAULT CURRENT_TIMESTAMP ,'
+            + 'UPDATE_TIME datetime NULL DEFAULT NULL ,'
             + 'UPDATE_USER_ID bigint(20) DEFAULT NULL ,'
+            + 'app_name varchar(255) DEFAULT NULL ,'
+            + 'tenant_code varchar(255) DEFAULT NULL ,'
+            + 'curr_user varchar(255) DEFAULT NULL ,'
+            + 'customer_id bigint(20) DEFAULT NULL ,'
             + 'DELETE_FLAG varchar(2) DEFAULT 0 )';
         return createTBasePlaceSql;
     }

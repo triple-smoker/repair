@@ -144,19 +144,19 @@ export default class MainPage extends BaseComponent {
         this.saveNotifyMessage(e);
         this.notif.localNotif(e);
         console.log("Message Received. Title:" + e.title + ", Content:" + e.content.msg);
-        var that = this;
-        AsyncStorage.getItem("pushStatus", function (error, result) {
-            if (error) {
-                console.log("读取失败");
-            } else {
-                var pushStatus = JSON.parse(result);
-                if(pushStatus&&pushStatus===1){
-                    return null;
-                }else{
-                    that._showYy(1);
-                }
-            }
-        })
+        // var that = this;
+        // AsyncStorage.getItem("pushStatus", function (error, result) {
+        //     if (error) {
+        //         console.log("读取失败");
+        //     } else {
+        //         var pushStatus = JSON.parse(result);
+        //         if(pushStatus&&pushStatus===1){
+        //             return null;
+        //         }else{
+                    this._showYy(1);
+        //         }
+        //     }
+        // })
     }
     onAppInitOnMessage(e){
         console.log(this.notif);
@@ -185,34 +185,46 @@ export default class MainPage extends BaseComponent {
         if(this.isPlaying){
             return null;
         }
-        this.isPlaying = true;
-        let soutUil = "";
-        if(type===1){
-            soutUil ="xiaoxi_gongdan.mp3";
-        }else if(type===2){
-            soutUil ="xiaoxi_tixing.mp3";
-        }else if(type===3){
-            soutUil ="xiaoxi_yujing.mp3";
-        }
-        var whoosh = new Sound(soutUil, Sound.MAIN_BUNDLE, (error) => {
+        // var that = this;
+        AsyncStorage.getItem("pushStatus", function (error, result) {
             if (error) {
-                console.log('failed to load the sound', error);
-                return;
-            }
-            // loaded successfully
-            console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
-
-            // Play the sound with an onEnd callback
-            whoosh.play((success) => {
-                if (success) {
-                    console.log('successfully finished playing');
-                    this.isPlaying = false;
+                console.log("读取失败");
+            } else {
+                var pushStatus = JSON.parse(result);
+                if (pushStatus && pushStatus === 1) {
+                    return null;
                 } else {
-                    console.log('playback failed due to audio decoding errors');
-                    this.isPlaying = false;
+                    this.isPlaying = true;
+                    let soutUil = "";
+                    if (type === 1) {
+                        soutUil = "xiaoxi_gongdan.mp3";
+                    } else if (type === 2) {
+                        soutUil = "xiaoxi_tixing.mp3";
+                    } else if (type === 3) {
+                        soutUil = "xiaoxi_yujing.mp3";
+                    }
+                    var whoosh = new Sound(soutUil, Sound.MAIN_BUNDLE, (error) => {
+                        if (error) {
+                            console.log('failed to load the sound', error);
+                            return;
+                        }
+                        // loaded successfully
+                        console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+
+                        // Play the sound with an onEnd callback
+                        whoosh.play((success) => {
+                            if (success) {
+                                console.log('successfully finished playing');
+                                this.isPlaying = false;
+                            } else {
+                                console.log('playback failed due to audio decoding errors');
+                                this.isPlaying = false;
+                            }
+                        });
+                    });
                 }
-            });
-        });
+            }
+        })
     }
 
     async saveNotifyMessage(e){
